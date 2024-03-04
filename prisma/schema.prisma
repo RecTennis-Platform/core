@@ -7,13 +7,94 @@ datasource db {
   url      = env("POSTGRES_DATABASE_URL")
 }
 
-model User {
-  id           Int     @id @default(autoincrement())
-  email        String  @unique
-  password     String?
-  name         String
-  image        String?
-  refreshToken String?
+model users {
+  id            Int      @id(map: "User_pkey") @default(autoincrement())
+  email         String   @unique(map: "User_email_key")
+  password      String?
+  name          String
+  image         String?
+  refresh_token String?
+  role          UserRole @default(user)
+}
+
+model posts {
+  id          Int      @id(map: "Post_pkey") @default(autoincrement())
+  image       String
+  title       String
+  description String?
+  content     String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model affiliates {
+  id                  Int             @id(map: "Affiliate_pkey") @default(autoincrement())
+  company_name        String          @db.VarChar(255)
+  contact_person_name String          @db.VarChar(255)
+  phone               String
+  email               String
+  website             String
+  tax_number          String          @db.VarChar(255)
+  description         String
+  status              AffiliateStatus @default(pending)
+  created_at          DateTime        @default(now())
+  updated_at          DateTime
+}
+
+model payments {
+  id                  BigInt    @id @default(autoincrement())
+  payment_status      Int       @default(0)
+  partner_code        String    @db.VarChar(30)
+  method              String    @db.VarChar(30)
+  order_id            String    @unique(map: "uidx_order_id") @db.VarChar(255)
+  amount              BigInt
+  order_info          String
+  order_type          String    @db.VarChar(255)
+  request_id          String    @default("") @db.VarChar(255)
+  bank_code           String?   @db.VarChar(30)
+  card_type           String?   @db.VarChar(30)
+  transaction_id      String?   @db.VarChar(255)
+  transaction_status  String?   @db.VarChar(255)
+  transaction_date    DateTime? @db.Timestamptz(6)
+  created_at          DateTime  @default(now()) @db.Timestamptz(6)
+  expired_at          DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime  @default(now()) @db.Timestamptz(6)
+  currency            String    @default("VND") @db.VarChar(10)
+  bank_transaction_id String?   @db.VarChar(255)
+  refunds             refunds[]
+}
+
+model refunds {
+  id                 BigInt   @id @default(autoincrement())
+  amount             BigInt
+  order_info         String
+  bank_code          String   @db.VarChar(30)
+  order_id           String   @db.VarChar(255)
+  transaction_type   String   @db.VarChar(20)
+  transaction_id     String   @db.VarChar(255)
+  transaction_status String   @db.VarChar(255)
+  transaction_date   DateTime @db.Timestamptz(6)
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime @default(now()) @db.Timestamptz(6)
+  payments           payments @relation(fields: [order_id], references: [order_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_refunds_payments")
+
+  @@index([order_id], map: "idx_order_id")
+}
+
+model schema_migrations {
+  version BigInt  @id
+  dirty   Boolean
+}
+
+enum AffiliateStatus {
+  pending
+  approved
+  rejected
+}
+
+enum UserRole {
+  admin
+  user
 }
 
 model Affiliate {
