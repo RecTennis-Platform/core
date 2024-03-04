@@ -8,12 +8,13 @@ datasource db {
 }
 
 model users {
-  id            Int     @id(map: "User_pkey") @default(autoincrement())
-  email         String  @unique(map: "User_email_key")
+  id            Int      @id(map: "User_pkey") @default(autoincrement())
+  email         String   @unique(map: "User_email_key")
   password      String?
   name          String
   image         String?
   refresh_token String?
+  role          UserRole @default(user)
 }
 
 model posts {
@@ -89,4 +90,9 @@ enum AffiliateStatus {
   pending
   approved
   rejected
+}
+
+enum UserRole {
+  admin
+  user
 }
