@@ -106,3 +106,24 @@ enum UserRole {
   admin
   user
 }
+
+model Affiliate {
+  id           Int     @id @default(autoincrement())
+  companyName String  @map("company_name") @db.VarChar(255)
+  contactPersonName String  @map("contact_person_name") @db.VarChar(255)
+  phone String 
+  email String
+  website String
+  taxNumber String  @map("tax_number") @db.VarChar(255)
+  description String
+  status AffiliateStatus @default(pending)
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+}
+
+
+enum AffiliateStatus {
+  pending
+  approved
+  rejected
+}
