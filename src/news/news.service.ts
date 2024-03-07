@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto, UpdatePostDto } from './dto';
 
@@ -6,15 +10,15 @@ import { CreatePostDto, UpdatePostDto } from './dto';
 export class NewsService {
   constructor(private prismaService: PrismaService) {}
 
-  async createPost(dto: CreatePostDto) {
+  async createPost(dto: CreatePostDto): Promise<{
+    msg: string;
+    data: any;
+  }> {
     try {
       // Create new post
       await this.prismaService.posts.create({
         data: {
-          image: dto.image,
-          title: dto.title,
-          description: dto.description,
-          content: dto.content,
+          ...dto,
         },
       });
 
@@ -24,30 +28,58 @@ export class NewsService {
       };
     } catch (err) {
       console.log('Error:', err.message);
-      throw new Error(err);
-    }
-  }
-
-  async getPosts() {
-    try {
-      // Get all posts
-      const posts = await this.prismaService.posts.findMany({
-        orderBy: {
-          created_at: 'desc',
-        },
+      throw new BadRequestException({
+        msg: 'Failed to create post',
+        data: null,
       });
-
-      return {
-        msg: 'success',
-        data: posts,
-      };
-    } catch (err) {
-      console.log('Error:', err.message);
-      throw new Error(err);
     }
   }
 
-  async updatePost(postId: number, dto: UpdatePostDto) {
+  async getPosts(): Promise<{
+    msg: string;
+    data: any;
+  }> {
+    // Get all posts
+    const posts = await this.prismaService.posts.findMany({
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+
+    if (posts.length === 0) {
+      throw new NotFoundException({
+        msg: 'No posts found',
+        data: null,
+      });
+    }
+
+    return {
+      msg: 'success',
+      data: posts,
+    };
+  }
+
+  async updatePost(
+    postId: number,
+    dto: UpdatePostDto,
+  ): Promise<{
+    msg: string;
+    data: any;
+  }> {
+    // Check if post exists
+    const post = await this.prismaService.posts.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!post) {
+      throw new NotFoundException({
+        msg: 'Post not found',
+        data: null,
+      });
+    }
+
     try {
       // Update post
       await this.prismaService.posts.update({
@@ -55,10 +87,7 @@ export class NewsService {
           id: postId,
         },
         data: {
-          image: dto.image,
-          title: dto.title,
-          description: dto.description,
-          content: dto.content,
+          ...dto,
         },
       });
 
@@ -68,7 +97,10 @@ export class NewsService {
       };
     } catch (error) {
       console.log('Error:', error.message);
-      throw new Error(error);
+      throw new BadRequestException({
+        msg: 'Failed to update post',
+        data: null,
+      });
     }
   }
 }
