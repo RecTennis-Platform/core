@@ -8,13 +8,14 @@ datasource db {
 }
 
 model users {
-  id            Int      @id(map: "User_pkey") @default(autoincrement())
-  email         String   @unique(map: "User_email_key")
-  password      String?
-  name          String
-  image         String?
-  refresh_token String?
-  role          UserRole @default(user)
+  id             Int      @id(map: "User_pkey") @default(autoincrement())
+  email          String   @unique(map: "User_email_key")
+  password       String?
+  name           String
+  image          String?
+  refresh_token  String?
+  reset_password Boolean  @default(false)
+  role           UserRole @default(user)
 }
 
 model posts {
@@ -79,6 +80,15 @@ model refunds {
   payments           payments @relation(fields: [order_id], references: [order_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_refunds_payments")
 
   @@index([order_id], map: "idx_order_id")
+}
+
+model mobile_mini_apps {
+  id               Int    @id @default(autoincrement())
+  name             String @unique
+  code             String @unique
+  iosBundleUrl     String
+  androidBundleUrl String
+  level            Int    @default(0)
 }
 
 model schema_migrations {
