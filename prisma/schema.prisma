@@ -7,27 +7,6 @@ datasource db {
   url      = env("POSTGRES_DATABASE_URL")
 }
 
-model users {
-  id             Int      @id(map: "User_pkey") @default(autoincrement())
-  email          String   @unique(map: "User_email_key")
-  password       String?
-  name           String
-  image          String?
-  refresh_token  String?
-  reset_password Boolean  @default(false)
-  role           UserRole @default(user)
-}
-
-model posts {
-  id          Int      @id(map: "Post_pkey") @default(autoincrement())
-  image       String
-  title       String
-  description String?
-  content     String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-}
-
 model affiliates {
   id                  Int             @id(map: "Affiliate_pkey") @default(autoincrement())
   company_name        String          @db.VarChar(255)
@@ -40,6 +19,15 @@ model affiliates {
   status              AffiliateStatus @default(pending)
   created_at          DateTime        @default(now())
   updated_at          DateTime
+}
+
+model mobile_mini_apps {
+  id               Int    @id @default(autoincrement())
+  name             String @unique
+  code             String @unique
+  iosBundleUrl     String
+  androidBundleUrl String
+  level            Int    @default(0)
 }
 
 model payments {
@@ -65,6 +53,16 @@ model payments {
   refunds             refunds[]
 }
 
+model posts {
+  id          Int      @id(map: "Post_pkey") @default(autoincrement())
+  image       String
+  title       String
+  description String?
+  content     String
+  created_at  DateTime @default(now())
+  updated_at  DateTime
+}
+
 model refunds {
   id                 BigInt   @id @default(autoincrement())
   amount             BigInt
@@ -82,18 +80,20 @@ model refunds {
   @@index([order_id], map: "idx_order_id")
 }
 
-model mobile_mini_apps {
-  id               Int    @id @default(autoincrement())
-  name             String @unique
-  code             String @unique
-  iosBundleUrl     String
-  androidBundleUrl String
-  level            Int    @default(0)
-}
-
 model schema_migrations {
   version BigInt  @id
   dirty   Boolean
+}
+
+model users {
+  id             Int      @id(map: "User_pkey") @default(autoincrement())
+  email          String   @unique(map: "User_email_key")
+  password       String?
+  name           String
+  image          String?
+  refresh_token  String?
+  reset_password Boolean  @default(false)
+  role           UserRole @default(user)
 }
 
 enum AffiliateStatus {
@@ -105,25 +105,4 @@ enum AffiliateStatus {
 enum UserRole {
   admin
   user
-}
-
-model Affiliate {
-  id           Int     @id @default(autoincrement())
-  companyName String  @map("company_name") @db.VarChar(255)
-  contactPersonName String  @map("contact_person_name") @db.VarChar(255)
-  phone String 
-  email String
-  website String
-  taxNumber String  @map("tax_number") @db.VarChar(255)
-  description String
-  status AffiliateStatus @default(pending)
-  createdAt  DateTime       @default(now()) @map("created_at")
-  updatedAt  DateTime       @updatedAt @map("updated_at")
-}
-
-
-enum AffiliateStatus {
-  pending
-  approved
-  rejected
 }
