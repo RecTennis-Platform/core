@@ -3,12 +3,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { CorePrismaService } from 'src/prisma/prisma_core.service';
 import { CreatePostDto, UpdatePostDto } from './dto';
 
 @Injectable()
 export class NewsService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private corePrismaService: CorePrismaService) {}
 
   async createPost(dto: CreatePostDto): Promise<{
     msg: string;
@@ -16,7 +16,7 @@ export class NewsService {
   }> {
     try {
       // Create new post
-      await this.prismaService.posts.create({
+      await this.corePrismaService.posts.create({
         data: {
           ...dto,
         },
@@ -40,9 +40,9 @@ export class NewsService {
     data: any;
   }> {
     // Get all posts
-    const posts = await this.prismaService.posts.findMany({
+    const posts = await this.corePrismaService.posts.findMany({
       orderBy: {
-        created_at: 'desc',
+        createdAt: 'desc',
       },
     });
 
@@ -67,7 +67,7 @@ export class NewsService {
     data: any;
   }> {
     // Check if post exists
-    const post = await this.prismaService.posts.findUnique({
+    const post = await this.corePrismaService.posts.findUnique({
       where: {
         id: postId,
       },
@@ -82,7 +82,7 @@ export class NewsService {
 
     try {
       // Update post
-      await this.prismaService.posts.update({
+      await this.corePrismaService.posts.update({
         where: {
           id: postId,
         },

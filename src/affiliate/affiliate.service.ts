@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAffiliateDto } from './dto/create-affiliate.dto';
 import { UpdateAffiliateDto } from './dto/update-affiliate.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { CorePrismaService } from 'src/prisma/prisma_core.service';
 import { AffiliateStatus } from '@prisma/client';
 import { PageOptionsAffiliateDto } from './dto/find-all-affiliate.dto';
 
 @Injectable()
 export class AffiliateService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private corePrismaService: CorePrismaService) {}
   async create(createAffiliateDto: CreateAffiliateDto) {
     const data = {
       companyName: createAffiliateDto.companyName,
@@ -19,7 +19,7 @@ export class AffiliateService {
       website: createAffiliateDto.website,
       status: AffiliateStatus.pending,
     };
-    return await this.prismaService.affiliate.create({ data });
+    return await this.corePrismaService.affiliates.create({ data });
   }
 
   async findAll(pageOptionsAffiliateDto: PageOptionsAffiliateDto) {
@@ -43,11 +43,11 @@ export class AffiliateService {
         : undefined;
 
     const [result, totalCount] = await Promise.all([
-      this.prismaService.affiliate.findMany({
+      this.corePrismaService.affiliates.findMany({
         ...conditions,
         ...pageOption,
       }),
-      this.prismaService.affiliate.count({ ...conditions }),
+      this.corePrismaService.affiliates.count({ ...conditions }),
     ]);
 
     return {
@@ -58,7 +58,7 @@ export class AffiliateService {
   }
 
   async findOne(id: number) {
-    return await this.prismaService.affiliate.findFirst({
+    return await this.corePrismaService.affiliates.findFirst({
       where: {
         id: id,
       },
@@ -66,7 +66,7 @@ export class AffiliateService {
   }
 
   async update(id: number, updateAffiliateDto: UpdateAffiliateDto) {
-    return await this.prismaService.affiliate.update({
+    return await this.corePrismaService.affiliates.update({
       where: {
         id: id,
       },
@@ -83,7 +83,7 @@ export class AffiliateService {
   }
 
   async remove(id: number) {
-    return await this.prismaService.affiliate.delete({
+    return await this.corePrismaService.affiliates.delete({
       where: {
         id: id,
       },

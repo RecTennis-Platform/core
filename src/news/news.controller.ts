@@ -12,7 +12,7 @@ import { NewsService } from './news.service';
 import { JwtGuard, RolesGuard } from '../auth_utils/guards';
 import { CreatePostDto, UpdatePostDto } from './dto';
 import { Roles } from '../auth_utils/decorators/roles.decorator';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@internal/prisma_auth/client';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Roles(UserRole.admin)
