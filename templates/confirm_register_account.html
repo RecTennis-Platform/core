@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: white;
+        color: black;
+        font-family: 'Roboto', sans-serif;
+      }
+      .container {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-block: 20px;
+      }
+      .heading {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+      p {
+        font-size: 14px;
+        font-weight: 400;
+      }
+      .content p {
+        padding-bottom: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h5 class="heading">[[Insert app name]]</h5>
+      <div class="content">
+        <p>Dear {{fullname}},</p>
+        <p>
+          We are thrilled to welcome you to [Insert app name]! Your account has
+          been successfully registered, and you are now granted access to our
+          features. Feel free to sign in and explore.
+        </p>
+        <p>
+          Account information: <br />
+          Email: {{email}}
+        </p>
+        <p>
+          If you have any question or require any further assistance, please
+          don't hesitate to reach out to us via email or our hotline.
+        </p>
+        <p>
+          Thank you for choosing [Insert app name]. We're excited to have you on
+          board and look forward to serving you.
+        </p>
+        <p>Best, <br />[Insert team name]</p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -16,7 +16,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  
+
   const port = process.env.PORT || 8002;
   await app.listen(port);
   console.log(`Core API is running on port: ${port}`);
