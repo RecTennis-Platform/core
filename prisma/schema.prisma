@@ -4,14 +4,46 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_DATABASE_URL")
+  url      = env("CORE_DATABASE_URL")
 }
 
-model User {
-  id           Int     @id @default(autoincrement())
-  email        String  @unique
-  password     String?
-  name         String
-  image        String?
-  refreshToken String?
+model affiliates {
+  id                Int             @id @default(autoincrement())
+  companyName       String          @map("company_name") @db.VarChar(255)
+  contactPersonName String          @map("contact_person_name") @db.VarChar(255)
+  phone             String
+  email             String
+  website           String
+  taxNumber         String          @map("tax_number") @db.VarChar(255)
+  description       String
+  status            AffiliateStatus @default(pending)
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+}
+
+model mobile_mini_apps {
+  id               Int      @id @default(autoincrement())
+  name             String   @unique
+  code             String   @unique
+  iosBundleUrl     String   @map("ios_bundle_url")
+  androidBundleUrl String   @map("android_bundle_url")
+  level            Int      @default(0)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+}
+
+model posts {
+  id          Int      @id @default(autoincrement())
+  image       String
+  title       String
+  description String?
+  content     String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+}
+
+enum AffiliateStatus {
+  pending
+  approved
+  rejected
 }
