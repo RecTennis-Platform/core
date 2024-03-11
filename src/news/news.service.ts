@@ -24,7 +24,7 @@ export class NewsService {
 
       return {
         msg: 'success',
-        data: {},
+        data: null,
       };
     } catch (err) {
       console.log('Error:', err.message);
@@ -49,7 +49,7 @@ export class NewsService {
     if (posts.length === 0) {
       throw new NotFoundException({
         msg: 'No posts found',
-        data: null,
+        data: [],
       });
     }
 
@@ -117,7 +117,7 @@ export class NewsService {
 
       return {
         msg: 'success',
-        data: {},
+        data: null,
       };
     } catch (error) {
       console.log('Error:', error.message);
@@ -156,7 +156,7 @@ export class NewsService {
 
       return {
         msg: 'success',
-        data: {},
+        data: null,
       };
     } catch (error) {
       console.log('Error:', error.message);

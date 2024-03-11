@@ -913,7 +913,7 @@
         {
           "name": "Update app data",
           "request": {
-            "method": "PUT",
+            "method": "PATCH",
             "header": [],
             "body": {
               "mode": "raw",
@@ -930,7 +930,7 @@
             {
               "name": "Success",
               "originalRequest": {
-                "method": "PUT",
+                "method": "PATCH",
                 "header": [],
                 "body": {
                   "mode": "raw",
@@ -990,7 +990,7 @@
             {
               "name": "Credentials taken",
               "originalRequest": {
-                "method": "PUT",
+                "method": "PATCH",
                 "header": [],
                 "body": {
                   "mode": "raw",
@@ -1050,7 +1050,7 @@
             {
               "name": "Not found",
               "originalRequest": {
-                "method": "PUT",
+                "method": "PATCH",
                 "header": [],
                 "body": {
                   "mode": "raw",
@@ -1192,6 +1192,138 @@
             "url": "http://localhost:8080/affiliates/4"
           },
           "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Admin",
+          "item": [
+            {
+              "name": "Get all users",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoiY2hpaGllbjIwMDI0QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDY5MywiZXhwIjoxNzEwMTM2NDkzfQ.XBW33nwc-mGmnrOJ8xz4Bm3XmuNyJoTZoX_Wh7q7Sm4"
+                  }
+                },
+                "method": "GET",
+                "header": [],
+                "url": "{{CORE_URL}}/users/admin/all"
+              },
+              "response": []
+            },
+            {
+              "name": "Get user details",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDA3NywiZXhwIjoxNzEwMTM1ODc3fQ.NG2zkx0jbQluPYx-6aEM41Y0_6wjfKgiM7lCQls24aU"
+                  }
+                },
+                "method": "GET",
+                "header": [],
+                "url": "{{CORE_URL}}/users/admin/1"
+              },
+              "response": []
+            },
+            {
+              "name": "Create admin account",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDA3NywiZXhwIjoxNzEwMTM1ODc3fQ.NG2zkx0jbQluPYx-6aEM41Y0_6wjfKgiM7lCQls24aU"
+                  }
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"chihien20024@gmail.com\",\n    \"name\": \"Truong Chi Hien\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{CORE_URL}}/users/admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Update user account (Admin)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoiY2hpaGllbjIwMDI0QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDY5MywiZXhwIjoxNzEwMTM2NDkzfQ.XBW33nwc-mGmnrOJ8xz4Bm3XmuNyJoTZoX_Wh7q7Sm4"
+                  }
+                },
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Test admin\",\n    \"image\": \"test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{CORE_URL}}/users/admin/1"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Normal user",
+          "item": [
+            {
+              "name": "Get my info",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoiY2hpaGllbjIwMDIzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzEwMTMzODU0LCJleHAiOjE3MTAxMzU2NTR9.bfg1YoJoQDBItjQn21LaMoN9WWzMl42r1ZelNkOtdjg"
+                  }
+                },
+                "method": "GET",
+                "header": [],
+                "url": "{{CORE_URL}}/users/me"
+              },
+              "response": []
+            },
+            {
+              "name": "Update user account",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoiY2hpaGllbjIwMDIzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzEwMTMzODU0LCJleHAiOjE3MTAxMzU2NTR9.bfg1YoJoQDBItjQn21LaMoN9WWzMl42r1ZelNkOtdjg"
+                  }
+                },
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Chihien\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{CORE_URL}}/users/1"
+              },
+              "response": []
+            }
+          ]
         }
       ]
     }
