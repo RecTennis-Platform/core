@@ -23,7 +23,7 @@ export class MobileMiniAppService {
     if (miniAppDataList.length === 0) {
       throw new NotFoundException({
         msg: 'No app data found',
-        data: null,
+        data: [],
       });
     }
 
@@ -72,7 +72,7 @@ export class MobileMiniAppService {
 
       return {
         msg: 'success',
-        data: {},
+        data: null,
       };
     } catch (err) {
       console.log('Error:', err.message);
@@ -127,7 +127,7 @@ export class MobileMiniAppService {
 
       return {
         msg: 'success',
-        data: {},
+        data: null,
       };
     } catch (err) {
       console.log('Error:', err.message);
@@ -176,7 +176,7 @@ export class MobileMiniAppService {
 
       return {
         msg: 'success',
-        data: {},
+        data: null,
       };
     } catch (err) {
       console.log('Error:', err.message);

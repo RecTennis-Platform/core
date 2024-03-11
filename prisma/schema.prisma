@@ -17,8 +17,8 @@ model affiliates {
   taxNumber         String          @map("tax_number") @db.VarChar(255)
   description       String
   status            AffiliateStatus @default(pending)
-  createdAt         DateTime        @map("created_at") @default(now())
-  updatedAt         DateTime        @map("updated_at") @updatedAt
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
 }
 
 model mobile_mini_apps {
@@ -28,8 +28,8 @@ model mobile_mini_apps {
   iosBundleUrl     String   @map("ios_bundle_url")
   androidBundleUrl String   @map("android_bundle_url")
   level            Int      @default(0)
-  createdAt        DateTime @map("created_at") @default(now())
-  updatedAt        DateTime @map("updated_at") @updatedAt
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
 }
 
 model posts {
@@ -38,8 +38,8 @@ model posts {
   title       String
   description String?
   content     String
-  createdAt   DateTime @map("created_at") @default(now())
-  updatedAt   DateTime @map("updated_at") @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 }
 
 enum AffiliateStatus {

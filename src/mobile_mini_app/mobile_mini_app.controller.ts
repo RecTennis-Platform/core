@@ -6,7 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  Put,
+  Patch,
 } from '@nestjs/common';
 import { MobileMiniAppService } from './mobile_mini_app.service';
 import { CreateMiniAppDataDto } from './dto/create-mini-app-data.dto';
@@ -31,7 +31,7 @@ export class MobileMiniAppController {
     return await this.mobileMiniAppService.createMiniAppData(dto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   async updateMiniAppData(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateMiniAppDataDto,
