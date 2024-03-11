@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateMiniAppDataDto {
   @IsString()
@@ -17,7 +17,7 @@ export class CreateMiniAppDataDto {
   @IsNotEmpty()
   androidBundleUrl: string;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   level: number;
 }

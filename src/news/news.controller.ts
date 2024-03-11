@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -30,11 +31,21 @@ export class NewsController {
     return await this.newsService.getPosts();
   }
 
+  @Get(':id')
+  async getPostDetails(@Param('id', ParseIntPipe) id: number) {
+    return await this.newsService.getPostDetails(id);
+  }
+
   @Patch(':id')
   async updatePost(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdatePostDto,
   ) {
     return await this.newsService.updatePost(id, dto);
+  }
+
+  @Delete(':id')
+  async deletePost(@Param('id', ParseIntPipe) id: number) {
+    return await this.newsService.deletePost(id);
   }
 }

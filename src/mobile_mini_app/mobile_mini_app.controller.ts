@@ -27,7 +27,7 @@ export class MobileMiniAppController {
   }
 
   @Post()
-  async createMiniAppData(dto: CreateMiniAppDataDto) {
+  async createMiniAppData(@Body() dto: CreateMiniAppDataDto) {
     return await this.mobileMiniAppService.createMiniAppData(dto);
   }
 

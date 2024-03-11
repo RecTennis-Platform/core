@@ -1,11 +1,13 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CorePrismaService } from 'src/prisma/prisma_core.service';
 import { CreateMiniAppDataDto, UpdateMiniAppDataDto } from './dto';
 import { mobile_mini_apps } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class MobileMiniAppService {
@@ -60,6 +62,7 @@ export class MobileMiniAppService {
     data: any;
   }> {
     try {
+      console.log('dto', dto);
       // Create new mini app data
       await this.corePrismaService.mobile_mini_apps.create({
         data: {
@@ -73,8 +76,17 @@ export class MobileMiniAppService {
       };
     } catch (err) {
       console.log('Error:', err.message);
+      if (err instanceof PrismaClientKnownRequestError) {
+        if (err.code === 'P2002') {
+          throw new ForbiddenException({
+            msg: 'Credentials taken',
+            data: null,
+          });
+        }
+      }
+
       throw new BadRequestException({
-        msg: err.message,
+        msg: err,
         data: null,
       });
     }
@@ -119,6 +131,15 @@ export class MobileMiniAppService {
       };
     } catch (err) {
       console.log('Error:', err.message);
+      if (err instanceof PrismaClientKnownRequestError) {
+        if (err.code === 'P2002') {
+          throw new ForbiddenException({
+            msg: 'Credentials taken',
+            data: null,
+          });
+        }
+      }
+
       throw new BadRequestException({
         msg: err.message,
         data: null,
