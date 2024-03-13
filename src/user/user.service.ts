@@ -13,7 +13,7 @@ export class UserService {
   constructor(private authPrismaService: AuthPrismaService) {}
 
   async getUserDetails(userId: number): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     const user = await this.authPrismaService.users.findUnique({
@@ -31,19 +31,19 @@ export class UserService {
 
     if (!user) {
       throw new BadRequestException({
-        msg: 'Unauthorized',
+        message: 'Unauthorized',
         data: null,
       });
     }
 
     return {
-      msg: 'success',
+      message: 'success',
       data: user,
     };
   }
 
   async createAdminAccount(dto: CreateAdminAccountDto): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     try {
@@ -61,7 +61,7 @@ export class UserService {
       });
 
       return {
-        msg: 'success',
+        message: 'success',
         data: null,
       };
     } catch (err) {
@@ -69,20 +69,20 @@ export class UserService {
 
       if (err.code === 'P2002') {
         throw new BadRequestException({
-          msg: 'Email already exists',
+          message: 'Email already exists',
           data: null,
         });
       }
 
       throw new BadRequestException({
-        msg: 'Error creating admin account',
+        message: 'Error creating admin account',
         data: null,
       });
     }
   }
 
   async getAllUsers(): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     const users = await this.authPrismaService.users.findMany({
@@ -97,13 +97,13 @@ export class UserService {
 
     if (users.length === 0) {
       throw new NotFoundException({
-        msg: 'No users found',
+        message: 'No users found',
         data: [],
       });
     }
 
     return {
-      msg: 'success',
+      message: 'success',
       data: users,
     };
   }
@@ -112,7 +112,7 @@ export class UserService {
     userId: number,
     dto: UpdateUserAccountDto,
   ): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     // Check if user exists
@@ -124,7 +124,7 @@ export class UserService {
 
     if (!user) {
       throw new NotFoundException({
-        msg: 'User not found',
+        message: 'User not found',
         data: null,
       });
     }
@@ -141,13 +141,13 @@ export class UserService {
       });
 
       return {
-        msg: 'success',
+        message: 'success',
         data: null,
       };
     } catch (err) {
       console.log('Error:', err.message);
       throw new BadRequestException({
-        msg: 'Error updating user details',
+        message: 'Error updating user details',
         data: null,
       });
     }

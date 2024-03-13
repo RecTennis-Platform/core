@@ -11,7 +11,7 @@ export class NewsService {
   constructor(private corePrismaService: CorePrismaService) {}
 
   async createPost(dto: CreatePostDto): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     try {
@@ -23,20 +23,20 @@ export class NewsService {
       });
 
       return {
-        msg: 'success',
+        message: 'success',
         data: null,
       };
     } catch (err) {
       console.log('Error:', err.message);
       throw new BadRequestException({
-        msg: 'Failed to create post',
+        message: 'Failed to create post',
         data: null,
       });
     }
   }
 
   async getPosts(): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     // Get all posts
@@ -48,19 +48,44 @@ export class NewsService {
 
     if (posts.length === 0) {
       throw new NotFoundException({
-        msg: 'No posts found',
+        message: 'No posts found',
         data: [],
       });
     }
 
     return {
-      msg: 'success',
+      message: 'success',
+      data: posts,
+    };
+  }
+
+  async getTopPosts(): Promise<{
+    message: string;
+    data: any;
+  }> {
+    // Get all posts
+    const posts = await this.corePrismaService.posts.findMany({
+      take: 7,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (posts.length === 0) {
+      throw new NotFoundException({
+        message: 'No posts found',
+        data: [],
+      });
+    }
+
+    return {
+      message: 'success',
       data: posts,
     };
   }
 
   async getPostDetails(postId: number): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     // Get post details
@@ -72,13 +97,13 @@ export class NewsService {
 
     if (!post) {
       throw new NotFoundException({
-        msg: 'Post not found',
+        message: 'Post not found',
         data: null,
       });
     }
 
     return {
-      msg: 'success',
+      message: 'success',
       data: post,
     };
   }
@@ -87,7 +112,7 @@ export class NewsService {
     postId: number,
     dto: UpdatePostDto,
   ): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     // Check if post exists
@@ -99,7 +124,7 @@ export class NewsService {
 
     if (!post) {
       throw new NotFoundException({
-        msg: 'Post not found',
+        message: 'Post not found',
         data: null,
       });
     }
@@ -116,20 +141,20 @@ export class NewsService {
       });
 
       return {
-        msg: 'success',
+        message: 'success',
         data: null,
       };
     } catch (error) {
       console.log('Error:', error.message);
       throw new BadRequestException({
-        msg: 'Failed to update post',
+        message: 'Failed to update post',
         data: null,
       });
     }
   }
 
   async deletePost(postId: number): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     // Check if post exists
@@ -141,7 +166,7 @@ export class NewsService {
 
     if (!post) {
       throw new NotFoundException({
-        msg: 'Post not found',
+        message: 'Post not found',
         data: null,
       });
     }
@@ -155,13 +180,13 @@ export class NewsService {
       });
 
       return {
-        msg: 'success',
+        message: 'success',
         data: null,
       };
     } catch (error) {
       console.log('Error:', error.message);
       throw new BadRequestException({
-        msg: 'Failed to delete post',
+        message: 'Failed to delete post',
         data: null,
       });
     }

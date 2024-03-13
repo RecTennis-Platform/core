@@ -14,7 +14,7 @@ export class MobileMiniAppService {
   constructor(private corePrismaService: CorePrismaService) {}
 
   async getAllMiniAppData(): Promise<{
-    msg: string;
+    message: string;
     data: mobile_mini_apps[];
   }> {
     const miniAppDataList =
@@ -22,19 +22,19 @@ export class MobileMiniAppService {
 
     if (miniAppDataList.length === 0) {
       throw new NotFoundException({
-        msg: 'No app data found',
+        message: 'No app data found',
         data: [],
       });
     }
 
     return {
-      msg: 'success',
+      message: 'success',
       data: miniAppDataList,
     };
   }
 
   async getMiniAppDataDetails(miniAppDataId: number): Promise<{
-    msg: string;
+    message: string;
     data: mobile_mini_apps;
   }> {
     const miniAppData =
@@ -46,19 +46,19 @@ export class MobileMiniAppService {
 
     if (!miniAppData) {
       throw new NotFoundException({
-        msg: 'App data not found',
+        message: 'App data not found',
         data: null,
       });
     }
 
     return {
-      msg: 'success',
+      message: 'success',
       data: miniAppData,
     };
   }
 
   async createMiniAppData(dto: CreateMiniAppDataDto): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     try {
@@ -71,7 +71,7 @@ export class MobileMiniAppService {
       });
 
       return {
-        msg: 'success',
+        message: 'success',
         data: null,
       };
     } catch (err) {
@@ -79,14 +79,14 @@ export class MobileMiniAppService {
       if (err instanceof PrismaClientKnownRequestError) {
         if (err.code === 'P2002') {
           throw new ForbiddenException({
-            msg: 'Credentials taken',
+            message: 'Credentials taken',
             data: null,
           });
         }
       }
 
       throw new BadRequestException({
-        msg: err,
+        message: err,
         data: null,
       });
     }
@@ -96,7 +96,7 @@ export class MobileMiniAppService {
     miniAppDataId: number,
     dto: UpdateMiniAppDataDto,
   ): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     // Check if mini app data exists
@@ -109,7 +109,7 @@ export class MobileMiniAppService {
 
     if (!miniAppData) {
       throw new NotFoundException({
-        msg: 'App data not found',
+        message: 'App data not found',
         data: null,
       });
     }
@@ -126,7 +126,7 @@ export class MobileMiniAppService {
       });
 
       return {
-        msg: 'success',
+        message: 'success',
         data: null,
       };
     } catch (err) {
@@ -134,21 +134,21 @@ export class MobileMiniAppService {
       if (err instanceof PrismaClientKnownRequestError) {
         if (err.code === 'P2002') {
           throw new ForbiddenException({
-            msg: 'Credentials taken',
+            message: 'Credentials taken',
             data: null,
           });
         }
       }
 
       throw new BadRequestException({
-        msg: err.message,
+        message: err.message,
         data: null,
       });
     }
   }
 
   async deleteMiniAppData(miniAppDataId: number): Promise<{
-    msg: string;
+    message: string;
     data: any;
   }> {
     // Check if mini app data exists
@@ -161,7 +161,7 @@ export class MobileMiniAppService {
 
     if (!miniAppData) {
       throw new NotFoundException({
-        msg: 'App data not found',
+        message: 'App data not found',
         data: null,
       });
     }
@@ -175,13 +175,13 @@ export class MobileMiniAppService {
       });
 
       return {
-        msg: 'success',
+        message: 'success',
         data: null,
       };
     } catch (err) {
       console.log('Error:', err.message);
       throw new BadRequestException({
-        msg: err.message,
+        message: err.message,
         data: null,
       });
     }

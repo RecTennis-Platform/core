@@ -15,5 +15,9 @@ export class UpdatePostDto {
 
   @IsOptional()
   @IsString()
+  author?: string;
+
+  @IsOptional()
+  @IsString()
   content?: string;
 }
