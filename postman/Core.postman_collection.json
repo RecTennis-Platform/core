@@ -1,35 +1,47 @@
 {
 	"info": {
-		"_postman_id": "4ebd86b1-0f70-4565-ad61-87799778cbb4",
+		"_postman_id": "e1813fde-eb65-4d8c-bbb1-0e4c690e56c6",
 		"name": "Core",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "24188163"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20334878"
 	},
 	"item": [
 		{
-			"name": "News",
+			"name": "Group",
 			"item": [
 				{
-					"name": "Create post",
+					"name": "Create",
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyLCJlbWFpbCI6InRyaTRAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MTA0Mzg4MDAsImV4cCI6MTcxMDQ0MDYwMH0.9pOauLF7gf92lQUbOAiZEWYysKjWeU80t45AHL0Dx0I",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"title\": \"Tennis title\",\n    \"author\": \"ABE\",\n    \"content\": \"This is the content\"\n}",
+							"raw": "{\n    \"packageId\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{CORE_URL}}/news"
+						"url": {
+							"raw": "{{CORE_URL}}/groups",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups"
+							]
+						}
 					},
 					"response": [
 						{
@@ -46,7 +58,15 @@
 										}
 									}
 								},
-								"url": "{{CORE_URL}}/news"
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
 							},
 							"status": "Created",
 							"code": 201,
@@ -95,17 +115,53 @@
 					]
 				},
 				{
-					"name": "Get posts",
+					"name": "Get list",
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{CORE_URL}}/news"
+						"url": {
+							"raw": "{{CORE_URL}}/groups",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "asc",
+									"description": "desc, asc",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "take",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "inactive",
+									"description": "active (default), inactive, expired",
+									"disabled": true
+								}
+							]
+						}
 					},
 					"response": [
 						{
@@ -113,7 +169,15 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": "{{CORE_URL}}/news"
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
 							},
 							"status": "OK",
 							"code": 200,
@@ -164,7 +228,15 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": "{{CORE_URL}}/news"
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -213,17 +285,30 @@
 					]
 				},
 				{
-					"name": "Get top news",
+					"name": "Get detail",
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzEwNDM2OTAzLCJleHAiOjE3MTA0Mzg3MDN9.EMRrSifbxZ5SbSAinfnTt8BSU62UZcnrX5iG_FlmXX8",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{CORE_URL}}/news/top"
+						"url": {
+							"raw": "{{CORE_URL}}/groups/4",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"4"
+							]
+						}
 					},
 					"response": [
 						{
@@ -231,7 +316,15 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": "{{CORE_URL}}/news"
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
 							},
 							"status": "OK",
 							"code": 200,
@@ -282,7 +375,15 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": "{{CORE_URL}}/news"
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -331,144 +432,39 @@
 					]
 				},
 				{
-					"name": "Get post details",
+					"name": "Update",
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs"
-							}
-						},
-						"method": "GET",
-						"header": [],
-						"url": "{{CORE_URL}}/news/1"
-					},
-					"response": [
-						{
-							"name": "Success",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": "{{CORE_URL}}/news/11"
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
+							"bearer": [
 								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "272"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"110-bVTcDYnOzrTKsZWSMQCT+g4q1bA\""
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 11 Mar 2024 03:10:38 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzEwNDM2OTAzLCJleHAiOjE3MTA0Mzg3MDN9.EMRrSifbxZ5SbSAinfnTt8BSU62UZcnrX5iG_FlmXX8",
+									"type": "string"
 								}
-							],
-							"cookie": [],
-							"body": "{\n    \"msg\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n        \"title\": \"Tennis title\",\n        \"description\": \"\",\n        \"content\": \"This is the content\",\n        \"createdAt\": \"2024-03-11T03:05:44.515Z\",\n        \"updatedAt\": \"2024-03-11T03:05:44.515Z\"\n    }\n}"
-						},
-						{
-							"name": "Not found",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": "{{CORE_URL}}/news/11"
-							},
-							"status": "Not Found",
-							"code": 404,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "36"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"24-BCL1Jc0NXJDw+G6EZdqm9teSoTM\""
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 11 Mar 2024 03:11:09 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"msg\": \"Post not found\",\n    \"data\": null\n}"
-						}
-					]
-				},
-				{
-					"name": "Update post",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs"
-							}
+							]
 						},
 						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Tennis 2\"\n}",
+							"raw": "{\n    \"name\": \"Play for fun <3\",\n    \"language\": \"en\",\n    \"activityZone\": \"Eastland, Manchester M11 3FF\",\n    \"description\": \"Hello friends!\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{CORE_URL}}/news/12"
+						"url": {
+							"raw": "{{CORE_URL}}/groups/5",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"5"
+							]
+						}
 					},
 					"response": [
 						{
@@ -485,7 +481,16 @@
 										}
 									}
 								},
-								"url": "{{CORE_URL}}/news/1"
+								"url": {
+									"raw": "{{CORE_URL}}/news/1",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news",
+										"1"
+									]
+								}
 							},
 							"status": "OK",
 							"code": 200,
@@ -545,7 +550,912 @@
 										}
 									}
 								},
-								"url": "{{CORE_URL}}/news/12"
+								"url": {
+									"raw": "{{CORE_URL}}/news/12",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news",
+										"12"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "36"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"24-BCL1Jc0NXJDw+G6EZdqm9teSoTM\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:37:40 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"Post not found\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Activate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyLCJlbWFpbCI6InRyaTRAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MTA0Mzg4MDAsImV4cCI6MTcxMDQ0MDYwMH0.9pOauLF7gf92lQUbOAiZEWYysKjWeU80t45AHL0Dx0I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/groups/5/activate",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"5",
+								"activate"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Tennis 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/news/1",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "27"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1b-ho62fWE2XRVQu25iqTe3AzAs+y4\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:37:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"success\",\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Tennis 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/news/12",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news",
+										"12"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "36"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"24-BCL1Jc0NXJDw+G6EZdqm9teSoTM\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:37:40 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"Post not found\",\n    \"data\": null\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "News",
+			"item": [
+				{
+					"name": "Create post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"title\": \"Tennis title\",\n    \"author\": \"ABE\",\n    \"content\": \"This is the content\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/news",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"news"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"title\": \"Tennis title\",\n    \"author\": \"ABE\",\n    \"content\": \"This is the content\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "27"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1b-ho62fWE2XRVQu25iqTe3AzAs+y4\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:21:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"success\",\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Get posts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/news",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"news"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1018"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3fa-qDfi/VCAR2xsZfGrA5QGP5alDQI\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:05:47 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"success\",\n    \"data\": [\n        {\n            \"id\": 4,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:46.513Z\",\n            \"updatedAt\": \"2024-03-11T03:05:46.513Z\"\n        },\n        {\n            \"id\": 3,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:45.940Z\",\n            \"updatedAt\": \"2024-03-11T03:05:45.940Z\"\n        },\n        {\n            \"id\": 2,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:45.257Z\",\n            \"updatedAt\": \"2024-03-11T03:05:45.257Z\"\n        },\n        {\n            \"id\": 1,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:44.515Z\",\n            \"updatedAt\": \"2024-03-11T03:05:44.515Z\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Empty list",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "36"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"24-FErEnriGCKPGDxaiVR2ihaTwSA4\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:34:59 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"No posts found\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get top news",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/news/top",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"news",
+								"top"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1018"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3fa-qDfi/VCAR2xsZfGrA5QGP5alDQI\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:05:47 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"success\",\n    \"data\": [\n        {\n            \"id\": 4,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:46.513Z\",\n            \"updatedAt\": \"2024-03-11T03:05:46.513Z\"\n        },\n        {\n            \"id\": 3,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:45.940Z\",\n            \"updatedAt\": \"2024-03-11T03:05:45.940Z\"\n        },\n        {\n            \"id\": 2,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:45.257Z\",\n            \"updatedAt\": \"2024-03-11T03:05:45.257Z\"\n        },\n        {\n            \"id\": 1,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:44.515Z\",\n            \"updatedAt\": \"2024-03-11T03:05:44.515Z\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Empty list",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "36"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"24-FErEnriGCKPGDxaiVR2ihaTwSA4\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:34:59 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"No posts found\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get post details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/news/1",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"news",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/news/11",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news",
+										"11"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "272"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"110-bVTcDYnOzrTKsZWSMQCT+g4q1bA\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:10:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n        \"title\": \"Tennis title\",\n        \"description\": \"\",\n        \"content\": \"This is the content\",\n        \"createdAt\": \"2024-03-11T03:05:44.515Z\",\n        \"updatedAt\": \"2024-03-11T03:05:44.515Z\"\n    }\n}"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/news/11",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news",
+										"11"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "36"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"24-BCL1Jc0NXJDw+G6EZdqm9teSoTM\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:11:09 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"Post not found\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Update post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Tennis 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/news/12",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"news",
+								"12"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Tennis 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/news/1",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "27"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1b-ho62fWE2XRVQu25iqTe3AzAs+y4\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:37:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"success\",\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Tennis 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/news/12",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news",
+										"12"
+									]
+								}
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -598,13 +1508,26 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs",
+									"type": "string"
+								}
+							]
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{CORE_URL}}/news/1"
+						"url": {
+							"raw": "{{CORE_URL}}/news/1",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"news",
+								"1"
+							]
+						}
 					},
 					"response": [
 						{
@@ -612,7 +1535,16 @@
 							"originalRequest": {
 								"method": "DELETE",
 								"header": [],
-								"url": "{{CORE_URL}}/news/1"
+								"url": {
+									"raw": "{{CORE_URL}}/news/1",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news",
+										"1"
+									]
+								}
 							},
 							"status": "OK",
 							"code": 200,
@@ -670,7 +1602,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{CORE_URL}}/mobile-mini-apps"
+						"url": {
+							"raw": "{{CORE_URL}}/mobile-mini-apps",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"mobile-mini-apps"
+							]
+						}
 					},
 					"response": [
 						{
@@ -678,7 +1618,15 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": "{{CORE_URL}}/mobile-mini-apps"
+								"url": {
+									"raw": "{{CORE_URL}}/mobile-mini-apps",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"mobile-mini-apps"
+									]
+								}
 							},
 							"status": "OK",
 							"code": 200,
@@ -729,7 +1677,15 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": "{{CORE_URL}}/mobile-mini-apps"
+								"url": {
+									"raw": "{{CORE_URL}}/mobile-mini-apps",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"mobile-mini-apps"
+									]
+								}
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -782,7 +1738,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{CORE_URL}}/mobile-mini-apps/1"
+						"url": {
+							"raw": "{{CORE_URL}}/mobile-mini-apps/1",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"mobile-mini-apps",
+								"1"
+							]
+						}
 					},
 					"response": [
 						{
@@ -790,7 +1755,16 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": "{{CORE_URL}}/mobile-mini-apps/123"
+								"url": {
+									"raw": "{{CORE_URL}}/mobile-mini-apps/123",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"mobile-mini-apps",
+										"123"
+									]
+								}
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -841,7 +1815,16 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": "{{CORE_URL}}/mobile-mini-apps/1"
+								"url": {
+									"raw": "{{CORE_URL}}/mobile-mini-apps/1",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"mobile-mini-apps",
+										"1"
+									]
+								}
 							},
 							"status": "OK",
 							"code": 200,
@@ -903,7 +1886,15 @@
 								}
 							}
 						},
-						"url": "{{CORE_URL}}/mobile-mini-apps"
+						"url": {
+							"raw": "{{CORE_URL}}/mobile-mini-apps",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"mobile-mini-apps"
+							]
+						}
 					},
 					"response": [
 						{
@@ -920,7 +1911,15 @@
 										}
 									}
 								},
-								"url": "{{CORE_URL}}/mobile-mini-apps"
+								"url": {
+									"raw": "{{CORE_URL}}/mobile-mini-apps",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"mobile-mini-apps"
+									]
+								}
 							},
 							"status": "Forbidden",
 							"code": 403,
@@ -980,7 +1979,15 @@
 										}
 									}
 								},
-								"url": "{{CORE_URL}}/mobile-mini-apps"
+								"url": {
+									"raw": "{{CORE_URL}}/mobile-mini-apps",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"mobile-mini-apps"
+									]
+								}
 							},
 							"status": "Created",
 							"code": 201,
@@ -1042,7 +2049,16 @@
 								}
 							}
 						},
-						"url": "{{CORE_URL}}/mobile-mini-apps/12"
+						"url": {
+							"raw": "{{CORE_URL}}/mobile-mini-apps/12",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"mobile-mini-apps",
+								"12"
+							]
+						}
 					},
 					"response": [
 						{
@@ -1059,7 +2075,16 @@
 										}
 									}
 								},
-								"url": "{{CORE_URL}}/mobile-mini-apps/1"
+								"url": {
+									"raw": "{{CORE_URL}}/mobile-mini-apps/1",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"mobile-mini-apps",
+										"1"
+									]
+								}
 							},
 							"status": "OK",
 							"code": 200,
@@ -1119,7 +2144,16 @@
 										}
 									}
 								},
-								"url": "{{CORE_URL}}/mobile-mini-apps/10"
+								"url": {
+									"raw": "{{CORE_URL}}/mobile-mini-apps/10",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"mobile-mini-apps",
+										"10"
+									]
+								}
 							},
 							"status": "Forbidden",
 							"code": 403,
@@ -1179,7 +2213,16 @@
 										}
 									}
 								},
-								"url": "{{CORE_URL}}/mobile-mini-apps/12"
+								"url": {
+									"raw": "{{CORE_URL}}/mobile-mini-apps/12",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"mobile-mini-apps",
+										"12"
+									]
+								}
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -1246,7 +2289,17 @@
 								}
 							}
 						},
-						"url": "http://localhost:8080/affiliates"
+						"url": {
+							"raw": "http://localhost:8080/affiliates",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"affiliates"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1255,7 +2308,18 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/affiliates/2"
+						"url": {
+							"raw": "http://localhost:8080/affiliates/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"affiliates",
+								"2"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1293,7 +2357,18 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "http://localhost:8080/affiliates/1"
+						"url": {
+							"raw": "http://localhost:8080/affiliates/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"affiliates",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1311,7 +2386,18 @@
 								}
 							}
 						},
-						"url": "http://localhost:8080/affiliates/4"
+						"url": {
+							"raw": "http://localhost:8080/affiliates/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"affiliates",
+								"4"
+							]
+						}
 					},
 					"response": []
 				}
@@ -1328,13 +2414,27 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": {
-										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoiY2hpaGllbjIwMDI0QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDY5MywiZXhwIjoxNzEwMTM2NDkzfQ.XBW33nwc-mGmnrOJ8xz4Bm3XmuNyJoTZoX_Wh7q7Sm4"
-									}
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoiY2hpaGllbjIwMDI0QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDY5MywiZXhwIjoxNzEwMTM2NDkzfQ.XBW33nwc-mGmnrOJ8xz4Bm3XmuNyJoTZoX_Wh7q7Sm4",
+											"type": "string"
+										}
+									]
 								},
 								"method": "GET",
 								"header": [],
-								"url": "{{CORE_URL}}/users/admin/all"
+								"url": {
+									"raw": "{{CORE_URL}}/users/admin/all",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"users",
+										"admin",
+										"all"
+									]
+								}
 							},
 							"response": []
 						},
@@ -1343,13 +2443,27 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": {
-										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDA3NywiZXhwIjoxNzEwMTM1ODc3fQ.NG2zkx0jbQluPYx-6aEM41Y0_6wjfKgiM7lCQls24aU"
-									}
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDA3NywiZXhwIjoxNzEwMTM1ODc3fQ.NG2zkx0jbQluPYx-6aEM41Y0_6wjfKgiM7lCQls24aU",
+											"type": "string"
+										}
+									]
 								},
 								"method": "GET",
 								"header": [],
-								"url": "{{CORE_URL}}/users/admin/1"
+								"url": {
+									"raw": "{{CORE_URL}}/users/admin/1",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"users",
+										"admin",
+										"1"
+									]
+								}
 							},
 							"response": []
 						},
@@ -1358,9 +2472,13 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": {
-										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDA3NywiZXhwIjoxNzEwMTM1ODc3fQ.NG2zkx0jbQluPYx-6aEM41Y0_6wjfKgiM7lCQls24aU"
-									}
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDA3NywiZXhwIjoxNzEwMTM1ODc3fQ.NG2zkx0jbQluPYx-6aEM41Y0_6wjfKgiM7lCQls24aU",
+											"type": "string"
+										}
+									]
 								},
 								"method": "POST",
 								"header": [],
@@ -1373,7 +2491,16 @@
 										}
 									}
 								},
-								"url": "{{CORE_URL}}/users/admin"
+								"url": {
+									"raw": "{{CORE_URL}}/users/admin",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"users",
+										"admin"
+									]
+								}
 							},
 							"response": []
 						},
@@ -1382,9 +2509,13 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": {
-										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoiY2hpaGllbjIwMDI0QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDY5MywiZXhwIjoxNzEwMTM2NDkzfQ.XBW33nwc-mGmnrOJ8xz4Bm3XmuNyJoTZoX_Wh7q7Sm4"
-									}
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoiY2hpaGllbjIwMDI0QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDY5MywiZXhwIjoxNzEwMTM2NDkzfQ.XBW33nwc-mGmnrOJ8xz4Bm3XmuNyJoTZoX_Wh7q7Sm4",
+											"type": "string"
+										}
+									]
 								},
 								"method": "PATCH",
 								"header": [],
@@ -1397,7 +2528,17 @@
 										}
 									}
 								},
-								"url": "{{CORE_URL}}/users/admin/1"
+								"url": {
+									"raw": "{{CORE_URL}}/users/admin/1",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"users",
+										"admin",
+										"1"
+									]
+								}
 							},
 							"response": []
 						}
@@ -1411,13 +2552,26 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": {
-										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoiY2hpaGllbjIwMDIzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzEwMTMzODU0LCJleHAiOjE3MTAxMzU2NTR9.bfg1YoJoQDBItjQn21LaMoN9WWzMl42r1ZelNkOtdjg"
-									}
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoiY2hpaGllbjIwMDIzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzEwMTMzODU0LCJleHAiOjE3MTAxMzU2NTR9.bfg1YoJoQDBItjQn21LaMoN9WWzMl42r1ZelNkOtdjg",
+											"type": "string"
+										}
+									]
 								},
 								"method": "GET",
 								"header": [],
-								"url": "{{CORE_URL}}/users/me"
+								"url": {
+									"raw": "{{CORE_URL}}/users/me",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
 							},
 							"response": []
 						},
@@ -1426,9 +2580,13 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": {
-										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoiY2hpaGllbjIwMDIzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzEwMTMzODU0LCJleHAiOjE3MTAxMzU2NTR9.bfg1YoJoQDBItjQn21LaMoN9WWzMl42r1ZelNkOtdjg"
-									}
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoiY2hpaGllbjIwMDIzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzEwMTMzODU0LCJleHAiOjE3MTAxMzU2NTR9.bfg1YoJoQDBItjQn21LaMoN9WWzMl42r1ZelNkOtdjg",
+											"type": "string"
+										}
+									]
 								},
 								"method": "PATCH",
 								"header": [],
@@ -1441,7 +2599,16 @@
 										}
 									}
 								},
-								"url": "{{CORE_URL}}/users/1"
+								"url": {
+									"raw": "{{CORE_URL}}/users/1",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"users",
+										"1"
+									]
+								}
 							},
 							"response": []
 						}
