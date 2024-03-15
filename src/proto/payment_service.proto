@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package pb;
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./payment-service";
+
+service Payment {
+    rpc CreatePaymentLink (CreatePaymentUrlRequest) returns (CreatePaymentUrlResponse) {
+    }
+    rpc ReturnUrl (ReturnUrlRequest) returns (ReturnUrlResponse){
+    }
+    rpc QueryTransaction (QueryTransactionRequest) returns (QueryTransactionResponse){
+    }
+    rpc Refund (RefundRequest) returns (RefundResponse){
+    }
+}
+
+message CreatePaymentUrlRequest {
+    int64 amount = 1;
+	optional string bank_code = 2;
+	string locale = 3;    
+	optional string order_type = 4; 
+	string order_id = 5;   
+	string partner = 6; 
+    string client_ip = 7;  
+}
+
+message CreatePaymentUrlResponse {
+    string url = 1;
+}
+
+message QueryTransactionRequest {
+    string order_id = 1;
+    string client_ip = 2;  
+}
+
+message QueryTransactionResponse {
+    string response_id = 1;
+    string partner_code = 2;
+    string transaction_no = 3;
+    string transaction_type = 4;
+    string transaction_status = 5;
+    string promotion_code = 6;
+    string promotion_amount = 7;
+    string trace = 8;
+    int64 fee_amount = 9;
+    int64 amount = 10;
+    string order_id = 11;
+    string response_code = 12;
+    string response_message = 13;
+    string bank_code = 14;
+    string card_holder = 15;
+    string card_number = 16;
+    google.protobuf.Timestamp payment_time = 17;    
+}
+
+message RefundRequest {
+    string order_id = 1;
+    string created_by = 2;
+    int64 amount = 3;
+    string transaction_type = 4;
+    string client_ip = 5;  
+}
+
+message RefundResponse {
+    string response_id = 1;
+    string partner_code = 2;
+    string transaction_no = 3;
+    string transaction_type = 4;
+    string transaction_status = 5;
+    int64 amount = 6;
+    string order_id = 7;
+    string response_code = 8;
+    string response_message = 9;
+    string bank_code = 10;
+    google.protobuf.Timestamp payment_time = 11;    
+}
+
+message ReturnUrlRequest {
+    string query_string = 1;
+	string partner_code = 2;
+}
+
+message ReturnUrlResponse {
+    string message = 1;
+}
