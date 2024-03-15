@@ -51,15 +51,15 @@ enum AffiliateStatus {
 
 model groups {
   id           Int         @id @default(autoincrement())
-  adminId      Int
-  packageId    Int
+  adminId      Int         @map("admin_id")
+  packageId    Int         @map("package_id")
   name         String?
   language     String?
-  activityZone String?
+  activityZone String?     @map("activity_zone")
   description  String?
   status       GroupStatus @default(inactive)
-  startDate    DateTime?
-  endDate      DateTime?
+  startDate    DateTime?   @map("start_date")
+  endDate      DateTime?   @map("end_date")
   createdAt    DateTime    @default(now()) @map("created_at")
   updatedAt    DateTime    @updatedAt @map("updated_at")
   orders       orders[]
@@ -91,14 +91,14 @@ model services {
   name      String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  minLevel  Int
+  minLevel  Int      @map("min_level")
 }
 
 model orders {
   id        String   @id @default(uuid())
-  userId    Int
-  packageId Int
-  groupId   Int
+  userId    Int      @map("user_id")
+  packageId Int      @map("package_id")
+  groupId   Int      @map("group_id")
   price     Float
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
