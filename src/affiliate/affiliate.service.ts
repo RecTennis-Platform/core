@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAffiliateDto } from './dto/create-affiliate.dto';
 import { UpdateAffiliateDto } from './dto/update-affiliate.dto';
 import { CorePrismaService } from 'src/prisma/prisma_core.service';
@@ -58,15 +58,21 @@ export class AffiliateService {
   }
 
   async findOne(id: number) {
-    return await this.corePrismaService.affiliates.findFirst({
+    const affiliate = await this.corePrismaService.affiliates.findFirst({
       where: {
         id: id,
       },
     });
+    if (!affiliate) {
+      throw new NotFoundException({
+        message: 'Affiliate not found',
+        data: null,
+      });
+    }
   }
 
   async update(id: number, updateAffiliateDto: UpdateAffiliateDto) {
-    return await this.corePrismaService.affiliates.update({
+    const affiliate = await this.corePrismaService.affiliates.update({
       where: {
         id: id,
       },
@@ -80,13 +86,25 @@ export class AffiliateService {
         phone: updateAffiliateDto?.phone,
       },
     });
+    if (!affiliate) {
+      throw new NotFoundException({
+        message: 'Affiliate not found',
+        data: null,
+      });
+    }
   }
 
   async remove(id: number) {
-    return await this.corePrismaService.affiliates.delete({
+    const affiliate = await this.corePrismaService.affiliates.delete({
       where: {
         id: id,
       },
     });
+    if (!affiliate) {
+      throw new NotFoundException({
+        message: 'Affiliate not found',
+        data: null,
+      });
+    }
   }
 }

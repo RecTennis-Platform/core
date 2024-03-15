@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { MobileMiniAppModule } from './mobile_mini_app/mobile_mini_app.module';
 import { AffiliateModule } from './affiliate/affiliate.module';
 import { GroupModule } from './group/group.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { GroupModule } from './group/group.module';
     AffiliateModule,
     MobileMiniAppModule,
     GroupModule,
+    OrderModule,
   ],
 })
 export class AppModule {}
