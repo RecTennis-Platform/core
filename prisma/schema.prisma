@@ -43,12 +43,6 @@ model posts {
   updatedAt   DateTime @updatedAt @map("updated_at")
 }
 
-enum AffiliateStatus {
-  pending
-  approved
-  rejected
-}
-
 model groups {
   id           Int         @id @default(autoincrement())
   adminId      Int         @map("admin_id")
@@ -62,14 +56,8 @@ model groups {
   endDate      DateTime?   @map("end_date")
   createdAt    DateTime    @default(now()) @map("created_at")
   updatedAt    DateTime    @updatedAt @map("updated_at")
-  orders       orders[]
   package      packages    @relation(fields: [packageId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_groups_packages")
-}
-
-enum GroupStatus {
-  active
-  inactive
-  expired
+  orders       orders[]
 }
 
 model packages {
@@ -82,8 +70,8 @@ model packages {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   level     Int
-  orders    orders[]
   groups    groups[]
+  orders    orders[]
 }
 
 model services {
@@ -95,16 +83,28 @@ model services {
 }
 
 model orders {
-  id        String   @id @default(uuid())
-  userId    Int      @map("user_id")
-  packageId Int      @map("package_id")
-  groupId   Int?     @map("group_id")
+  id        String      @id @default(uuid())
+  userId    Int         @map("user_id")
+  packageId Int         @map("package_id")
+  groupId   Int?        @map("group_id")
   price     Float
   status    OrderStatus @default(new)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  package   packages @relation(fields: [packageId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_orders_packages")
-  group     groups?  @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_orders_groups")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+  group     groups?     @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_orders_groups")
+  package   packages    @relation(fields: [packageId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_orders_packages")
+}
+
+enum AffiliateStatus {
+  pending
+  approved
+  rejected
+}
+
+enum GroupStatus {
+  active
+  inactive
+  expired
 }
 
 enum OrderStatus {

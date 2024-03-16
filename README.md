@@ -1,3 +1,10 @@
+# How to run
+
+```bash
+yarn bootstrap
+yarn start:dev
+```
+
 # Prisma ORM guide
 
 How to setup multi databases using prisma

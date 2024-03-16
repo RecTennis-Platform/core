@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "e1813fde-eb65-4d8c-bbb1-0e4c690e56c6",
+		"_postman_id": "8d450503-880c-4cb6-8ae2-7539512aaad1",
 		"name": "Core",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20334878"
+		"_exporter_id": "24967219"
 	},
 	"item": [
 		{
@@ -17,7 +17,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyLCJlbWFpbCI6InRyaTRAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MTA0Mzg4MDAsImV4cCI6MTcxMDQ0MDYwMH0.9pOauLF7gf92lQUbOAiZEWYysKjWeU80t45AHL0Dx0I",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDQ3OTMxMiwiZXhwIjoxNzEwNDgxMTEyfQ.ojSiRU1SPui2Zgm0LM5tYEU1JM1vhTh7jwEsER56VRE",
 									"type": "string"
 								}
 							]
@@ -2615,6 +2615,73 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 1,\r\n    \"packageId\": 1,\r\n    \"partner\": \"VNPAY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/orders",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 1,\r\n    \"packageId\": 1,\r\n    \"partner\": \"VNPAY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/orders/15",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"orders",
+								"15"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "CORE_URL",
+			"value": "http://localhost:8002"
 		}
 	]
 }
