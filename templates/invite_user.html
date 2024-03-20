@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Report Status Update</title>
+    <title>Invitation to Join Group</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -40,22 +40,17 @@
       .content p {
         padding-bottom: 12px;
       }
-      .report-info {
-        background-color: #f9f9f9;
-        padding: 15px;
+      .join-button {
+        display: inline-block;
+        background-color: #4caf50;
+        color: #ffffff !important;
+        padding: 10px 20px;
+        text-decoration: none;
         border-radius: 5px;
         margin-top: 20px;
       }
-      .report-info h6 {
-        font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 10px;
-        color: #333333;
-      }
-      .report-info p {
-        font-size: 16px;
-        font-weight: 400;
-        color: #666666;
+      .join-button:hover {
+        background-color: #45a049;
       }
       .contact-info {
         margin-top: 20px;
@@ -71,25 +66,18 @@
   </head>
   <body>
     <div class="container">
-      <h2 class="heading">Report Status Update</h2>
+      <h2 class="heading">Invitation to Join Group</h2>
       <div class="content">
-        <p>Dear {{fullname}},</p>
+        <p>Dear recipient,</p>
         <p>
-          We hope this email finds you well. We want to inform you about the status of your recent report with the following details:
-        </p>
-        <div class="report-info">
-          <h6>Report Information:</h6>
-          <p>
-            Report ID: {{reportID}} <br />
-            Status: {{reportStatus}} <br />
-            Resolve Content: {{resolveContent}}
-          </p>
-        </div>
-        <p>
-          If you have any questions or need further assistance, please don't hesitate to reach out to us via email or our hotline.
+          You have received an invitation from {{host}} to join his group. You have the option to accept or decline this invitation.
         </p>
         <p>
-          Thank you for choosing our service. We appreciate your cooperation and look forward to assisting you further.
+          Please note that this invitation will expire in 7 days.
+        </p>
+        <a href="{{joinLink}}" class="join-button">Join Group</a>
+        <p>
+          Note: This invitation was intended for hqkhai1636@gmail.com. If you were not expecting this invitation, you can ignore this email. If {{host}} is sending you too many emails, you can block them or report abuse.
         </p>
         <div class="contact-info">
           <p>Best regards, <br />[Your Team Name]</p>

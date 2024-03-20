@@ -4,15 +4,27 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { GroupStatus } from '@prisma/client';
 import { CorePrismaService } from 'src/prisma/prisma_core.service';
 import { CreateGroupDto, UpdateGroupDto } from './dto';
 import { PageOptionsGroupDto } from './dto/page-options-group.dto';
+import { MailService } from 'src/services/mail/mail.service';
+import { InviteUser2GroupDto } from './dto/invite-user.dto';
+import { AuthPrismaService } from 'src/prisma/prisma_auth.service';
+import { ITokenPayload } from 'src/auth_utils/interfaces';
+import { JwtService } from '@nestjs/jwt';
+import { SendMailTemplateDto } from 'src/services/mail/mail.dto';
 
 @Injectable()
 export class GroupService {
-  constructor(private corePrismaService: CorePrismaService) {}
+  constructor(
+    private corePrismaService: CorePrismaService,
+    private readonly mailService: MailService,
+    private readonly authPrismaService: AuthPrismaService,
+    private jwtService: JwtService,
+  ) {}
 
   async create(adminId: number, dto: CreateGroupDto) {
     const purchasedPackage = await this.corePrismaService.packages.findUnique({
@@ -158,6 +170,132 @@ export class GroupService {
     }
   }
 
+  async inviteUser(dto: InviteUser2GroupDto) {
+    const group = await this.corePrismaService.groups.findUnique({
+      where: {
+        id: dto.groupId,
+      },
+      include: {
+        package: true,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException({
+        message: 'Group not found',
+        data: null,
+      });
+    }
+
+    if (group.status !== GroupStatus.active) {
+      throw new BadRequestException({
+        message: 'Group is inactive',
+        data: null,
+      });
+    }
+
+    try {
+      // Concurrently process invite for each email
+      const invitePromises = dto.emails.map((email) =>
+        this.processInviteUser(email, dto.groupId, dto.hostName),
+      );
+      await Promise.all(invitePromises);
+      return {
+        message: 'Invite user successfully',
+      };
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new BadRequestException({
+        message: 'Failed to invite user',
+        data: null,
+      });
+    }
+  }
+
+  async processInviteUser(email: string, groupId: number, host: string) {
+    const user = await this.authPrismaService.users.findFirst({
+      where: {
+        email: email,
+      },
+    });
+
+    const token = !user
+      ? await this.generateToken({
+          email: email,
+          role: null,
+          groupId: groupId,
+          sub: null,
+        })
+      : await this.generateToken({
+          email: user.email,
+          role: user.role,
+          groupId: groupId,
+          sub: user.id,
+        });
+
+    const templateData = {
+      host: `${host}`,
+      joinLink: undefined,
+    };
+    templateData.joinLink = !user
+      ? `http://localhost:3000/login?token=${token.token}`
+      : `http://localhost:3000/invite?token=${token.token}`;
+    const data: SendMailTemplateDto = {
+      toAddresses: [email],
+      ccAddresses: [email],
+      bccAddresses: [email],
+      template: 'invite_user',
+      templateData: JSON.stringify(templateData),
+    };
+    await this.mailService.sendEmailTemplate(data);
+  }
+
+  async adduserToGroup(email: string, groupId: number, userId: number) {
+    const user = userId
+      ? await this.authPrismaService.users.findFirst({
+          where: {
+            id: userId,
+          },
+        })
+      : await this.authPrismaService.users.findFirst({
+          where: {
+            email: email,
+          },
+        });
+    if (!user) {
+      //send email
+      throw new NotFoundException({
+        message: 'User not found',
+        data: null,
+      });
+    }
+    if (user.email != email) {
+      //send email
+      throw new UnauthorizedException({
+        message: 'Unauthorized',
+        data: null,
+      });
+    }
+    const memberShip = await this.corePrismaService.member_ships.findFirst({
+      where: {
+        userId: user.id,
+        groupId: groupId,
+      },
+    });
+    if (memberShip) {
+      throw new BadRequestException({
+        message: "User's already in group",
+        data: null,
+      });
+    }
+    return await this.corePrismaService.member_ships.create({
+      data: {
+        userId: user.id,
+        groupId: groupId,
+      },
+    });
+  }
+
   async activate(adminId: number, id: number) {
     const group = await this.corePrismaService.groups.findUnique({
       where: {
@@ -215,5 +353,32 @@ export class GroupService {
         data: null,
       });
     }
+  }
+
+  async getJwtToInviteUserToGroup(
+    sub: number,
+    email: string,
+    role: string,
+    groupId: number,
+  ): Promise<string> {
+    const payload: ITokenPayload = { sub, email, role, groupId };
+    const verificationToken = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_INVITE_USER_TO_GROUP_SECRET,
+      expiresIn: process.env.JWT_INVITE_USER_TO_GROUP_EXPIRES,
+    });
+    return verificationToken;
+  }
+
+  private async generateToken(payload: ITokenPayload) {
+    const token = await this.getJwtToInviteUserToGroup(
+      payload.sub,
+      payload?.email,
+      payload.role,
+      payload.groupId,
+    );
+
+    return {
+      token,
+    };
   }
 }
