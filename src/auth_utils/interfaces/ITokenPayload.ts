@@ -4,4 +4,5 @@ export interface ITokenPayload {
   role: string;
   iat?: number;
   exp?: number;
+  groupId?: number;
 }
