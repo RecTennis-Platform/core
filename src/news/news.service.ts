@@ -1,22 +1,19 @@
 import {
-  BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CorePrismaService } from 'src/prisma/prisma_core.service';
-import { CreatePostDto, UpdatePostDto } from './dto';
+import { CreateNewsDto, PageOptionsNewsDto, UpdateNewsDto } from './dto';
 
 @Injectable()
 export class NewsService {
   constructor(private corePrismaService: CorePrismaService) {}
 
-  async createPost(dto: CreatePostDto): Promise<{
-    message: string;
-    data: any;
-  }> {
+  async createNews(dto: CreateNewsDto) {
     try {
-      // Create new post
-      await this.corePrismaService.posts.create({
+      // Create news
+      await this.corePrismaService.news.create({
         data: {
           ...dto,
         },
@@ -28,112 +25,103 @@ export class NewsService {
       };
     } catch (err) {
       console.log('Error:', err.message);
-      throw new BadRequestException({
-        message: 'Failed to create post',
+      throw new InternalServerErrorException({
+        message: 'Failed to create news',
         data: null,
       });
     }
   }
 
-  async getPosts(): Promise<{
-    message: string;
-    data: any;
-  }> {
-    // Get all posts
-    const posts = await this.corePrismaService.posts.findMany({
+  async getNewsList(pageOptionsNewsDto: PageOptionsNewsDto) {
+    // Get all news
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptionsNewsDto.order,
+        },
+      ],
+    };
+
+    const pageOption =
+      pageOptionsNewsDto.page && pageOptionsNewsDto.take
+        ? {
+            skip: pageOptionsNewsDto.skip,
+            take: pageOptionsNewsDto.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.corePrismaService.news.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.corePrismaService.news.count({ ...conditions }),
+    ]);
+
+    return {
+      message: 'success',
+      data: result,
+      totalPages: Math.ceil(totalCount / pageOptionsNewsDto.take),
+      totalCount,
+    };
+  }
+
+  async getTopNews() {
+    // Get all news
+    const result = await this.corePrismaService.news.findMany({
+      take: 5,
       orderBy: {
         createdAt: 'desc',
       },
     });
 
-    if (posts.length === 0) {
-      throw new NotFoundException({
-        message: 'No posts found',
-        data: [],
-      });
-    }
-
     return {
       message: 'success',
-      data: posts,
+      data: result,
     };
   }
 
-  async getTopPosts(): Promise<{
-    message: string;
-    data: any;
-  }> {
-    // Get all posts
-    const posts = await this.corePrismaService.posts.findMany({
-      take: 7,
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-
-    if (posts.length === 0) {
-      throw new NotFoundException({
-        message: 'No posts found',
-        data: [],
-      });
-    }
-
-    return {
-      message: 'success',
-      data: posts,
-    };
-  }
-
-  async getPostDetails(postId: number): Promise<{
-    message: string;
-    data: any;
-  }> {
-    // Get post details
-    const post = await this.corePrismaService.posts.findUnique({
+  async getNewsDetails(newsId: number) {
+    // Get news details
+    const news = await this.corePrismaService.news.findUnique({
       where: {
-        id: postId,
+        id: newsId,
       },
     });
 
-    if (!post) {
+    if (!news) {
       throw new NotFoundException({
-        message: 'Post not found',
+        message: 'News not found',
         data: null,
       });
     }
 
     return {
       message: 'success',
-      data: post,
+      data: news,
     };
   }
 
-  async updatePost(
-    postId: number,
-    dto: UpdatePostDto,
-  ): Promise<{
-    message: string;
-    data: any;
-  }> {
-    // Check if post exists
-    const post = await this.corePrismaService.posts.findUnique({
+  async updateNews(newsId: number, dto: UpdateNewsDto) {
+    // Check if news exists
+    const news = await this.corePrismaService.news.findUnique({
       where: {
-        id: postId,
+        id: newsId,
       },
     });
 
-    if (!post) {
+    if (!news) {
       throw new NotFoundException({
-        message: 'Post not found',
+        message: 'News not found',
         data: null,
       });
     }
 
     try {
-      // Update post
-      await this.corePrismaService.posts.update({
+      // Update news
+      await this.corePrismaService.news.update({
         where: {
-          id: postId,
+          id: newsId,
         },
         data: {
           ...dto,
@@ -146,36 +134,33 @@ export class NewsService {
       };
     } catch (error) {
       console.log('Error:', error.message);
-      throw new BadRequestException({
-        message: 'Failed to update post',
+      throw new InternalServerErrorException({
+        message: 'Failed to update news',
         data: null,
       });
     }
   }
 
-  async deletePost(postId: number): Promise<{
-    message: string;
-    data: any;
-  }> {
-    // Check if post exists
-    const post = await this.corePrismaService.posts.findUnique({
+  async deleteNews(newsId: number) {
+    // Check if news exists
+    const news = await this.corePrismaService.news.findUnique({
       where: {
-        id: postId,
+        id: newsId,
       },
     });
 
-    if (!post) {
+    if (!news) {
       throw new NotFoundException({
-        message: 'Post not found',
+        message: 'News not found',
         data: null,
       });
     }
 
     try {
-      // Delete post
-      await this.corePrismaService.posts.delete({
+      // Delete news
+      await this.corePrismaService.news.delete({
         where: {
-          id: postId,
+          id: newsId,
         },
       });
 
@@ -185,8 +170,8 @@ export class NewsService {
       };
     } catch (error) {
       console.log('Error:', error.message);
-      throw new BadRequestException({
-        message: 'Failed to delete post',
+      throw new InternalServerErrorException({
+        message: 'Failed to delete news',
         data: null,
       });
     }

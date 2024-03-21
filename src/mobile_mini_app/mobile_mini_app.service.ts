@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CorePrismaService } from 'src/prisma/prisma_core.service';
@@ -85,7 +85,7 @@ export class MobileMiniAppService {
         }
       }
 
-      throw new BadRequestException({
+      throw new InternalServerErrorException({
         message: err,
         data: null,
       });
@@ -140,7 +140,7 @@ export class MobileMiniAppService {
         }
       }
 
-      throw new BadRequestException({
+      throw new InternalServerErrorException({
         message: err.message,
         data: null,
       });
@@ -180,7 +180,7 @@ export class MobileMiniAppService {
       };
     } catch (err) {
       console.log('Error:', err.message);
-      throw new BadRequestException({
+      throw new InternalServerErrorException({
         message: err.message,
         data: null,
       });

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreatePostDto {
+export class CreateNewsDto {
   @IsNotEmpty()
   @IsString()
   image: string;
