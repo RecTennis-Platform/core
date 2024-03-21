@@ -10,12 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { GetUser } from 'src/auth_utils/decorators';
-import { JwtGuard } from 'src/auth_utils/guards';
+import { JwtGuard, JwtInviteUserGuard } from 'src/auth_utils/guards';
 import {
   CreateGroupDto,
   UpdateGroupDto,
   PageOptionsGroupDto,
   PageOptionsPostDto,
+  InviteUser2GroupDto
 } from './dto';
 import { GroupService } from './group.service';
 
@@ -101,4 +102,21 @@ export class GroupController {
   //   @Param('id', ParseIntPipe) id: number,
   //   @Param('postId', ParseIntPipe) postId: number,
   // ) {}
+
+  // Invite user
+  @UseGuards(JwtGuard)
+  @Post('invite')
+  async inviteUsers(@Body() dto: InviteUser2GroupDto) {
+    return await this.groupService.inviteUser(dto);
+  }
+
+  @UseGuards(JwtInviteUserGuard)
+  @Post('/user')
+  async addUserToGroup(
+    @GetUser('sub') userId: number,
+    @GetUser('email') email: string,
+    @GetUser('groupId') groupId: number,
+  ) {
+    return await this.groupService.adduserToGroup(email, groupId, userId);
+  }
 }
