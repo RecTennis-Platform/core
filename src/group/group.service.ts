@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { GroupStatus } from '@prisma/client';
 import { CorePrismaService } from 'src/prisma/prisma_core.service';
-import { CreateGroupDto, UpdateGroupDto } from './dto';
+import { CreateGroupDto, PageOptionsPostDto, UpdateGroupDto } from './dto';
 import { PageOptionsGroupDto } from './dto/page-options-group.dto';
 import { MailService } from 'src/services/mail/mail.service';
 import { InviteUser2GroupDto } from './dto/invite-user.dto';
@@ -26,6 +26,7 @@ export class GroupService {
     private jwtService: JwtService,
   ) {}
 
+  // Group
   async create(adminId: number, dto: CreateGroupDto) {
     const purchasedPackage = await this.corePrismaService.packages.findUnique({
       where: {
@@ -354,6 +355,147 @@ export class GroupService {
       });
     }
   }
+
+  // Group Post
+  async getPosts(groupId: number, pageOptionsPostDto: PageOptionsPostDto) {
+    // Check if group exists
+    const group = await this.corePrismaService.groups.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException({
+        message: 'Group not found',
+        data: null,
+      });
+    }
+
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptionsPostDto.order,
+        },
+      ],
+      where: {
+        groupId,
+      },
+    };
+
+    const pageOption =
+      pageOptionsPostDto.page && pageOptionsPostDto.take
+        ? {
+            skip: pageOptionsPostDto.skip,
+            take: pageOptionsPostDto.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.corePrismaService.posts.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.corePrismaService.posts.count({
+        where: {
+          groupId,
+        },
+      }),
+    ]);
+
+    return {
+      message: 'Group posts fetched successfully',
+      data: result,
+      totalPages: Math.ceil(totalCount / pageOptionsPostDto.take),
+      totalCount,
+    };
+  }
+
+  async getPostDetails(groupId: number, postId: number) {
+    // Check if group exists
+    const group = await this.corePrismaService.groups.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException({
+        message: 'Group not found',
+        data: null,
+      });
+    }
+
+    // Check if post exists
+    const post = await this.corePrismaService.posts.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!post) {
+      throw new NotFoundException({
+        message: 'Post not found',
+        data: null,
+      });
+    }
+
+    return {
+      message: 'Post details fetched successfully',
+      data: post,
+    };
+  }
+
+  // async createPost(userId: number, groupId: number) {
+  //   // Check if group exists
+  //   const group = await this.corePrismaService.groups.findUnique({
+  //     where: {
+  //       id: groupId,
+  //     },
+  //   });
+
+  //   if (!group) {
+  //     throw new NotFoundException({
+  //       message: 'Group not found',
+  //       data: null,
+  //     });
+  //   }
+
+  //   // Check if user is a member of the group
+  //   const member = await this.corePrismaService.members.findFirst({
+  //     where: {
+  //       userId,
+  //       groupId,
+  //     },
+  //   });
+
+  //   if (!member) {
+  //     throw new ForbiddenException({
+  //       message: 'You are not a member of this group',
+  //       data: null,
+  //     });
+  //   }
+
+  //   try {
+  //     // const data = await this.corePrismaService.posts.create({
+  //     //   data: {
+  //     //     userId,
+  //     //     groupId,
+  //     //   },
+  //     // });
+
+  //     return {
+  //       message: 'Post created successfully',
+  //       // data,
+  //     };
+  //   } catch (error) {
+  //     console.log('Error:', error.message);
+  //     throw new BadRequestException({
+  //       message: 'Failed to create post',
+  //       data: null,
+  //     });
+  //   }
+  // }
 
   async getJwtToInviteUserToGroup(
     sub: number,

@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class UpdatePostDto {
+export class UpdateNewsDto {
   @IsOptional()
   @IsString()
   image?: string;

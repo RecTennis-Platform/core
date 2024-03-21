@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import * as argon from 'argon2';
@@ -74,7 +75,7 @@ export class UserService {
         });
       }
 
-      throw new BadRequestException({
+      throw new InternalServerErrorException({
         message: 'Error creating admin account',
         data: null,
       });
@@ -146,7 +147,7 @@ export class UserService {
       };
     } catch (err) {
       console.log('Error:', err.message);
-      throw new BadRequestException({
+      throw new InternalServerErrorException({
         message: 'Error updating user details',
         data: null,
       });
