@@ -1,9 +1,9 @@
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
-import { Timestamp } from "./google/protobuf/timestamp.pb";
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
+import { Timestamp } from './google/protobuf/timestamp.pb';
 
-export const protobufPackage = "pb";
+export const protobufPackage = 'pb';
 
 export interface CreatePaymentUrlRequest {
   amount: number;
@@ -13,6 +13,7 @@ export interface CreatePaymentUrlRequest {
   orderId: string;
   partner: string;
   clientIp: string;
+  returnUrl: string;
 }
 
 export interface CreatePaymentUrlResponse {
@@ -75,14 +76,18 @@ export interface ReturnUrlResponse {
   message: string;
 }
 
-export const PB_PACKAGE_NAME = "pb";
+export const PB_PACKAGE_NAME = 'pb';
 
 export interface PaymentClient {
-  createPaymentLink(request: CreatePaymentUrlRequest): Observable<CreatePaymentUrlResponse>;
+  createPaymentLink(
+    request: CreatePaymentUrlRequest,
+  ): Observable<CreatePaymentUrlResponse>;
 
   returnUrl(request: ReturnUrlRequest): Observable<ReturnUrlResponse>;
 
-  queryTransaction(request: QueryTransactionRequest): Observable<QueryTransactionResponse>;
+  queryTransaction(
+    request: QueryTransactionRequest,
+  ): Observable<QueryTransactionResponse>;
 
   refund(request: RefundRequest): Observable<RefundResponse>;
 }
@@ -90,30 +95,62 @@ export interface PaymentClient {
 export interface PaymentController {
   createPaymentLink(
     request: CreatePaymentUrlRequest,
-  ): Promise<CreatePaymentUrlResponse> | Observable<CreatePaymentUrlResponse> | CreatePaymentUrlResponse;
+  ):
+    | Promise<CreatePaymentUrlResponse>
+    | Observable<CreatePaymentUrlResponse>
+    | CreatePaymentUrlResponse;
 
-  returnUrl(request: ReturnUrlRequest): Promise<ReturnUrlResponse> | Observable<ReturnUrlResponse> | ReturnUrlResponse;
+  returnUrl(
+    request: ReturnUrlRequest,
+  ):
+    | Promise<ReturnUrlResponse>
+    | Observable<ReturnUrlResponse>
+    | ReturnUrlResponse;
 
   queryTransaction(
     request: QueryTransactionRequest,
-  ): Promise<QueryTransactionResponse> | Observable<QueryTransactionResponse> | QueryTransactionResponse;
+  ):
+    | Promise<QueryTransactionResponse>
+    | Observable<QueryTransactionResponse>
+    | QueryTransactionResponse;
 
-  refund(request: RefundRequest): Promise<RefundResponse> | Observable<RefundResponse> | RefundResponse;
+  refund(
+    request: RefundRequest,
+  ): Promise<RefundResponse> | Observable<RefundResponse> | RefundResponse;
 }
 
 export function PaymentControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createPaymentLink", "returnUrl", "queryTransaction", "refund"];
+    const grpcMethods: string[] = [
+      'createPaymentLink',
+      'returnUrl',
+      'queryTransaction',
+      'refund',
+    ];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("Payment", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('Payment', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("Payment", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('Payment', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const PAYMENT_SERVICE_NAME = "Payment";
+export const PAYMENT_SERVICE_NAME = 'Payment';

@@ -45,6 +45,7 @@ export class PaymentService {
       orderId: data.orderId,
       locale: data.locale,
       partner: data.partner,
+      returnUrl: data.returnUrl,
     });
 
     try {
