@@ -251,7 +251,7 @@ export class GroupService {
     await this.mailService.sendEmailTemplate(data);
   }
 
-  async adduserToGroup(email: string, groupId: number, userId: number) {
+  async addUserToGroup(email: string, groupId: number, userId: number) {
     const user = userId
       ? await this.authPrismaService.users.findFirst({
           where: {
