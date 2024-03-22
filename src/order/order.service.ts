@@ -63,6 +63,7 @@ export class OrderService {
         data: null,
       });
     }
+    return order;
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto) {
