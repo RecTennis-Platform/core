@@ -38,10 +38,8 @@ export class OrderService {
         partner: createOrderDto.partner,
         clientIp: ip,
       };
-      const paymentLink = await this.paymentService
-        .createPaymentUrl(paymentDto)
-        .toPromise();
-      return { order, payment: paymentLink };
+      const payment = await this.paymentService.createPayment(paymentDto);
+      return { order, payment: payment?.data };
     } catch (error) {
       throw error;
     }
