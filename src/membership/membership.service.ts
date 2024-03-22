@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CorePrismaService } from 'src/prisma/prisma_core.service';
 import { PageOptionsUserDto } from './dto';
@@ -117,7 +118,7 @@ export class MembershipService {
     });
 
     if (!userIsMember) {
-      throw new ForbiddenException({
+      throw new NotFoundException({
         message: 'This user is not a member of this group',
         data: null,
       });
