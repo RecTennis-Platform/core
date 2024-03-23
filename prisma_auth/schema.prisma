@@ -17,6 +17,8 @@ model users {
   refresh_token  String?
   reset_password Boolean  @default(false)
   role           UserRole @default(user)
+  created_at     DateTime @default(now())
+  updated_at     DateTime
 }
 
 enum UserRole {
