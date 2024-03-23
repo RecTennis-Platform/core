@@ -118,15 +118,15 @@ model member_ships {
 }
 
 model users {
-  id             Int            @id @default(autoincrement())
-  email          String         @unique
-  password       String?
-  name           String
-  image          String?
-  refresh_token  String?
-  reset_password Boolean        @default(false)
-  role           UserRole       @default(user)
-  member_ships   member_ships[]
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String?
+  name          String
+  image         String?
+  refreshToken  String?        @map("refresh_token")
+  resetPassword Boolean        @default(false) @map("reset_password")
+  role          UserRole       @default(user)
+  memberShips   member_ships[]
 }
 
 enum AffiliateStatus {
