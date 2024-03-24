@@ -58,6 +58,18 @@ export class OrderService {
       where: {
         id: id,
       },
+      include: {
+        package: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            image: true,
+            name: true,
+            role: true,
+          },
+        },
+      },
     });
     if (!order) {
       throw new NotFoundException({
