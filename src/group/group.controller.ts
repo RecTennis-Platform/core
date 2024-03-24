@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -16,13 +17,18 @@ import {
   UpdateGroupDto,
   PageOptionsGroupDto,
   PageOptionsPostDto,
-  InviteUser2GroupDto
+  InviteUser2GroupDto,
 } from './dto';
 import { GroupService } from './group.service';
+import { MembershipService } from 'src/membership/membership.service';
+import { PageOptionsUserDto } from 'src/membership/dto';
 
 @Controller('groups')
 export class GroupController {
-  constructor(private groupService: GroupService) {}
+  constructor(
+    private groupService: GroupService,
+    private membershipService: MembershipService,
+  ) {}
 
   // Group
   @UseGuards(JwtGuard)
@@ -96,7 +102,7 @@ export class GroupController {
   // ) {}
 
   // @UseGuards(JwtGuard)
-  // @Patch(':id/posts/:postId/delete')
+  // @Patch(':id/posts/:postId/delete') // @Delete(':id/posts/:postId') instead
   // async deletePost(
   //   @GetUser('sub') adminId: number,
   //   @Param('id', ParseIntPipe) id: number,
@@ -117,6 +123,30 @@ export class GroupController {
     @GetUser('email') email: string,
     @GetUser('groupId') groupId: number,
   ) {
-    return await this.groupService.adduserToGroup(email, groupId, userId);
+    return await this.groupService.addUserToGroup(email, groupId, userId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':id/members')
+  async findAllMembersByGroupId(
+    @GetUser('sub') userId: number,
+    @Param('id', ParseIntPipe) groupId: number,
+    @Query() dto: PageOptionsUserDto,
+  ) {
+    return await this.membershipService.findAllMembersByGroupId(
+      userId,
+      groupId,
+      dto,
+    );
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(':id/members/:userId')
+  async removeMember(
+    @GetUser('sub') adminId: number,
+    @Param('id', ParseIntPipe) groupId: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ) {
+    return await this.membershipService.remove(adminId, groupId, userId);
   }
 }
