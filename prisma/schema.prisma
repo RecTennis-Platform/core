@@ -121,6 +121,7 @@ model orders {
   updatedAt DateTime    @updatedAt @map("updated_at")
   group     groups?     @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_orders_groups")
   package   packages    @relation(fields: [packageId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_orders_packages")
+  user      users       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_orders_users")
 }
 
 model member_ships {
@@ -130,8 +131,22 @@ model member_ships {
   updatedAt DateTime @updatedAt @map("updated_at")
   user      users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_member_ships_users")
   group     groups   @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_member_ships_groups")
+  users     users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_member_ships_users")
 
   @@id([userId, groupId])
+}
+
+model users {
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String?
+  name          String
+  image         String?
+  refreshToken  String?        @map("refresh_token")
+  resetPassword Boolean        @default(false) @map("reset_password")
+  role          UserRole       @default(user)
+  memberShips   member_ships[]
+  orders        orders[]
 }
 
 enum AffiliateStatus {
@@ -150,4 +165,9 @@ enum OrderStatus {
   new
   completed
   cancelled
+}
+
+enum UserRole {
+  admin
+  user
 }

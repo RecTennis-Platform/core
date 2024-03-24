@@ -35,4 +35,42 @@ export class PaymentService {
   ): Observable<CreatePaymentUrlResponse> {
     return this.paymentServiceClient.createPaymentLink(data);
   }
+
+  async createPayment(data: CreatePaymentUrlRequest) {
+    const method = 'POST';
+
+    const body = JSON.stringify({
+      amount: data.amount,
+      clientIp: data.clientIp,
+      orderId: data.orderId,
+      locale: data.locale,
+      partner: data.partner,
+      returnUrl: data.returnUrl,
+    });
+
+    try {
+      const response = await fetch(
+        process.env.PAYMENT_SERVICE_URL + '/v1/payment',
+        {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body,
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Payment creation failed with status: ${response.status}`,
+        );
+      }
+
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      console.error('Error creating payment:', error);
+      return error;
+    }
+  }
 }

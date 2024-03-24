@@ -9,14 +9,16 @@ datasource db {
 }
 
 model users {
-  id             Int      @id @default(autoincrement())
-  email          String   @unique
-  password       String?
-  name           String
-  image          String?
-  refresh_token  String?
-  reset_password Boolean  @default(false)
-  role           UserRole @default(user)
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password      String?
+  name          String
+  image         String?
+  refreshToken  String?  @map("refresh_token")
+  resetPassword Boolean  @default(false) @map("reset_password")
+  role          UserRole @default(user)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 }
 
 enum UserRole {
