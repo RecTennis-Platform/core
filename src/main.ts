@@ -7,7 +7,7 @@ async function bootstrap() {
 
   //enable cors
   app.enableCors({
-    origin: `http://localhost:${process.env.CLIENT_PORT || 4200}`,
+    origin: `${process.env.FRONTEND_URL}`,
   });
 
   app.useGlobalPipes(
@@ -17,8 +17,9 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.PORT || 8002;
+  const port = process.env.SERVER_PORT || 8002;
   await app.listen(port);
-  console.log(`Core API is running on port: ${port}`);
+  if (process.env.ENVIRONMENT === 'LOCAL')
+    console.log(`Core API is running on port: ${port}`);
 }
 bootstrap();

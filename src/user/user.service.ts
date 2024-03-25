@@ -5,19 +5,19 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as argon from 'argon2';
-import { AuthPrismaService } from 'src/prisma/prisma_auth.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAdminAccountDto, UpdateUserAccountDto } from './dto';
 import { UserRole } from '@internal/prisma_auth/client';
 
 @Injectable()
 export class UserService {
-  constructor(private authPrismaService: AuthPrismaService) {}
+  constructor(private prismaService: PrismaService) {}
 
   async getUserDetails(userId: number): Promise<{
     message: string;
     data: any;
   }> {
-    const user = await this.authPrismaService.users.findUnique({
+    const user = await this.prismaService.users.findUnique({
       where: {
         id: userId,
       },
@@ -52,7 +52,7 @@ export class UserService {
       const hash = await argon.hash(process.env.DEFAULT_ADMIN_PASSWORD);
 
       // Create account
-      await this.authPrismaService.users.create({
+      await this.prismaService.users.create({
         data: {
           ...dto,
           password: hash,
@@ -86,7 +86,7 @@ export class UserService {
     message: string;
     data: any;
   }> {
-    const users = await this.authPrismaService.users.findMany({
+    const users = await this.prismaService.users.findMany({
       select: {
         id: true,
         email: true,
@@ -117,7 +117,7 @@ export class UserService {
     data: any;
   }> {
     // Check if user exists
-    const user = await this.authPrismaService.users.findUnique({
+    const user = await this.prismaService.users.findUnique({
       where: {
         id: userId,
       },
@@ -132,7 +132,7 @@ export class UserService {
 
     try {
       // Update user details
-      await this.authPrismaService.users.update({
+      await this.prismaService.users.update({
         where: {
           id: userId,
         },

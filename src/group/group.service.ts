@@ -7,12 +7,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { GroupStatus } from '@prisma/client';
-import { CorePrismaService } from 'src/prisma/prisma_core.service';
 import { CreateGroupDto, PageOptionsPostDto, UpdateGroupDto } from './dto';
 import { PageOptionsGroupDto } from './dto/page-options-group.dto';
 import { MailService } from 'src/services/mail/mail.service';
 import { InviteUser2GroupDto } from './dto/invite-user.dto';
-import { AuthPrismaService } from 'src/prisma/prisma_auth.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { ITokenPayload } from 'src/auth_utils/interfaces';
 import { JwtService } from '@nestjs/jwt';
 import { SendMailTemplateDto } from 'src/services/mail/mail.dto';
@@ -20,15 +19,14 @@ import { SendMailTemplateDto } from 'src/services/mail/mail.dto';
 @Injectable()
 export class GroupService {
   constructor(
-    private corePrismaService: CorePrismaService,
     private readonly mailService: MailService,
-    private readonly authPrismaService: AuthPrismaService,
+    private readonly prismaService: PrismaService,
     private jwtService: JwtService,
   ) {}
 
   // Group
   async create(adminId: number, dto: CreateGroupDto) {
-    const purchasedPackage = await this.corePrismaService.packages.findUnique({
+    const purchasedPackage = await this.prismaService.packages.findUnique({
       where: {
         id: dto.packageId,
       },
@@ -42,7 +40,7 @@ export class GroupService {
     }
 
     try {
-      const data = await this.corePrismaService.groups.create({
+      const data = await this.prismaService.groups.create({
         data: {
           adminId,
           status: GroupStatus.inactive,
@@ -84,11 +82,11 @@ export class GroupService {
         : undefined;
 
     const [result, totalCount] = await Promise.all([
-      this.corePrismaService.groups.findMany({
+      this.prismaService.groups.findMany({
         ...conditions,
         ...pageOption,
       }),
-      this.corePrismaService.groups.count({ ...conditions }),
+      this.prismaService.groups.count({ ...conditions }),
     ]);
 
     return {
@@ -99,7 +97,7 @@ export class GroupService {
   }
 
   async findOne(id: number) {
-    const group = await this.corePrismaService.groups.findUnique({
+    const group = await this.prismaService.groups.findUnique({
       where: {
         id,
       },
@@ -118,7 +116,7 @@ export class GroupService {
   }
 
   async update(adminId: number, id: number, dto: UpdateGroupDto) {
-    const group = await this.corePrismaService.groups.findUnique({
+    const group = await this.prismaService.groups.findUnique({
       where: {
         id,
       },
@@ -149,7 +147,7 @@ export class GroupService {
     }
 
     try {
-      const data = await this.corePrismaService.groups.update({
+      const data = await this.prismaService.groups.update({
         where: {
           id,
         },
@@ -172,7 +170,7 @@ export class GroupService {
   }
 
   async inviteUser(dto: InviteUser2GroupDto) {
-    const group = await this.corePrismaService.groups.findUnique({
+    const group = await this.prismaService.groups.findUnique({
       where: {
         id: dto.groupId,
       },
@@ -214,7 +212,7 @@ export class GroupService {
   }
 
   async processInviteUser(email: string, groupId: number, host: string) {
-    const user = await this.authPrismaService.users.findFirst({
+    const user = await this.prismaService.users.findFirst({
       where: {
         email: email,
       },
@@ -253,12 +251,12 @@ export class GroupService {
 
   async addUserToGroup(email: string, groupId: number, userId: number) {
     const user = userId
-      ? await this.authPrismaService.users.findFirst({
+      ? await this.prismaService.users.findFirst({
           where: {
             id: userId,
           },
         })
-      : await this.authPrismaService.users.findFirst({
+      : await this.prismaService.users.findFirst({
           where: {
             email: email,
           },
@@ -277,7 +275,7 @@ export class GroupService {
         data: null,
       });
     }
-    const memberShip = await this.corePrismaService.member_ships.findFirst({
+    const memberShip = await this.prismaService.member_ships.findFirst({
       where: {
         userId: user.id,
         groupId: groupId,
@@ -289,7 +287,7 @@ export class GroupService {
         data: null,
       });
     }
-    return await this.corePrismaService.member_ships.create({
+    return await this.prismaService.member_ships.create({
       data: {
         userId: user.id,
         groupId: groupId,
@@ -298,7 +296,7 @@ export class GroupService {
   }
 
   async activate(adminId: number, id: number) {
-    const group = await this.corePrismaService.groups.findUnique({
+    const group = await this.prismaService.groups.findUnique({
       where: {
         id,
       },
@@ -330,7 +328,7 @@ export class GroupService {
 
     try {
       const duration = group.package.duration;
-      const data = await this.corePrismaService.groups.update({
+      const data = await this.prismaService.groups.update({
         where: {
           id,
         },
@@ -359,7 +357,7 @@ export class GroupService {
   // Group Post
   async getPosts(groupId: number, pageOptionsPostDto: PageOptionsPostDto) {
     // Check if group exists
-    const group = await this.corePrismaService.groups.findUnique({
+    const group = await this.prismaService.groups.findUnique({
       where: {
         id: groupId,
       },
@@ -392,11 +390,11 @@ export class GroupService {
         : undefined;
 
     const [result, totalCount] = await Promise.all([
-      this.corePrismaService.posts.findMany({
+      this.prismaService.posts.findMany({
         ...conditions,
         ...pageOption,
       }),
-      this.corePrismaService.posts.count({
+      this.prismaService.posts.count({
         where: {
           groupId,
         },
@@ -413,7 +411,7 @@ export class GroupService {
 
   async getPostDetails(groupId: number, postId: number) {
     // Check if group exists
-    const group = await this.corePrismaService.groups.findUnique({
+    const group = await this.prismaService.groups.findUnique({
       where: {
         id: groupId,
       },
@@ -427,7 +425,7 @@ export class GroupService {
     }
 
     // Check if post exists
-    const post = await this.corePrismaService.posts.findUnique({
+    const post = await this.prismaService.posts.findUnique({
       where: {
         id: postId,
       },
@@ -448,7 +446,7 @@ export class GroupService {
 
   // async createPost(userId: number, groupId: number) {
   //   // Check if group exists
-  //   const group = await this.corePrismaService.groups.findUnique({
+  //   const group = await this.prismaService.groups.findUnique({
   //     where: {
   //       id: groupId,
   //     },
@@ -462,7 +460,7 @@ export class GroupService {
   //   }
 
   //   // Check if user is a member of the group
-  //   const member = await this.corePrismaService.members.findFirst({
+  //   const member = await this.prismaService.members.findFirst({
   //     where: {
   //       userId,
   //       groupId,
@@ -477,7 +475,7 @@ export class GroupService {
   //   }
 
   //   try {
-  //     // const data = await this.corePrismaService.posts.create({
+  //     // const data = await this.prismaService.posts.create({
   //     //   data: {
   //     //     userId,
   //     //     groupId,

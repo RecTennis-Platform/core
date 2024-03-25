@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "bootstrap": "yarn install && npx prisma db pull && npx prisma generate && npx prisma db pull --schema=./prisma_auth/schema.prisma && npx prisma generate --schema=./prisma_auth/schema.prisma"
+    "bootstrap": "yarn install && npx prisma db pull && npx prisma generate"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.529.1",

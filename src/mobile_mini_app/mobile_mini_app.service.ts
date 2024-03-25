@@ -4,21 +4,21 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CorePrismaService } from 'src/prisma/prisma_core.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMiniAppDataDto, UpdateMiniAppDataDto } from './dto';
 import { mobile_mini_apps } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class MobileMiniAppService {
-  constructor(private corePrismaService: CorePrismaService) {}
+  constructor(private prismaService: PrismaService) {}
 
   async getAllMiniAppData(): Promise<{
     message: string;
     data: mobile_mini_apps[];
   }> {
     const miniAppDataList =
-      await this.corePrismaService.mobile_mini_apps.findMany();
+      await this.prismaService.mobile_mini_apps.findMany();
 
     if (miniAppDataList.length === 0) {
       throw new NotFoundException({
@@ -37,12 +37,11 @@ export class MobileMiniAppService {
     message: string;
     data: mobile_mini_apps;
   }> {
-    const miniAppData =
-      await this.corePrismaService.mobile_mini_apps.findUnique({
-        where: {
-          id: miniAppDataId,
-        },
-      });
+    const miniAppData = await this.prismaService.mobile_mini_apps.findUnique({
+      where: {
+        id: miniAppDataId,
+      },
+    });
 
     if (!miniAppData) {
       throw new NotFoundException({
@@ -64,7 +63,7 @@ export class MobileMiniAppService {
     try {
       console.log('dto', dto);
       // Create new mini app data
-      await this.corePrismaService.mobile_mini_apps.create({
+      await this.prismaService.mobile_mini_apps.create({
         data: {
           ...dto,
         },
@@ -100,12 +99,11 @@ export class MobileMiniAppService {
     data: any;
   }> {
     // Check if mini app data exists
-    const miniAppData =
-      await this.corePrismaService.mobile_mini_apps.findUnique({
-        where: {
-          id: miniAppDataId,
-        },
-      });
+    const miniAppData = await this.prismaService.mobile_mini_apps.findUnique({
+      where: {
+        id: miniAppDataId,
+      },
+    });
 
     if (!miniAppData) {
       throw new NotFoundException({
@@ -116,7 +114,7 @@ export class MobileMiniAppService {
 
     try {
       // Update mini app data
-      await this.corePrismaService.mobile_mini_apps.update({
+      await this.prismaService.mobile_mini_apps.update({
         where: {
           id: miniAppDataId,
         },
@@ -152,12 +150,11 @@ export class MobileMiniAppService {
     data: any;
   }> {
     // Check if mini app data exists
-    const miniAppData =
-      await this.corePrismaService.mobile_mini_apps.findUnique({
-        where: {
-          id: miniAppDataId,
-        },
-      });
+    const miniAppData = await this.prismaService.mobile_mini_apps.findUnique({
+      where: {
+        id: miniAppDataId,
+      },
+    });
 
     if (!miniAppData) {
       throw new NotFoundException({
@@ -168,7 +165,7 @@ export class MobileMiniAppService {
 
     try {
       // Delete mini app data
-      await this.corePrismaService.mobile_mini_apps.delete({
+      await this.prismaService.mobile_mini_apps.delete({
         where: {
           id: miniAppDataId,
         },

@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAffiliateDto } from './dto/create-affiliate.dto';
 import { UpdateAffiliateDto } from './dto/update-affiliate.dto';
-import { CorePrismaService } from 'src/prisma/prisma_core.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { AffiliateStatus } from '@prisma/client';
 import { PageOptionsAffiliateDto } from './dto/find-all-affiliate.dto';
 
 @Injectable()
 export class AffiliateService {
-  constructor(private corePrismaService: CorePrismaService) {}
+  constructor(private prismaService: PrismaService) {}
   async create(createAffiliateDto: CreateAffiliateDto) {
     const data = {
       companyName: createAffiliateDto.companyName,
@@ -19,7 +19,7 @@ export class AffiliateService {
       website: createAffiliateDto.website,
       status: AffiliateStatus.pending,
     };
-    return await this.corePrismaService.affiliates.create({ data });
+    return await this.prismaService.affiliates.create({ data });
   }
 
   async findAll(pageOptionsAffiliateDto: PageOptionsAffiliateDto) {
@@ -43,11 +43,11 @@ export class AffiliateService {
         : undefined;
 
     const [result, totalCount] = await Promise.all([
-      this.corePrismaService.affiliates.findMany({
+      this.prismaService.affiliates.findMany({
         ...conditions,
         ...pageOption,
       }),
-      this.corePrismaService.affiliates.count({ ...conditions }),
+      this.prismaService.affiliates.count({ ...conditions }),
     ]);
 
     return {
@@ -58,7 +58,7 @@ export class AffiliateService {
   }
 
   async findOne(id: number) {
-    const affiliate = await this.corePrismaService.affiliates.findFirst({
+    const affiliate = await this.prismaService.affiliates.findFirst({
       where: {
         id: id,
       },
@@ -72,7 +72,7 @@ export class AffiliateService {
   }
 
   async update(id: number, updateAffiliateDto: UpdateAffiliateDto) {
-    const affiliate = await this.corePrismaService.affiliates.update({
+    const affiliate = await this.prismaService.affiliates.update({
       where: {
         id: id,
       },
@@ -95,7 +95,7 @@ export class AffiliateService {
   }
 
   async remove(id: number) {
-    const affiliate = await this.corePrismaService.affiliates.delete({
+    const affiliate = await this.prismaService.affiliates.delete({
       where: {
         id: id,
       },
