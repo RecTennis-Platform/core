@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("CORE_DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model affiliates {
@@ -126,6 +126,8 @@ model users {
   image         String?
   refreshToken  String?        @map("refresh_token")
   resetPassword Boolean        @default(false) @map("reset_password")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
   role          UserRole       @default(user)
   memberShips   member_ships[]
   orders        orders[]

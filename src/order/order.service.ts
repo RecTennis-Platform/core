@@ -1,19 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { CorePrismaService } from 'src/prisma/prisma_core.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { PaymentService } from 'src/services/payment/payment.service';
 import { CreatePaymentUrlRequest } from 'src/proto/payment_service.pb';
 
 @Injectable()
 export class OrderService {
   constructor(
-    private corePrismaService: CorePrismaService,
+    private prismaService: PrismaService,
     private readonly paymentService: PaymentService,
   ) {}
   async create(createOrderDto: CreateOrderDto, ip: string, headers: any) {
     try {
-      const packageIdentity = await this.corePrismaService.packages.findUnique({
+      const packageIdentity = await this.prismaService.packages.findUnique({
         where: {
           id: createOrderDto.packageId,
         },
@@ -30,7 +30,7 @@ export class OrderService {
         packageId: createOrderDto.packageId,
         price: packageIdentity.price,
       };
-      const order = await this.corePrismaService.orders.create({ data });
+      const order = await this.prismaService.orders.create({ data });
       const returnUrl = headers?.ismobile
         ? process.env.RETURN_URL_PAYMENT_FOR_MOBILE
         : process.env.RETURN_URL_PAYMENT_FOR_WEB;
@@ -54,7 +54,7 @@ export class OrderService {
   }
 
   async findOne(id: string) {
-    const order = await this.corePrismaService.orders.findFirst({
+    const order = await this.prismaService.orders.findFirst({
       where: {
         id: id,
       },
@@ -81,7 +81,7 @@ export class OrderService {
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto) {
-    const order = await this.corePrismaService.orders.update({
+    const order = await this.prismaService.orders.update({
       where: {
         id: id,
       },
@@ -99,7 +99,7 @@ export class OrderService {
   }
 
   async remove(id: string) {
-    const order = await this.corePrismaService.orders.delete({
+    const order = await this.prismaService.orders.delete({
       where: {
         id: id,
       },

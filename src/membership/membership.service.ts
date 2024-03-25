@@ -4,12 +4,12 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CorePrismaService } from 'src/prisma/prisma_core.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { PageOptionsUserDto } from './dto';
 
 @Injectable()
 export class MembershipService {
-  constructor(private corePrismaService: CorePrismaService) {}
+  constructor(private prismaService: PrismaService) {}
 
   async findAllMembersByGroupId(
     userId: number,
@@ -17,7 +17,7 @@ export class MembershipService {
     dto: PageOptionsUserDto,
   ) {
     // Check if the user is a member of the group
-    const isMember = await this.corePrismaService.member_ships.findFirst({
+    const isMember = await this.prismaService.member_ships.findFirst({
       where: {
         userId,
         groupId,
@@ -51,7 +51,7 @@ export class MembershipService {
         : undefined;
 
     const [result, totalCount] = await Promise.all([
-      this.corePrismaService.member_ships.findMany({
+      this.prismaService.member_ships.findMany({
         include: {
           user: {
             select: {
@@ -66,7 +66,7 @@ export class MembershipService {
         ...conditions,
         ...pageOption,
       }),
-      this.corePrismaService.member_ships.count({
+      this.prismaService.member_ships.count({
         ...conditions,
       }),
     ]);
@@ -80,7 +80,7 @@ export class MembershipService {
 
   async remove(adminId: number, groupId: number, userId: number) {
     // Check if the admin is a member of the group
-    const isMember = await this.corePrismaService.member_ships.findFirst({
+    const isMember = await this.prismaService.member_ships.findFirst({
       where: {
         userId: adminId,
         groupId,
@@ -95,7 +95,7 @@ export class MembershipService {
     }
 
     // Check if the admin is an admin of the group
-    const isAdmin = await this.corePrismaService.groups.findFirst({
+    const isAdmin = await this.prismaService.groups.findFirst({
       where: {
         id: groupId,
         adminId,
@@ -110,7 +110,7 @@ export class MembershipService {
     }
 
     // Check if the user is a member of the group
-    const userIsMember = await this.corePrismaService.member_ships.findFirst({
+    const userIsMember = await this.prismaService.member_ships.findFirst({
       where: {
         userId: userId,
         groupId,
@@ -125,7 +125,7 @@ export class MembershipService {
     }
 
     try {
-      await this.corePrismaService.member_ships.delete({
+      await this.prismaService.member_ships.delete({
         where: {
           userId_groupId: {
             groupId,

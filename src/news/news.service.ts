@@ -3,17 +3,17 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CorePrismaService } from 'src/prisma/prisma_core.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNewsDto, PageOptionsNewsDto, UpdateNewsDto } from './dto';
 
 @Injectable()
 export class NewsService {
-  constructor(private corePrismaService: CorePrismaService) {}
+  constructor(private prismaService: PrismaService) {}
 
   async createNews(dto: CreateNewsDto) {
     try {
       // Create news
-      await this.corePrismaService.news.create({
+      await this.prismaService.news.create({
         data: {
           ...dto,
         },
@@ -51,11 +51,11 @@ export class NewsService {
         : undefined;
 
     const [result, totalCount] = await Promise.all([
-      this.corePrismaService.news.findMany({
+      this.prismaService.news.findMany({
         ...conditions,
         ...pageOption,
       }),
-      this.corePrismaService.news.count({ ...conditions }),
+      this.prismaService.news.count({ ...conditions }),
     ]);
 
     return {
@@ -68,7 +68,7 @@ export class NewsService {
 
   async getTopNews() {
     // Get all news
-    const result = await this.corePrismaService.news.findMany({
+    const result = await this.prismaService.news.findMany({
       take: 5,
       orderBy: {
         createdAt: 'desc',
@@ -83,7 +83,7 @@ export class NewsService {
 
   async getNewsDetails(newsId: number) {
     // Get news details
-    const news = await this.corePrismaService.news.findUnique({
+    const news = await this.prismaService.news.findUnique({
       where: {
         id: newsId,
       },
@@ -104,7 +104,7 @@ export class NewsService {
 
   async updateNews(newsId: number, dto: UpdateNewsDto) {
     // Check if news exists
-    const news = await this.corePrismaService.news.findUnique({
+    const news = await this.prismaService.news.findUnique({
       where: {
         id: newsId,
       },
@@ -119,7 +119,7 @@ export class NewsService {
 
     try {
       // Update news
-      await this.corePrismaService.news.update({
+      await this.prismaService.news.update({
         where: {
           id: newsId,
         },
@@ -143,7 +143,7 @@ export class NewsService {
 
   async deleteNews(newsId: number) {
     // Check if news exists
-    const news = await this.corePrismaService.news.findUnique({
+    const news = await this.prismaService.news.findUnique({
       where: {
         id: newsId,
       },
@@ -158,7 +158,7 @@ export class NewsService {
 
     try {
       // Delete news
-      await this.corePrismaService.news.delete({
+      await this.prismaService.news.delete({
         where: {
           id: newsId,
         },
