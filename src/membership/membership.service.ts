@@ -4,9 +4,13 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateMembershipDto, PageOptionsUserDto } from './dto';
 import { MemberRole } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
+import {
+  CreateMembershipDto,
+  PageOptionsGroupDto,
+  PageOptionsUserDto,
+} from './dto';
 
 @Injectable()
 export class MembershipService {
@@ -170,47 +174,70 @@ export class MembershipService {
     }
   }
 
-  async findAllOwnedGroupsByUserId(userId: number) {
-    const groups = await this.prismaService.member_ships.findMany({
+  async findAllGroupsByUserId(userId: number, dto: PageOptionsGroupDto) {
+    const conditions = {
       where: {
         userId,
-        role: MemberRole.group_admin,
+        role: dto.role,
       },
-      include: {
-        group: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            activityZone: true,
-            language: true,
-            description: true,
-            status: true,
-            startDate: true,
-            endDate: true,
-            createdAt: true,
-            updatedAt: true,
-            _count: {
-              select: {
-                member_ships: true,
+    };
+
+    const pageOption =
+      dto.page && dto.take
+        ? {
+            skip: dto.skip,
+            take: dto.take,
+          }
+        : undefined;
+
+    const [groups, totalCount] = await Promise.all([
+      this.prismaService.member_ships.findMany({
+        include: {
+          group: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              activityZone: true,
+              language: true,
+              description: true,
+              status: true,
+              startDate: true,
+              endDate: true,
+              createdAt: true,
+              updatedAt: true,
+              _count: {
+                select: {
+                  member_ships: true,
+                },
               },
             },
           },
         },
-      },
-    });
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.member_ships.count({
+        ...conditions,
+      }),
+    ]);
 
     // Modify the structure of the returned data
-    const modifiedGroups = groups.map((group) => {
+    const result = groups.map((group) => {
       const memberCount = group.group._count.member_ships;
       delete group.group._count;
 
       return {
         ...group.group,
         memberCount,
+        role: group.role,
       };
     });
 
-    return modifiedGroups;
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / dto.take),
+      totalCount,
+    };
   }
 }

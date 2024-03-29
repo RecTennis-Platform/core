@@ -13,12 +13,11 @@ import {
 import { UserRole } from '@prisma/client';
 import { GetUser, Roles } from 'src/auth_utils/decorators';
 import { JwtGuard, JwtInviteUserGuard } from 'src/auth_utils/guards';
-import { PageOptionsUserDto } from 'src/membership/dto';
+import { PageOptionsGroupDto, PageOptionsUserDto } from 'src/membership/dto';
 import { MembershipService } from 'src/membership/membership.service';
 import {
   CreateGroupDto,
   InviteUser2GroupDto,
-  PageOptionsGroupDto,
   PageOptionsPostDto,
   UpdateGroupDto,
 } from './dto';
@@ -39,20 +38,22 @@ export class GroupController {
   }
 
   @UseGuards(JwtGuard)
-  @Get('/owned')
-  async findAllOwnedGroups(@GetUser('sub') userId: number) {
-    return await this.membershipService.findAllOwnedGroupsByUserId(userId);
+  @Get()
+  async findAll(
+    @GetUser('sub') userId: number,
+    @Query() dto: PageOptionsGroupDto,
+  ) {
+    return await this.membershipService.findAllGroupsByUserId(userId, dto);
   }
 
   @UseGuards(JwtGuard)
   @Roles(UserRole.admin)
-  @Get()
-  async findAll(@Query() dto: PageOptionsGroupDto) {
+  @Get('/admin')
+  async adminFindAll(@Query() dto: PageOptionsGroupDto) {
     return await this.groupService.findAll(dto);
   }
 
   @UseGuards(JwtGuard)
-  @Roles(UserRole.admin)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.groupService.findOne(id);
