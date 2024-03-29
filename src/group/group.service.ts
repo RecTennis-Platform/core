@@ -26,15 +26,22 @@ export class GroupService {
 
   // Group
   async create(adminId: number, dto: CreateGroupDto) {
-    const purchasedPackage = await this.prismaService.packages.findUnique({
+    const order = await this.prismaService.orders.findUnique({
       where: {
-        id: dto.packageId,
+        id: dto.orderId,
       },
     });
 
-    if (!purchasedPackage) {
+    if (!order) {
       throw new NotFoundException({
-        message: 'Package not found',
+        message: 'Order not found',
+        data: null,
+      });
+    }
+
+    if (adminId !== order.userId) {
+      throw new ForbiddenException({
+        message: 'You are not authorized to create group',
         data: null,
       });
     }
@@ -42,7 +49,6 @@ export class GroupService {
     try {
       const data = await this.prismaService.groups.create({
         data: {
-          adminId,
           status: GroupStatus.inactive,
           ...dto,
         },
