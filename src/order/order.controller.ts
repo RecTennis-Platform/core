@@ -9,11 +9,16 @@ import {
   HttpException,
   HttpStatus,
   Headers,
+  UseGuards,
+  Query,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Ip } from '@nestjs/common';
+import { JwtGuard } from 'src/auth_utils/guards';
+import { PageOptionsOrderDto } from './dto';
+import { GetUser } from 'src/auth_utils/decorators';
 
 @Controller('orders')
 export class OrderController {
@@ -38,10 +43,14 @@ export class OrderController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Get()
-  async findAll() {
+  async findAll(
+    @GetUser('sub') userId: number,
+    @Query() dto: PageOptionsOrderDto,
+  ) {
     try {
-      return this.orderService.findAll();
+      return this.orderService.findAll(userId, dto);
     } catch (error) {
       throw new HttpException(
         {
