@@ -87,7 +87,7 @@ export class OrderService {
       },
       data: {
         status: updateOrderDto.status,
-        groupId: updateOrderDto.groupId,
+        // groupId: updateOrderDto.groupId,
       },
     });
     if (!order) {

@@ -1,20 +1,20 @@
+import { UserRole } from '@internal/prisma_auth/client';
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Patch,
-  Req,
-  UseGuards,
   Param,
   ParseIntPipe,
-  Body,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
+import { Roles } from 'src/auth_utils/decorators';
 import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import { IRequestWithUser } from 'src/auth_utils/interfaces';
-import { Roles } from 'src/auth_utils/decorators';
-import { UserRole } from '@internal/prisma_auth/client';
 import { CreateAdminAccountDto, UpdateUserAccountDto } from './dto';
+import { UserService } from './user.service';
 
 @UseGuards(JwtGuard)
 @Controller('users')

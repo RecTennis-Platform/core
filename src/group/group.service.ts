@@ -6,15 +6,16 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { GroupStatus } from '@prisma/client';
-import { CreateGroupDto, PageOptionsPostDto, UpdateGroupDto } from './dto';
-import { PageOptionsGroupDto } from './dto/page-options-group.dto';
-import { MailService } from 'src/services/mail/mail.service';
-import { InviteUser2GroupDto } from './dto/invite-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { ITokenPayload } from 'src/auth_utils/interfaces';
 import { JwtService } from '@nestjs/jwt';
+import { GroupStatus, MemberRole } from '@prisma/client';
+import { ITokenPayload } from 'src/auth_utils/interfaces';
+import { MembershipService } from 'src/membership/membership.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { SendMailTemplateDto } from 'src/services/mail/mail.dto';
+import { MailService } from 'src/services/mail/mail.service';
+import { CreateGroupDto, PageOptionsPostDto, UpdateGroupDto } from './dto';
+import { InviteUser2GroupDto } from './dto/invite-user.dto';
+import { PageOptionsGroupDto } from './dto/page-options-group.dto';
 
 @Injectable()
 export class GroupService {
@@ -22,6 +23,7 @@ export class GroupService {
     private readonly mailService: MailService,
     private readonly prismaService: PrismaService,
     private jwtService: JwtService,
+    private membershipService: MembershipService,
   ) {}
 
   // Group
@@ -52,6 +54,13 @@ export class GroupService {
           status: GroupStatus.inactive,
           ...dto,
         },
+      });
+
+      // Create membership
+      await this.membershipService.create({
+        userId: adminId,
+        groupId: data.id,
+        role: MemberRole.group_admin,
       });
 
       return {
@@ -135,7 +144,20 @@ export class GroupService {
       });
     }
 
-    if (group.adminId !== adminId) {
+    const order = await this.prismaService.orders.findUnique({
+      where: {
+        id: group.orderId,
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException({
+        message: 'Order of this group not found',
+        data: null,
+      });
+    }
+
+    if (order.userId !== adminId) {
       throw new ForbiddenException({
         message: 'You are not authorized to update this group',
         data: null,
@@ -180,9 +202,9 @@ export class GroupService {
       where: {
         id: dto.groupId,
       },
-      include: {
-        package: true,
-      },
+      // include: {
+      //   package: true,
+      // },
     });
 
     if (!group) {
@@ -306,14 +328,34 @@ export class GroupService {
       where: {
         id,
       },
-      include: {
-        package: true,
-      },
     });
 
     if (!group) {
       throw new NotFoundException({
         message: 'Group not found',
+        data: null,
+      });
+    }
+
+    const order = await this.prismaService.orders.findUnique({
+      where: {
+        id: group.orderId,
+      },
+      include: {
+        package: true,
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException({
+        message: 'Order of this group not found',
+        data: null,
+      });
+    }
+
+    if (order.userId !== adminId) {
+      throw new ForbiddenException({
+        message: 'You are not authorized to activate this group',
         data: null,
       });
     }
@@ -325,15 +367,8 @@ export class GroupService {
       });
     }
 
-    if (group.adminId !== adminId) {
-      throw new ForbiddenException({
-        message: 'You are not authorized to activate this group',
-        data: null,
-      });
-    }
-
     try {
-      const duration = group.package.duration;
+      const duration = order.package.duration;
       const data = await this.prismaService.groups.update({
         where: {
           id,
