@@ -48,6 +48,19 @@ export class GroupService {
       });
     }
 
+    const isUsed = await this.prismaService.groups.findFirst({
+      where: {
+        orderId: dto.orderId,
+      },
+    });
+
+    if (isUsed) {
+      throw new ConflictException({
+        message: 'This order already has a group',
+        data: null,
+      });
+    }
+
     try {
       const data = await this.prismaService.groups.create({
         data: {
