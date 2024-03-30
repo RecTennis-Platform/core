@@ -10,18 +10,18 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { GetUser } from 'src/auth_utils/decorators';
+import { UserRole } from '@prisma/client';
+import { GetUser, Roles } from 'src/auth_utils/decorators';
 import { JwtGuard, JwtInviteUserGuard } from 'src/auth_utils/guards';
+import { PageOptionsGroupDto, PageOptionsUserDto } from 'src/membership/dto';
+import { MembershipService } from 'src/membership/membership.service';
 import {
   CreateGroupDto,
-  UpdateGroupDto,
-  PageOptionsGroupDto,
-  PageOptionsPostDto,
   InviteUser2GroupDto,
+  PageOptionsPostDto,
+  UpdateGroupDto,
 } from './dto';
 import { GroupService } from './group.service';
-import { MembershipService } from 'src/membership/membership.service';
-import { PageOptionsUserDto } from 'src/membership/dto';
 
 @Controller('groups')
 export class GroupController {
@@ -37,8 +37,19 @@ export class GroupController {
     return await this.groupService.create(adminId, dto);
   }
 
+  @UseGuards(JwtGuard)
   @Get()
-  async findAll(@Query() dto: PageOptionsGroupDto) {
+  async findAll(
+    @GetUser('sub') userId: number,
+    @Query() dto: PageOptionsGroupDto,
+  ) {
+    return await this.membershipService.findAllGroupsByUserId(userId, dto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Roles(UserRole.admin)
+  @Get('/admin')
+  async adminFindAll(@Query() dto: PageOptionsGroupDto) {
     return await this.groupService.findAll(dto);
   }
 

@@ -45,9 +45,9 @@ model news {
 
 model groups {
   id           Int            @id @default(autoincrement())
-  adminId      Int            @map("admin_id")
-  packageId    Int            @map("package_id")
-  name         String?
+  orderId      String         @map("order_id")
+  name         String
+  image        String?
   language     String?
   activityZone String?        @map("activity_zone")
   description  String?
@@ -56,9 +56,8 @@ model groups {
   endDate      DateTime?      @map("end_date")
   createdAt    DateTime       @default(now()) @map("created_at")
   updatedAt    DateTime       @updatedAt @map("updated_at")
-  package      packages       @relation(fields: [packageId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_groups_packages")
   member_ships member_ships[]
-  orders       orders[]
+  order        orders         @relation(fields: [orderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_groups_orders")
 }
 
 model posts {
@@ -81,7 +80,6 @@ model packages {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   level     Int
-  groups    groups[]
   orders    orders[]
 }
 
@@ -97,23 +95,23 @@ model orders {
   id        String      @id @default(uuid())
   userId    Int         @map("user_id")
   packageId Int         @map("package_id")
-  groupId   Int?        @map("group_id")
   price     Float
   status    OrderStatus @default(new)
   createdAt DateTime    @default(now()) @map("created_at")
   updatedAt DateTime    @updatedAt @map("updated_at")
-  group     groups?     @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_orders_groups")
   package   packages    @relation(fields: [packageId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_orders_packages")
   user      users       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_orders_users")
+  groups    groups[]
 }
 
 model member_ships {
-  userId    Int      @map("user_id")
-  groupId   Int      @map("group_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  group     groups   @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_member_ships_groups")
-  user      users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_member_ships_users")
+  userId    Int        @map("user_id")
+  groupId   Int        @map("group_id")
+  role      MemberRole @default(member)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  group     groups     @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_member_ships_groups")
+  user      users      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_member_ships_users")
 
   @@id([userId, groupId])
 }
@@ -154,4 +152,9 @@ enum OrderStatus {
 enum UserRole {
   admin
   user
+}
+
+enum MemberRole {
+  group_admin
+  member
 }

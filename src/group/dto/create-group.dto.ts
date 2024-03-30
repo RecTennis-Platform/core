@@ -1,13 +1,17 @@
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateGroupDto {
-  @IsInt()
+  @IsString()
   @IsNotEmpty()
-  packageId: number;
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  orderId: string;
 
   @IsString()
   @IsOptional()
-  name?: string;
+  image?: string;
 
   @IsString()
   @IsOptional()

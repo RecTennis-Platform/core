@@ -4,6 +4,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaymentService } from 'src/services/payment/payment.service';
 import { CreatePaymentUrlRequest } from 'src/proto/payment_service.pb';
+import { PageOptionsOrderDto } from './dto';
 
 @Injectable()
 export class OrderService {
@@ -49,8 +50,42 @@ export class OrderService {
     }
   }
 
-  findAll() {
-    return `This action returns all order`;
+  async findAll(userId: number, dto: PageOptionsOrderDto) {
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: dto.order,
+        },
+      ],
+      where: {
+        userId,
+      },
+    };
+
+    const pageOption =
+      dto.page && dto.take
+        ? {
+            skip: dto.skip,
+            take: dto.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.orders.findMany({
+        include: {
+          package: true,
+        },
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.orders.count({ ...conditions }),
+    ]);
+
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / dto.take),
+      totalCount,
+    };
   }
 
   async findOne(id: string) {
@@ -87,7 +122,7 @@ export class OrderService {
       },
       data: {
         status: updateOrderDto.status,
-        groupId: updateOrderDto.groupId,
+        // groupId: updateOrderDto.groupId,
       },
     });
     if (!order) {
