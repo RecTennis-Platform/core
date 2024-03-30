@@ -7,7 +7,7 @@ export class CreateGroupDto {
 
   @IsString()
   @IsNotEmpty()
-  orderId: string;
+  boughtPackageId: string;
 
   @IsString()
   @IsOptional()

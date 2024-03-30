@@ -95,6 +95,24 @@ export class OrderController {
     }
   }
 
+  @Patch(':id/payment')
+  async updateFromPaymentService(
+    @Param('id') id: string,
+    @Body() updateOrderDto: UpdateOrderDto,
+  ) {
+    try {
+      return this.orderService.updateFromPaymentService(id, updateOrderDto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {

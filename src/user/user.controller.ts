@@ -1,4 +1,4 @@
-import { UserRole } from '@internal/prisma_auth/client';
+import { UserRole } from '@prisma/client';
 import {
   Body,
   Controller,

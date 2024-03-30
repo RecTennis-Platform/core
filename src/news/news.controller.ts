@@ -14,7 +14,7 @@ import { NewsService } from './news.service';
 import { JwtGuard, RolesGuard } from '../auth_utils/guards';
 import { CreateNewsDto, PageOptionsNewsDto, UpdateNewsDto } from './dto';
 import { Roles } from '../auth_utils/decorators/roles.decorator';
-import { UserRole } from '@internal/prisma_auth/client';
+import { UserRole } from '@prisma/client';
 
 @Controller('news')
 export class NewsController {

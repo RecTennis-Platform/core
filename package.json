@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "bootstrap": "yarn install && npx prisma db pull && npx prisma generate"
+    "bootstrap": "yarn install && npx prisma db pull && npx prisma generate && npx prisma generate --schema=./prisma_mongo/schema.prisma"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.529.1",
@@ -35,6 +35,7 @@
     "argon2": "^0.40.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "date-fns": "^3.6.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",

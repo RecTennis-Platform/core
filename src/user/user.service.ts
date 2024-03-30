@@ -7,7 +7,7 @@ import {
 import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAdminAccountDto, UpdateUserAccountDto } from './dto';
-import { UserRole } from '@internal/prisma_auth/client';
+import { UserRole } from '@prisma/client';
 
 @Injectable()
 export class UserService {

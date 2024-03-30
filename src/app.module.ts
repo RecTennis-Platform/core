@@ -7,6 +7,10 @@ import { AffiliateModule } from './affiliate/affiliate.module';
 import { GroupModule } from './group/group.module';
 import { OrderModule } from './order/order.module';
 import { MembershipModule } from './membership/membership.module';
+import { PackageModule } from './package/package.module';
+import { ServiceModule } from './service/service.module';
+import { PackagesServicesModule } from './packages_services/packages_services.module';
+import { BoughtPackageModule } from './bought_package/bought_package.module';
 
 @Module({
   imports: [
@@ -18,6 +22,10 @@ import { MembershipModule } from './membership/membership.module';
     GroupModule,
     OrderModule,
     MembershipModule,
+    PackageModule,
+    ServiceModule,
+    PackagesServicesModule,
+    BoughtPackageModule,
   ],
 })
 export class AppModule {}

@@ -30,7 +30,7 @@ export class GroupService {
   async create(adminId: number, dto: CreateGroupDto) {
     const order = await this.prismaService.orders.findUnique({
       where: {
-        id: dto.orderId,
+        id: dto.boughtPackageId,
       },
     });
 
@@ -50,7 +50,7 @@ export class GroupService {
 
     const isUsed = await this.prismaService.groups.findFirst({
       where: {
-        orderId: dto.orderId,
+        boughtPackageId: dto.boughtPackageId,
       },
     });
 
@@ -157,25 +157,25 @@ export class GroupService {
       });
     }
 
-    const order = await this.prismaService.orders.findUnique({
-      where: {
-        id: group.orderId,
-      },
-    });
+    // const order = await this.prismaService.orders.findUnique({
+    //   where: {
+    //     id: group.referenceId,
+    //   },
+    // });
 
-    if (!order) {
-      throw new NotFoundException({
-        message: 'Order of this group not found',
-        data: null,
-      });
-    }
+    // if (!order) {
+    //   throw new NotFoundException({
+    //     message: 'Order of this group not found',
+    //     data: null,
+    //   });
+    // }
 
-    if (order.userId !== adminId) {
-      throw new ForbiddenException({
-        message: 'You are not authorized to update this group',
-        data: null,
-      });
-    }
+    // if (order.userId !== adminId) {
+    //   throw new ForbiddenException({
+    //     message: 'You are not authorized to update this group',
+    //     data: null,
+    //   });
+    // }
 
     const updatedData = { ...group, ...dto };
     const hasChanges = JSON.stringify(updatedData) !== JSON.stringify(group);
@@ -350,54 +350,54 @@ export class GroupService {
       });
     }
 
-    const order = await this.prismaService.orders.findUnique({
-      where: {
-        id: group.orderId,
-      },
-      include: {
-        package: true,
-      },
-    });
+    // const order = await this.prismaService.orders.findUnique({
+    //   where: {
+    //     id: group.orderId,
+    //   },
+    //   include: {
+    //     package: true,
+    //   },
+    // });
 
-    if (!order) {
-      throw new NotFoundException({
-        message: 'Order of this group not found',
-        data: null,
-      });
-    }
+    // if (!order) {
+    //   throw new NotFoundException({
+    //     message: 'Order of this group not found',
+    //     data: null,
+    //   });
+    // }
 
-    if (order.userId !== adminId) {
-      throw new ForbiddenException({
-        message: 'You are not authorized to activate this group',
-        data: null,
-      });
-    }
+    // if (order.userId !== adminId) {
+    //   throw new ForbiddenException({
+    //     message: 'You are not authorized to activate this group',
+    //     data: null,
+    //   });
+    // }
 
-    if (group.status === GroupStatus.active) {
-      throw new ConflictException({
-        message: 'Group is already active',
-        data: null,
-      });
-    }
+    // if (group.status === GroupStatus.active) {
+    //   throw new ConflictException({
+    //     message: 'Group is already active',
+    //     data: null,
+    //   });
+    // }
 
     try {
-      const duration = order.package.duration;
-      const data = await this.prismaService.groups.update({
-        where: {
-          id,
-        },
-        data: {
-          status: GroupStatus.active,
-          startDate: new Date(),
-          endDate: new Date(
-            new Date().setDate(new Date().getDate() + duration),
-          ),
-        },
-      });
+      // const duration = order.package.duration;
+      // const data = await this.prismaService.groups.update({
+      //   where: {
+      //     id,
+      //   },
+      //   data: {
+      //     status: GroupStatus.active,
+      //     startDate: new Date(),
+      //     endDate: new Date(
+      //       new Date().setDate(new Date().getDate() + duration),
+      //     ),
+      //   },
+      // });
 
       return {
         message: 'Group activated successfully',
-        data,
+        //data,
       };
     } catch (error) {
       console.log('Error:', error.message);

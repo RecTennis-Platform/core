@@ -1,16 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaymentService } from 'src/services/payment/payment.service';
 import { CreatePaymentUrlRequest } from 'src/proto/payment_service.pb';
 import { PageOptionsOrderDto } from './dto';
+import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
+import { OrderStatus } from '@prisma/client';
+import { addMonths } from 'date-fns';
 
 @Injectable()
 export class OrderService {
   constructor(
     private prismaService: PrismaService,
     private readonly paymentService: PaymentService,
+    private readonly mongodbPrismaService: MongoDBPrismaService,
   ) {}
   async create(createOrderDto: CreateOrderDto, ip: string, headers: any) {
     try {
@@ -116,18 +124,88 @@ export class OrderService {
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto) {
-    const order = await this.prismaService.orders.update({
-      where: {
-        id: id,
-      },
-      data: {
-        status: updateOrderDto.status,
-        // groupId: updateOrderDto.groupId,
-      },
-    });
-    if (!order) {
-      throw new NotFoundException({
-        message: 'Order not found',
+    try {
+      const order = await this.prismaService.orders.update({
+        where: {
+          id: id,
+        },
+        data: {
+          status: updateOrderDto.status,
+        },
+      });
+      if (!order) {
+        throw new NotFoundException({
+          message: 'Order not found',
+          data: null,
+        });
+      }
+      return {
+        ...order,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException({
+        message: error.message,
+        data: null,
+      });
+    }
+  }
+
+  async updateFromPaymentService(id: string, updateOrderDto: UpdateOrderDto) {
+    try {
+      const order = await this.prismaService.orders.update({
+        where: {
+          id: id,
+        },
+        data: {
+          status: updateOrderDto.status,
+        },
+      });
+      if (!order) {
+        throw new NotFoundException({
+          message: 'Order not found',
+          data: null,
+        });
+      }
+      if (updateOrderDto.status == OrderStatus.completed) {
+        const packageWithService = await this.prismaService.packages.findFirst({
+          where: { id: order.packageId },
+          include: {
+            packageServices: {
+              include: {
+                service: true,
+              },
+            },
+          },
+        });
+        const services = packageWithService.packageServices.map((value) => {
+          return value.service;
+        });
+
+        await this.mongodbPrismaService.boughtPackage.create({
+          data: {
+            expired: false,
+            orderId: order.id,
+            endDate: addMonths(Date.now(), packageWithService.duration),
+            userId: order.userId,
+            package: {
+              id: packageWithService.id,
+              name: packageWithService.name,
+              price: packageWithService.price,
+              duration: packageWithService.duration,
+              images: packageWithService.images,
+              createdAt: packageWithService.createdAt,
+              updatedAt: packageWithService.updatedAt,
+              services: services,
+            },
+          },
+        });
+      }
+      return {
+        ...order,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException({
+        message: error.message,
         data: null,
       });
     }

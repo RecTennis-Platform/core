@@ -1,0 +1,43 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@internal/prisma_mongo/client"
+}
+
+
+model BoughtPackage {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId  Int 
+  name    String?
+  expired   Boolean
+  orderId   String
+  package   Package
+  startDate       DateTime            @default(now()) 
+  endDate         DateTime 
+  createdAt       DateTime            @default(now()) 
+  updatedAt       DateTime            @updatedAt 
+}
+
+// Service is an embedded document
+type Service {
+  id              Int
+  name            String
+  createdAt       DateTime           
+  updatedAt       DateTime           
+  config          String
+}
+
+type Package {
+  id              Int                 
+  name            String
+  price           Float
+  duration        Int
+  images          String[]
+  services Service[]
+  createdAt       DateTime           
+  updatedAt       DateTime
+}
