@@ -2933,12 +2933,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{CORE_URL}}/bought-package/me",
+							"raw": "{{CORE_URL}}/bought-packages/me",
 							"host": [
 								"{{CORE_URL}}"
 							],
 							"path": [
-								"bought-package",
+								"bought-packages",
 								"me"
 							]
 						}
