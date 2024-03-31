@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "73e4a403-f24a-43b5-ad57-f9588f431877",
+		"_postman_id": "8d450503-880c-4cb6-8ae2-7539512aaad1",
 		"name": "Core",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20334878"
+		"_exporter_id": "24967219"
 	},
 	"item": [
 		{
@@ -17,7 +17,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTczMjE4MSwiZXhwIjoxNzIwMzcyMTgxfQ.flATxD4ag9SwIdaO3RXzonyrWcKT3KfEzEQHGt5CpXU",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDY0ODI2NiwiZXhwIjoxNzEwNjUwMDY2fQ.HeAxvwRk9a_XBCCF-Gr3TXbm-9Ve63BljTYS9_6dEik",
 									"type": "string"
 								}
 							]
@@ -26,7 +26,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"orderId\": \"7\",\n    \"name\": \"Tennis HCMUS\"\n}",
+							"raw": "{\n    \"packageId\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -51,7 +51,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"orderId\": \"6\",\n    \"name\": \"Tennis HCMUS\"\n}",
+									"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"title\": \"Tennis title\",\n    \"author\": \"ABE\",\n    \"content\": \"This is the content\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -59,12 +59,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{CORE_URL}}/groups",
+									"raw": "{{CORE_URL}}/news",
 									"host": [
 										"{{CORE_URL}}"
 									],
 									"path": [
-										"groups"
+										"news"
 									]
 								}
 							},
@@ -90,15 +90,15 @@
 								},
 								{
 									"key": "Content-Length",
-									"value": "290"
+									"value": "27"
 								},
 								{
 									"key": "ETag",
-									"value": "W/\"122-dYVQVuoaMKG6Szmt1v/nTNeAa/M\""
+									"value": "W/\"1b-ho62fWE2XRVQu25iqTe3AzAs+y4\""
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 29 Mar 2024 17:16:51 GMT"
+									"value": "Mon, 11 Mar 2024 03:21:41 GMT"
 								},
 								{
 									"key": "Connection",
@@ -110,16 +110,54 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"message\": \"Group created successfully\",\n    \"data\": {\n        \"id\": 6,\n        \"orderId\": \"6\",\n        \"name\": \"Tennis HCMUS\",\n        \"image\": null,\n        \"language\": null,\n        \"activityZone\": null,\n        \"description\": null,\n        \"status\": \"inactive\",\n        \"startDate\": null,\n        \"endDate\": null,\n        \"createdAt\": \"2024-03-29T17:16:51.456Z\",\n        \"updatedAt\": \"2024-03-29T17:16:51.456Z\"\n    }\n}"
+							"body": "{\n    \"msg\": \"success\",\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Invite Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDY1MzM1MywiZXhwIjoxNzEwNjU1MTUzfQ.dW1Ho-qU9_3kxOOOCkKIpAkTuZsNNRayRiMjj3-l-d8",
+									"type": "string"
+								}
+							]
 						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"groupId\": 1,\n    \"emails\": [\"Hi5@m.com\", \"hqkhai1636@gmail.com\",\"9a3.12.khai@gmail.com\"],\n    \"hostName\": \"startHuy\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/groups/invite",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"invite"
+							]
+						}
+					},
+					"response": [
 						{
-							"name": "Order not found",
+							"name": "Success",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"orderId\": \"16\",\n    \"name\": \"Tennis HCMUS\"\n}",
+									"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"title\": \"Tennis title\",\n    \"author\": \"ABE\",\n    \"content\": \"This is the content\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -127,12 +165,279 @@
 									}
 								},
 								"url": {
-									"raw": "{{CORE_URL}}/groups",
+									"raw": "{{CORE_URL}}/news",
 									"host": [
 										"{{CORE_URL}}"
 									],
 									"path": [
-										"groups"
+										"news"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "27"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1b-ho62fWE2XRVQu25iqTe3AzAs+y4\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:21:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"success\",\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Add User To Group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjoiaHFraGFpMTYzNkBnbWFpbC5jb20iLCJyb2xlIjpudWxsLCJncm91cElkIjoxLCJpYXQiOjE3MTA2NTM5NDEsImV4cCI6MTcxMTA4NTk0MX0.MJKxUbMTapkUtlYmEPf3Tvat4wh9ULETvcInV-s7Xm8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/groups/user",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"user"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"title\": \"Tennis title\",\n    \"author\": \"ABE\",\n    \"content\": \"This is the content\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "27"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1b-ho62fWE2XRVQu25iqTe3AzAs+y4\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:21:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"success\",\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Get list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/groups",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "asc",
+									"description": "desc, asc",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "take",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "inactive",
+									"description": "active (default), inactive, expired",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1018"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3fa-qDfi/VCAR2xsZfGrA5QGP5alDQI\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 11 Mar 2024 03:05:47 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"msg\": \"success\",\n    \"data\": [\n        {\n            \"id\": 4,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:46.513Z\",\n            \"updatedAt\": \"2024-03-11T03:05:46.513Z\"\n        },\n        {\n            \"id\": 3,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:45.940Z\",\n            \"updatedAt\": \"2024-03-11T03:05:45.940Z\"\n        },\n        {\n            \"id\": 2,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:45.257Z\",\n            \"updatedAt\": \"2024-03-11T03:05:45.257Z\"\n        },\n        {\n            \"id\": 1,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:44.515Z\",\n            \"updatedAt\": \"2024-03-11T03:05:44.515Z\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Empty list",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/news",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"news"
 									]
 								}
 							},
@@ -158,15 +463,15 @@
 								},
 								{
 									"key": "Content-Length",
-									"value": "41"
+									"value": "36"
 								},
 								{
 									"key": "ETag",
-									"value": "W/\"29-YE1pDvON0SZkgVkmjniS+K3+3jI\""
+									"value": "W/\"24-FErEnriGCKPGDxaiVR2ihaTwSA4\""
 								},
 								{
 									"key": "Date",
-									"value": "Fri, 29 Mar 2024 17:33:34 GMT"
+									"value": "Mon, 11 Mar 2024 03:34:59 GMT"
 								},
 								{
 									"key": "Connection",
@@ -178,412 +483,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"message\": \"Order not found\",\n    \"data\": null\n}"
-						},
-						{
-							"name": "Create with unauthorized orderId",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"orderId\": \"7\",\n    \"name\": \"Tennis HCMUS\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{CORE_URL}}/groups",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups"
-									]
-								}
-							},
-							"status": "Forbidden",
-							"code": 403,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "64"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"40-yksX4I7wy+akZ18dKtLOCkHR+VU\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 29 Mar 2024 17:36:18 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"message\": \"You are not authorized to create group\",\n    \"data\": null\n}"
-						},
-						{
-							"name": "Create with used orderId",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"orderId\": \"6\",\n    \"name\": \"Tennis HCMUS\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{CORE_URL}}/groups",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups"
-									]
-								}
-							},
-							"status": "Conflict",
-							"code": 409,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "56"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"38-E14QGnq9W+0/ZWjQ67BrFKDPZwY\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 29 Mar 2024 17:32:14 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"message\": \"This order already has a group\",\n    \"data\": null\n}"
-						}
-					]
-				},
-				{
-					"name": "Get list",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoidHJpMUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTczMjE1MywiZXhwIjoxNzIwMzcyMTUzfQ.ppKTK09yt3EWZIfWuue2vJ3qqOu3LZwO1LmP5gSxUrs",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/groups?page=1&take=10&role=member",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"groups"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "take",
-									"value": "10"
-								},
-								{
-									"key": "role",
-									"value": "member",
-									"description": "group_admin, member"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "Get all groups",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups?page=1&take=10",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups"
-									],
-									"query": [
-										{
-											"key": "page",
-											"value": "1",
-											"description": "asc, desc"
-										},
-										{
-											"key": "take",
-											"value": "10"
-										},
-										{
-											"key": "role",
-											"value": "",
-											"description": "group_admin, member",
-											"disabled": true
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "1415"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"587-dfFD6AUPu4UwT3T1qK5TP3P+g3Q\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 29 Mar 2024 17:21:11 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Group for beginner\",\n            \"image\": null,\n            \"activityZone\": null,\n            \"language\": null,\n            \"description\": null,\n            \"status\": \"active\",\n            \"startDate\": \"2024-03-29T08:59:19.325Z\",\n            \"endDate\": \"2024-05-28T08:59:19.325Z\",\n            \"createdAt\": \"2024-03-29T08:58:23.635Z\",\n            \"updatedAt\": \"2024-03-29T08:59:19.327Z\",\n            \"memberCount\": 2,\n            \"role\": \"group_admin\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Group for newbie\",\n            \"image\": null,\n            \"activityZone\": null,\n            \"language\": null,\n            \"description\": null,\n            \"status\": \"inactive\",\n            \"startDate\": null,\n            \"endDate\": null,\n            \"createdAt\": \"2024-03-29T09:02:16.748Z\",\n            \"updatedAt\": \"2024-03-29T09:02:16.748Z\",\n            \"memberCount\": 1,\n            \"role\": \"group_admin\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Tennis Ho Chi Minh\",\n            \"image\": null,\n            \"activityZone\": null,\n            \"language\": null,\n            \"description\": null,\n            \"status\": \"inactive\",\n            \"startDate\": null,\n            \"endDate\": null,\n            \"createdAt\": \"2024-03-29T17:12:19.598Z\",\n            \"updatedAt\": \"2024-03-29T17:12:19.598Z\",\n            \"memberCount\": 2,\n            \"role\": \"member\"\n        },\n        {\n            \"id\": 5,\n            \"name\": \"Tennis Da Nang\",\n            \"image\": null,\n            \"activityZone\": null,\n            \"language\": null,\n            \"description\": null,\n            \"status\": \"inactive\",\n            \"startDate\": null,\n            \"endDate\": null,\n            \"createdAt\": \"2024-03-29T17:12:32.888Z\",\n            \"updatedAt\": \"2024-03-29T17:12:32.888Z\",\n            \"memberCount\": 2,\n            \"role\": \"member\"\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Tennis HCMUS\",\n            \"image\": null,\n            \"activityZone\": null,\n            \"language\": null,\n            \"description\": null,\n            \"status\": \"inactive\",\n            \"startDate\": null,\n            \"endDate\": null,\n            \"createdAt\": \"2024-03-29T17:16:51.456Z\",\n            \"updatedAt\": \"2024-03-29T17:16:51.456Z\",\n            \"memberCount\": 3,\n            \"role\": \"member\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 5\n}"
-						},
-						{
-							"name": "Get owned groups",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups?page=1&take=10&role=group_admin",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups"
-									],
-									"query": [
-										{
-											"key": "page",
-											"value": "1",
-											"description": "asc, desc"
-										},
-										{
-											"key": "take",
-											"value": "10"
-										},
-										{
-											"key": "role",
-											"value": "group_admin",
-											"description": "group_admin, member"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "624"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"270-8Oid8WwPnaNK8q6xOxMnm9b4axk\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 29 Mar 2024 17:23:10 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Group for beginner\",\n            \"image\": null,\n            \"activityZone\": null,\n            \"language\": null,\n            \"description\": null,\n            \"status\": \"active\",\n            \"startDate\": \"2024-03-29T08:59:19.325Z\",\n            \"endDate\": \"2024-05-28T08:59:19.325Z\",\n            \"createdAt\": \"2024-03-29T08:58:23.635Z\",\n            \"updatedAt\": \"2024-03-29T08:59:19.327Z\",\n            \"memberCount\": 2,\n            \"role\": \"group_admin\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Group for newbie\",\n            \"image\": null,\n            \"activityZone\": null,\n            \"language\": null,\n            \"description\": null,\n            \"status\": \"inactive\",\n            \"startDate\": null,\n            \"endDate\": null,\n            \"createdAt\": \"2024-03-29T09:02:16.748Z\",\n            \"updatedAt\": \"2024-03-29T09:02:16.748Z\",\n            \"memberCount\": 1,\n            \"role\": \"group_admin\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 2\n}"
-						},
-						{
-							"name": "Get joined groups",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups?page=1&take=10&role=member",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups"
-									],
-									"query": [
-										{
-											"key": "page",
-											"value": "1",
-											"description": "asc, desc"
-										},
-										{
-											"key": "take",
-											"value": "10"
-										},
-										{
-											"key": "role",
-											"value": "member",
-											"description": "group_admin, member"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "831"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"33f-+v14yxUccivrtugU4awmHCbb53E\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 29 Mar 2024 17:23:35 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"data\": [\n        {\n            \"id\": 3,\n            \"name\": \"Tennis Ho Chi Minh\",\n            \"image\": null,\n            \"activityZone\": null,\n            \"language\": null,\n            \"description\": null,\n            \"status\": \"inactive\",\n            \"startDate\": null,\n            \"endDate\": null,\n            \"createdAt\": \"2024-03-29T17:12:19.598Z\",\n            \"updatedAt\": \"2024-03-29T17:12:19.598Z\",\n            \"memberCount\": 2,\n            \"role\": \"member\"\n        },\n        {\n            \"id\": 5,\n            \"name\": \"Tennis Da Nang\",\n            \"image\": null,\n            \"activityZone\": null,\n            \"language\": null,\n            \"description\": null,\n            \"status\": \"inactive\",\n            \"startDate\": null,\n            \"endDate\": null,\n            \"createdAt\": \"2024-03-29T17:12:32.888Z\",\n            \"updatedAt\": \"2024-03-29T17:12:32.888Z\",\n            \"memberCount\": 2,\n            \"role\": \"member\"\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Tennis HCMUS\",\n            \"image\": null,\n            \"activityZone\": null,\n            \"language\": null,\n            \"description\": null,\n            \"status\": \"inactive\",\n            \"startDate\": null,\n            \"endDate\": null,\n            \"createdAt\": \"2024-03-29T17:16:51.456Z\",\n            \"updatedAt\": \"2024-03-29T17:16:51.456Z\",\n            \"memberCount\": 3,\n            \"role\": \"member\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 3\n}"
+							"body": "{\n    \"msg\": \"No posts found\",\n    \"data\": null\n}"
 						}
 					]
 				},
@@ -1075,650 +975,6 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"msg\": \"Post not found\",\n    \"data\": null\n}"
-						}
-					]
-				},
-				{
-					"name": "Get members",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzExMDg4MTI2LCJleHAiOjE3MTk3MjgxMjZ9.2JLvvx_oIkZBxNwmbWhdzv7dlhcjqugtm5AjZFVoIbg",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/groups/1/members?order=asc&page=1&take=3",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"groups",
-								"1",
-								"members"
-							],
-							"query": [
-								{
-									"key": "order",
-									"value": "asc"
-								},
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "take",
-									"value": "3"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "Success",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/1/members?order=asc&page=1&take=3",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"1",
-										"members"
-									],
-									"query": [
-										{
-											"key": "order",
-											"value": "asc"
-										},
-										{
-											"key": "page",
-											"value": "1"
-										},
-										{
-											"key": "take",
-											"value": "3"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "619"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"26b-3r9MGa9/Xkg1oGY7OzrC5BfVPtM\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 22 Mar 2024 06:48:12 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"data\": [\n        {\n            \"userId\": 21,\n            \"groupId\": 1,\n            \"createdAt\": \"2024-03-17T04:37:20.559Z\",\n            \"updatedAt\": \"2024-03-17T04:37:20.559Z\",\n            \"user\": {\n                \"id\": 21,\n                \"email\": \"Hi5@m.com\",\n                \"name\": \"Hi5\",\n                \"image\": \"\",\n                \"role\": \"user\"\n            }\n        },\n        {\n            \"userId\": 30,\n            \"groupId\": 1,\n            \"createdAt\": \"2024-03-17T05:40:44.345Z\",\n            \"updatedAt\": \"2024-03-17T05:40:44.345Z\",\n            \"user\": {\n                \"id\": 30,\n                \"email\": \"hqkhai1636@gmail.com\",\n                \"name\": \"Truong Chi Hien\",\n                \"image\": \"\",\n                \"role\": \"user\"\n            }\n        },\n        {\n            \"userId\": 31,\n            \"groupId\": 1,\n            \"createdAt\": \"2024-03-17T05:40:44.345Z\",\n            \"updatedAt\": \"2024-03-17T05:40:44.345Z\",\n            \"user\": {\n                \"id\": 31,\n                \"email\": \"shincoder.forwork@gmail.com\",\n                \"name\": \"shin\",\n                \"image\": \"\",\n                \"role\": \"user\"\n            }\n        }\n    ],\n    \"totalPages\": 2,\n    \"totalCount\": 5\n}"
-						},
-						{
-							"name": "Is not a member",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/1/members?order=asc&page=1&take=3",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"1",
-										"members"
-									],
-									"query": [
-										{
-											"key": "order",
-											"value": "asc"
-										},
-										{
-											"key": "page",
-											"value": "1"
-										},
-										{
-											"key": "take",
-											"value": "3"
-										}
-									]
-								}
-							},
-							"status": "Forbidden",
-							"code": 403,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "60"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"3c-Yaff5SyjfIZEZ3NcK6eOI/sifUc\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 22 Mar 2024 06:49:42 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"message\": \"You are not a member of this group\",\n    \"data\": null\n}"
-						}
-					]
-				},
-				{
-					"name": "Delete member",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzExMDg4MTI2LCJleHAiOjE3MTk3MjgxMjZ9.2JLvvx_oIkZBxNwmbWhdzv7dlhcjqugtm5AjZFVoIbg",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/groups/1/members/28",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"groups",
-								"1",
-								"members",
-								"28"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "Success",
-							"originalRequest": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/1/members/28",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"1",
-										"members",
-										"28"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "53"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"35-+w3cBPUu1goQprxt/qxyvxC5hYs\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 22 Mar 2024 06:42:59 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"message\": \"Member removed successfully\",\n    \"data\": null\n}"
-						},
-						{
-							"name": "Is not a member",
-							"originalRequest": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/1/members/28",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"1",
-										"members",
-										"28"
-									]
-								}
-							},
-							"status": "Forbidden",
-							"code": 403,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "60"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"3c-Yaff5SyjfIZEZ3NcK6eOI/sifUc\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 22 Mar 2024 06:51:22 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"message\": \"You are not a member of this group\",\n    \"data\": null\n}"
-						},
-						{
-							"name": "Is not an admin",
-							"originalRequest": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/1/members/28",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"1",
-										"members",
-										"28"
-									]
-								}
-							},
-							"status": "Forbidden",
-							"code": 403,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "60"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"3c-uj/JHyM0LJLi6LSc2EWJERg711E\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 22 Mar 2024 06:51:50 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"message\": \"You are not an admin of this group\",\n    \"data\": null\n}"
-						},
-						{
-							"name": "Not found user in group",
-							"originalRequest": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/1/members/28",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"1",
-										"members",
-										"28"
-									]
-								}
-							},
-							"status": "Not Found",
-							"code": 404,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "65"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"41-7V+qEyCHefWm6wmp03QJZXsDmaM\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 22 Mar 2024 06:56:09 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"message\": \"This user is not a member of this group\",\n    \"data\": null\n}"
-						}
-					]
-				},
-				{
-					"name": "Get list for admin",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/groups/admin",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"groups",
-								"admin"
-							],
-							"query": [
-								{
-									"key": "order",
-									"value": "asc",
-									"description": "desc, asc",
-									"disabled": true
-								},
-								{
-									"key": "page",
-									"value": "2",
-									"disabled": true
-								},
-								{
-									"key": "take",
-									"value": "1",
-									"disabled": true
-								},
-								{
-									"key": "status",
-									"value": "inactive",
-									"description": "active (default), inactive, expired",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "Success",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/news",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "1018"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"3fa-qDfi/VCAR2xsZfGrA5QGP5alDQI\""
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 11 Mar 2024 03:05:47 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"msg\": \"success\",\n    \"data\": [\n        {\n            \"id\": 4,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:46.513Z\",\n            \"updatedAt\": \"2024-03-11T03:05:46.513Z\"\n        },\n        {\n            \"id\": 3,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:45.940Z\",\n            \"updatedAt\": \"2024-03-11T03:05:45.940Z\"\n        },\n        {\n            \"id\": 2,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:45.257Z\",\n            \"updatedAt\": \"2024-03-11T03:05:45.257Z\"\n        },\n        {\n            \"id\": 1,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"title\": \"Tennis title\",\n            \"description\": \"\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-03-11T03:05:44.515Z\",\n            \"updatedAt\": \"2024-03-11T03:05:44.515Z\"\n        }\n    ]\n}"
-						},
-						{
-							"name": "Empty list",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/news",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news"
-									]
-								}
-							},
-							"status": "Not Found",
-							"code": 404,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "36"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"24-FErEnriGCKPGDxaiVR2ihaTwSA4\""
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 11 Mar 2024 03:34:59 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"msg\": \"No posts found\",\n    \"data\": null\n}"
 						}
 					]
 				}
@@ -3570,7 +2826,13 @@
 					"name": "Create",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "IsMobile",
+								"value": "true",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"userId\": 1,\r\n    \"packageId\": 1,\r\n    \"partner\": \"VNPAY\"\r\n}",
@@ -3593,121 +2855,32 @@
 					"response": []
 				},
 				{
-					"name": "Get list",
+					"name": "Update",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTczMjE4MSwiZXhwIjoxNzIwMzcyMTgxfQ.flATxD4ag9SwIdaO3RXzonyrWcKT3KfEzEQHGt5CpXU",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
+						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"status\": \"completed\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{CORE_URL}}/orders?order=desc&page=1&take=10",
+							"raw": "{{CORE_URL}}/orders/8f42ef83-f6f4-4efa-916e-69ed04d4189b/payment",
 							"host": [
 								"{{CORE_URL}}"
 							],
 							"path": [
-								"orders"
-							],
-							"query": [
-								{
-									"key": "order",
-									"value": "desc",
-									"description": "asc, desc"
-								},
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "take",
-									"value": "10"
-								}
+								"orders",
+								"8f42ef83-f6f4-4efa-916e-69ed04d4189b",
+								"payment"
 							]
 						}
 					},
-					"response": [
-						{
-							"name": "Success",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/orders?order=desc&page=1&take=10",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"orders"
-									],
-									"query": [
-										{
-											"key": "order",
-											"value": "desc",
-											"description": "asc, desc"
-										},
-										{
-											"key": "page",
-											"value": "1"
-										},
-										{
-											"key": "take",
-											"value": "10"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:4200"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "1328"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"530-5xj5eXEiBV3Kqw8UbQyctSvwfQA\""
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 29 Mar 2024 17:53:56 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"data\": [\n        {\n            \"id\": \"3\",\n            \"userId\": 4,\n            \"packageId\": 1,\n            \"price\": 100,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-03-30T08:52:05.305Z\",\n            \"updatedAt\": \"2024-03-30T08:52:05.305Z\",\n            \"package\": {\n                \"id\": 1,\n                \"name\": \"Essential\",\n                \"price\": 100,\n                \"duration\": 60,\n                \"slots\": 20,\n                \"images\": [],\n                \"createdAt\": \"2024-03-29T08:52:05.305Z\",\n                \"updatedAt\": \"2024-03-29T08:52:05.305Z\",\n                \"level\": 1\n            }\n        },\n        {\n            \"id\": \"4\",\n            \"userId\": 4,\n            \"packageId\": 1,\n            \"price\": 100,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-03-30T08:52:05.305Z\",\n            \"updatedAt\": \"2024-03-30T08:52:05.305Z\",\n            \"package\": {\n                \"id\": 1,\n                \"name\": \"Essential\",\n                \"price\": 100,\n                \"duration\": 60,\n                \"slots\": 20,\n                \"images\": [],\n                \"createdAt\": \"2024-03-29T08:52:05.305Z\",\n                \"updatedAt\": \"2024-03-29T08:52:05.305Z\",\n                \"level\": 1\n            }\n        },\n        {\n            \"id\": \"5\",\n            \"userId\": 4,\n            \"packageId\": 1,\n            \"price\": 100,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-03-30T08:52:05.305Z\",\n            \"updatedAt\": \"2024-03-30T08:52:05.305Z\",\n            \"package\": {\n                \"id\": 1,\n                \"name\": \"Essential\",\n                \"price\": 100,\n                \"duration\": 60,\n                \"slots\": 20,\n                \"images\": [],\n                \"createdAt\": \"2024-03-29T08:52:05.305Z\",\n                \"updatedAt\": \"2024-03-29T08:52:05.305Z\",\n                \"level\": 1\n            }\n        },\n        {\n            \"id\": \"6\",\n            \"userId\": 4,\n            \"packageId\": 1,\n            \"price\": 100,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-03-30T08:52:05.305Z\",\n            \"updatedAt\": \"2024-03-30T08:52:05.305Z\",\n            \"package\": {\n                \"id\": 1,\n                \"name\": \"Essential\",\n                \"price\": 100,\n                \"duration\": 60,\n                \"slots\": 20,\n                \"images\": [],\n                \"createdAt\": \"2024-03-29T08:52:05.305Z\",\n                \"updatedAt\": \"2024-03-29T08:52:05.305Z\",\n                \"level\": 1\n            }\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 4\n}"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "Get",
@@ -3719,7 +2892,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userId\": 1,\r\n    \"packageId\": 1,\r\n    \"partner\": \"VNPAY\"\r\n}",
+							"raw": "{\r\n    \"userId\": 1000,\r\n    \"packageId\": 1,\r\n    \"partner\": \"VNPAY\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3727,13 +2900,46 @@
 							}
 						},
 						"url": {
-							"raw": "{{CORE_URL}}/orders/15",
+							"raw": "{{CORE_URL}}/orders/baa71722-3551-4bb1-ada3-803a56857cfe",
 							"host": [
 								"{{CORE_URL}}"
 							],
 							"path": [
 								"orders",
-								"15"
+								"baa71722-3551-4bb1-ada3-803a56857cfe"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bought Package",
+			"item": [
+				{
+					"name": "Get user's bought packages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiaHFraGFpMTYzN0BnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTg3MjI0NCwiZXhwIjoxNzExODc0MDQ0fQ.8xqBznt4tLsRvh8ca0V8rrwOBgWxZSZTREvwAc_MZTU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/bought-package/me",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"bought-package",
+								"me"
 							]
 						}
 					},

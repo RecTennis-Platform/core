@@ -12,7 +12,6 @@ generator client {
 model BoughtPackage {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId
   userId  Int 
-  name    String?
   expired   Boolean
   orderId   String
   package   Package
