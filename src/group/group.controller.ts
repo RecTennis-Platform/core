@@ -69,14 +69,14 @@ export class GroupController {
     return await this.groupService.update(adminId, id, dto);
   }
 
-  @UseGuards(JwtGuard)
-  @Patch(':id/activate')
-  async activate(
-    @GetUser('sub') adminId: number,
-    @Param('id', ParseIntPipe) id: number,
-  ) {
-    return await this.groupService.activate(adminId, id);
-  }
+  // @UseGuards(JwtGuard)
+  // @Patch(':id/activate')
+  // async activate(
+  //   @GetUser('sub') adminId: number,
+  //   @Param('id', ParseIntPipe) id: number,
+  // ) {
+  //   return await this.groupService.activate(adminId, id);
+  // }
 
   // Group post
   @Get(':id/posts')

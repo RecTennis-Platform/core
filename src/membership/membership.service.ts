@@ -196,14 +196,14 @@ export class MembershipService {
           group: {
             select: {
               id: true,
+              boughtPackageId: true,
               name: true,
               image: true,
               activityZone: true,
               language: true,
               description: true,
               status: true,
-              startDate: true,
-              endDate: true,
+              maxMember: true,
               createdAt: true,
               updatedAt: true,
               _count: {
