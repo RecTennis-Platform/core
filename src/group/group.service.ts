@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   ConflictException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -10,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { GroupStatus, MemberRole } from '@prisma/client';
 import { ITokenPayload } from 'src/auth_utils/interfaces';
 import { MembershipService } from 'src/membership/membership.service';
+import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SendMailTemplateDto } from 'src/services/mail/mail.dto';
 import { MailService } from 'src/services/mail/mail.service';
@@ -24,29 +24,54 @@ export class GroupService {
     private readonly prismaService: PrismaService,
     private jwtService: JwtService,
     private membershipService: MembershipService,
+    private readonly mongodbPrismaService: MongoDBPrismaService,
   ) {}
 
   // Group
   async create(adminId: number, dto: CreateGroupDto) {
-    const order = await this.prismaService.orders.findUnique({
-      where: {
-        id: dto.boughtPackageId,
-      },
-    });
+    const boughtPackage =
+      await this.mongodbPrismaService.boughtPackage.findUnique({
+        where: {
+          id: dto.boughtPackageId,
+          userId: adminId,
+        },
+      });
 
-    if (!order) {
+    if (!boughtPackage) {
       throw new NotFoundException({
-        message: 'Order not found',
+        message: 'Bought package not found',
         data: null,
       });
     }
 
-    if (adminId !== order.userId) {
-      throw new ForbiddenException({
-        message: 'You are not authorized to create group',
+    if (boughtPackage.expired) {
+      throw new BadRequestException({
+        message: 'Bought package is expired',
         data: null,
       });
     }
+
+    // NOTE: Use this if we need to check order of the bought package
+
+    // const order = await this.prismaService.orders.findUnique({
+    //   where: {
+    //     id: boughtPackage.orderId,
+    //   },
+    // });
+
+    // if (!order) {
+    //   throw new NotFoundException({
+    //     message: 'Order not found',
+    //     data: null,
+    //   });
+    // }
+
+    // if (adminId !== order.userId) {
+    //   throw new ForbiddenException({
+    //     message: 'You are not authorized to create group',
+    //     data: null,
+    //   });
+    // }
 
     const isUsed = await this.prismaService.groups.findFirst({
       where: {
@@ -56,15 +81,31 @@ export class GroupService {
 
     if (isUsed) {
       throw new ConflictException({
-        message: 'This order already has a group',
+        message: 'Bought package is already used',
         data: null,
       });
     }
 
+    // Check if the bought package have the service include "Group" word
+
+    const groupService = boughtPackage.package.services.find((service) =>
+      service.name.toLowerCase().includes('group'),
+    );
+
+    if (!groupService) {
+      throw new BadRequestException({
+        message: 'This package does not have the service to create group',
+        data: null,
+      });
+    }
+
+    const maxMember = JSON.parse(groupService.config).maxMember;
+
     try {
       const data = await this.prismaService.groups.create({
         data: {
-          status: GroupStatus.inactive,
+          status: GroupStatus.active,
+          maxMember,
           ...dto,
         },
       });
@@ -336,77 +377,79 @@ export class GroupService {
     });
   }
 
-  async activate(adminId: number, id: number) {
-    const group = await this.prismaService.groups.findUnique({
-      where: {
-        id,
-      },
-    });
+  // NOTE: If the group is expired, we will buy a new package to activate the group
+  // async activate(adminId: number, groupId: number, boughtPackageId: number) { // WILL USE THIS
+  // async activate(adminId: number, id: number) {
+  //   const group = await this.prismaService.groups.findUnique({
+  //     where: {
+  //       id,
+  //     },
+  //   });
 
-    if (!group) {
-      throw new NotFoundException({
-        message: 'Group not found',
-        data: null,
-      });
-    }
+  //   if (!group) {
+  //     throw new NotFoundException({
+  //       message: 'Group not found',
+  //       data: null,
+  //     });
+  //   }
 
-    // const order = await this.prismaService.orders.findUnique({
-    //   where: {
-    //     id: group.orderId,
-    //   },
-    //   include: {
-    //     package: true,
-    //   },
-    // });
+  //   // const order = await this.prismaService.orders.findUnique({
+  //   //   where: {
+  //   //     id: group.orderId,
+  //   //   },
+  //   //   include: {
+  //   //     package: true,
+  //   //   },
+  //   // });
 
-    // if (!order) {
-    //   throw new NotFoundException({
-    //     message: 'Order of this group not found',
-    //     data: null,
-    //   });
-    // }
+  //   // if (!order) {
+  //   //   throw new NotFoundException({
+  //   //     message: 'Order of this group not found',
+  //   //     data: null,
+  //   //   });
+  //   // }
 
-    // if (order.userId !== adminId) {
-    //   throw new ForbiddenException({
-    //     message: 'You are not authorized to activate this group',
-    //     data: null,
-    //   });
-    // }
+  //   // if (order.userId !== adminId) {
+  //   //   throw new ForbiddenException({
+  //   //     message: 'You are not authorized to activate this group',
+  //   //     data: null,
+  //   //   });
+  //   // }
 
-    // if (group.status === GroupStatus.active) {
-    //   throw new ConflictException({
-    //     message: 'Group is already active',
-    //     data: null,
-    //   });
-    // }
+  //   // if (group.status === GroupStatus.active) {
+  //   //   throw new ConflictException({
+  //   //     message: 'Group is already active',
+  //   //     data: null,
+  //   //   });
+  //   // }
 
-    try {
-      // const duration = order.package.duration;
-      // const data = await this.prismaService.groups.update({
-      //   where: {
-      //     id,
-      //   },
-      //   data: {
-      //     status: GroupStatus.active,
-      //     startDate: new Date(),
-      //     endDate: new Date(
-      //       new Date().setDate(new Date().getDate() + duration),
-      //     ),
-      //   },
-      // });
+  //   try {
+  //     // const duration = order.package.duration;
+  //     // const data = await this.prismaService.groups.update({
+  //     //   where: {
+  //     //     id,
+  //     //   },
+  //     //   data: {
+  //     //     status: GroupStatus.active,
+  //     //     startDate: new Date(),
+  //     //     endDate: new Date(
+  //     //       new Date().setDate(new Date().getDate() + duration),
+  //     //     ),
+  //     //   },
+  //     // });
 
-      return {
-        message: 'Group activated successfully',
-        //data,
-      };
-    } catch (error) {
-      console.log('Error:', error.message);
-      throw new BadRequestException({
-        message: 'Failed to activate group',
-        data: null,
-      });
-    }
-  }
+  //     return {
+  //       message: 'Group activated successfully',
+  //       //data,
+  //     };
+  //   } catch (error) {
+  //     console.log('Error:', error.message);
+  //     throw new BadRequestException({
+  //       message: 'Failed to activate group',
+  //       data: null,
+  //     });
+  //   }
+  // }
 
   // Group Post
   async getPosts(groupId: number, pageOptionsPostDto: PageOptionsPostDto) {
