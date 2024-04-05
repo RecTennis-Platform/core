@@ -1,7 +1,9 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -13,9 +15,17 @@ import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SendMailTemplateDto } from 'src/services/mail/mail.dto';
 import { MailService } from 'src/services/mail/mail.service';
-import { CreateGroupDto, PageOptionsPostDto, UpdateGroupDto } from './dto';
+import {
+  CreateGroupDto,
+  PageOptionsPostDto,
+  PageOptionsUserDto,
+  UpdateGroupDto,
+} from './dto';
 import { InviteUser2GroupDto } from './dto/invite-user.dto';
-import { PageOptionsGroupDto } from './dto/page-options-group.dto';
+import {
+  PageOptionsGroupDto,
+  PageOptionsGroupMembershipDto,
+} from './dto/page-options-group.dto';
 
 @Injectable()
 export class GroupService {
@@ -130,7 +140,77 @@ export class GroupService {
     }
   }
 
-  async findAll(dto: PageOptionsGroupDto) {
+  async findAllGroupsByUserId(
+    userId: number,
+    dto: PageOptionsGroupMembershipDto,
+  ) {
+    const conditions = {
+      where: {
+        userId,
+        role: dto.role,
+      },
+    };
+
+    const pageOption =
+      dto.page && dto.take
+        ? {
+            skip: dto.skip,
+            take: dto.take,
+          }
+        : undefined;
+
+    const [groups, totalCount] = await Promise.all([
+      this.prismaService.member_ships.findMany({
+        include: {
+          group: {
+            select: {
+              id: true,
+              boughtPackageId: true,
+              name: true,
+              image: true,
+              activityZone: true,
+              language: true,
+              description: true,
+              status: true,
+              maxMember: true,
+              createdAt: true,
+              updatedAt: true,
+              _count: {
+                select: {
+                  member_ships: true,
+                },
+              },
+            },
+          },
+        },
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.member_ships.count({
+        ...conditions,
+      }),
+    ]);
+
+    // Modify the structure of the returned data
+    const result = groups.map((group) => {
+      const memberCount = group.group._count.member_ships;
+      delete group.group._count;
+
+      return {
+        ...group.group,
+        memberCount,
+        isCreator: group.role === MemberRole.group_admin,
+      };
+    });
+
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / dto.take),
+      totalCount,
+    };
+  }
+
+  async findAllForAdmin(dto: PageOptionsGroupDto) {
     const conditions = {
       orderBy: [
         {
@@ -150,13 +230,33 @@ export class GroupService {
           }
         : undefined;
 
-    const [result, totalCount] = await Promise.all([
+    const [groups, totalCount] = await Promise.all([
       this.prismaService.groups.findMany({
+        include: {
+          _count: {
+            select: {
+              member_ships: true,
+            },
+          },
+        },
         ...conditions,
         ...pageOption,
       }),
-      this.prismaService.groups.count({ ...conditions }),
+      this.prismaService.groups.count({
+        ...conditions,
+      }),
     ]);
+
+    // Modify the structure of the returned data
+    const result = groups.map((group) => {
+      const memberCount = group._count.member_ships;
+      delete group._count;
+
+      return {
+        ...group,
+        memberCount,
+      };
+    });
 
     return {
       data: result,
@@ -165,22 +265,47 @@ export class GroupService {
     };
   }
 
-  async findOne(id: number) {
-    const group = await this.prismaService.groups.findUnique({
+  async findOne(userId: number, groupId: number) {
+    const groupWithMember = await this.prismaService.groups.findUnique({
       where: {
-        id,
+        id: groupId,
+      },
+      include: {
+        member_ships: {
+          where: {
+            userId: userId,
+          },
+        },
       },
     });
 
-    if (!group) {
+    if (!groupWithMember) {
       throw new NotFoundException({
         message: 'Group not found',
         data: null,
       });
     }
 
+    const member = groupWithMember.member_ships[0];
+    if (!member) {
+      throw new ForbiddenException({
+        message: 'You are not a member of this group',
+        data: null,
+      });
+    }
+
+    const memberCount = await this.prismaService.member_ships.count({
+      where: {
+        groupId,
+      },
+    });
+
+    delete groupWithMember.member_ships;
+
     return {
-      data: group,
+      ...groupWithMember,
+      memberCount,
+      isCreator: member.role === MemberRole.group_admin,
     };
   }
 
@@ -617,5 +742,127 @@ export class GroupService {
     return {
       token,
     };
+  }
+
+  async findAllMembersByGroupId(
+    userId: number,
+    groupId: number,
+    dto: PageOptionsUserDto,
+  ) {
+    // Check if the user is a member of the group
+    const isMember = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId,
+        groupId,
+      },
+    });
+
+    if (!isMember) {
+      throw new ForbiddenException({
+        message: 'You are not a member of this group',
+        data: null,
+      });
+    }
+
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: dto.order,
+        },
+      ],
+      where: {
+        groupId,
+      },
+    };
+
+    const pageOption =
+      dto.page && dto.take
+        ? {
+            skip: dto.skip,
+            take: dto.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.member_ships.findMany({
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              image: true,
+              role: true,
+            },
+          },
+        },
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.member_ships.count({
+        ...conditions,
+      }),
+    ]);
+
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / dto.take),
+      totalCount,
+    };
+  }
+
+  async remove(adminId: number, groupId: number, userId: number) {
+    // Check if the admin is a member of the group
+    const isAdmin = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId: adminId,
+        groupId,
+        role: MemberRole.group_admin,
+      },
+    });
+
+    if (!isAdmin) {
+      throw new ForbiddenException({
+        message: 'You are not an admin of this group',
+        data: null,
+      });
+    }
+
+    // Check if the user is a member of the group
+    const userIsMember = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId: userId,
+        groupId,
+      },
+    });
+
+    if (!userIsMember) {
+      throw new NotFoundException({
+        message: 'This user is not a member of this group',
+        data: null,
+      });
+    }
+
+    try {
+      await this.prismaService.member_ships.delete({
+        where: {
+          userId_groupId: {
+            groupId,
+            userId,
+          },
+        },
+      });
+
+      return {
+        message: 'Member removed successfully',
+        data: null,
+      };
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new InternalServerErrorException({
+        message: 'Failed to remove the member',
+        data: null,
+      });
+    }
   }
 }

@@ -1,7 +1,7 @@
-import { GroupStatus } from '@prisma/client';
+import { GroupStatus, MemberRole } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
-import { Order } from '../../../constants/order';
+import { Order } from 'constants/order';
 
 export class PageOptionsGroupDto {
   @IsEnum(Order)
@@ -23,7 +23,30 @@ export class PageOptionsGroupDto {
 
   @IsEnum(GroupStatus)
   @IsOptional()
-  status?: GroupStatus = GroupStatus.active;
+  status?: GroupStatus;
+
+  get skip(): number {
+    return (this.page - 1) * this.take;
+  }
+}
+
+export class PageOptionsGroupMembershipDto {
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  page?: number;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(50)
+  @IsOptional()
+  take?: number;
+
+  @IsEnum(MemberRole)
+  @IsOptional()
+  role?: MemberRole;
 
   get skip(): number {
     return (this.page - 1) * this.take;

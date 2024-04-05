@@ -12,23 +12,25 @@ import {
 } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import { GetUser, Roles } from 'src/auth_utils/decorators';
-import { JwtGuard, JwtInviteUserGuard } from 'src/auth_utils/guards';
-import { PageOptionsGroupDto, PageOptionsUserDto } from 'src/membership/dto';
-import { MembershipService } from 'src/membership/membership.service';
+import {
+  JwtGuard,
+  JwtInviteUserGuard,
+  RolesGuard,
+} from 'src/auth_utils/guards';
 import {
   CreateGroupDto,
   InviteUser2GroupDto,
+  PageOptionsGroupDto,
+  PageOptionsGroupMembershipDto,
   PageOptionsPostDto,
+  PageOptionsUserDto,
   UpdateGroupDto,
 } from './dto';
 import { GroupService } from './group.service';
 
 @Controller('groups')
 export class GroupController {
-  constructor(
-    private groupService: GroupService,
-    private membershipService: MembershipService,
-  ) {}
+  constructor(private groupService: GroupService) {}
 
   // Group
   @UseGuards(JwtGuard)
@@ -39,24 +41,27 @@ export class GroupController {
 
   @UseGuards(JwtGuard)
   @Get()
-  async findAll(
+  async findAllGroupsByUserId(
     @GetUser('sub') userId: number,
-    @Query() dto: PageOptionsGroupDto,
+    @Query() dto: PageOptionsGroupMembershipDto,
   ) {
-    return await this.membershipService.findAllGroupsByUserId(userId, dto);
+    return await this.groupService.findAllGroupsByUserId(userId, dto);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.admin)
-  @Get('/admin')
+  @Get('admin')
   async adminFindAll(@Query() dto: PageOptionsGroupDto) {
-    return await this.groupService.findAll(dto);
+    return await this.groupService.findAllForAdmin(dto);
   }
 
   @UseGuards(JwtGuard)
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return await this.groupService.findOne(id);
+  async findOne(
+    @GetUser('sub') userId: number,
+    @Param('id', ParseIntPipe) groupId: number,
+  ) {
+    return await this.groupService.findOne(userId, groupId);
   }
 
   @UseGuards(JwtGuard)
@@ -144,7 +149,7 @@ export class GroupController {
     @Param('id', ParseIntPipe) groupId: number,
     @Query() dto: PageOptionsUserDto,
   ) {
-    return await this.membershipService.findAllMembersByGroupId(
+    return await this.groupService.findAllMembersByGroupId(
       userId,
       groupId,
       dto,
@@ -158,6 +163,6 @@ export class GroupController {
     @Param('id', ParseIntPipe) groupId: number,
     @Param('userId', ParseIntPipe) userId: number,
   ) {
-    return await this.membershipService.remove(adminId, groupId, userId);
+    return await this.groupService.remove(adminId, groupId, userId);
   }
 }
