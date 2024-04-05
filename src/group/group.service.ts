@@ -29,22 +29,22 @@ export class GroupService {
 
   // Group
   async create(adminId: number, dto: CreateGroupDto) {
-    const boughtPackage =
-      await this.mongodbPrismaService.boughtPackage.findUnique({
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
         where: {
-          id: dto.boughtPackageId,
+          id: dto.purchasedPackageId,
           userId: adminId,
         },
       });
 
-    if (!boughtPackage) {
+    if (!purchasedPackage) {
       throw new NotFoundException({
         message: 'Bought package not found',
         data: null,
       });
     }
 
-    if (boughtPackage.expired) {
+    if (purchasedPackage.expired) {
       throw new BadRequestException({
         message: 'Bought package is expired',
         data: null,
@@ -55,7 +55,7 @@ export class GroupService {
 
     // const order = await this.prismaService.orders.findUnique({
     //   where: {
-    //     id: boughtPackage.orderId,
+    //     id: purchasedPackage.orderId,
     //   },
     // });
 
@@ -75,7 +75,7 @@ export class GroupService {
 
     const isUsed = await this.prismaService.groups.findFirst({
       where: {
-        boughtPackageId: dto.boughtPackageId,
+        purchasedPackageId: dto.purchasedPackageId,
       },
     });
 
@@ -88,7 +88,7 @@ export class GroupService {
 
     // Check if the bought package have the service include "Group" word
 
-    const groupService = boughtPackage.package.services.find((service) =>
+    const groupService = purchasedPackage.package.services.find((service) =>
       service.name.toLowerCase().includes('group'),
     );
 
@@ -378,7 +378,7 @@ export class GroupService {
   }
 
   // NOTE: If the group is expired, we will buy a new package to activate the group
-  // async activate(adminId: number, groupId: number, boughtPackageId: number) { // WILL USE THIS
+  // async activate(adminId: number, groupId: number, purchasedPackageId: number) { // WILL USE THIS
   // async activate(adminId: number, id: number) {
   //   const group = await this.prismaService.groups.findUnique({
   //     where: {

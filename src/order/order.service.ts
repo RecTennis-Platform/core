@@ -178,10 +178,13 @@ export class OrderService {
           },
         });
         const services = packageWithService.packageServices.map((value) => {
+          const serviceConfig = JSON.parse(value.service.config);
+          serviceConfig.used = 0;
+          value.service.config = JSON.stringify(serviceConfig);
           return value.service;
         });
 
-        await this.mongodbPrismaService.boughtPackage.create({
+        await this.mongodbPrismaService.purchasedPackage.create({
           data: {
             expired: false,
             orderId: order.id,

@@ -196,7 +196,7 @@ export class MembershipService {
           group: {
             select: {
               id: true,
-              boughtPackageId: true,
+              purchasedPackageId: true,
               name: true,
               image: true,
               activityZone: true,

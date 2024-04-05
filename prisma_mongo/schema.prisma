@@ -9,7 +9,7 @@ generator client {
 }
 
 
-model BoughtPackage {
+model PurchasedPackage {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId
   userId  Int 
   expired   Boolean

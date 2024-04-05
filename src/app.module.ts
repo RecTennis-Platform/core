@@ -10,7 +10,7 @@ import { MembershipModule } from './membership/membership.module';
 import { PackageModule } from './package/package.module';
 import { ServiceModule } from './service/service.module';
 import { PackagesServicesModule } from './packages_services/packages_services.module';
-import { BoughtPackageModule } from './bought_package/bought_package.module';
+import { PurchasedPackageModule } from './purchased_package/purchased_package.module';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { BoughtPackageModule } from './bought_package/bought_package.module';
     PackageModule,
     ServiceModule,
     PackagesServicesModule,
-    BoughtPackageModule,
+    PurchasedPackageModule,
   ],
 })
 export class AppModule {}

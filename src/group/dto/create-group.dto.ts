@@ -8,7 +8,7 @@ export class CreateGroupDto {
   @IsString()
   @IsNotEmpty()
   @IsMongoId()
-  boughtPackageId: string;
+  purchasedPackageId: string;
 
   @IsString()
   @IsOptional()

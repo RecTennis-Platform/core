@@ -1,37 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBoughtPackageDto } from './dto/create-bought_package.dto';
-import { UpdateBoughtPackageDto } from './dto/update-bought_package.dto';
+import { CreatePurchasedPackageDto } from './dto/create-purchased_package.dto';
+import { UpdatePurchasedPackageDto } from './dto/update-purchased_package.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
 
 @Injectable()
-export class BoughtPackageService {
+export class PurchasedPackageService {
   constructor(
     private prismaService: PrismaService,
     private readonly mongodbPrismaService: MongoDBPrismaService,
   ) {}
-  create(createBoughtPackageDto: CreateBoughtPackageDto) {
-    return 'This action adds a new boughtPackage';
+  create(createPurchasedPackageDto: CreatePurchasedPackageDto) {
+    return 'This action adds a new PurchasedPackage';
   }
 
   findAll() {
-    return `This action returns all boughtPackage`;
+    return `This action returns all PurchasedPackage`;
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} boughtPackage`;
+    return `This action returns a #${id} PurchasedPackage`;
   }
 
-  update(id: number, updateBoughtPackageDto: UpdateBoughtPackageDto) {
-    return `This action updates a #${id} boughtPackage`;
+  update(id: number, updatePurchasedPackageDto: UpdatePurchasedPackageDto) {
+    return `This action updates a #${id} PurchasedPackage`;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} boughtPackage`;
+    return `This action removes a #${id} PurchasedPackage`;
   }
 
-  async getUserBoughtPackages(userId: number) {
-    const packages = await this.mongodbPrismaService.boughtPackage.findMany({
+  async getUserPurchasedPackages(userId: number) {
+    const packages = await this.mongodbPrismaService.purchasedPackage.findMany({
       where: {
         userId: userId,
       },
