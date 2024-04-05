@@ -50,11 +50,11 @@ model groups {
   activityZone    String?        @map("activity_zone")
   description     String?
   status          GroupStatus    @default(active)
-  maxMember       Int            @map("max_member")
   createdAt       DateTime       @default(now()) @map("created_at")
   updatedAt       DateTime       @updatedAt @map("updated_at")
   image           String?
   boughtPackageId String         @map("bought_package_id")
+  maxMember       Int            @map("max_member")
   member_ships    member_ships[]
 }
 
