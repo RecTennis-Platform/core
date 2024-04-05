@@ -51,7 +51,7 @@ export class PurchasedPackageService {
           const configValue = JSON.parse(config);
           return {
             ...serviceInfo,
-            ...configValue,
+            config: configValue,
           };
         }),
       };

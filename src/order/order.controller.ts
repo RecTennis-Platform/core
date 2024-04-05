@@ -35,10 +35,10 @@ export class OrderController {
     } catch (error) {
       throw new HttpException(
         {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
           message: error.message || 'Internal Server Error',
         },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -54,10 +54,10 @@ export class OrderController {
     } catch (error) {
       throw new HttpException(
         {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
           message: error.message || 'Internal Server Error',
         },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -69,10 +69,10 @@ export class OrderController {
     } catch (error) {
       throw new HttpException(
         {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
           message: error.message || 'Internal Server Error',
         },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -87,10 +87,10 @@ export class OrderController {
     } catch (error) {
       throw new HttpException(
         {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
           message: error.message || 'Internal Server Error',
         },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -105,10 +105,10 @@ export class OrderController {
     } catch (error) {
       throw new HttpException(
         {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
           message: error.message || 'Internal Server Error',
         },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -120,10 +120,10 @@ export class OrderController {
     } catch (error) {
       throw new HttpException(
         {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
           message: error.message || 'Internal Server Error',
         },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

@@ -69,6 +69,7 @@ export class AffiliateService {
         data: null,
       });
     }
+    return affiliate;
   }
 
   async update(id: number, updateAffiliateDto: UpdateAffiliateDto) {
@@ -92,6 +93,7 @@ export class AffiliateService {
         data: null,
       });
     }
+    return affiliate;
   }
 
   async remove(id: number) {
@@ -106,5 +108,6 @@ export class AffiliateService {
         data: null,
       });
     }
+    return affiliate;
   }
 }

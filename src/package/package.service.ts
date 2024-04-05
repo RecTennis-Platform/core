@@ -1,26 +1,108 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PackageService {
-  create(createPackageDto: CreatePackageDto) {
-    return 'This action adds a new package';
+  constructor(private prismaService: PrismaService) {}
+  async create(createPackageDto: CreatePackageDto) {
+    return await this.prismaService.$transaction(async (tx) => {
+      const packaged = await tx.packages.create({
+        data: {
+          name: createPackageDto.name,
+          price: createPackageDto.price,
+          duration: createPackageDto.duration,
+          description: createPackageDto.description,
+          features: createPackageDto.features,
+          images: createPackageDto.images,
+        },
+      });
+
+      const packageServicesData = createPackageDto.services.map((service) => {
+        return { serviceId: service, packageId: packaged.id };
+      });
+      await tx.packages_services.createMany({
+        data: packageServicesData,
+        skipDuplicates: true,
+      });
+      return packaged;
+    });
   }
 
-  findAll() {
-    return `This action returns all package`;
+  async findAll() {
+    const packageList = await this.prismaService.packages.findMany({
+      include: {
+        packageServices: {
+          include: {
+            service: true,
+          },
+        },
+      },
+    });
+    return packageList.map((p) => {
+      const { packageServices, ...packageData } = p;
+      const services = packageServices.map((value) => {
+        return value.service;
+      });
+      return { ...packageData, services };
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} package`;
+  async findOne(id: number) {
+    const packageDetail = await this.prismaService.packages.findFirst({
+      where: {
+        id: id,
+      },
+      include: {
+        packageServices: {
+          include: {
+            service: true,
+          },
+        },
+      },
+    });
+    if (!packageDetail) {
+      throw new NotFoundException({
+        message: 'Package not found',
+        data: null,
+      });
+    }
+    const { packageServices, ...packageData } = packageDetail;
+    const services = packageServices.map((value) => {
+      return value.service;
+    });
+    return { ...packageData, services };
   }
 
-  update(id: number, updatePackageDto: UpdatePackageDto) {
-    return `This action updates a #${id} package`;
+  async update(id: number, updatePackageDto: UpdatePackageDto) {
+    const packageDetail = await this.prismaService.packages.update({
+      where: {
+        id: id,
+      },
+      data: updatePackageDto,
+    });
+    if (!packageDetail) {
+      throw new NotFoundException({
+        message: 'Package not found',
+        data: null,
+      });
+    }
+    return packageDetail;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} package`;
+  async remove(id: number) {
+    const packageDetail = await this.prismaService.packages.delete({
+      where: {
+        id: id,
+      },
+    });
+    if (!packageDetail) {
+      throw new NotFoundException({
+        message: 'Package not found',
+        data: null,
+      });
+    }
+    return packageDetail;
   }
 }
