@@ -44,18 +44,18 @@ model news {
 }
 
 model groups {
-  id                Int            @id @default(autoincrement())
-  name              String
-  language          String?
-  activityZone      String?        @map("activity_zone")
-  description       String?
-  status            GroupStatus    @default(active)
-  createdAt         DateTime       @default(now()) @map("created_at")
-  updatedAt         DateTime       @updatedAt @map("updated_at")
-  image             String?
-  purchasedPackageId String        @map("purchased_package_id")
-  maxMember         Int            @map("max_member")
-  member_ships      member_ships[]
+  id                 Int            @id @default(autoincrement())
+  name               String
+  language           String?
+  activityZone       String?        @map("activity_zone")
+  description        String?
+  status             GroupStatus    @default(active)
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
+  image              String?
+  purchasedPackageId String         @map("purchased_package_id")
+  maxMember          Int            @map("max_member")
+  member_ships       member_ships[]
 }
 
 model posts {
