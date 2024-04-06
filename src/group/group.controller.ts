@@ -12,11 +12,7 @@ import {
 } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import { GetUser, Roles } from 'src/auth_utils/decorators';
-import {
-  JwtGuard,
-  JwtInviteUserGuard,
-  RolesGuard,
-} from 'src/auth_utils/guards';
+import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import {
   CreateGroupDto,
   InviteUser2GroupDto,
@@ -27,6 +23,7 @@ import {
   UpdateGroupDto,
 } from './dto';
 import { GroupService } from './group.service';
+import { AddUser2GroupDto } from './dto/add-user-to-group.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -128,18 +125,20 @@ export class GroupController {
   // Invite user
   @UseGuards(JwtGuard)
   @Post('invite')
-  async inviteUsers(@Body() dto: InviteUser2GroupDto) {
-    return await this.groupService.inviteUser(dto);
+  async inviteUsers(
+    @GetUser('sub') userId: number,
+    @Body() dto: InviteUser2GroupDto,
+  ) {
+    return await this.groupService.inviteUser(userId, dto);
   }
 
-  @UseGuards(JwtInviteUserGuard)
+  @UseGuards(JwtGuard)
   @Post('/user')
   async addUserToGroup(
     @GetUser('sub') userId: number,
-    @GetUser('email') email: string,
-    @GetUser('groupId') groupId: number,
+    @Query() dto: AddUser2GroupDto,
   ) {
-    return await this.groupService.addUserToGroup(email, groupId, userId);
+    return await this.groupService.addUserToGroup(userId, dto);
   }
 
   @UseGuards(JwtGuard)

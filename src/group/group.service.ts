@@ -1,13 +1,12 @@
 import {
   BadRequestException,
-  ConflictException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
 import { GroupStatus, MemberRole } from '@prisma/client';
 import { ITokenPayload } from 'src/auth_utils/interfaces';
 import { MembershipService } from 'src/membership/membership.service';
@@ -15,6 +14,7 @@ import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SendMailTemplateDto } from 'src/services/mail/mail.dto';
 import { MailService } from 'src/services/mail/mail.service';
+
 import {
   CreateGroupDto,
   PageOptionsPostDto,
@@ -26,6 +26,7 @@ import {
   PageOptionsGroupDto,
   PageOptionsGroupMembershipDto,
 } from './dto/page-options-group.dto';
+import { AddUser2GroupDto } from './dto/add-user-to-group.dto';
 
 @Injectable()
 export class GroupService {
@@ -83,18 +84,18 @@ export class GroupService {
     //   });
     // }
 
-    const isUsed = await this.prismaService.groups.findFirst({
-      where: {
-        purchasedPackageId: dto.purchasedPackageId,
-      },
-    });
+    // const isUsed = await this.prismaService.groups.findFirst({
+    //   where: {
+    //     purchasedPackageId: dto.purchasedPackageId,
+    //   },
+    // });
 
-    if (isUsed) {
-      throw new ConflictException({
-        message: 'Bought package is already used',
-        data: null,
-      });
-    }
+    // if (isUsed) {
+    //   throw new ConflictException({
+    //     message: 'Bought package is already used',
+    //     data: null,
+    //   });
+    // }
 
     // Check if the bought package have the service include "Group" word
 
@@ -110,6 +111,17 @@ export class GroupService {
     }
 
     const maxMember = JSON.parse(groupService.config).maxMember;
+    const count = await this.prismaService.groups.count({
+      where: {
+        purchasedPackageId: dto.purchasedPackageId,
+      },
+    });
+    if (count >= JSON.parse(groupService.config).maxGroup) {
+      throw new BadRequestException({
+        message: 'Exceeded the allowed number of groups',
+        data: null,
+      });
+    }
 
     try {
       const data = await this.prismaService.groups.create({
@@ -125,6 +137,26 @@ export class GroupService {
         userId: adminId,
         groupId: data.id,
         role: MemberRole.group_admin,
+      });
+
+      //update purchased service
+      const newServices = purchasedPackage.package.services.map((service) => {
+        if (service.name.toLowerCase().includes('group')) {
+          const serviceConfig = JSON.parse(service.config);
+          serviceConfig.used += 1;
+          service.config = JSON.stringify(serviceConfig);
+        }
+        return service;
+      });
+      purchasedPackage.package.services = newServices;
+
+      await this.mongodbPrismaService.purchasedPackage.update({
+        where: {
+          id: purchasedPackage.id,
+        },
+        data: {
+          package: purchasedPackage.package,
+        },
       });
 
       return {
@@ -376,24 +408,25 @@ export class GroupService {
     }
   }
 
-  async inviteUser(dto: InviteUser2GroupDto) {
-    const group = await this.prismaService.groups.findUnique({
+  async inviteUser(userId: number, dto: InviteUser2GroupDto) {
+    const userGroup = await this.prismaService.member_ships.findFirst({
       where: {
-        id: dto.groupId,
+        userId: userId,
+        groupId: dto.groupId,
       },
-      // include: {
-      //   package: true,
-      // },
+      include: {
+        group: true,
+      },
     });
 
-    if (!group) {
+    if (!userGroup) {
       throw new NotFoundException({
-        message: 'Group not found',
+        message: 'Group not found or User is not in group',
         data: null,
       });
     }
 
-    if (group.status !== GroupStatus.active) {
+    if (userGroup.group.status !== GroupStatus.active) {
       throw new BadRequestException({
         message: 'Group is inactive',
         data: null,
@@ -401,13 +434,14 @@ export class GroupService {
     }
 
     try {
-      // Concurrently process invite for each email
-      const invitePromises = dto.emails.map((email) =>
-        this.processInviteUser(email, dto.groupId, dto.hostName),
-      );
-      await Promise.all(invitePromises);
+      const token = await this.generateToken({
+        email: null,
+        role: null,
+        groupId: dto.groupId,
+        sub: null,
+      });
       return {
-        message: 'Invite user successfully',
+        link: `${process.env.INVITE_USER_TO_GROUP_LINK}?token=${token.token}`,
       };
     } catch (error) {
       console.log('Error:', error.message);
@@ -456,18 +490,12 @@ export class GroupService {
     await this.mailService.sendEmailTemplate(data);
   }
 
-  async addUserToGroup(email: string, groupId: number, userId: number) {
-    const user = userId
-      ? await this.prismaService.users.findFirst({
-          where: {
-            id: userId,
-          },
-        })
-      : await this.prismaService.users.findFirst({
-          where: {
-            email: email,
-          },
-        });
+  async addUserToGroup(userId: number, dto: AddUser2GroupDto) {
+    const user = await this.prismaService.users.findFirst({
+      where: {
+        id: userId,
+      },
+    });
     if (!user) {
       //send email
       throw new NotFoundException({
@@ -475,17 +503,31 @@ export class GroupService {
         data: null,
       });
     }
-    if (user.email != email) {
-      //send email
-      throw new UnauthorizedException({
-        message: 'Unauthorized',
-        data: null,
+    try {
+      this.jwtService.verify(dto.token, {
+        secret: process.env.JWT_INVITE_USER_TO_GROUP_SECRET,
       });
+    } catch (error) {
+      if (
+        error instanceof JsonWebTokenError &&
+        error.message.includes('invalid signature')
+      ) {
+        throw new UnauthorizedException({
+          message: 'Invalid Token',
+        });
+      } else if (
+        error instanceof JsonWebTokenError &&
+        error.message.includes('expired')
+      ) {
+        throw new ForbiddenException('Token has expired');
+      }
     }
+    const decoded = await this.jwtService.decode(dto.token);
+
     const memberShip = await this.prismaService.member_ships.findFirst({
       where: {
         userId: user.id,
-        groupId: groupId,
+        groupId: decoded.groupId,
       },
     });
     if (memberShip) {
@@ -497,7 +539,7 @@ export class GroupService {
     return await this.prismaService.member_ships.create({
       data: {
         userId: user.id,
-        groupId: groupId,
+        groupId: decoded.groupId,
       },
     });
   }

@@ -17,7 +17,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTk1OTI3NiwiZXhwIjoxNzIwNTk5Mjc2fQ.LwP44y7tXkVuW3qFNCaj_qkS1OAYLtY3eEcl64xM1Wk",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiaHFraGFpMTYzN0BnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjM5MjE1NSwiZXhwIjoxNzEyMzkzOTU1fQ.k8NUtWHJCt2T4CyWIDOhjYhEWt5wzhV1Q79Hw85Cne4",
 									"type": "string"
 								}
 							]
@@ -26,7 +26,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"boughtPackageId\": \"660849ccce1c5794de0e5f0e\",\n    \"name\": \"Tennis HCMUS\"\n}",
+							"raw": "{\n    \"purchasedPackageId\": \"66102463fe50902f3bc23228\",\n    \"name\": \"Tennis HCMUS\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1144,7 +1144,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDY1MzM1MywiZXhwIjoxNzEwNjU1MTUzfQ.dW1Ho-qU9_3kxOOOCkKIpAkTuZsNNRayRiMjj3-l-d8",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiaHFraGFpMTYzN0BnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjM5MjE1NSwiZXhwIjoxNzEyMzkzOTU1fQ.k8NUtWHJCt2T4CyWIDOhjYhEWt5wzhV1Q79Hw85Cne4",
 									"type": "string"
 								}
 							]
@@ -1153,7 +1153,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"groupId\": 1,\n    \"emails\": [\"Hi5@m.com\", \"hqkhai1636@gmail.com\",\"9a3.12.khai@gmail.com\"],\n    \"hostName\": \"startHuy\"\n}",
+							"raw": "{\n    \"groupId\": 2\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1179,7 +1179,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"title\": \"Tennis title\",\n    \"author\": \"ABE\",\n    \"content\": \"This is the content\"\n}",
+									"raw": "{\n    \"groupId\": 2\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1187,12 +1187,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{CORE_URL}}/news",
+									"raw": "{{CORE_URL}}/groups/invite",
 									"host": [
 										"{{CORE_URL}}"
 									],
 									"path": [
-										"news"
+										"groups",
+										"invite"
 									]
 								}
 							},
@@ -1218,15 +1219,15 @@
 								},
 								{
 									"key": "Content-Length",
-									"value": "27"
+									"value": "237"
 								},
 								{
 									"key": "ETag",
-									"value": "W/\"1b-ho62fWE2XRVQu25iqTe3AzAs+y4\""
+									"value": "W/\"ed-df/8wPnM/1bWShF3Iyiqe386ScM\""
 								},
 								{
 									"key": "Date",
-									"value": "Mon, 11 Mar 2024 03:21:41 GMT"
+									"value": "Sat, 06 Apr 2024 08:36:18 GMT"
 								},
 								{
 									"key": "Connection",
@@ -1238,7 +1239,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"msg\": \"success\",\n    \"data\": {}\n}"
+							"body": "{\n    \"link\": \"http://localhost:3002/login?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTI1NzgsImV4cCI6MTcxMjM5MjYzOH0.4jFA8l8UJh2fczsqjzQxv_pMIN3AzlZ0Pwlg3sRbzno\"\n}"
 						}
 					]
 				},
@@ -1250,7 +1251,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjoiaHFraGFpMTYzNkBnbWFpbC5jb20iLCJyb2xlIjpudWxsLCJncm91cElkIjoxLCJpYXQiOjE3MTA2NTM5NDEsImV4cCI6MTcxMTA4NTk0MX0.MJKxUbMTapkUtlYmEPf3Tvat4wh9ULETvcInV-s7Xm8",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsImVtYWlsIjoiaHFraGFpMTYzOUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjM4OTYzMiwiZXhwIjoxNzEyMzkxNDMyfQ.bskFqLb8jwyJ0-vyoTCS487U3C5EI9rLBJBPZqA5-Gw",
 									"type": "string"
 								}
 							]
@@ -1258,38 +1259,115 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{CORE_URL}}/groups/user",
+							"raw": "{{CORE_URL}}/groups/user?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM",
 							"host": [
 								"{{CORE_URL}}"
 							],
 							"path": [
 								"groups",
 								"user"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM"
+								}
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "Success",
+							"name": "User's already in group",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"title\": \"Tennis title\",\n    \"author\": \"ABE\",\n    \"content\": \"This is the content\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
-									"raw": "{{CORE_URL}}/news",
+									"raw": "{{CORE_URL}}/groups/user?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM",
 									"host": [
 										"{{CORE_URL}}"
 									],
 									"path": [
-										"news"
+										"groups",
+										"user"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "49"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"31-MDq4GuDCFLhLbxoHiDjQZmFPPes\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Apr 2024 07:44:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"User's already in group\",\n    \"data\": null\n}"
+						},
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/user?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"user"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM"
+										}
 									]
 								}
 							},
@@ -1315,15 +1393,15 @@
 								},
 								{
 									"key": "Content-Length",
-									"value": "27"
+									"value": "118"
 								},
 								{
 									"key": "ETag",
-									"value": "W/\"1b-ho62fWE2XRVQu25iqTe3AzAs+y4\""
+									"value": "W/\"76-TgvuX7Mv6vypqpmXIEwavnBHlRI\""
 								},
 								{
 									"key": "Date",
-									"value": "Mon, 11 Mar 2024 03:21:41 GMT"
+									"value": "Sat, 06 Apr 2024 07:47:27 GMT"
 								},
 								{
 									"key": "Connection",
@@ -1335,7 +1413,139 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"msg\": \"success\",\n    \"data\": {}\n}"
+							"body": "{\n    \"userId\": 7,\n    \"groupId\": 2,\n    \"createdAt\": \"2024-04-06T07:47:27.701Z\",\n    \"updatedAt\": \"2024-04-06T07:47:27.701Z\",\n    \"role\": \"member\"\n}"
+						},
+						{
+							"name": "Invalid Token",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/user?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"user"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "27"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1b-ptDm3ggC53pgcLgMnSH4sPfBUYY\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Apr 2024 07:56:50 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Invalid Token\"\n}"
+						},
+						{
+							"name": "Token expried",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/user?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"user"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM"
+										}
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "68"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"44-VD61CEkLKOda4UPl7MMHZ+ELbr4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Apr 2024 07:58:16 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Token has expired\",\n    \"error\": \"Forbidden\",\n    \"statusCode\": 403\n}"
 						}
 					]
 				},
