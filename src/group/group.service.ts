@@ -21,12 +21,13 @@ import {
   PageOptionsUserDto,
   UpdateGroupDto,
 } from './dto';
+import { AddUser2GroupDto } from './dto/add-user-to-group.dto';
+import { CreateGroupTournamentDto } from './dto/create-group-tournament.dto';
 import { InviteUser2GroupDto } from './dto/invite-user.dto';
 import {
   PageOptionsGroupDto,
   PageOptionsGroupMembershipDto,
 } from './dto/page-options-group.dto';
-import { AddUser2GroupDto } from './dto/add-user-to-group.dto';
 
 @Injectable()
 export class GroupService {
@@ -408,6 +409,7 @@ export class GroupService {
     }
   }
 
+  // Invite User
   async inviteUser(userId: number, dto: InviteUser2GroupDto) {
     const userGroup = await this.prismaService.member_ships.findFirst({
       where: {
@@ -786,6 +788,7 @@ export class GroupService {
     };
   }
 
+  // Group Member
   async findAllMembersByGroupId(
     userId: number,
     groupId: number,
@@ -853,7 +856,7 @@ export class GroupService {
     };
   }
 
-  async remove(adminId: number, groupId: number, userId: number) {
+  async removeMember(adminId: number, groupId: number, userId: number) {
     // Check if the admin is a member of the group
     const isAdmin = await this.prismaService.member_ships.findFirst({
       where: {
@@ -907,4 +910,103 @@ export class GroupService {
       });
     }
   }
+
+  // Group Tournament
+  async createGroupTournament(
+    userId: number,
+    groupId: number,
+    dto: CreateGroupTournamentDto,
+  ) {
+    const group = await this.prismaService.groups.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException({
+        message: 'Group not found, cannot create tournament',
+        data: null,
+      });
+    }
+
+    // Check if the user is a admin of the group
+    const isAdmin = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId,
+        groupId,
+        role: MemberRole.group_admin,
+      },
+    });
+
+    if (!isAdmin) {
+      throw new ForbiddenException({
+        message: 'You are not an admin of this group',
+        data: null,
+      });
+    }
+
+    if (group.status === GroupStatus.expired) {
+      throw new BadRequestException({
+        message: 'Group is expired, cannot create tournament',
+        data: null,
+      });
+    }
+
+    try {
+      const data = await this.prismaService.group_tournaments.create({
+        data: {
+          groupId,
+          ...dto,
+          startDate: new Date(dto.startDate),
+          endDate: new Date(dto.endDate),
+        },
+      });
+
+      return {
+        message: 'Group tournament created successfully',
+        data,
+      };
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new BadRequestException({
+        message: 'Failed to create group tournament',
+        data: null,
+      });
+    }
+  }
+
+  // async getGroupTournaments(userId: number, groupId: number) {}
+
+  // async getGroupTournamentGeneralInfo(
+  //   userId: number,
+  //   groupId: number,
+  //   tournamentId: number,
+  // ) {}
+
+  // async getGroupTournamentParticipants(
+  //   userId: number,
+  //   groupId: number,
+  //   tournamentId: number,
+  // ) {}
+
+  // async getGroupTournamentNonParticipants(
+  //   userId: number,
+  //   groupId: number,
+  //   tournamentId: number,
+  // ) {}
+
+  // async addGroupTournamentParticipant(
+  //   userId: number,
+  //   groupId: number,
+  //   tournamentId: number,
+  //   dto: AddParticipantsDto,
+  // ) {}
+
+  // async removeGroupTournamentParticipant(
+  //   userId: number,
+  //   groupId: number,
+  //   tournamentId: number,
+  //   participantId: number,
+  // ) {}
 }
