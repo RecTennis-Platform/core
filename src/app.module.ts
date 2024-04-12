@@ -11,6 +11,7 @@ import { PackageModule } from './package/package.module';
 import { ServiceModule } from './service/service.module';
 import { PackagesServicesModule } from './packages_services/packages_services.module';
 import { PurchasedPackageModule } from './purchased_package/purchased_package.module';
+import { TournamentModule } from './tournament/tournament.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PurchasedPackageModule } from './purchased_package/purchased_package.mo
     ServiceModule,
     PackagesServicesModule,
     PurchasedPackageModule,
+    TournamentModule,
   ],
 })
 export class AppModule {}
