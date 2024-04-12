@@ -1,4 +1,4 @@
-import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateGroupDto {
   @IsString()
@@ -11,18 +11,18 @@ export class CreateGroupDto {
   purchasedPackageId: string;
 
   @IsString()
-  @IsOptional()
-  image?: string;
+  @IsNotEmpty()
+  image: string;
 
   @IsString()
-  @IsOptional()
-  language?: string;
+  @IsNotEmpty()
+  language: string;
 
   @IsString()
-  @IsOptional()
-  activityZone?: string;
+  @IsNotEmpty()
+  activityZone: string;
 
   @IsString()
-  @IsOptional()
-  description?: string;
+  @IsNotEmpty()
+  description: string;
 }
