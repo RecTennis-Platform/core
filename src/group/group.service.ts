@@ -1261,11 +1261,120 @@ export class GroupService {
     };
   }
 
-  // async getGroupTournamentNonParticipants(
-  //   userId: number,
-  //   groupId: number,
-  //   tournamentId: number,
-  // ) {}
+  async getGroupTournamentNonParticipants(
+    userId: number,
+    groupId: number,
+    tournamentId: number,
+  ) {
+    // Find member in group, who not in tournament
+    const group = await this.prismaService.groups.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException({
+        message: 'Group not found, cannot view participants',
+        data: null,
+      });
+    }
+
+    if (group.status === GroupStatus.expired) {
+      throw new BadRequestException({
+        message: 'Group is expired, cannot view participants',
+        data: null,
+      });
+    }
+
+    const isMember = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId,
+        groupId,
+      },
+    });
+
+    if (!isMember) {
+      throw new ForbiddenException({
+        message: 'You are not a member of this group',
+        data: null,
+      });
+    }
+
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (
+      !tournament ||
+      (isMember.role === MemberRole.member &&
+        tournament.phase === GroupTournamentPhase.new)
+    ) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    if (isMember.role === MemberRole.member) {
+      const isParticipant =
+        await this.prismaService.group_tournament_registrations.findFirst({
+          where: {
+            userId,
+            groupTournamentId: tournamentId,
+          },
+        });
+
+      if (!isParticipant) {
+        throw new ForbiddenException({
+          message: 'You are not a participant of this tournament',
+          data: null,
+        });
+      }
+    }
+
+    const participants =
+      await this.prismaService.group_tournament_registrations.findMany({
+        where: {
+          groupTournamentId: tournamentId,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+    const nonParticipants = await this.prismaService.member_ships.findMany({
+      where: {
+        groupId,
+        NOT: {
+          userId: {
+            in: participants.map((participant) => participant.userId),
+          },
+        },
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    const result = nonParticipants.map((participant) => {
+      return {
+        ...participant.user,
+        role: participant.role,
+      };
+    });
+
+    return result;
+  }
 
   // async addGroupTournamentParticipant(
   //   userId: number,

@@ -220,19 +220,19 @@ export class GroupController {
     );
   }
 
-  // @UseGuards(JwtGuard)
-  // @Get(':groupId/tournaments/:tournamentId/non-participants')
-  // async getGroupTournamentNonParticipants(
-  //   @GetUser('sub') userId: number,
-  //   @Param('groupId', ParseIntPipe) groupId: number,
-  //   @Param('tournamentId', ParseIntPipe) tournamentId: number,
-  // ) {
-  //   return await this.groupService.getGroupTournamentNonParticipants(
-  //     userId,
-  //     groupId,
-  //     tournamentId,
-  //   );
-  // }
+  @UseGuards(JwtGuard)
+  @Get(':groupId/tournaments/:tournamentId/non-participants')
+  async getGroupTournamentNonParticipants(
+    @GetUser('sub') userId: number,
+    @Param('groupId', ParseIntPipe) groupId: number,
+    @Param('tournamentId', ParseIntPipe) tournamentId: number,
+  ) {
+    return await this.groupService.getGroupTournamentNonParticipants(
+      userId,
+      groupId,
+      tournamentId,
+    );
+  }
 
   // @UseGuards(JwtGuard)
   // @Post(':groupId/tournaments/:tournamentId/participants')
