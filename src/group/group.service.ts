@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
@@ -21,6 +22,7 @@ import {
   PageOptionsUserDto,
   UpdateGroupDto,
 } from './dto';
+import { AddParticipantsDto } from './dto/add-participants.dto';
 import { AddUser2GroupDto } from './dto/add-user-to-group.dto';
 import { CreateGroupTournamentDto } from './dto/create-group-tournament.dto';
 import { InviteUser2GroupDto } from './dto/invite-user.dto';
@@ -1376,12 +1378,118 @@ export class GroupService {
     return result;
   }
 
-  // async addGroupTournamentParticipant(
-  //   userId: number,
-  //   groupId: number,
-  //   tournamentId: number,
-  //   dto: AddParticipantsDto,
-  // ) {}
+  async addGroupTournamentParticipant(
+    userId: number,
+    groupId: number,
+    tournamentId: number,
+    dto: AddParticipantsDto,
+  ) {
+    const group = await this.prismaService.groups.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException({
+        message: 'Group not found, cannot add participant',
+        data: null,
+      });
+    }
+
+    if (group.status === GroupStatus.expired) {
+      throw new BadRequestException({
+        message: 'Group is expired, cannot add participant',
+        data: null,
+      });
+    }
+
+    const isAdmin = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId,
+        groupId,
+        role: MemberRole.group_admin,
+      },
+    });
+
+    if (!isAdmin) {
+      throw new ForbiddenException({
+        message: 'You are not an admin of this group',
+        data: null,
+      });
+    }
+
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found, cannot add participant',
+        data: null,
+      });
+    }
+
+    // dto.userIds is a list of user ids need to be added to the tournament
+    // Check if the user ids are members of the group
+    const members = await this.prismaService.member_ships.findMany({
+      where: {
+        groupId,
+        userId: {
+          in: dto.userIds,
+        },
+      },
+    });
+
+    if (members.length !== dto.userIds.length) {
+      throw new NotFoundException({
+        message: 'Some users are not members of this group',
+        data: null,
+      });
+    }
+
+    // Check if the user ids are already participants of the tournament
+    const participants =
+      await this.prismaService.group_tournament_registrations.findMany({
+        where: {
+          groupTournamentId: tournamentId,
+          userId: {
+            in: dto.userIds,
+          },
+        },
+      });
+
+    if (participants.length > 0) {
+      throw new ConflictException({
+        message: 'Some users are already participants of this tournament',
+        data: null,
+      });
+    }
+
+    try {
+      await this.prismaService.group_tournament_registrations.createMany({
+        data: dto.userIds.map((userId) => {
+          return {
+            userId,
+            groupTournamentId: tournamentId,
+          };
+        }),
+      });
+
+      return {
+        message: 'Participants added successfully',
+        data: null,
+      };
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new BadRequestException({
+        message: 'Failed to add participants',
+        data: null,
+      });
+    }
+  }
 
   // async removeGroupTournamentParticipant(
   //   userId: number,

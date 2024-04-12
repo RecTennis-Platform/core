@@ -22,6 +22,7 @@ import {
   PageOptionsUserDto,
   UpdateGroupDto,
 } from './dto';
+import { AddParticipantsDto } from './dto/add-participants.dto';
 import { AddUser2GroupDto } from './dto/add-user-to-group.dto';
 import { CreateGroupTournamentDto } from './dto/create-group-tournament.dto';
 import { PageOptionsGroupTournamentDto } from './dto/page-options-group-tournament.dto';
@@ -234,21 +235,21 @@ export class GroupController {
     );
   }
 
-  // @UseGuards(JwtGuard)
-  // @Post(':groupId/tournaments/:tournamentId/participants')
-  // async addGroupTournamentParticipant(
-  //   @GetUser('sub') userId: number,
-  //   @Param('groupId', ParseIntPipe) groupId: number,
-  //   @Param('tournamentId', ParseIntPipe) tournamentId: number,
-  //   @Body() dto: AddParticipantsDto,
-  // ) {
-  //   return await this.groupService.addGroupTournamentParticipant(
-  //     userId,
-  //     groupId,
-  //     tournamentId,
-  //     dto,
-  //   );
-  // }
+  @UseGuards(JwtGuard)
+  @Post(':groupId/tournaments/:tournamentId/participants')
+  async addGroupTournamentParticipant(
+    @GetUser('sub') userId: number,
+    @Param('groupId', ParseIntPipe) groupId: number,
+    @Param('tournamentId', ParseIntPipe) tournamentId: number,
+    @Body() dto: AddParticipantsDto,
+  ) {
+    return await this.groupService.addGroupTournamentParticipant(
+      userId,
+      groupId,
+      tournamentId,
+      dto,
+    );
+  }
 
   // @UseGuards(JwtGuard)
   // @Delete(':groupId/tournaments/:tournamentId/participants/:userId')
