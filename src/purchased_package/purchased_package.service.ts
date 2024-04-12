@@ -38,6 +38,9 @@ export class PurchasedPackageService {
     });
 
     return packages.map((value) => {
+      if (Date.now() >= value.endDate.getTime()) {
+        value.expired = true;
+      }
       return {
         id: value.id,
         userId: value.userId,
