@@ -29,6 +29,7 @@ import {
   PageOptionsGroupDto,
   PageOptionsGroupMembershipDto,
 } from './dto/page-options-group.dto';
+import { PageOptionsParticipantsDto } from './dto/page-options-participants.dto';
 
 @Injectable()
 export class GroupService {
@@ -1122,11 +1123,143 @@ export class GroupService {
     };
   }
 
-  // async getGroupTournamentParticipants(
-  //   userId: number,
-  //   groupId: number,
-  //   tournamentId: number,
-  // ) {}
+  async getGroupTournamentParticipants(
+    userId: number,
+    groupId: number,
+    tournamentId: number,
+    dto: PageOptionsParticipantsDto,
+  ) {
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: dto.order,
+        },
+      ],
+    };
+
+    const pageOption =
+      dto.page && dto.take
+        ? {
+            skip: dto.skip,
+            take: dto.take,
+          }
+        : undefined;
+
+    const group = await this.prismaService.groups.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException({
+        message: 'Group not found, cannot view participants',
+        data: null,
+      });
+    }
+
+    if (group.status === GroupStatus.expired) {
+      throw new BadRequestException({
+        message: 'Group is expired, cannot view participants',
+        data: null,
+      });
+    }
+
+    const isMember = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId,
+        groupId,
+      },
+    });
+
+    if (!isMember) {
+      throw new ForbiddenException({
+        message: 'You are not a member of this group',
+        data: null,
+      });
+    }
+
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (
+      !tournament ||
+      (isMember.role === MemberRole.member &&
+        tournament.phase === GroupTournamentPhase.new)
+    ) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    if (isMember.role === MemberRole.member) {
+      const isParticipant =
+        await this.prismaService.group_tournament_registrations.findFirst({
+          where: {
+            userId,
+            groupTournamentId: tournamentId,
+          },
+        });
+
+      if (!isParticipant) {
+        throw new ForbiddenException({
+          message: 'You are not a participant of this tournament',
+          data: null,
+        });
+      }
+    }
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.group_tournament_registrations.findMany({
+        where: {
+          groupTournamentId: tournamentId,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.group_tournament_registrations.count({
+        where: {
+          groupTournamentId: tournamentId,
+        },
+        ...conditions,
+      }),
+    ]);
+
+    const participants = result.map((participant) => {
+      return {
+        ...participant,
+        user: {
+          ...participant.user,
+          role:
+            participant.userId === userId &&
+            isMember.role === MemberRole.group_admin
+              ? MemberRole.group_admin
+              : MemberRole.member,
+        },
+      };
+    });
+
+    return {
+      data: participants,
+      totalPages: Math.ceil(totalCount / dto.take),
+      totalCount,
+      isCreator: isMember.role === MemberRole.group_admin,
+    };
+  }
 
   // async getGroupTournamentNonParticipants(
   //   userId: number,
