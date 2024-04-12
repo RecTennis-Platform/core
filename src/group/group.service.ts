@@ -950,9 +950,23 @@ export class GroupService {
       });
     }
 
-    if (group.status === GroupStatus.expired) {
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: group.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Bought package not found',
+        data: null,
+      });
+    }
+
+    if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Group is expired, cannot create tournament',
+        message: 'Bought package is expired',
         data: null,
       });
     }
@@ -1006,9 +1020,23 @@ export class GroupService {
       });
     }
 
-    if (group.status === GroupStatus.expired) {
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: group.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Bought package not found',
+        data: null,
+      });
+    }
+
+    if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Group is expired, cannot view tournaments',
+        message: 'Bought package is expired',
         data: null,
       });
     }
@@ -1068,9 +1096,23 @@ export class GroupService {
       });
     }
 
-    if (group.status === GroupStatus.expired) {
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: group.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Bought package not found',
+        data: null,
+      });
+    }
+
+    if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Group is expired, cannot view tournament',
+        message: 'Bought package is expired',
         data: null,
       });
     }
@@ -1160,9 +1202,23 @@ export class GroupService {
       });
     }
 
-    if (group.status === GroupStatus.expired) {
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: group.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Bought package not found',
+        data: null,
+      });
+    }
+
+    if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Group is expired, cannot view participants',
+        message: 'Bought package is expired',
         data: null,
       });
     }
@@ -1282,9 +1338,23 @@ export class GroupService {
       });
     }
 
-    if (group.status === GroupStatus.expired) {
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: group.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Bought package not found',
+        data: null,
+      });
+    }
+
+    if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Group is expired, cannot view participants',
+        message: 'Bought package is expired',
         data: null,
       });
     }
@@ -1397,9 +1467,23 @@ export class GroupService {
       });
     }
 
-    if (group.status === GroupStatus.expired) {
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: group.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Bought package not found',
+        data: null,
+      });
+    }
+
+    if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Group is expired, cannot add participant',
+        message: 'Bought package is expired',
         data: null,
       });
     }
@@ -1510,9 +1594,23 @@ export class GroupService {
       });
     }
 
-    if (group.status === GroupStatus.expired) {
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: group.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Bought package not found',
+        data: null,
+      });
+    }
+
+    if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Group is expired, cannot remove participant',
+        message: 'Bought package is expired',
         data: null,
       });
     }
