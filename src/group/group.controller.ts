@@ -24,6 +24,7 @@ import {
 } from './dto';
 import { AddUser2GroupDto } from './dto/add-user-to-group.dto';
 import { CreateGroupTournamentDto } from './dto/create-group-tournament.dto';
+import { PageOptionsGroupTournamentDto } from './dto/page-options-group-tournament.dto';
 import { GroupService } from './group.service';
 
 @Controller('groups')
@@ -178,14 +179,15 @@ export class GroupController {
     return await this.groupService.createGroupTournament(userId, groupId, dto);
   }
 
-  // @UseGuards(JwtGuard)
-  // @Get(':groupId/tournaments')
-  // async getGroupTournaments(
-  //   @GetUser('sub') userId: number,
-  //   @Param('groupId', ParseIntPipe) groupId: number,
-  // ) {
-  //   return await this.groupService.getGroupTournaments(userId, groupId);
-  // }
+  @UseGuards(JwtGuard)
+  @Get(':groupId/tournaments')
+  async getGroupTournaments(
+    @GetUser('sub') userId: number,
+    @Param('groupId', ParseIntPipe) groupId: number,
+    @Query() dto: PageOptionsGroupTournamentDto,
+  ) {
+    return await this.groupService.getGroupTournaments(userId, groupId, dto);
+  }
 
   // @UseGuards(JwtGuard)
   // @Get(':groupId/tournaments/:tournamentId/general-info')

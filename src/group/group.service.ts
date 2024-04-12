@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
-import { GroupStatus, MemberRole } from '@prisma/client';
+import { GroupStatus, GroupTournamentPhase, MemberRole } from '@prisma/client';
 import { ITokenPayload } from 'src/auth_utils/interfaces';
 import { MembershipService } from 'src/membership/membership.service';
 import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
@@ -24,6 +24,7 @@ import {
 import { AddUser2GroupDto } from './dto/add-user-to-group.dto';
 import { CreateGroupTournamentDto } from './dto/create-group-tournament.dto';
 import { InviteUser2GroupDto } from './dto/invite-user.dto';
+import { PageOptionsGroupTournamentDto } from './dto/page-options-group-tournament.dto';
 import {
   PageOptionsGroupDto,
   PageOptionsGroupMembershipDto,
@@ -912,6 +913,7 @@ export class GroupService {
   }
 
   // Group Tournament
+  // Note: Need to limit the number of current tournaments (ongoing and upcoming)?
   async createGroupTournament(
     userId: number,
     groupId: number,
@@ -930,7 +932,6 @@ export class GroupService {
       });
     }
 
-    // Check if the user is a admin of the group
     const isAdmin = await this.prismaService.member_ships.findFirst({
       where: {
         userId,
@@ -976,7 +977,75 @@ export class GroupService {
     }
   }
 
-  // async getGroupTournaments(userId: number, groupId: number) {}
+  async getGroupTournaments(
+    userId: number,
+    groupId: number,
+    dto: PageOptionsGroupTournamentDto,
+  ) {
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: dto.order,
+        },
+      ],
+    };
+
+    const group = await this.prismaService.groups.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException({
+        message: 'Group not found, cannot view tournaments',
+        data: null,
+      });
+    }
+
+    if (group.status === GroupStatus.expired) {
+      throw new BadRequestException({
+        message: 'Group is expired, cannot view tournaments',
+        data: null,
+      });
+    }
+
+    const isMember = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId,
+        groupId,
+      },
+    });
+
+    if (!isMember) {
+      throw new ForbiddenException({
+        message: 'You are not a member of this group',
+        data: null,
+      });
+    }
+
+    let result;
+    if (isMember.role === MemberRole.group_admin) {
+      result = await this.prismaService.group_tournaments.findMany({
+        where: {
+          groupId,
+        },
+        ...conditions,
+      });
+    } else {
+      result = await this.prismaService.group_tournaments.findMany({
+        where: {
+          groupId,
+          NOT: {
+            phase: GroupTournamentPhase.new,
+          },
+        },
+        ...conditions,
+      });
+    }
+
+    return result;
+  }
 
   // async getGroupTournamentGeneralInfo(
   //   userId: number,
