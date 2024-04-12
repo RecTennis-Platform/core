@@ -251,19 +251,19 @@ export class GroupController {
     );
   }
 
-  // @UseGuards(JwtGuard)
-  // @Delete(':groupId/tournaments/:tournamentId/participants/:userId')
-  // async removeGroupTournamentParticipant(
-  //   @GetUser('sub') userId: number,
-  //   @Param('groupId', ParseIntPipe) groupId: number,
-  //   @Param('tournamentId', ParseIntPipe) tournamentId: number,
-  //   @Param('userId', ParseIntPipe) participantId: number,
-  // ) {
-  //   return await this.groupService.removeGroupTournamentParticipant(
-  //     userId,
-  //     groupId,
-  //     tournamentId,
-  //     participantId,
-  //   );
-  // }
+  @UseGuards(JwtGuard)
+  @Delete(':groupId/tournaments/:tournamentId/participants/:userId')
+  async removeGroupTournamentParticipant(
+    @GetUser('sub') userId: number,
+    @Param('groupId', ParseIntPipe) groupId: number,
+    @Param('tournamentId', ParseIntPipe) tournamentId: number,
+    @Param('userId', ParseIntPipe) participantId: number,
+  ) {
+    return await this.groupService.removeGroupTournamentParticipant(
+      userId,
+      groupId,
+      tournamentId,
+      participantId,
+    );
+  }
 }

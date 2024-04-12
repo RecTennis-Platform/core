@@ -1491,10 +1491,95 @@ export class GroupService {
     }
   }
 
-  // async removeGroupTournamentParticipant(
-  //   userId: number,
-  //   groupId: number,
-  //   tournamentId: number,
-  //   participantId: number,
-  // ) {}
+  async removeGroupTournamentParticipant(
+    userId: number,
+    groupId: number,
+    tournamentId: number,
+    participantId: number,
+  ) {
+    const group = await this.prismaService.groups.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException({
+        message: 'Group not found, cannot remove participant',
+        data: null,
+      });
+    }
+
+    if (group.status === GroupStatus.expired) {
+      throw new BadRequestException({
+        message: 'Group is expired, cannot remove participant',
+        data: null,
+      });
+    }
+
+    const isAdmin = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId,
+        groupId,
+        role: MemberRole.group_admin,
+      },
+    });
+
+    if (!isAdmin) {
+      throw new ForbiddenException({
+        message: 'You are not an admin of this group',
+        data: null,
+      });
+    }
+
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found, cannot remove participant',
+        data: null,
+      });
+    }
+
+    const participant =
+      await this.prismaService.group_tournament_registrations.findFirst({
+        where: {
+          userId: participantId,
+          groupTournamentId: tournamentId,
+        },
+      });
+
+    if (!participant) {
+      throw new NotFoundException({
+        message: 'Participant not found',
+        data: null,
+      });
+    }
+
+    try {
+      await this.prismaService.group_tournament_registrations.delete({
+        where: {
+          groupTournamentId_userId: {
+            groupTournamentId: tournamentId,
+            userId: participantId,
+          },
+        },
+      });
+
+      return {
+        message: 'Participant removed successfully',
+        data: null,
+      };
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new InternalServerErrorException({
+        message: 'Failed to remove the participant',
+        data: null,
+      });
+    }
+  }
 }
