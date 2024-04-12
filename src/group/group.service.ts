@@ -1047,11 +1047,80 @@ export class GroupService {
     return result;
   }
 
-  // async getGroupTournamentGeneralInfo(
-  //   userId: number,
-  //   groupId: number,
-  //   tournamentId: number,
-  // ) {}
+  async getGroupTournamentGeneralInfo(
+    userId: number,
+    groupId: number,
+    tournamentId: number,
+  ) {
+    const group = await this.prismaService.groups.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException({
+        message: 'Group not found, cannot view tournament',
+        data: null,
+      });
+    }
+
+    if (group.status === GroupStatus.expired) {
+      throw new BadRequestException({
+        message: 'Group is expired, cannot view tournament',
+        data: null,
+      });
+    }
+
+    const isMember = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId,
+        groupId,
+      },
+    });
+
+    if (!isMember) {
+      throw new ForbiddenException({
+        message: 'You are not a member of this group',
+        data: null,
+      });
+    }
+
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+      include: {
+        group: true,
+      },
+    });
+
+    if (
+      !tournament ||
+      (isMember.role === MemberRole.member &&
+        tournament.phase === GroupTournamentPhase.new)
+    ) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    const participants =
+      await this.prismaService.group_tournament_registrations.count({
+        where: {
+          groupTournamentId: tournamentId,
+        },
+      });
+
+    delete tournament.group.purchasedPackageId;
+
+    return {
+      ...tournament,
+      participants,
+      isCreator: isMember.role === MemberRole.group_admin,
+    };
+  }
 
   // async getGroupTournamentParticipants(
   //   userId: number,
