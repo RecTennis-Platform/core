@@ -44,19 +44,18 @@ model news {
 }
 
 model groups {
-  id                 Int                 @id @default(autoincrement())
+  id                 Int            @id @default(autoincrement())
   name               String
-  language           String
-  activityZone       String              @map("activity_zone")
-  description        String
-  status             GroupStatus         @default(active)
-  createdAt          DateTime            @default(now()) @map("created_at")
-  updatedAt          DateTime            @updatedAt @map("updated_at")
-  image              String
-  purchasedPackageId String              @map("purchased_package_id")
-  maxMember          Int                 @map("max_member")
+  language           String?
+  activityZone       String?        @map("activity_zone")
+  description        String?
+  status             GroupStatus    @default(active)
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
+  image              String?
+  purchasedPackageId String         @map("purchased_package_id")
+  maxMember          Int            @map("max_member")
   member_ships       member_ships[]
-  group_tournaments  group_tournaments[]
 }
 
 model posts {
@@ -72,13 +71,13 @@ model posts {
 model packages {
   id              Int                 @id @default(autoincrement())
   name            String
+  description     String?
   price           Float
   duration        Int
   images          String[]
+  features        String[]
   createdAt       DateTime            @default(now()) @map("created_at")
   updatedAt       DateTime            @updatedAt @map("updated_at")
-  description     String?
-  features        String[]
   orders          orders[]
   packageServices packages_services[]
 }
@@ -128,72 +127,18 @@ model member_ships {
 }
 
 model users {
-  id                             Int                              @id @default(autoincrement())
-  email                          String                           @unique
-  password                       String?
-  name                           String
-  image                          String?
-  refreshToken                   String?                          @map("refresh_token")
-  resetPassword                  Boolean                          @default(false) @map("reset_password")
-  createdAt                      DateTime                         @default(now()) @map("created_at")
-  updatedAt                      DateTime                         @updatedAt @map("updated_at")
-  role                           UserRole                         @default(user)
-  memberShips                    member_ships[]
-  orders                         orders[]
-  group_tournament_registrations group_tournament_registrations[]
-}
-
-model tournaments {
-  id                      Int              @id @default(autoincrement())
-  purchased_package_id    String
-  name                    String
-  max_participants        Int
-  gender                  Gender
-  format                  TournamentFormat
-  participant_type        ParticipantType
-  image_url               String
-  description             String
-  players_born_after_date DateTime
-  registration_due_date   DateTime
-  start_date              DateTime
-  end_date                DateTime
-  status                  TournamentStatus @default(upcoming)
-  phase                   TournamentPhase  @default(new)
-  address                 String
-  contact_person_name     String
-  contact_number          String
-  contact_email           String
-  created_at              DateTime         @default(now())
-  updated_at              DateTime
-}
-
-model group_tournaments {
-  id                             Int                              @id @default(autoincrement())
-  groupId                        Int                              @map("group_id")
-  name                           String
-  description                    String
-  imageUrl                       String                           @map("image_url")
-  format                         GroupTournamentFormat
-  status                         GroupTournamentStatus            @default(upcoming)
-  phase                          GroupTournamentPhase             @default(new)
-  startDate                      DateTime                         @map("start_date")
-  endDate                        DateTime                         @map("end_date")
-  address                        String
-  createdAt                      DateTime                         @default(now()) @map("created_at")
-  updatedAt                      DateTime                         @updatedAt @map("updated_at")
-  group                          groups                           @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournaments_groups")
-  group_tournament_registrations group_tournament_registrations[]
-}
-
-model group_tournament_registrations {
-  groupTournamentId Int               @map("group_tournament_id")
-  userId            Int               @map("user_id")
-  createdAt         DateTime          @default(now()) @map("created_at")
-  updatedAt         DateTime          @updatedAt @map("updated_at")
-  groupTournament   group_tournaments @relation(fields: [groupTournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournament_registrations_group_tournaments")
-  user              users             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournament_registrations_users")
-
-  @@id([groupTournamentId, userId])
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String?
+  name          String
+  image         String?
+  refreshToken  String?        @map("refresh_token")
+  resetPassword Boolean        @default(false) @map("reset_password")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  role          UserRole       @default(user)
+  memberShips   member_ships[]
+  orders        orders[]
 }
 
 enum AffiliateStatus {
@@ -221,56 +166,4 @@ enum UserRole {
 enum MemberRole {
   group_admin
   member
-}
-
-enum Gender {
-  male
-  female
-  any
-}
-
-enum ParticipantType {
-  single
-  doubles
-  mixed_doubles
-}
-
-enum TournamentFormat {
-  round_robin
-  knockout
-  group_playoff
-}
-
-enum TournamentPhase {
-  new
-  published
-  finalized_applicants
-  generated_fixtures
-  scored_matches
-  completed
-}
-
-enum TournamentStatus {
-  on_going
-  upcoming
-  completed
-}
-
-enum GroupTournamentFormat {
-  round_robin
-  knockout
-}
-
-enum GroupTournamentStatus {
-  on_going
-  upcoming
-  completed
-}
-
-enum GroupTournamentPhase {
-  new
-  published
-  generated_fixtures
-  scored_matches
-  completed
 }

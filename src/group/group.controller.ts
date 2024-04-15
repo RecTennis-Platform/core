@@ -22,16 +22,12 @@ import {
   PageOptionsUserDto,
   UpdateGroupDto,
 } from './dto';
-import { AddParticipantsDto } from './dto/add-participants.dto';
-import { AddUser2GroupDto } from './dto/add-user-to-group.dto';
-import { CreateGroupTournamentDto } from './dto/create-group-tournament.dto';
-import { PageOptionsGroupTournamentDto } from './dto/page-options-group-tournament.dto';
-import { PageOptionsParticipantsDto } from './dto/page-options-participants.dto';
 import { GroupService } from './group.service';
+import { AddUser2GroupDto } from './dto/add-user-to-group.dto';
 
 @Controller('groups')
 export class GroupController {
-  constructor(private readonly groupService: GroupService) {}
+  constructor(private groupService: GroupService) {}
 
   // Group
   @UseGuards(JwtGuard)
@@ -84,7 +80,7 @@ export class GroupController {
   //   return await this.groupService.activate(adminId, id);
   // }
 
-  // Group Post
+  // Group post
   @Get(':id/posts')
   async getPosts(
     @Param('id', ParseIntPipe) groupId: number,
@@ -145,7 +141,6 @@ export class GroupController {
     return await this.groupService.addUserToGroup(userId, dto);
   }
 
-  // Group Member
   @UseGuards(JwtGuard)
   @Get(':id/members')
   async findAllMembersByGroupId(
@@ -167,103 +162,6 @@ export class GroupController {
     @Param('id', ParseIntPipe) groupId: number,
     @Param('userId', ParseIntPipe) userId: number,
   ) {
-    return await this.groupService.removeMember(adminId, groupId, userId);
-  }
-
-  // Group Tournament
-  @UseGuards(JwtGuard)
-  @Post(':groupId/tournaments')
-  async createGroupTournament(
-    @GetUser('sub') userId: number,
-    @Param('groupId', ParseIntPipe) groupId: number,
-    @Body() dto: CreateGroupTournamentDto,
-  ) {
-    return await this.groupService.createGroupTournament(userId, groupId, dto);
-  }
-
-  @UseGuards(JwtGuard)
-  @Get(':groupId/tournaments')
-  async getGroupTournaments(
-    @GetUser('sub') userId: number,
-    @Param('groupId', ParseIntPipe) groupId: number,
-    @Query() dto: PageOptionsGroupTournamentDto,
-  ) {
-    return await this.groupService.getGroupTournaments(userId, groupId, dto);
-  }
-
-  @UseGuards(JwtGuard)
-  @Get(':groupId/tournaments/:tournamentId/general-info')
-  async getGroupTournamentGeneralInfo(
-    @GetUser('sub') userId: number,
-    @Param('groupId', ParseIntPipe) groupId: number,
-    @Param('tournamentId', ParseIntPipe) tournamentId: number,
-  ) {
-    return await this.groupService.getGroupTournamentGeneralInfo(
-      userId,
-      groupId,
-      tournamentId,
-    );
-  }
-
-  @UseGuards(JwtGuard)
-  @Get(':groupId/tournaments/:tournamentId/participants')
-  async getGroupTournamentParticipants(
-    @GetUser('sub') userId: number,
-    @Param('groupId', ParseIntPipe) groupId: number,
-    @Param('tournamentId', ParseIntPipe) tournamentId: number,
-    @Query() dto: PageOptionsParticipantsDto,
-  ) {
-    return await this.groupService.getGroupTournamentParticipants(
-      userId,
-      groupId,
-      tournamentId,
-      dto,
-    );
-  }
-
-  @UseGuards(JwtGuard)
-  @Get(':groupId/tournaments/:tournamentId/non-participants')
-  async getGroupTournamentNonParticipants(
-    @GetUser('sub') userId: number,
-    @Param('groupId', ParseIntPipe) groupId: number,
-    @Param('tournamentId', ParseIntPipe) tournamentId: number,
-  ) {
-    return await this.groupService.getGroupTournamentNonParticipants(
-      userId,
-      groupId,
-      tournamentId,
-    );
-  }
-
-  @UseGuards(JwtGuard)
-  @Post(':groupId/tournaments/:tournamentId/participants')
-  async addGroupTournamentParticipant(
-    @GetUser('sub') userId: number,
-    @Param('groupId', ParseIntPipe) groupId: number,
-    @Param('tournamentId', ParseIntPipe) tournamentId: number,
-    @Body() dto: AddParticipantsDto,
-  ) {
-    return await this.groupService.addGroupTournamentParticipant(
-      userId,
-      groupId,
-      tournamentId,
-      dto,
-    );
-  }
-
-  @UseGuards(JwtGuard)
-  @Delete(':groupId/tournaments/:tournamentId/participants/:userId')
-  async removeGroupTournamentParticipant(
-    @GetUser('sub') userId: number,
-    @Param('groupId', ParseIntPipe) groupId: number,
-    @Param('tournamentId', ParseIntPipe) tournamentId: number,
-    @Param('userId', ParseIntPipe) participantId: number,
-  ) {
-    return await this.groupService.removeGroupTournamentParticipant(
-      userId,
-      groupId,
-      tournamentId,
-      participantId,
-    );
+    return await this.groupService.remove(adminId, groupId, userId);
   }
 }
