@@ -4,8 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
+import { CreateTournamentDto } from './dto';
+import { tournaments } from '@prisma/client';
 
 @Injectable()
 export class TournamentService {
@@ -39,11 +40,11 @@ export class TournamentService {
 
     // Check if the bought package have the service == "Tournament"
 
-    const TournamentService = purchasedPackage.package.services.find(
+    const tournamentService = purchasedPackage.package.services.find(
       (service) => service.name.toLowerCase() == 'tournament',
     );
 
-    if (!TournamentService) {
+    if (!tournamentService) {
       throw new BadRequestException({
         message: 'This package does not have the service to create tournament',
         data: null,
@@ -55,7 +56,7 @@ export class TournamentService {
         purchasedPackageId: dto.purchasedPackageId,
       },
     });
-    if (count >= JSON.parse(TournamentService.config).maxTournament) {
+    if (count >= JSON.parse(tournamentService.config).maxTournament) {
       throw new BadRequestException({
         message: 'Exceeded the allowed number of tournaments',
         data: null,
@@ -64,7 +65,7 @@ export class TournamentService {
 
     try {
       // Create a new tournament
-      const data = await this.prismaService.tournaments.create({
+      const data: tournaments = await this.prismaService.tournaments.create({
         data: {
           purchasedPackageId: dto.purchasedPackageId,
           name: dto.name,
@@ -105,19 +106,22 @@ export class TournamentService {
         },
       });
 
-      // Populate purchasedPackage
-      data['purchasedPackage'] = {
-        id: purchasedPackage.id,
-        name: purchasedPackage.package.name,
-        services: purchasedPackage.package.services,
+      // Build response data
+      const response_data = {
+        ...data,
+        // Populate purchasedPackage from MongoDB
+        purchasedPackage: {
+          id: purchasedPackage.id,
+          name: purchasedPackage.package.name,
+          services: purchasedPackage.package.services,
+        },
+        participants: 0,
+        isCreator: true,
       };
-      delete data.purchasedPackageId;
-
-      // TODO: Populate participants
 
       return {
         message: 'Tournament created successfully',
-        data,
+        data: response_data,
       };
     } catch (error) {
       console.log('Error:', error.message);

@@ -11,8 +11,6 @@ import {
   MinLength,
 } from 'class-validator';
 
-// Custom validation decorators
-
 export class CreateTournamentDto {
   @IsNotEmpty()
   @IsString()
