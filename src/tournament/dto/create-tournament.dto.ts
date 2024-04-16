@@ -40,17 +40,17 @@ export class CreateTournamentDto {
   @IsEmail()
   contactEmail: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
   @Type(() => Date)
   startDate?: Date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
   @Type(() => Date)
   endDate?: Date = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
   @Type(() => Date)
   registrationDueDate?: Date = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
@@ -64,9 +64,9 @@ export class CreateTournamentDto {
   @IsEnum(TournamentFormat)
   format: TournamentFormat;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  maxParticipants: number;
+  maxParticipants?: number;
 
   @IsNotEmpty()
   @IsEnum(Gender)
@@ -76,7 +76,7 @@ export class CreateTournamentDto {
   @IsEnum(ParticipantType)
   participantType: ParticipantType;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
   @Type(() => Date)
   playersBornAfterDate?: Date = new Date(1990, 0, 1); // Default 1990/1/1

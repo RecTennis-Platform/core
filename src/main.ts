@@ -10,6 +10,7 @@ async function bootstrap() {
     origin: `${process.env.FRONTEND_URL}`,
   });
 
+  // Enable validation globally
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

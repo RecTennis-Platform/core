@@ -138,6 +138,7 @@ model users {
   createdAt                      DateTime                         @default(now()) @map("created_at")
   updatedAt                      DateTime                         @updatedAt @map("updated_at")
   role                           UserRole                         @default(user)
+  gender                         Gender
   group_tournament_registrations group_tournament_registrations[]
   memberShips                    member_ships[]
   orders                         orders[]
@@ -148,7 +149,7 @@ model tournaments {
   purchasedPackageId   String           @map("purchased_package_id")
   name                 String
   maxParticipants      Int              @map("max_participants")
-  gender               Gender
+  gender               Gender?
   format               TournamentFormat
   participantType      ParticipantType  @map("participant_type")
   description          String?
@@ -165,6 +166,19 @@ model tournaments {
   updatedAt            DateTime         @updatedAt @map("updated_at")
   phase                TournamentPhase  @default(new)
   image                String?
+}
+
+model tournament_registrations {
+  id           Int                @id @default(autoincrement())
+  tournamentId Int                @map("tournament_id")
+  userId1      Int                @map("user_id_1")
+  userId2      Int?               @map("user_id_2")
+  name         String
+  message      String?
+  status       RegistrationStatus
+  createdAt    DateTime           @default(now()) @map("created_at")
+  updatedAt    DateTime           @updatedAt @map("updated_at")
+  appliedDate  DateTime?          @map("applied_date")
 }
 
 model group_tournament_registrations {
@@ -226,7 +240,6 @@ enum MemberRole {
 enum Gender {
   male
   female
-  any
 }
 
 enum TournamentFormat {
@@ -242,7 +255,7 @@ enum TournamentStatus {
 }
 
 enum ParticipantType {
-  single
+  singles
   doubles
   mixed_doubles
 }
@@ -273,4 +286,12 @@ enum TournamentPhase {
   generated_fixtures
   scored_matches
   completed
+}
+
+enum RegistrationStatus {
+  inviting
+  canceled
+  pending
+  approved
+  rejected
 }
