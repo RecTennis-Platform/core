@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -69,10 +70,84 @@ export class TournamentController {
 
   // Participants
   // For Creator
+  @UseGuards(JwtGuard)
   @Get(':tournamentId/applicants')
-  async getApplicantsList() {}
+  async getApplicantsList(
+    @GetUser('sub') userId: number,
+    @Param('tournamentId') tournamentId: number,
+    @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
+  ) {
+    return this.tournamentService.getApplicantsList(
+      userId,
+      tournamentId,
+      pageOptionsTournamentDto,
+    );
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':tournamentId/applicants/approve')
+  async approveApplicant(
+    @GetUser('sub') userId: number,
+    @Param('tournamentId') tournamentId: number,
+    @Body('userId') applicantId: number,
+  ) {
+    return this.tournamentService.approveApplicant(
+      tournamentId,
+      userId,
+      applicantId,
+    );
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':tournamentId/applicants/reject')
+  async rejectApplicant(
+    @GetUser('sub') userId: number,
+    @Param('tournamentId') tournamentId: number,
+    @Body('userId') applicantId: number,
+  ) {
+    return this.tournamentService.rejectApplicant(
+      tournamentId,
+      userId,
+      applicantId,
+    );
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':tournamentId/applicants/finalize')
+  async finalizeApplicantList(
+    @GetUser('sub') userId: number,
+    @Param('tournamentId') tournamentId: number,
+  ) {
+    return this.tournamentService.finalizeApplicantList(tournamentId, userId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':tournamentId/applicants')
+  async getFinalizedApplicants(
+    @GetUser('sub') userId: number,
+    @Param('tournamentId') tournamentId: number,
+    @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
+  ) {
+    return this.tournamentService.getFinalizedApplicants(
+      tournamentId,
+      userId,
+      pageOptionsTournamentDto,
+    );
+  }
 
   // For Applicant
+  @UseGuards(JwtGuard)
+  @Get(':tournamentId/applicants/apply')
+  async getSubmittedApplications(
+    @GetUser('sub') userId: number,
+    @Param('tournamentId') tournamentId: number,
+  ) {
+    return this.tournamentService.getSubmittedApplications(
+      userId,
+      tournamentId,
+    );
+  }
+
   @UseGuards(JwtGuard)
   @Post(':tournamentId/applicants/apply')
   async submitApplication(
@@ -81,5 +156,56 @@ export class TournamentController {
     @Body() dto: CreateApplyApplicantDto,
   ) {
     return this.tournamentService.submitApplication(userId, tournamentId, dto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(':tournamentId/applicants/apply')
+  async cancelApplication(
+    @GetUser('sub') userId: number,
+    @Param('tournamentId') tournamentId: number,
+  ) {
+    return this.tournamentService.cancelApplication(userId, tournamentId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':tournamentId/applicants/invitations')
+  async getTournamentInvitations(
+    @GetUser('sub') userId: number,
+    @Param('tournamentId') tournamentId: number,
+    @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
+  ) {
+    return this.tournamentService.getTournamentInvitations(
+      userId,
+      tournamentId,
+      pageOptionsTournamentDto,
+    );
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(':tournamentId/applicants/invitations/accept')
+  async acceptInvitation(
+    @GetUser('sub') userId: number,
+    @Param('tournamentId') tournamentId: number,
+    @Body('inviterId') inviterId: number,
+  ) {
+    return this.tournamentService.acceptInvitation(
+      userId,
+      tournamentId,
+      inviterId,
+    );
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(':tournamentId/applicants/invitations/reject')
+  async rejectInvitation(
+    @GetUser('sub') userId: number,
+    @Param('tournamentId') tournamentId: number,
+    @Body('inviterId') inviterId: number,
+  ) {
+    return this.tournamentService.rejectInvitation(
+      userId,
+      tournamentId,
+      inviterId,
+    );
   }
 }

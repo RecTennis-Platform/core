@@ -378,8 +378,631 @@ export class TournamentService {
 
   // Participants
   // Creator
+  async getApplicantsList(
+    userId: number,
+    tournamentId: number,
+    pageOptionsTournamentDto: PageOptionsTournamentDto,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Purchased package not found',
+        data: null,
+      });
+    }
+
+    // Check expiration date of the purchased package
+    if (new Date(purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        message: 'Purchased package is expired',
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    if (purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Unauthorized to access this tournament',
+        data: null,
+      });
+    }
+
+    let projection = {};
+    if (tournament.participantType === ParticipantType.singles) {
+      projection = {
+        userId1: true,
+        message: true,
+        status: true,
+        appliedDate: true,
+      };
+    } else {
+      projection = {
+        userId1: true,
+        userId2: true,
+        message: true,
+        status: true,
+        appliedDate: true,
+      };
+    }
+
+    // Get list of tournament applicants
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptionsTournamentDto.order,
+        },
+      ],
+      where: {
+        tournamentId: tournamentId,
+      },
+      select: {
+        ...projection,
+      },
+    };
+
+    if (pageOptionsTournamentDto.status) {
+      conditions.where['status'] = pageOptionsTournamentDto.status;
+    }
+
+    const pageOption =
+      pageOptionsTournamentDto.page && pageOptionsTournamentDto.take
+        ? {
+            skip: pageOptionsTournamentDto.skip,
+            take: pageOptionsTournamentDto.take,
+          }
+        : undefined;
+
+    // Get tournaments that are created by the user
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.tournament_registrations.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.tournament_registrations.count({
+        where: {
+          ...conditions.where,
+        },
+      }),
+    ]);
+
+    return {
+      data: result,
+      participantType: tournament.participantType,
+      maxParticipants: tournament.maxParticipants,
+      totalPages: Math.ceil(totalCount / pageOptionsTournamentDto.take),
+      totalCount,
+    };
+  }
+
+  async approveApplicant(
+    tournamentId: number,
+    userId: number,
+    applicantId: number,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Purchased package not found',
+        data: null,
+      });
+    }
+
+    // Check expiration date of the purchased package
+    if (new Date(purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        message: 'Purchased package is expired',
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    if (purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Unauthorized to access this tournament',
+        data: null,
+      });
+    }
+
+    // Get tournament registration info
+    const tournament_registration =
+      await this.prismaService.tournament_registrations.findFirst({
+        where: {
+          tournamentId: tournamentId,
+          userId1: applicantId,
+          status: RegistrationStatus.pending,
+        },
+      });
+
+    if (!tournament_registration) {
+      throw new NotFoundException({
+        message: 'Applicant not found',
+        data: null,
+      });
+    }
+
+    // Update tournament registration status -> approved
+    try {
+      await this.prismaService.tournament_registrations.update({
+        where: {
+          id: tournament_registration.id,
+        },
+        data: {
+          status: RegistrationStatus.approved,
+        },
+      });
+    } catch (err) {
+      console.log('Error:', err.message);
+      throw new BadRequestException({
+        message: 'Failed to approve the applicant',
+        data: null,
+      });
+    }
+
+    return {
+      message: 'Applicant approved successfully',
+      data: null,
+    };
+  }
+
+  async rejectApplicant(
+    tournamentId: number,
+    userId: number,
+    applicantId: number,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Purchased package not found',
+        data: null,
+      });
+    }
+
+    // Check expiration date of the purchased package
+    if (new Date(purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        message: 'Purchased package is expired',
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    if (purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Unauthorized to access this tournament',
+        data: null,
+      });
+    }
+
+    // Get tournament registration info
+    const tournament_registration =
+      await this.prismaService.tournament_registrations.findFirst({
+        where: {
+          tournamentId: tournamentId,
+          userId1: applicantId,
+          status: RegistrationStatus.pending,
+        },
+      });
+
+    if (!tournament_registration) {
+      throw new NotFoundException({
+        message: 'Applicant not found',
+        data: null,
+      });
+    }
+
+    // Update tournament registration status -> rejected
+    try {
+      await this.prismaService.tournament_registrations.update({
+        where: {
+          id: tournament_registration.id,
+        },
+        data: {
+          status: RegistrationStatus.rejected,
+        },
+      });
+    } catch (err) {
+      console.log('Error:', err.message);
+      throw new BadRequestException({
+        message: 'Failed to reject the applicant',
+        data: null,
+      });
+    }
+
+    return {
+      message: 'Applicant rejected successfully',
+      data: null,
+    };
+  }
+
+  async finalizeApplicantList(tournamentId: number, userId: number) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Purchased package not found',
+        data: null,
+      });
+    }
+
+    // Check expiration date of the purchased package
+    if (new Date(purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        message: 'Purchased package is expired',
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    if (purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Unauthorized to access this tournament',
+        data: null,
+      });
+    }
+
+    // Check if the tournament status is already finalized_applicants
+    if (tournament.phase === TournamentPhase.finalized_applicants) {
+      return {
+        message: 'Applicant list already finalized',
+        data: null,
+      };
+    }
+
+    // Update tournament status -> finalized_applicants
+    try {
+      await this.prismaService.tournaments.update({
+        where: {
+          id: tournamentId,
+        },
+        data: {
+          phase: TournamentPhase.finalized_applicants,
+        },
+      });
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new BadRequestException({
+        message: 'Failed to finalize the applicant list',
+        data: null,
+      });
+    }
+
+    return {
+      message: 'Applicant list finalized successfully',
+      data: null,
+    };
+  }
+
+  async getFinalizedApplicants(
+    tournamentId: number,
+    userId: number,
+    pageOptionsTournamentDto: PageOptionsTournamentDto,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Purchased package not found',
+        data: null,
+      });
+    }
+
+    // Check expiration date of the purchased package
+    if (new Date(purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        message: 'Purchased package is expired',
+        data: null,
+      });
+    }
+
+    // Check if the tournament status is finalized_applicants
+    if (tournament.phase !== TournamentPhase.finalized_applicants) {
+      return {
+        message: 'Applicant list not finalized',
+        data: null,
+      };
+    }
+
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptionsTournamentDto.order,
+        },
+      ],
+      where: {
+        tournamentId: tournamentId,
+        status: RegistrationStatus.approved,
+      },
+    };
+
+    if (tournament.participantType === ParticipantType.singles) {
+      conditions['select'] = {
+        userId1: true,
+        message: true,
+        status: true,
+        appliedDate: true,
+      };
+    } else {
+      conditions['select'] = {
+        userId1: true,
+        userId2: true,
+        message: true,
+        status: true,
+        appliedDate: true,
+      };
+    }
+
+    const pageOption =
+      pageOptionsTournamentDto.page && pageOptionsTournamentDto.take
+        ? {
+            skip: pageOptionsTournamentDto.skip,
+            take: pageOptionsTournamentDto.take,
+          }
+        : undefined;
+
+    // Get finalized applicants
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.tournament_registrations.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.tournament_registrations.count({
+        where: {
+          ...conditions.where,
+        },
+      }),
+    ]);
+
+    return {
+      data: result,
+      participantType: tournament.participantType,
+      maxParticipants: tournament.maxParticipants,
+      totalPages: Math.ceil(totalCount / pageOptionsTournamentDto.take),
+      totalCount,
+    };
+  }
 
   // Applicant
+  async getSubmittedApplications(userId: number, tournamentId: number) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Purchased package not found',
+        data: null,
+      });
+    }
+
+    // Check expiration date of the purchased package
+    if (new Date(purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        message: 'Purchased package is expired',
+        data: null,
+      });
+    }
+
+    // Get tournament registration info
+    const tournament_registration =
+      await this.prismaService.tournament_registrations.findFirst({
+        where: {
+          tournamentId: tournamentId,
+          userId1: userId,
+        },
+      });
+
+    if (!tournament_registration) {
+      return {
+        message: 'No submitted applications',
+        data: null,
+      };
+    }
+
+    // Get user1 info
+    const user1 = await this.prismaService.users.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user1) {
+      throw new NotFoundException({
+        message: 'User1 not found',
+        data: null,
+      });
+    }
+
+    let response_data = {};
+    if (tournament.participantType === ParticipantType.singles) {
+      // Build response data
+      response_data = {
+        user1: {
+          id: user1.id,
+          name: user1.name,
+          image: user1.image,
+          email: user1.email,
+          gender: user1.gender,
+        },
+        message: tournament_registration.message,
+        status: tournament_registration.status,
+        appliedDate: tournament_registration.appliedDate,
+      };
+    } else {
+      // Check if the invitation is accepted
+      if (
+        tournament_registration.status !== RegistrationStatus.pending &&
+        tournament_registration.status !== RegistrationStatus.inviting
+      ) {
+        return {
+          message: 'Invalid submitted application',
+          data: null,
+        };
+      }
+
+      // Get user2 info
+      const user2 = await this.prismaService.users.findUnique({
+        where: {
+          id: tournament_registration.userId2,
+        },
+      });
+
+      if (!user2) {
+        throw new NotFoundException({
+          message: 'User2 not found',
+          data: null,
+        });
+      }
+
+      // Build response data
+      response_data = {
+        user1: {
+          id: user1.id,
+          name: user1.name,
+          image: user1.image,
+          email: user1.email,
+          gender: user1.gender,
+        },
+        user2: {
+          id: user2.id,
+          name: user2.name,
+          image: user2.image,
+          email: user2.email,
+          gender: user2.gender,
+        },
+        message: tournament_registration.message,
+        status: tournament_registration.status,
+        appliedDate: tournament_registration.appliedDate,
+      };
+    }
+
+    return {
+      message: 'Get submitted applications successfully',
+      data: response_data,
+    };
+  }
+
   async submitApplication(
     userId: number,
     tournamentId: number,
@@ -605,15 +1228,7 @@ export class TournamentService {
       };
 
       // Cancell all invitations to user1
-      await this.prismaService.tournament_registrations.updateMany({
-        where: {
-          userId2: userId,
-          status: RegistrationStatus.inviting,
-        },
-        data: {
-          status: RegistrationStatus.canceled,
-        },
-      });
+      await this.cancelAllTournamentInvitations(userId, tournamentId);
     }
 
     return {
@@ -622,11 +1237,379 @@ export class TournamentService {
     };
   }
 
+  async cancelApplication(userId: number, tournamentId: number) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Purchased package not found',
+        data: null,
+      });
+    }
+
+    // Check expiration date of the purchased package
+    if (new Date(purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        message: 'Purchased package is expired',
+        data: null,
+      });
+    }
+
+    // Get tournament registration info
+    const tournament_registration =
+      await this.prismaService.tournament_registrations.findFirst({
+        where: {
+          tournamentId: tournamentId,
+          OR: [
+            {
+              userId1: userId,
+            },
+            {
+              userId2: userId,
+            },
+          ],
+        },
+      });
+
+    if (!tournament_registration) {
+      return {
+        message: 'No submitted applications',
+        data: null,
+      };
+    }
+
+    // Check application status
+    if (
+      !['inviting', 'pending'].includes(
+        tournament_registration.status.toString(),
+      )
+    ) {
+      return {
+        message:
+          'Cannot cancel the tournament application after admin approval',
+        data: null,
+      };
+    }
+
+    // Update tournament registration status
+    try {
+      await this.prismaService.tournament_registrations.update({
+        where: {
+          id: tournament_registration.id,
+        },
+        data: {
+          status: RegistrationStatus.canceled,
+        },
+      });
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new BadRequestException({
+        message: 'Failed to cancel the tournament application',
+        data: null,
+      });
+    }
+
+    return {
+      message: 'Tournament application canceled successfully',
+      data: null,
+    };
+  }
+
+  async getTournamentInvitations(
+    userId: number,
+    tournamentId: number,
+    pageOptionsTournamentDto: PageOptionsTournamentDto,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Purchased package not found',
+        data: null,
+      });
+    }
+
+    // Check expiration date of the purchased package
+    if (new Date(purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        message: 'Purchased package is expired',
+        data: null,
+      });
+    }
+
+    // Get list of tournament invitations
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptionsTournamentDto.order,
+        },
+      ],
+      where: {
+        userId2: userId,
+        status: RegistrationStatus.inviting,
+      },
+      select: {
+        userId1: true,
+        userId2: true,
+        message: true,
+        status: true,
+      },
+    };
+
+    const pageOption =
+      pageOptionsTournamentDto.page && pageOptionsTournamentDto.take
+        ? {
+            skip: pageOptionsTournamentDto.skip,
+            take: pageOptionsTournamentDto.take,
+          }
+        : undefined;
+
+    // Get tournaments that are created by the user
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.tournament_registrations.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.tournament_registrations.count({
+        where: {
+          ...conditions.where,
+        },
+      }),
+    ]);
+
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / pageOptionsTournamentDto.take),
+      totalCount,
+    };
+  }
+
+  async acceptInvitation(
+    userId: number,
+    tournamentId: number,
+    inviterId: number,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Purchased package not found',
+        data: null,
+      });
+    }
+
+    // Check expiration date of the purchased package
+    if (new Date(purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        message: 'Purchased package is expired',
+        data: null,
+      });
+    }
+
+    // Get tournament registration info
+    const tournament_registration =
+      await this.prismaService.tournament_registrations.findFirst({
+        where: {
+          id: inviterId,
+          status: RegistrationStatus.inviting,
+        },
+      });
+
+    if (!tournament_registration) {
+      throw new NotFoundException({
+        message: 'Invitation not found',
+        data: null,
+      });
+    }
+
+    // Update tournament registration status -> pending
+    try {
+      await this.prismaService.tournament_registrations.update({
+        where: {
+          id: inviterId,
+        },
+        data: {
+          status: RegistrationStatus.pending,
+        },
+      });
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new BadRequestException({
+        message: 'Failed to accept the tournament invitation',
+        data: null,
+      });
+    }
+
+    // Cancel all invitation
+    await this.cancelAllTournamentInvitations(userId, tournamentId);
+
+    return {
+      message: 'Invitation accepted successfully',
+      data: null,
+    };
+  }
+
+  async rejectInvitation(
+    userId: number,
+    tournamentId: number,
+    inviterId: number,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found',
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        message: 'Purchased package not found',
+        data: null,
+      });
+    }
+
+    // Check expiration date of the purchased package
+    if (new Date(purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        message: 'Purchased package is expired',
+        data: null,
+      });
+    }
+
+    // Get tournament registration info
+    const tournament_registration =
+      await this.prismaService.tournament_registrations.findFirst({
+        where: {
+          id: inviterId,
+          status: RegistrationStatus.inviting,
+        },
+      });
+
+    if (!tournament_registration) {
+      throw new NotFoundException({
+        message: 'Invitation not found',
+        data: null,
+      });
+    }
+
+    // Update tournament registration status -> canceled
+    try {
+      await this.prismaService.tournament_registrations.update({
+        where: {
+          id: inviterId,
+        },
+        data: {
+          status: RegistrationStatus.canceled,
+        },
+      });
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new BadRequestException({
+        message: 'Failed to cancel the tournament invitation',
+        data: null,
+      });
+    }
+
+    return {
+      message: 'Invitation canceled successfully',
+      data: null,
+    };
+  }
+
   // Utils
   async getTournamentParticipantsCount(tournamentId: number) {
     return await this.prismaService.tournament_registrations.count({
       where: {
         tournamentId: tournamentId,
+      },
+    });
+  }
+
+  async cancelAllTournamentInvitations(userId: number, tournamentId: number) {
+    await this.prismaService.tournament_registrations.updateMany({
+      where: {
+        userId2: userId,
+        tournamentId: tournamentId,
+        status: RegistrationStatus.inviting,
+      },
+      data: {
+        status: RegistrationStatus.canceled,
       },
     });
   }

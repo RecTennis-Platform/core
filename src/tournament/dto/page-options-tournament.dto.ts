@@ -1,8 +1,13 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { Order } from '../../../constants/order';
+import { RegistrationStatus } from '@prisma/client';
 
 export class PageOptionsTournamentDto {
+  @IsString()
+  @IsOptional()
+  readonly status?: RegistrationStatus = null;
+
   @IsEnum(Order)
   @IsOptional()
   readonly order?: Order = Order.DESC;
