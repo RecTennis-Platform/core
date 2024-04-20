@@ -6,7 +6,11 @@ import {
 } from '@nestjs/common';
 import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateAdminAccountDto, UpdateUserAccountDto } from './dto';
+import {
+  CreateAdminAccountDto,
+  PageOptionsUserParticipatedTournamentsDto,
+  UpdateUserAccountDto,
+} from './dto';
 import { UserRole } from '@prisma/client';
 
 @Injectable()
@@ -153,4 +157,9 @@ export class UserService {
       });
     }
   }
+
+  async getUserParticipatedTournaments(
+    userId: number,
+    pageOptions: PageOptionsUserParticipatedTournamentsDto,
+  ) {}
 }

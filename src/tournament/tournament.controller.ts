@@ -15,16 +15,23 @@ import {
   CreateTournamentDto,
   PageOptionsTournamentDto,
 } from './dto';
-import { JwtGuard } from 'src/auth_utils/guards';
-import { GetUser } from 'src/auth_utils/decorators';
+import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
+import { GetUser, Roles } from 'src/auth_utils/decorators';
+import { UserRole } from '@prisma/client';
 
 @Controller('tournaments')
 export class TournamentController {
   constructor(private readonly tournamentService: TournamentService) {}
 
   // Tournaments
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.admin)
   @Get()
-  async getParticipatedTournaments() {}
+  async getTournamentsList(
+    @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
+  ) {
+    return this.tournamentService.getTournamentsList(pageOptionsTournamentDto);
+  }
 
   @UseGuards(JwtGuard)
   @Get(':tournamentId/general-info')
@@ -34,9 +41,6 @@ export class TournamentController {
   ) {
     return this.tournamentService.getTournamentDetails(userId, tournamentId);
   }
-
-  @Get('')
-  async getTournamentParticipants() {}
 
   @UseGuards(JwtGuard)
   @Get('/me')
@@ -85,7 +89,7 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Get(':tournamentId/applicants/approve')
+  @Patch(':tournamentId/applicants/approve')
   async approveApplicant(
     @GetUser('sub') userId: number,
     @Param('tournamentId') tournamentId: number,
@@ -99,7 +103,7 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Get(':tournamentId/applicants/reject')
+  @Patch(':tournamentId/applicants/reject')
   async rejectApplicant(
     @GetUser('sub') userId: number,
     @Param('tournamentId') tournamentId: number,
@@ -113,7 +117,7 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Get(':tournamentId/applicants/finalize')
+  @Patch(':tournamentId/applicants/finalize')
   async finalizeApplicantList(
     @GetUser('sub') userId: number,
     @Param('tournamentId') tournamentId: number,
@@ -121,16 +125,14 @@ export class TournamentController {
     return this.tournamentService.finalizeApplicantList(tournamentId, userId);
   }
 
-  @UseGuards(JwtGuard)
-  @Get(':tournamentId/applicants')
-  async getFinalizedApplicants(
-    @GetUser('sub') userId: number,
+  // After finalized
+  @Get(':tournamentId/participants')
+  async getTournamentParticipants(
     @Param('tournamentId') tournamentId: number,
     @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
   ) {
-    return this.tournamentService.getFinalizedApplicants(
+    return this.tournamentService.getTournamentParticipants(
       tournamentId,
-      userId,
       pageOptionsTournamentDto,
     );
   }

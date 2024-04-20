@@ -15,6 +15,7 @@ import {
   ParticipantType,
   RegistrationStatus,
   TournamentPhase,
+  TournamentStatus,
   tournaments,
 } from '@prisma/client';
 
@@ -25,6 +26,41 @@ export class TournamentService {
     private readonly mongodbPrismaService: MongoDBPrismaService,
   ) {}
 
+  async getTournamentsList(pageOptionsTournamentDto: PageOptionsTournamentDto) {
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptionsTournamentDto.order,
+        },
+      ],
+    };
+
+    const pageOption =
+      pageOptionsTournamentDto.page && pageOptionsTournamentDto.take
+        ? {
+            skip: pageOptionsTournamentDto.skip,
+            take: pageOptionsTournamentDto.take,
+          }
+        : undefined;
+
+    // Get all tournaments
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.tournaments.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.tournaments.count({}),
+    ]);
+
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / pageOptionsTournamentDto.take),
+      totalCount,
+    };
+  }
+
+  // For normal usage
   async getTournamentDetails(userId: number, tournamentId: number) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
@@ -756,9 +792,8 @@ export class TournamentService {
     };
   }
 
-  async getFinalizedApplicants(
+  async getTournamentParticipants(
     tournamentId: number,
-    userId: number,
     pageOptionsTournamentDto: PageOptionsTournamentDto,
   ) {
     // Get tournament info
@@ -801,7 +836,7 @@ export class TournamentService {
     // Check if the tournament status is finalized_applicants
     if (tournament.phase !== TournamentPhase.finalized_applicants) {
       return {
-        message: 'Applicant list not finalized',
+        message: 'Applicants list not finalized',
         data: null,
       };
     }

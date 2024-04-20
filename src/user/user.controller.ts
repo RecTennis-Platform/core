@@ -7,13 +7,18 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth_utils/decorators';
 import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import { IRequestWithUser } from 'src/auth_utils/interfaces';
-import { CreateAdminAccountDto, UpdateUserAccountDto } from './dto';
+import {
+  CreateAdminAccountDto,
+  PageOptionsUserParticipatedTournamentsDto,
+  UpdateUserAccountDto,
+} from './dto';
 import { UserService } from './user.service';
 
 @UseGuards(JwtGuard)
@@ -67,5 +72,17 @@ export class UserController {
     console.log('User update user');
     const userId = req.user['sub'];
     return await this.userService.updateUserDetails(userId, dto);
+  }
+
+  // Get participated tournaments
+  @Get(':userId/tournaments')
+  async getUserParticipatedTournaments(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Query() pageOptions: PageOptionsUserParticipatedTournamentsDto,
+  ) {
+    return await this.userService.getUserParticipatedTournaments(
+      userId,
+      pageOptions,
+    );
   }
 }
