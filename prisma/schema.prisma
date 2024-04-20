@@ -46,17 +46,17 @@ model news {
 model groups {
   id                 Int                 @id @default(autoincrement())
   name               String
-  language           String
-  activityZone       String              @map("activity_zone")
-  description        String
+  language           String?
+  activityZone       String?             @map("activity_zone")
+  description        String?
   status             GroupStatus         @default(active)
   createdAt          DateTime            @default(now()) @map("created_at")
   updatedAt          DateTime            @updatedAt @map("updated_at")
-  image              String
+  image              String?
   purchasedPackageId String              @map("purchased_package_id")
   maxMember          Int                 @map("max_member")
-  member_ships       member_ships[]
   group_tournaments  group_tournaments[]
+  member_ships       member_ships[]
 }
 
 model posts {
@@ -138,62 +138,76 @@ model users {
   createdAt                      DateTime                         @default(now()) @map("created_at")
   updatedAt                      DateTime                         @updatedAt @map("updated_at")
   role                           UserRole                         @default(user)
+  gender                         Gender
+  group_tournament_registrations group_tournament_registrations[]
   memberShips                    member_ships[]
   orders                         orders[]
-  group_tournament_registrations group_tournament_registrations[]
 }
 
 model tournaments {
-  id                      Int              @id @default(autoincrement())
-  purchased_package_id    String
-  name                    String
-  max_participants        Int
-  gender                  Gender
-  format                  TournamentFormat
-  participant_type        ParticipantType
-  image_url               String
-  description             String
-  players_born_after_date DateTime
-  registration_due_date   DateTime
-  start_date              DateTime
-  end_date                DateTime
-  status                  TournamentStatus @default(upcoming)
-  phase                   TournamentPhase  @default(new)
-  address                 String
-  contact_person_name     String
-  contact_number          String
-  contact_email           String
-  created_at              DateTime         @default(now())
-  updated_at              DateTime
+  id                   Int              @id @default(autoincrement())
+  purchasedPackageId   String           @map("purchased_package_id")
+  name                 String
+  maxParticipants      Int              @map("max_participants")
+  gender               Gender?
+  format               TournamentFormat
+  participantType      ParticipantType  @map("participant_type")
+  description          String?
+  playersBornAfterDate DateTime         @map("players_born_after_date")
+  registrationDueDate  DateTime         @map("registration_due_date")
+  startDate            DateTime         @map("start_date")
+  endDate              DateTime         @map("end_date")
+  status               TournamentStatus @default(upcoming)
+  address              String
+  contactPersonName    String           @map("contact_person_name")
+  contactNumber        String           @map("contact_number")
+  contactEmail         String           @map("contact_email")
+  createdAt            DateTime         @default(now()) @map("created_at")
+  updatedAt            DateTime         @updatedAt @map("updated_at")
+  phase                TournamentPhase  @default(new)
+  image                String?
+}
+
+model tournament_registrations {
+  id           Int                @id @default(autoincrement())
+  tournamentId Int                @map("tournament_id")
+  userId1      Int                @map("user_id_1")
+  userId2      Int?               @map("user_id_2")
+  name         String
+  message      String?
+  status       RegistrationStatus
+  createdAt    DateTime           @default(now()) @map("created_at")
+  updatedAt    DateTime           @updatedAt @map("updated_at")
+  appliedDate  DateTime?          @map("applied_date")
+}
+
+model group_tournament_registrations {
+  group_tournament_id Int
+  user_id             Int
+  created_at          DateTime          @default(now())
+  updated_at          DateTime
+  group_tournaments   group_tournaments @relation(fields: [group_tournament_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournament_registrations_group_tournaments")
+  users               users             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournament_registrations_users")
+
+  @@id([group_tournament_id, user_id])
 }
 
 model group_tournaments {
   id                             Int                              @id @default(autoincrement())
-  groupId                        Int                              @map("group_id")
+  group_id                       Int
   name                           String
   description                    String
-  imageUrl                       String                           @map("image_url")
+  image_url                      String
   format                         GroupTournamentFormat
   status                         GroupTournamentStatus            @default(upcoming)
   phase                          GroupTournamentPhase             @default(new)
-  startDate                      DateTime                         @map("start_date")
-  endDate                        DateTime                         @map("end_date")
+  start_date                     DateTime
+  end_date                       DateTime
   address                        String
-  createdAt                      DateTime                         @default(now()) @map("created_at")
-  updatedAt                      DateTime                         @updatedAt @map("updated_at")
-  group                          groups                           @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournaments_groups")
+  created_at                     DateTime                         @default(now())
+  updated_at                     DateTime
   group_tournament_registrations group_tournament_registrations[]
-}
-
-model group_tournament_registrations {
-  groupTournamentId Int               @map("group_tournament_id")
-  userId            Int               @map("user_id")
-  createdAt         DateTime          @default(now()) @map("created_at")
-  updatedAt         DateTime          @updatedAt @map("updated_at")
-  groupTournament   group_tournaments @relation(fields: [groupTournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournament_registrations_group_tournaments")
-  user              users             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournament_registrations_users")
-
-  @@id([groupTournamentId, userId])
+  groups                         groups                           @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournaments_groups")
 }
 
 enum AffiliateStatus {
@@ -226,13 +240,6 @@ enum MemberRole {
 enum Gender {
   male
   female
-  any
-}
-
-enum ParticipantType {
-  single
-  doubles
-  mixed_doubles
 }
 
 enum TournamentFormat {
@@ -241,18 +248,23 @@ enum TournamentFormat {
   group_playoff
 }
 
-enum TournamentPhase {
-  new
-  published
-  finalized_applicants
-  generated_fixtures
-  scored_matches
-  completed
-}
-
 enum TournamentStatus {
   on_going
   upcoming
+  completed
+}
+
+enum ParticipantType {
+  singles
+  doubles
+  mixed_doubles
+}
+
+enum GroupTournamentPhase {
+  new
+  published
+  generated_fixtures
+  scored_matches
   completed
 }
 
@@ -267,10 +279,19 @@ enum GroupTournamentStatus {
   completed
 }
 
-enum GroupTournamentPhase {
+enum TournamentPhase {
   new
   published
+  finalized_applicants
   generated_fixtures
   scored_matches
   completed
+}
+
+enum RegistrationStatus {
+  inviting
+  canceled
+  pending
+  approved
+  rejected
 }
