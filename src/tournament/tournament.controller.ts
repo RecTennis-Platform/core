@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -18,6 +20,7 @@ import {
 import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import { GetUser, Roles } from 'src/auth_utils/decorators';
 import { UserRole } from '@prisma/client';
+import { CreateFixtureDto } from 'src/fixture/dto/create-fixture.dto';
 
 @Controller('tournaments')
 export class TournamentController {
@@ -209,5 +212,23 @@ export class TournamentController {
       tournamentId,
       inviterId,
     );
+  }
+
+  @Post('/:id/fixtures/generate')
+  async generateFixture(
+    @Param('id') tournamentId: number,
+    @Body() dto: CreateFixtureDto,
+  ) {
+    try {
+      return this.tournamentService.generateFixture(tournamentId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

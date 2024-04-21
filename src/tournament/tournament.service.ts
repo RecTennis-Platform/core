@@ -12,18 +12,27 @@ import {
   PageOptionsTournamentDto,
 } from './dto';
 import {
+  FixtureStatus,
+  MatchStatus,
   ParticipantType,
+  Prisma,
   RegistrationStatus,
+  TournamentFormat,
   TournamentPhase,
   TournamentStatus,
   tournaments,
 } from '@prisma/client';
+import { FormatTournamentService } from 'src/services/format_tournament/format_tournament.service';
+import { CreateFixtureDto } from 'src/fixture/dto/create-fixture.dto';
+import { IsUUID } from 'class-validator';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class TournamentService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly mongodbPrismaService: MongoDBPrismaService,
+    private readonly formatTournamentService: FormatTournamentService,
   ) {}
 
   async getTournamentsList(pageOptionsTournamentDto: PageOptionsTournamentDto) {
@@ -1647,5 +1656,136 @@ export class TournamentService {
         status: RegistrationStatus.canceled,
       },
     });
+  }
+
+  async generateFixture(id: number, dto: CreateFixtureDto) {
+    try {
+      //get list of team order by rank
+      const teams = await this.prismaService.teams.findMany({
+        where: {
+          tournamentId: id,
+        },
+        orderBy: {
+          rank: Prisma.SortOrder.desc,
+        },
+        include: {
+          user1: true,
+          user2: true,
+          tournaments: true,
+        },
+      });
+      const rounds = [];
+      //generate matches
+      if (dto.format === TournamentFormat.round_robin) {
+        const tables = this.formatTournamentService.generateTables(
+          dto.format,
+          dto.numberOfRounds,
+          teams.length,
+        );
+        for (let i = 0; i < tables.table1.length; i++) {
+          const matches = [];
+          for (let j = 0; j < tables.table1[i].length; j++) {
+            const team1 = {
+              user1: teams[tables.table1[i][j] - 1].user1,
+              user2: teams[tables.table1[i][j] - 1].user2,
+            };
+
+            const team2 = {
+              user1: teams[tables.table2[i][j] - 1].user1,
+              user2: teams[tables.table2[i][j] - 1].user2,
+            };
+            const match = {
+              id: randomUUID(),
+              refId: null,
+              name: `Match ${j + 1}`,
+              date: null,
+              duration: dto.maxDuration,
+              status: MatchStatus.scheduled,
+              teams: [team1, team2],
+            };
+            matches.push(match);
+          }
+          const round = {
+            title: `Round ${i + 1}`,
+            matches: matches,
+            id: randomUUID(),
+          };
+          rounds.push(round);
+        }
+        //console.log(matches);
+      } else if (dto.format === TournamentFormat.knockout) {
+        const tables = this.formatTournamentService.generateTables(
+          dto.format,
+          dto.numberOfRounds,
+          teams.length,
+        );
+
+        for (let i = 0; i < tables.table1.length; i++) {
+          const matches = [];
+          let status = MatchStatus.scheduled.toString();
+          for (let j = 0; j < tables.table1[i].length; j++) {
+            let id = randomUUID();
+            let refId = randomUUID();
+            if (i === 0) {
+              if (j % 2 !== 0) {
+                refId = matches[j - 1].refId;
+              }
+            } else if (i === tables.table1.length - 1) {
+              id = rounds[i - 1].seeds[j * 2].refId;
+              refId = null;
+            } else {
+              if (j % 2 !== 0) {
+                refId = matches[j - 1].refId;
+              }
+              id = rounds[i - 1].seeds[j * 2].refId;
+            }
+            const teamResult = [];
+            if (tables.table1[i][j] !== 0 && tables.table1[i][j] !== -1) {
+              teamResult.push({
+                user1: teams[tables.table1[i][j] - 1].user1,
+                user2: teams[tables.table1[i][j] - 1].user2,
+              });
+            } else {
+              status = MatchStatus.skipped.toString();
+            }
+
+            if (tables.table2[i][j] !== 0 && tables.table2[i][j] !== -1) {
+              teamResult.push({
+                user1: teams[tables.table2[i][j] - 1].user1,
+                user2: teams[tables.table2[i][j] - 1].user2,
+              });
+              status = MatchStatus.scheduled.toString();
+            } else {
+              status = MatchStatus.skipped.toString();
+            }
+
+            if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
+              status = MatchStatus.no_show.toString();
+            }
+            const match = {
+              id: id,
+              refId: refId,
+              name: `Match ${j + 1}`,
+              date: null,
+              duration: dto.maxDuration,
+              status: status,
+              teams: teamResult,
+            };
+            matches.push(match);
+          }
+          const round = {
+            title: `Round ${i + 1}`,
+            id: randomUUID(),
+            seeds: matches,
+          };
+          rounds.push(round);
+        }
+      }
+      return {
+        rounds,
+        status: 'new',
+        participantType: teams[0].tournaments.participantType,
+      };
+    } catch (error) {}
   }
 }
