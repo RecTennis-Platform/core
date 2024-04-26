@@ -41,7 +41,16 @@ export class UserService {
       });
     }
 
-    return user;
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      image: user.image,
+      dob: user.dob,
+      phoneNumber: user.phone_number,
+      gender: user.gender,
+      role: user.role,
+    };
   }
 
   async createAdminAccount(dto: CreateAdminAccountDto): Promise<{
