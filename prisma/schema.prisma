@@ -139,6 +139,8 @@ model users {
   updatedAt                      DateTime                         @updatedAt @map("updated_at")
   role                           UserRole                         @default(user)
   gender                         Gender
+  dob                            DateTime?
+  phone_number                   String?
   group_tournament_registrations group_tournament_registrations[]
   memberShips                    member_ships[]
   orders                         orders[]
