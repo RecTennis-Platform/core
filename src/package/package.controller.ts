@@ -96,7 +96,7 @@ export class PackageController {
   }
 }
 
-@Controller('systems-config')
+@Controller('system-config')
 export class SystemConfigController {
   constructor(private readonly packageService: PackageService) {}
 
