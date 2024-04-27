@@ -167,5 +167,30 @@ export class UserService {
   async getUserParticipatedTournaments(
     userId: number,
     pageOptions: PageOptionsUserParticipatedTournamentsDto,
-  ) {}
+  ) {
+    // Check if user exists
+    const user = await this.prismaService.users.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        message: 'User not found',
+        data: null,
+      });
+    }
+
+    // Get user's tournament_registrations
+    const tournamentRegistrations =
+      await this.prismaService.tournament_registrations.findMany({
+        where: {
+          OR: [
+            { userId1: { equals: userId } },
+            { userId2: { equals: userId } },
+          ],
+        },
+      });
+  }
 }
