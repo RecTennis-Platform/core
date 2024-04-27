@@ -28,7 +28,7 @@ export class UserService {
         name: true,
         image: true,
         dob: true,
-        phone_number: true,
+        phoneNumber: true,
         gender: true,
         role: true,
       },
@@ -47,7 +47,7 @@ export class UserService {
       name: user.name,
       image: user.image,
       dob: user.dob,
-      phoneNumber: user.phone_number,
+      phoneNumber: user.phoneNumber,
       gender: user.gender,
       role: user.role,
     };
@@ -166,7 +166,7 @@ export class UserService {
 
   async getUserParticipatedTournaments(
     userId: number,
-    pageOptions: PageOptionsUserParticipatedTournamentsDto,
+    PageOptionsUserParticipatedTournamentsDto: PageOptionsUserParticipatedTournamentsDto,
   ) {
     // Check if user exists
     const user = await this.prismaService.users.findUnique({
@@ -182,16 +182,57 @@ export class UserService {
       });
     }
 
-    // Get user's tournament_registrations
-    const tournamentRegistrations =
-      await this.prismaService.tournament_registrations.findMany({
-        where: {
-          OR: [
-            { userId1: { equals: userId } },
-            { userId2: { equals: userId } },
-          ],
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: PageOptionsUserParticipatedTournamentsDto.order,
         },
-        select: {},
-      });
+      ],
+      where: {
+        OR: [{ userId1: { equals: userId } }, { userId2: { equals: userId } }],
+        tournament: {
+          status: {
+            equals: PageOptionsUserParticipatedTournamentsDto.status,
+          },
+        },
+      },
+      select: {
+        tournament: true,
+      },
+    };
+
+    const pageOption =
+      PageOptionsUserParticipatedTournamentsDto.page &&
+      PageOptionsUserParticipatedTournamentsDto.take
+        ? {
+            skip: PageOptionsUserParticipatedTournamentsDto.skip,
+            take: PageOptionsUserParticipatedTournamentsDto.take,
+          }
+        : undefined;
+
+    // Get user's tournament registrations
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.tournament_registrations.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.tournament_registrations.count({
+        where: conditions.where,
+      }),
+    ]);
+
+    // Map to get only tournament details
+    const userParticipatedTournaments = result.map(
+      (registration) => registration.tournament,
+    );
+
+    return {
+      data: userParticipatedTournaments,
+      totalPages: Math.ceil(
+        totalCount / PageOptionsUserParticipatedTournamentsDto.take,
+      ),
+      totalCount,
+    };
   }
 }

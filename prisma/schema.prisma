@@ -128,50 +128,53 @@ model member_ships {
 }
 
 model users {
-  id                             Int                              @id @default(autoincrement())
-  email                          String                           @unique
-  password                       String?
-  name                           String
-  image                          String?
-  refreshToken                   String?                          @map("refresh_token")
-  resetPassword                  Boolean                          @default(false) @map("reset_password")
-  createdAt                      DateTime                         @default(now()) @map("created_at")
-  updatedAt                      DateTime                         @updatedAt @map("updated_at")
-  role                           UserRole                         @default(user)
-  gender                         Gender
-  dob                            DateTime?
-  phone_number                   String?
-  group_tournament_registrations group_tournament_registrations[]
-  memberShips                    member_ships[]
-  orders                         orders[]
-  team1                          teams[]                          @relation("user1")
-  team2                          teams[]                          @relation("user2")
+  id                           Int                              @id @default(autoincrement())
+  email                        String                           @unique
+  password                     String?
+  name                         String
+  image                        String?
+  refreshToken                 String?                          @map("refresh_token")
+  resetPassword                Boolean                          @default(false) @map("reset_password")
+  createdAt                    DateTime                         @default(now()) @map("created_at")
+  updatedAt                    DateTime                         @updatedAt @map("updated_at")
+  role                         UserRole                         @default(user)
+  gender                       Gender
+  dob                          DateTime?
+  phoneNumber                  String?                          @map("phone_number")
+  groupTournamentRegistrations group_tournament_registrations[]
+  memberShips                  member_ships[]
+  orders                       orders[]
+  team1                        teams[]                          @relation("user1")
+  team2                        teams[]                          @relation("user2")
+  tournamentRegistration1      tournament_registrations[]       @relation("user1")
+  tournamentRegistration2      tournament_registrations[]       @relation("user2")
 }
 
 model tournaments {
-  id                   Int              @id @default(autoincrement())
-  purchasedPackageId   String           @map("purchased_package_id")
-  name                 String
-  maxParticipants      Int              @map("max_participants")
-  gender               Gender?
-  format               TournamentFormat
-  participantType      ParticipantType  @map("participant_type")
-  description          String?
-  playersBornAfterDate DateTime         @map("players_born_after_date")
-  registrationDueDate  DateTime         @map("registration_due_date")
-  startDate            DateTime         @map("start_date")
-  endDate              DateTime         @map("end_date")
-  status               TournamentStatus @default(upcoming)
-  address              String
-  contactPersonName    String           @map("contact_person_name")
-  contactNumber        String           @map("contact_number")
-  contactEmail         String           @map("contact_email")
-  createdAt            DateTime         @default(now()) @map("created_at")
-  updatedAt            DateTime         @updatedAt @map("updated_at")
-  phase                TournamentPhase  @default(new)
-  image                String?
-  fixtures             fixtures[]
-  teams                teams[]
+  id                       Int                        @id @default(autoincrement())
+  purchasedPackageId       String                     @map("purchased_package_id")
+  name                     String
+  maxParticipants          Int                        @map("max_participants")
+  gender                   Gender?
+  format                   TournamentFormat
+  participantType          ParticipantType            @map("participant_type")
+  description              String?
+  playersBornAfterDate     DateTime                   @map("players_born_after_date")
+  registrationDueDate      DateTime                   @map("registration_due_date")
+  startDate                DateTime                   @map("start_date")
+  endDate                  DateTime                   @map("end_date")
+  status                   TournamentStatus           @default(upcoming)
+  address                  String
+  contactPersonName        String                     @map("contact_person_name")
+  contactNumber            String                     @map("contact_number")
+  contactEmail             String                     @map("contact_email")
+  createdAt                DateTime                   @default(now()) @map("created_at")
+  updatedAt                DateTime                   @updatedAt @map("updated_at")
+  phase                    TournamentPhase            @default(new)
+  image                    String?
+  fixtures                 fixtures[]
+  teams                    teams[]
+  tournament_registrations tournament_registrations[]
 }
 
 model tournament_registrations {
@@ -185,6 +188,9 @@ model tournament_registrations {
   createdAt    DateTime           @default(now()) @map("created_at")
   updatedAt    DateTime           @updatedAt @map("updated_at")
   appliedDate  DateTime?          @map("applied_date")
+  tournament   tournaments        @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_tournament_registration_tournaments")
+  user1        users              @relation("user1", fields: [userId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user1_tournament_registration")
+  user2        users?             @relation("user2", fields: [userId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user2_tournament_registration")
 }
 
 model group_tournaments {
