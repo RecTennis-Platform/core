@@ -21,6 +21,7 @@ import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import { GetUser, Roles } from 'src/auth_utils/decorators';
 import { UserRole } from '@prisma/client';
 import { CreateFixtureDto } from 'src/fixture/dto/create-fixture.dto';
+import { CreateFixtureGroupPlayoffDto } from 'src/fixture/dto/create-fixture-groupplayoff.dto';
 
 @Controller('tournaments')
 export class TournamentController {
@@ -221,6 +222,24 @@ export class TournamentController {
   ) {
     try {
       return this.tournamentService.generateFixture(tournamentId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('/:id/fixture-groups/generate')
+  async generateFixtureGroup(
+    @Param('id') tournamentId: number,
+    @Body() dto: CreateFixtureGroupPlayoffDto,
+  ) {
+    try {
+      return this.tournamentService.generateFixtureGroup(tournamentId, dto);
     } catch (error) {
       throw new HttpException(
         {

@@ -1,9 +1,49 @@
 import { Injectable } from '@nestjs/common';
+import { Group } from 'src/fixture/dto/create-fixture.dto';
 
 @Injectable()
 export class FormatTournamentService {
+  generateGroupPlayOffPhase1(
+    numberOfParticipants: number,
+    numberOfGroups: number,
+  ) {
+    const groups = this.createGroupsWithRanking(
+      numberOfParticipants,
+      numberOfGroups,
+    );
+    return groups;
+  }
+
+  generateGroupPlayOffPhase2(fixtureGroups: Group[]) {
+    const result = fixtureGroups.map((group) => {
+      const firstTable = this.repeatArray(
+        this.createRoundRobinGroupPlayer1(group.groupMembers.length),
+        1,
+      );
+
+      const table1 = firstTable.map((values) => {
+        return values.map((value) => {
+          return group.groupMembers[value - 1];
+        });
+      });
+
+      const table2 = this.repeatArray(
+        this.createRoundRobinGroupPlayer2(
+          group.groupMembers.length,
+          firstTable,
+        ),
+        1,
+      ).map((values) => {
+        return values.map((value) => {
+          return group.groupMembers[value - 1];
+        });
+      });
+      return { table1, table2 };
+    });
+    return result;
+  }
+
   generateGroupPlayOff(
-    fixtureType: string,
     numberOfRounds: number,
     numberOfParticipants: number,
     numberOfGroups: number,

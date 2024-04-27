@@ -1,6 +1,8 @@
 import { TournamentFormat } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
+  ArrayMinSize,
+  IsArray,
   IsDate,
   IsEnum,
   IsNotEmpty,
@@ -8,7 +10,18 @@ import {
   IsOptional,
   IsString,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
+
+export class Group {
+  @IsNotEmpty()
+  @IsArray()
+  groupMembers: string[];
+
+  @IsNotEmpty()
+  @IsNumber()
+  numberOfProceeders: number;
+}
 
 export class CreateFixtureDto {
   @IsOptional()
@@ -44,10 +57,6 @@ export class CreateFixtureDto {
 
   @IsOptional()
   @IsNumber()
-  numberOfRounds: number = 1;
-
-  @IsOptional()
-  @IsNumber()
   numberOfGroups: number = 2;
 
   @IsOptional()
@@ -57,4 +66,10 @@ export class CreateFixtureDto {
   @IsOptional()
   @IsNumber()
   breakDuration: number = 10;
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @ArrayMinSize(1)
+  @Type(() => Group)
+  groups: Group[];
 }
