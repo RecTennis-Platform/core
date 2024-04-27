@@ -17,10 +17,7 @@ import { UserRole } from '@prisma/client';
 export class UserService {
   constructor(private prismaService: PrismaService) {}
 
-  async getUserDetails(userId: number): Promise<{
-    message: string;
-    data: any;
-  }> {
+  async getUserDetails(userId: number): Promise<any> {
     const user = await this.prismaService.users.findUnique({
       where: {
         id: userId,
@@ -30,6 +27,9 @@ export class UserService {
         email: true,
         name: true,
         image: true,
+        dob: true,
+        phone_number: true,
+        gender: true,
         role: true,
       },
     });
@@ -42,8 +42,14 @@ export class UserService {
     }
 
     return {
-      message: 'success',
-      data: user,
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      image: user.image,
+      dob: user.dob,
+      phoneNumber: user.phone_number,
+      gender: user.gender,
+      role: user.role,
     };
   }
 
