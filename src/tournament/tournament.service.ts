@@ -12,19 +12,16 @@ import {
   PageOptionsTournamentDto,
 } from './dto';
 import {
-  FixtureStatus,
   MatchStatus,
   ParticipantType,
   Prisma,
   RegistrationStatus,
   TournamentFormat,
   TournamentPhase,
-  TournamentStatus,
   tournaments,
 } from '@prisma/client';
 import { FormatTournamentService } from 'src/services/format_tournament/format_tournament.service';
 import { CreateFixtureDto } from 'src/fixture/dto/create-fixture.dto';
-import { IsUUID } from 'class-validator';
 import { randomUUID } from 'crypto';
 import { CreateFixtureGroupPlayoffDto } from 'src/fixture/dto/create-fixture-groupplayoff.dto';
 
