@@ -191,6 +191,7 @@ export class UserService {
             { userId2: { equals: userId } },
           ],
         },
+        select: {},
       });
   }
 }
