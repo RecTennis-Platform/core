@@ -96,7 +96,7 @@ export class PackageController {
   }
 }
 
-@Controller('systems-config')
+@Controller('system-config')
 export class SystemConfigController {
   constructor(private readonly packageService: PackageService) {}
 
@@ -123,12 +123,12 @@ export class SystemConfigController {
         openTournament: {
           format: ['round_robin', 'knock_out', 'group_playoff'],
           gender: ['male', 'female', 'any'],
-          partipantType: ['single', 'double', 'mixed_doubles'],
+          participantType: ['single', 'double', 'mixed_doubles'],
         },
         groupTournament: {
           format: ['round_robin', 'knock_out'],
           gender: ['male', 'female', 'any'],
-          partipantType: ['single'],
+          participantType: ['single'],
         },
       };
     } catch (error) {

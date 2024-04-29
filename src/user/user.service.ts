@@ -6,17 +6,18 @@ import {
 } from '@nestjs/common';
 import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateAdminAccountDto, UpdateUserAccountDto } from './dto';
+import {
+  CreateAdminAccountDto,
+  PageOptionsUserParticipatedTournamentsDto,
+  UpdateUserAccountDto,
+} from './dto';
 import { UserRole } from '@prisma/client';
 
 @Injectable()
 export class UserService {
   constructor(private prismaService: PrismaService) {}
 
-  async getUserDetails(userId: number): Promise<{
-    message: string;
-    data: any;
-  }> {
+  async getUserDetails(userId: number): Promise<any> {
     const user = await this.prismaService.users.findUnique({
       where: {
         id: userId,
@@ -26,6 +27,9 @@ export class UserService {
         email: true,
         name: true,
         image: true,
+        dob: true,
+        phoneNumber: true,
+        gender: true,
         role: true,
       },
     });
@@ -38,8 +42,14 @@ export class UserService {
     }
 
     return {
-      message: 'success',
-      data: user,
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      image: user.image,
+      dob: user.dob,
+      phoneNumber: user.phoneNumber,
+      gender: user.gender,
+      role: user.role,
     };
   }
 
@@ -152,5 +162,77 @@ export class UserService {
         data: null,
       });
     }
+  }
+
+  async getUserParticipatedTournaments(
+    userId: number,
+    PageOptionsUserParticipatedTournamentsDto: PageOptionsUserParticipatedTournamentsDto,
+  ) {
+    // Check if user exists
+    const user = await this.prismaService.users.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        message: 'User not found',
+        data: null,
+      });
+    }
+
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: PageOptionsUserParticipatedTournamentsDto.order,
+        },
+      ],
+      where: {
+        OR: [{ userId1: { equals: userId } }, { userId2: { equals: userId } }],
+        tournament: {
+          status: {
+            equals: PageOptionsUserParticipatedTournamentsDto.status,
+          },
+        },
+      },
+      select: {
+        tournament: true,
+      },
+    };
+
+    const pageOption =
+      PageOptionsUserParticipatedTournamentsDto.page &&
+      PageOptionsUserParticipatedTournamentsDto.take
+        ? {
+            skip: PageOptionsUserParticipatedTournamentsDto.skip,
+            take: PageOptionsUserParticipatedTournamentsDto.take,
+          }
+        : undefined;
+
+    // Get user's tournament registrations
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.tournament_registrations.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.tournament_registrations.count({
+        where: conditions.where,
+      }),
+    ]);
+
+    // Map to get only tournament details
+    const userParticipatedTournaments = result.map(
+      (registration) => registration.tournament,
+    );
+
+    return {
+      data: userParticipatedTournaments,
+      totalPages: Math.ceil(
+        totalCount / PageOptionsUserParticipatedTournamentsDto.take,
+      ),
+      totalCount,
+    };
   }
 }

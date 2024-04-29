@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "d045109b-2a63-4ad0-acb4-08c7ac34ad90",
+		"_postman_id": "46f4e844-16d3-4f6c-b955-792816794704",
 		"name": "Core",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20334878"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "16088057",
+		"_collection_link": "https://orange-zodiac-214004.postman.co/workspace/Tennis-App~ad219e41-8fc3-49d6-84bf-7cf7f14216b8/collection/16088057-46f4e844-16d3-4f6c-b955-792816794704?action=share&source=collection_link&creator=16088057"
 	},
 	"item": [
 		{
@@ -17,13 +18,9 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiaHFraGFpMTYzN0BnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjM5MjE1NSwiZXhwIjoxNzEyMzkzOTU1fQ.k8NUtWHJCt2T4CyWIDOhjYhEWt5wzhV1Q79Hw85Cne4",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiaHFraGFpMTYzN0BnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjM5MjE1NSwiZXhwIjoxNzEyMzkzOTU1fQ.k8NUtWHJCt2T4CyWIDOhjYhEWt5wzhV1Q79Hw85Cne4"
+									}
 								},
 								"method": "POST",
 								"header": [],
@@ -36,15 +33,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/groups",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups"
-									]
-								}
+								"url": "{{CORE_URL}}/groups"
 							},
 							"response": [
 								{
@@ -61,15 +50,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups"
-											]
-										}
+										"url": "{{CORE_URL}}/groups"
 									},
 									"status": "Created",
 									"code": 201,
@@ -129,15 +110,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups"
-											]
-										}
+										"url": "{{CORE_URL}}/groups"
 									},
 									"status": "Conflict",
 									"code": 409,
@@ -197,15 +170,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups"
-											]
-										}
+										"url": "{{CORE_URL}}/groups"
 									},
 									"status": "Not Found",
 									"code": 404,
@@ -265,15 +230,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups"
-											]
-										}
+										"url": "{{CORE_URL}}/groups"
 									},
 									"status": "Bad Request",
 									"code": 400,
@@ -333,15 +290,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups"
-											]
-										}
+										"url": "{{CORE_URL}}/groups"
 									},
 									"status": "Bad Request",
 									"code": 400,
@@ -394,13 +343,9 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTk1OTI3NiwiZXhwIjoxNzIwNTk5Mjc2fQ.LwP44y7tXkVuW3qFNCaj_qkS1OAYLtY3eEcl64xM1Wk",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTk1OTI3NiwiZXhwIjoxNzIwNTk5Mjc2fQ.LwP44y7tXkVuW3qFNCaj_qkS1OAYLtY3eEcl64xM1Wk"
+									}
 								},
 								"method": "GET",
 								"header": [],
@@ -663,26 +608,13 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTk1OTI3NiwiZXhwIjoxNzIwNTk5Mjc2fQ.LwP44y7tXkVuW3qFNCaj_qkS1OAYLtY3eEcl64xM1Wk",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTk1OTI3NiwiZXhwIjoxNzIwNTk5Mjc2fQ.LwP44y7tXkVuW3qFNCaj_qkS1OAYLtY3eEcl64xM1Wk"
+									}
 								},
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/2",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"2"
-									]
-								}
+								"url": "{{CORE_URL}}/groups/2"
 							},
 							"response": [
 								{
@@ -690,16 +622,7 @@
 									"originalRequest": {
 										"method": "GET",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2"
 									},
 									"status": "OK",
 									"code": 200,
@@ -750,16 +673,7 @@
 									"originalRequest": {
 										"method": "GET",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/11",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"11"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/11"
 									},
 									"status": "OK",
 									"code": 200,
@@ -810,16 +724,7 @@
 									"originalRequest": {
 										"method": "GET",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/3",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"3"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/3"
 									},
 									"status": "Not Found",
 									"code": 404,
@@ -870,16 +775,7 @@
 									"originalRequest": {
 										"method": "GET",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/11",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"11"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/11"
 									},
 									"status": "Forbidden",
 									"code": 403,
@@ -932,13 +828,9 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzEyMjQ4ODEyLCJleHAiOjE3MjA4ODg4MTJ9.Rj8lzpY86XadDnb95gEdDVq32okWZ89Zlkb74gJOfP0",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzEyMjQ4ODEyLCJleHAiOjE3MjA4ODg4MTJ9.Rj8lzpY86XadDnb95gEdDVq32okWZ89Zlkb74gJOfP0"
+									}
 								},
 								"method": "GET",
 								"header": [],
@@ -1144,13 +1036,9 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzEwNDM2OTAzLCJleHAiOjE3MTA0Mzg3MDN9.EMRrSifbxZ5SbSAinfnTt8BSU62UZcnrX5iG_FlmXX8",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzEwNDM2OTAzLCJleHAiOjE3MTA0Mzg3MDN9.EMRrSifbxZ5SbSAinfnTt8BSU62UZcnrX5iG_FlmXX8"
+									}
 								},
 								"method": "PATCH",
 								"header": [],
@@ -1163,16 +1051,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/groups/5",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"5"
-									]
-								}
+								"url": "{{CORE_URL}}/groups/5"
 							},
 							"response": [
 								{
@@ -1189,16 +1068,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/news/1",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"news",
-												"1"
-											]
-										}
+										"url": "{{CORE_URL}}/news/1"
 									},
 									"status": "OK",
 									"code": 200,
@@ -1258,16 +1128,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/news/12",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"news",
-												"12"
-											]
-										}
+										"url": "{{CORE_URL}}/news/12"
 									},
 									"status": "Not Found",
 									"code": 404,
@@ -1325,13 +1186,9 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsImVtYWlsIjoiaHFraGFpMTYzOUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjM4OTYzMiwiZXhwIjoxNzEyMzkxNDMyfQ.bskFqLb8jwyJ0-vyoTCS487U3C5EI9rLBJBPZqA5-Gw",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsImVtYWlsIjoiaHFraGFpMTYzOUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjM4OTYzMiwiZXhwIjoxNzEyMzkxNDMyfQ.bskFqLb8jwyJ0-vyoTCS487U3C5EI9rLBJBPZqA5-Gw"
+									}
 								},
 								"method": "POST",
 								"header": [],
@@ -1631,13 +1488,9 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiaHFraGFpMTYzN0BnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjM5MjE1NSwiZXhwIjoxNzEyMzkzOTU1fQ.k8NUtWHJCt2T4CyWIDOhjYhEWt5wzhV1Q79Hw85Cne4",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiaHFraGFpMTYzN0BnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjM5MjE1NSwiZXhwIjoxNzEyMzkzOTU1fQ.k8NUtWHJCt2T4CyWIDOhjYhEWt5wzhV1Q79Hw85Cne4"
+									}
 								},
 								"method": "POST",
 								"header": [],
@@ -1650,16 +1503,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/groups/invite",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"invite"
-									]
-								}
+								"url": "{{CORE_URL}}/groups/invite"
 							},
 							"response": [
 								{
@@ -1676,16 +1520,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups/invite",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"invite"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/invite"
 									},
 									"status": "Created",
 									"code": 201,
@@ -1738,13 +1573,9 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzExMDg4MTI2LCJleHAiOjE3MTk3MjgxMjZ9.2JLvvx_oIkZBxNwmbWhdzv7dlhcjqugtm5AjZFVoIbg",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzExMDg4MTI2LCJleHAiOjE3MTk3MjgxMjZ9.2JLvvx_oIkZBxNwmbWhdzv7dlhcjqugtm5AjZFVoIbg"
+									}
 								},
 								"method": "GET",
 								"header": [],
@@ -1932,28 +1763,13 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzExMDg4MTI2LCJleHAiOjE3MTk3MjgxMjZ9.2JLvvx_oIkZBxNwmbWhdzv7dlhcjqugtm5AjZFVoIbg",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzExMDg4MTI2LCJleHAiOjE3MTk3MjgxMjZ9.2JLvvx_oIkZBxNwmbWhdzv7dlhcjqugtm5AjZFVoIbg"
+									}
 								},
 								"method": "DELETE",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/1/members/28",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"1",
-										"members",
-										"28"
-									]
-								}
+								"url": "{{CORE_URL}}/groups/1/members/28"
 							},
 							"response": [
 								{
@@ -1961,18 +1777,7 @@
 									"originalRequest": {
 										"method": "DELETE",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/1/members/28",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"1",
-												"members",
-												"28"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/1/members/28"
 									},
 									"status": "OK",
 									"code": 200,
@@ -2023,18 +1828,7 @@
 									"originalRequest": {
 										"method": "DELETE",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/1/members/28",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"1",
-												"members",
-												"28"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/1/members/28"
 									},
 									"status": "Forbidden",
 									"code": 403,
@@ -2085,18 +1879,7 @@
 									"originalRequest": {
 										"method": "DELETE",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/1/members/28",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"1",
-												"members",
-												"28"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/1/members/28"
 									},
 									"status": "Forbidden",
 									"code": 403,
@@ -2147,18 +1930,7 @@
 									"originalRequest": {
 										"method": "DELETE",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/1/members/28",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"1",
-												"members",
-												"28"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/1/members/28"
 									},
 									"status": "Not Found",
 									"code": 404,
@@ -2225,17 +1997,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/groups/2/tournaments",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"2",
-										"tournaments"
-									]
-								}
+								"url": "{{CORE_URL}}/groups/2/tournaments"
 							},
 							"response": [
 								{
@@ -2252,17 +2014,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments"
 									},
 									"status": "Created",
 									"code": 201,
@@ -2322,17 +2074,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups/3/tournaments",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"3",
-												"tournaments"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/3/tournaments"
 									},
 									"status": "Not Found",
 									"code": 404,
@@ -2392,17 +2134,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups/14/tournaments",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"14",
-												"tournaments"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/14/tournaments"
 									},
 									"status": "Forbidden",
 									"code": 403,
@@ -2462,17 +2194,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments"
 									},
 									"status": "Bad Request",
 									"code": 400,
@@ -2892,19 +2614,7 @@
 							"request": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/2/tournaments/2/general-info",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"2",
-										"tournaments",
-										"2",
-										"general-info"
-									]
-								}
+								"url": "{{CORE_URL}}/groups/2/tournaments/2/general-info"
 							},
 							"response": [
 								{
@@ -2912,19 +2622,7 @@
 									"originalRequest": {
 										"method": "GET",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments/1/general-info",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments",
-												"1",
-												"general-info"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments/1/general-info"
 									},
 									"status": "OK",
 									"code": 200,
@@ -2975,19 +2673,7 @@
 									"originalRequest": {
 										"method": "GET",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments/2/general-info",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments",
-												"2",
-												"general-info"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments/2/general-info"
 									},
 									"status": "OK",
 									"code": 200,
@@ -3038,19 +2724,7 @@
 									"originalRequest": {
 										"method": "GET",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments/1/general-info",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments",
-												"1",
-												"general-info"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments/1/general-info"
 									},
 									"status": "Not Found",
 									"code": 404,
@@ -3101,19 +2775,7 @@
 									"originalRequest": {
 										"method": "GET",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/3/tournaments/1/general-info",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"3",
-												"tournaments",
-												"1",
-												"general-info"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/3/tournaments/1/general-info"
 									},
 									"status": "Not Found",
 									"code": 404,
@@ -3164,19 +2826,7 @@
 									"originalRequest": {
 										"method": "GET",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments/1/general-info",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments",
-												"1",
-												"general-info"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments/1/general-info"
 									},
 									"status": "Bad Request",
 									"code": 400,
@@ -3227,19 +2877,7 @@
 									"originalRequest": {
 										"method": "GET",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/15/tournaments/1/general-info",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"15",
-												"tournaments",
-												"1",
-												"general-info"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/15/tournaments/1/general-info"
 									},
 									"status": "Forbidden",
 									"code": 403,
@@ -3292,13 +2930,9 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MTI5MTg0NjIsImV4cCI6MTcyMTU1ODQ2Mn0.xTZHD5EEEJfa7N16ah_TVoqAPJ-X9J1Oaal5_CCi2Dc",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InRyaTFAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MTI5MTg0NjIsImV4cCI6MTcyMTU1ODQ2Mn0.xTZHD5EEEJfa7N16ah_TVoqAPJ-X9J1Oaal5_CCi2Dc"
+									}
 								},
 								"method": "GET",
 								"header": [],
@@ -3573,19 +3207,7 @@
 							"request": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/2/tournaments/2/non-participants",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"2",
-										"tournaments",
-										"2",
-										"non-participants"
-									]
-								}
+								"url": "{{CORE_URL}}/groups/2/tournaments/2/non-participants"
 							},
 							"response": [
 								{
@@ -3593,19 +3215,7 @@
 									"originalRequest": {
 										"method": "GET",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments/2/non-participants",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments",
-												"2",
-												"non-participants"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments/2/non-participants"
 									},
 									"status": "OK",
 									"code": 200,
@@ -3667,19 +3277,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/groups/2/tournaments/2/participants",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"2",
-										"tournaments",
-										"2",
-										"participants"
-									]
-								}
+								"url": "{{CORE_URL}}/groups/2/tournaments/2/participants"
 							},
 							"response": [
 								{
@@ -3696,19 +3294,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments/2/participants",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments",
-												"2",
-												"participants"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments/2/participants"
 									},
 									"status": "Created",
 									"code": 201,
@@ -3768,19 +3354,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments/2/participants",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments",
-												"2",
-												"participants"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments/2/participants"
 									},
 									"status": "Not Found",
 									"code": 404,
@@ -3840,19 +3414,7 @@
 												}
 											}
 										},
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments/2/participants",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments",
-												"2",
-												"participants"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments/2/participants"
 									},
 									"status": "Conflict",
 									"code": 409,
@@ -3905,20 +3467,7 @@
 							"request": {
 								"method": "DELETE",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/2/tournaments/2/participants/6",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"2",
-										"tournaments",
-										"2",
-										"participants",
-										"6"
-									]
-								}
+								"url": "{{CORE_URL}}/groups/2/tournaments/2/participants/6"
 							},
 							"response": [
 								{
@@ -3926,20 +3475,7 @@
 									"originalRequest": {
 										"method": "DELETE",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments/2/participants/6",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments",
-												"2",
-												"participants",
-												"6"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments/2/participants/6"
 									},
 									"status": "OK",
 									"code": 200,
@@ -3990,20 +3526,7 @@
 									"originalRequest": {
 										"method": "DELETE",
 										"header": [],
-										"url": {
-											"raw": "{{CORE_URL}}/groups/2/tournaments/2/participants/6",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"groups",
-												"2",
-												"tournaments",
-												"2",
-												"participants",
-												"6"
-											]
-										}
+										"url": "{{CORE_URL}}/groups/2/tournaments/2/participants/6"
 									},
 									"status": "Not Found",
 									"code": 404,
@@ -4056,13 +3579,9 @@
 			],
 			"auth": {
 				"type": "bearer",
-				"bearer": [
-					{
-						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjkxMzc3NCwiZXhwIjoxNzIxNTUzNzc0fQ.d4XZCz86ZGcuqXkWhDXrgAqi7T_OTuuJ-wcymPDI4VA",
-						"type": "string"
-					}
-				]
+				"bearer": {
+					"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjkxMzc3NCwiZXhwIjoxNzIxNTUzNzc0fQ.d4XZCz86ZGcuqXkWhDXrgAqi7T_OTuuJ-wcymPDI4VA"
+				}
 			},
 			"event": [
 				{
@@ -4095,13 +3614,9 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI"
+							}
 						},
 						"method": "POST",
 						"header": [],
@@ -4114,15 +3629,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{CORE_URL}}/news",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"news"
-							]
-						}
+						"url": "{{CORE_URL}}/news"
 					},
 					"response": [
 						{
@@ -4139,15 +3646,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/news",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news"
-									]
-								}
+								"url": "{{CORE_URL}}/news"
 							},
 							"status": "Created",
 							"code": 201,
@@ -4200,25 +3699,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI"
+							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/news",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"news"
-							]
-						}
+						"url": "{{CORE_URL}}/news"
 					},
 					"response": [
 						{
@@ -4226,15 +3713,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/news",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news"
-									]
-								}
+								"url": "{{CORE_URL}}/news"
 							},
 							"status": "OK",
 							"code": 200,
@@ -4285,15 +3764,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/news",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news"
-									]
-								}
+								"url": "{{CORE_URL}}/news"
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -4346,26 +3817,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI"
+							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/news/top",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"news",
-								"top"
-							]
-						}
+						"url": "{{CORE_URL}}/news/top"
 					},
 					"response": [
 						{
@@ -4373,15 +3831,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/news",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news"
-									]
-								}
+								"url": "{{CORE_URL}}/news"
 							},
 							"status": "OK",
 							"code": 200,
@@ -4432,15 +3882,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/news",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news"
-									]
-								}
+								"url": "{{CORE_URL}}/news"
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -4493,26 +3935,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs"
+							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/news/1",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"news",
-								"1"
-							]
-						}
+						"url": "{{CORE_URL}}/news/1"
 					},
 					"response": [
 						{
@@ -4520,16 +3949,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/news/11",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news",
-										"11"
-									]
-								}
+								"url": "{{CORE_URL}}/news/11"
 							},
 							"status": "OK",
 							"code": 200,
@@ -4580,16 +4000,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/news/11",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news",
-										"11"
-									]
-								}
+								"url": "{{CORE_URL}}/news/11"
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -4642,13 +4053,9 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs"
+							}
 						},
 						"method": "PATCH",
 						"header": [],
@@ -4661,16 +4068,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{CORE_URL}}/news/12",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"news",
-								"12"
-							]
-						}
+						"url": "{{CORE_URL}}/news/12"
 					},
 					"response": [
 						{
@@ -4687,16 +4085,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/news/1",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news",
-										"1"
-									]
-								}
+								"url": "{{CORE_URL}}/news/1"
 							},
 							"status": "OK",
 							"code": 200,
@@ -4756,16 +4145,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/news/12",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news",
-										"12"
-									]
-								}
+								"url": "{{CORE_URL}}/news/12"
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -4818,26 +4198,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyODE0MSwiZXhwIjoxNzEwMTI5OTQxfQ.9WnSv_nRKpxQ2tnht9PjMDMWKtAwidaX4L_cA06_PMs"
+							}
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/news/1",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"news",
-								"1"
-							]
-						}
+						"url": "{{CORE_URL}}/news/1"
 					},
 					"response": [
 						{
@@ -4845,16 +4212,7 @@
 							"originalRequest": {
 								"method": "DELETE",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/news/1",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"news",
-										"1"
-									]
-								}
+								"url": "{{CORE_URL}}/news/1"
 							},
 							"status": "OK",
 							"code": 200,
@@ -4912,15 +4270,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/mobile-mini-apps",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"mobile-mini-apps"
-							]
-						}
+						"url": "{{CORE_URL}}/mobile-mini-apps"
 					},
 					"response": [
 						{
@@ -4928,15 +4278,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/mobile-mini-apps",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"mobile-mini-apps"
-									]
-								}
+								"url": "{{CORE_URL}}/mobile-mini-apps"
 							},
 							"status": "OK",
 							"code": 200,
@@ -4987,15 +4329,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/mobile-mini-apps",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"mobile-mini-apps"
-									]
-								}
+								"url": "{{CORE_URL}}/mobile-mini-apps"
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -5048,16 +4382,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/mobile-mini-apps/1",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"mobile-mini-apps",
-								"1"
-							]
-						}
+						"url": "{{CORE_URL}}/mobile-mini-apps/1"
 					},
 					"response": [
 						{
@@ -5065,16 +4390,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/mobile-mini-apps/123",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"mobile-mini-apps",
-										"123"
-									]
-								}
+								"url": "{{CORE_URL}}/mobile-mini-apps/123"
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -5125,16 +4441,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/mobile-mini-apps/1",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"mobile-mini-apps",
-										"1"
-									]
-								}
+								"url": "{{CORE_URL}}/mobile-mini-apps/1"
 							},
 							"status": "OK",
 							"code": 200,
@@ -5196,15 +4503,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{CORE_URL}}/mobile-mini-apps",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"mobile-mini-apps"
-							]
-						}
+						"url": "{{CORE_URL}}/mobile-mini-apps"
 					},
 					"response": [
 						{
@@ -5221,15 +4520,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/mobile-mini-apps",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"mobile-mini-apps"
-									]
-								}
+								"url": "{{CORE_URL}}/mobile-mini-apps"
 							},
 							"status": "Forbidden",
 							"code": 403,
@@ -5289,15 +4580,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/mobile-mini-apps",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"mobile-mini-apps"
-									]
-								}
+								"url": "{{CORE_URL}}/mobile-mini-apps"
 							},
 							"status": "Created",
 							"code": 201,
@@ -5359,16 +4642,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{CORE_URL}}/mobile-mini-apps/12",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"mobile-mini-apps",
-								"12"
-							]
-						}
+						"url": "{{CORE_URL}}/mobile-mini-apps/12"
 					},
 					"response": [
 						{
@@ -5385,16 +4659,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/mobile-mini-apps/1",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"mobile-mini-apps",
-										"1"
-									]
-								}
+								"url": "{{CORE_URL}}/mobile-mini-apps/1"
 							},
 							"status": "OK",
 							"code": 200,
@@ -5454,16 +4719,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/mobile-mini-apps/10",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"mobile-mini-apps",
-										"10"
-									]
-								}
+								"url": "{{CORE_URL}}/mobile-mini-apps/10"
 							},
 							"status": "Forbidden",
 							"code": 403,
@@ -5523,16 +4779,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/mobile-mini-apps/12",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"mobile-mini-apps",
-										"12"
-									]
-								}
+								"url": "{{CORE_URL}}/mobile-mini-apps/12"
 							},
 							"status": "Not Found",
 							"code": 404,
@@ -5599,17 +4846,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8080/affiliates",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"affiliates"
-							]
-						}
+						"url": "http://localhost:8080/affiliates"
 					},
 					"response": []
 				},
@@ -5618,18 +4855,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/affiliates/2",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"affiliates",
-								"2"
-							]
-						}
+						"url": "http://localhost:8080/affiliates/2"
 					},
 					"response": []
 				},
@@ -5667,18 +4893,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/affiliates/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"affiliates",
-								"1"
-							]
-						}
+						"url": "http://localhost:8080/affiliates/1"
 					},
 					"response": []
 				},
@@ -5696,18 +4911,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8080/affiliates/4",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"affiliates",
-								"4"
-							]
-						}
+						"url": "http://localhost:8080/affiliates/4"
 					},
 					"response": []
 				}
@@ -5724,27 +4928,13 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoiY2hpaGllbjIwMDI0QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDY5MywiZXhwIjoxNzEwMTM2NDkzfQ.XBW33nwc-mGmnrOJ8xz4Bm3XmuNyJoTZoX_Wh7q7Sm4",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoiY2hpaGllbjIwMDI0QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDY5MywiZXhwIjoxNzEwMTM2NDkzfQ.XBW33nwc-mGmnrOJ8xz4Bm3XmuNyJoTZoX_Wh7q7Sm4"
+									}
 								},
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/users/admin/all",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"users",
-										"admin",
-										"all"
-									]
-								}
+								"url": "{{CORE_URL}}/users/admin/all"
 							},
 							"response": []
 						},
@@ -5753,27 +4943,13 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDA3NywiZXhwIjoxNzEwMTM1ODc3fQ.NG2zkx0jbQluPYx-6aEM41Y0_6wjfKgiM7lCQls24aU",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDA3NywiZXhwIjoxNzEwMTM1ODc3fQ.NG2zkx0jbQluPYx-6aEM41Y0_6wjfKgiM7lCQls24aU"
+									}
 								},
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/users/admin/1",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"users",
-										"admin",
-										"1"
-									]
-								}
+								"url": "{{CORE_URL}}/users/admin/1"
 							},
 							"response": []
 						},
@@ -5782,13 +4958,9 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDA3NywiZXhwIjoxNzEwMTM1ODc3fQ.NG2zkx0jbQluPYx-6aEM41Y0_6wjfKgiM7lCQls24aU",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDA3NywiZXhwIjoxNzEwMTM1ODc3fQ.NG2zkx0jbQluPYx-6aEM41Y0_6wjfKgiM7lCQls24aU"
+									}
 								},
 								"method": "POST",
 								"header": [],
@@ -5801,16 +4973,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/users/admin",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"users",
-										"admin"
-									]
-								}
+								"url": "{{CORE_URL}}/users/admin"
 							},
 							"response": []
 						},
@@ -5819,13 +4982,9 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoiY2hpaGllbjIwMDI0QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDY5MywiZXhwIjoxNzEwMTM2NDkzfQ.XBW33nwc-mGmnrOJ8xz4Bm3XmuNyJoTZoX_Wh7q7Sm4",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoiY2hpaGllbjIwMDI0QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEzNDY5MywiZXhwIjoxNzEwMTM2NDkzfQ.XBW33nwc-mGmnrOJ8xz4Bm3XmuNyJoTZoX_Wh7q7Sm4"
+									}
 								},
 								"method": "PATCH",
 								"header": [],
@@ -5838,17 +4997,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/users/admin/1",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"users",
-										"admin",
-										"1"
-									]
-								}
+								"url": "{{CORE_URL}}/users/admin/1"
 							},
 							"response": []
 						}
@@ -5862,26 +5011,13 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoiY2hpaGllbjIwMDIzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzEwMTMzODU0LCJleHAiOjE3MTAxMzU2NTR9.bfg1YoJoQDBItjQn21LaMoN9WWzMl42r1ZelNkOtdjg",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoiY2hpaGllbjIwMDIzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzEwMTMzODU0LCJleHAiOjE3MTAxMzU2NTR9.bfg1YoJoQDBItjQn21LaMoN9WWzMl42r1ZelNkOtdjg"
+									}
 								},
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/users/me",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"users",
-										"me"
-									]
-								}
+								"url": "{{CORE_URL}}/users/me"
 							},
 							"response": []
 						},
@@ -5890,13 +5026,9 @@
 							"request": {
 								"auth": {
 									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoiY2hpaGllbjIwMDIzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzEwMTMzODU0LCJleHAiOjE3MTAxMzU2NTR9.bfg1YoJoQDBItjQn21LaMoN9WWzMl42r1ZelNkOtdjg",
-											"type": "string"
-										}
-									]
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoiY2hpaGllbjIwMDIzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzEwMTMzODU0LCJleHAiOjE3MTAxMzU2NTR9.bfg1YoJoQDBItjQn21LaMoN9WWzMl42r1ZelNkOtdjg"
+									}
 								},
 								"method": "PATCH",
 								"header": [],
@@ -5909,16 +5041,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/users/1",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"users",
-										"1"
-									]
-								}
+								"url": "{{CORE_URL}}/users/1"
 							},
 							"response": []
 						}
@@ -5949,15 +5072,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{CORE_URL}}/orders",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"orders"
-							]
-						}
+						"url": "{{CORE_URL}}/orders"
 					},
 					"response": [
 						{
@@ -5980,15 +5095,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CORE_URL}}/orders",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"orders"
-									]
-								}
+								"url": "{{CORE_URL}}/orders"
 							},
 							"status": "Created",
 							"code": 201,
@@ -6070,17 +5177,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{CORE_URL}}/orders/8f42ef83-f6f4-4efa-916e-69ed04d4189b/payment",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"orders",
-								"8f42ef83-f6f4-4efa-916e-69ed04d4189b",
-								"payment"
-							]
-						}
+						"url": "{{CORE_URL}}/orders/8f42ef83-f6f4-4efa-916e-69ed04d4189b/payment"
 					},
 					"response": []
 				},
@@ -6101,16 +5198,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{CORE_URL}}/orders/baa71722-3551-4bb1-ada3-803a56857cfe",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"orders",
-								"baa71722-3551-4bb1-ada3-803a56857cfe"
-							]
-						}
+						"url": "{{CORE_URL}}/orders/baa71722-3551-4bb1-ada3-803a56857cfe"
 					},
 					"response": []
 				},
@@ -6119,13 +5207,9 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTczMjE4MSwiZXhwIjoxNzIwMzcyMTgxfQ.flATxD4ag9SwIdaO3RXzonyrWcKT3KfEzEQHGt5CpXU",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTczMjE4MSwiZXhwIjoxNzIwMzcyMTgxfQ.flATxD4ag9SwIdaO3RXzonyrWcKT3KfEzEQHGt5CpXU"
+							}
 						},
 						"method": "GET",
 						"header": [],
@@ -6256,15 +5340,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{CORE_URL}}/packages",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"packages"
-							]
-						}
+						"url": "{{CORE_URL}}/packages"
 					},
 					"response": []
 				},
@@ -6282,16 +5358,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{CORE_URL}}/packages/1",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"packages",
-								"1"
-							]
-						}
+						"url": "{{CORE_URL}}/packages/1"
 					},
 					"response": []
 				},
@@ -6312,16 +5379,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{CORE_URL}}/packages/2",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"packages",
-								"2"
-							]
-						}
+						"url": "{{CORE_URL}}/packages/2"
 					},
 					"response": []
 				},
@@ -6330,25 +5388,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTczMjE4MSwiZXhwIjoxNzIwMzcyMTgxfQ.flATxD4ag9SwIdaO3RXzonyrWcKT3KfEzEQHGt5CpXU",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTczMjE4MSwiZXhwIjoxNzIwMzcyMTgxfQ.flATxD4ag9SwIdaO3RXzonyrWcKT3KfEzEQHGt5CpXU"
+							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/packages",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"packages"
-							]
-						}
+						"url": "{{CORE_URL}}/packages"
 					},
 					"response": []
 				}
@@ -6362,25 +5408,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiaHFraGFpMTYzN0BnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjMzMzcyNywiZXhwIjoxNzEyMzM1NTI3fQ.6iie-JSyEOmjXXH4S52fEbspfQbttVQyzFw00muLAto",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiaHFraGFpMTYzN0BnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjMzMzcyNywiZXhwIjoxNzEyMzM1NTI3fQ.6iie-JSyEOmjXXH4S52fEbspfQbttVQyzFw00muLAto"
+							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/my-packages",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"my-packages"
-							]
-						}
+						"url": "{{CORE_URL}}/my-packages"
 					},
 					"response": [
 						{
@@ -6388,15 +5422,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/my-packages",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"my-packages"
-									]
-								}
+								"url": "{{CORE_URL}}/my-packages"
 							},
 							"status": "OK",
 							"code": 200,
@@ -6454,15 +5480,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{CORE_URL}}/systems-config",
-							"host": [
-								"{{CORE_URL}}"
-							],
-							"path": [
-								"systems-config"
-							]
-						}
+						"url": "{{CORE_URL}}/system-config"
 					},
 					"response": [
 						{
@@ -6470,15 +5488,7 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/systems-config",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"systems-config"
-									]
-								}
+								"url": "{{CORE_URL}}/systems-config"
 							},
 							"status": "OK",
 							"code": 200,
