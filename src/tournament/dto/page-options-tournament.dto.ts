@@ -6,7 +6,7 @@ import { RegistrationStatus } from '@prisma/client';
 export class PageOptionsTournamentDto {
   @IsString()
   @IsOptional()
-  readonly status?: RegistrationStatus = null;
+  readonly status?: RegistrationStatus;
 
   @IsEnum(Order)
   @IsOptional()
