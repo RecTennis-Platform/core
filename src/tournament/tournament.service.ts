@@ -1685,15 +1685,15 @@ export class TournamentService {
       },
     });
 
-  //   const groups = this.formatTournamentService
-  //     .generateGroupPlayOffPhase1(teams.length, dto.numberOfGroups)
-  //     .map((group) => {
-  //       return group.map((member) => {
-  //         return teams[member - 1];
-  //       });
-  //     });
-  //   return groups;
-  // }
+    const groups = this.formatTournamentService
+      .generateGroupPlayOffPhase1(teams.length, dto.numberOfGroups)
+      .map((group) => {
+        return group.map((member) => {
+          return teams[member - 1];
+        });
+      });
+    return groups;
+  }
 
   async generateFixture(id: number, dto: GenerateFixtureDto) {
     try {
@@ -1785,25 +1785,25 @@ export class TournamentService {
             teams.length,
           );
 
-  //         for (let i = 0; i < tables.table1.length; i++) {
-  //           const rawMatches = [];
-  //           let status = MatchStatus.scheduled.toString();
-  //           for (let j = 0; j < tables.table1[i].length; j++) {
-  //             let id = randomUUID();
-  //             let nextMatchId = randomUUID();
-  //             if (i === 0) {
-  //               if (j % 2 !== 0) {
-  //                 nextMatchId = rawMatches[j - 1].nextMatchId;
-  //               }
-  //             } else if (i === tables.table1.length - 1) {
-  //               id = rounds[i - 1].matches[j * 2].nextMatchId;
-  //               nextMatchId = null;
-  //             } else {
-  //               if (j % 2 !== 0) {
-  //                 nextMatchId = rawMatches[j - 1].nextMatchId;
-  //               }
-  //               id = rounds[i - 1].matches[j * 2].nextMatchId;
-  //             }
+          for (let i = 0; i < tables.table1.length; i++) {
+            const rawMatches = [];
+            let status = MatchStatus.scheduled.toString();
+            for (let j = 0; j < tables.table1[i].length; j++) {
+              let id = randomUUID();
+              let nextMatchId = randomUUID();
+              if (i === 0) {
+                if (j % 2 !== 0) {
+                  nextMatchId = rawMatches[j - 1].nextMatchId;
+                }
+              } else if (i === tables.table1.length - 1) {
+                id = rounds[i - 1].matches[j * 2].nextMatchId;
+                nextMatchId = null;
+              } else {
+                if (j % 2 !== 0) {
+                  nextMatchId = rawMatches[j - 1].nextMatchId;
+                }
+                id = rounds[i - 1].matches[j * 2].nextMatchId;
+              }
 
               let team1 = null,
                 team2 = null;
@@ -1968,61 +1968,61 @@ export class TournamentService {
           winners.length,
         );
 
-  //       for (let i = 0; i < tables.table1.length; i++) {
-  //         const rawMatches = [];
-  //         let status = MatchStatus.scheduled.toString();
-  //         for (let j = 0; j < tables.table1[i].length; j++) {
-  //           let id = randomUUID();
-  //           let nextMatchId = randomUUID();
-  //           if (i === 0) {
-  //             if (j % 2 !== 0) {
-  //               nextMatchId = rawMatches[j - 1].nextMatchId;
-  //             }
-  //           } else if (i === tables.table1.length - 1) {
-  //             id = rounds[i - 1].matches[j * 2].nextMatchId;
-  //             nextMatchId = null;
-  //           } else {
-  //             if (j % 2 !== 0) {
-  //               nextMatchId = rawMatches[j - 1].nextMatchId;
-  //             }
-  //             id = rounds[i - 1].matches[j * 2].nextMatchId;
-  //           }
-  //           let team1 = null,
-  //             team2 = null,
-  //             groupFixtureTeamId1 = null,
-  //             groupFixtureTeamId2 = null,
-  //             rankGroupTeam1 = null,
-  //             rankGroupTeam2 = null;
-  //           if (tables.table1[i][j] !== 0 && tables.table1[i][j] !== -1) {
-  //             groupFixtureTeamId1 = winners[tables.table1[i][j] - 1].id;
-  //             rankGroupTeam1 = winners[tables.table1[i][j] - 1].rank;
-  //             const user2 =
-  //               tournament.participantType === 'singles'
-  //                 ? null
-  //                 : { name: winners[tables.table1[i][j] - 1].title };
-  //             team1 = {
-  //               user1: { name: winners[tables.table1[i][j] - 1].title },
-  //               user2,
-  //             };
-  //           } else {
-  //             status = MatchStatus.skipped.toString();
-  //           }
+        for (let i = 0; i < tables.table1.length; i++) {
+          const rawMatches = [];
+          let status = MatchStatus.scheduled.toString();
+          for (let j = 0; j < tables.table1[i].length; j++) {
+            let id = randomUUID();
+            let nextMatchId = randomUUID();
+            if (i === 0) {
+              if (j % 2 !== 0) {
+                nextMatchId = rawMatches[j - 1].nextMatchId;
+              }
+            } else if (i === tables.table1.length - 1) {
+              id = rounds[i - 1].matches[j * 2].nextMatchId;
+              nextMatchId = null;
+            } else {
+              if (j % 2 !== 0) {
+                nextMatchId = rawMatches[j - 1].nextMatchId;
+              }
+              id = rounds[i - 1].matches[j * 2].nextMatchId;
+            }
+            let team1 = null,
+              team2 = null,
+              groupFixtureTeamId1 = null,
+              groupFixtureTeamId2 = null,
+              rankGroupTeam1 = null,
+              rankGroupTeam2 = null;
+            if (tables.table1[i][j] !== 0 && tables.table1[i][j] !== -1) {
+              groupFixtureTeamId1 = winners[tables.table1[i][j] - 1].id;
+              rankGroupTeam1 = winners[tables.table1[i][j] - 1].rank;
+              const user2 =
+                tournament.participantType === 'singles'
+                  ? null
+                  : { name: winners[tables.table1[i][j] - 1].title };
+              team1 = {
+                user1: { name: winners[tables.table1[i][j] - 1].title },
+                user2,
+              };
+            } else {
+              status = MatchStatus.skipped.toString();
+            }
 
-  //           if (tables.table2[i][j] !== 0 && tables.table2[i][j] !== -1) {
-  //             groupFixtureTeamId2 = winners[tables.table2[i][j] - 1].id;
-  //             rankGroupTeam2 = winners[tables.table2[i][j] - 1].rank;
-  //             const user2 =
-  //               tournament.participantType === 'singles'
-  //                 ? null
-  //                 : { name: winners[tables.table2[i][j] - 1].title };
-  //             team2 = {
-  //               user1: { name: winners[tables.table2[i][j] - 1].title },
-  //               user2,
-  //             };
-  //             status = MatchStatus.scheduled.toString();
-  //           } else {
-  //             status = MatchStatus.skipped.toString();
-  //           }
+            if (tables.table2[i][j] !== 0 && tables.table2[i][j] !== -1) {
+              groupFixtureTeamId2 = winners[tables.table2[i][j] - 1].id;
+              rankGroupTeam2 = winners[tables.table2[i][j] - 1].rank;
+              const user2 =
+                tournament.participantType === 'singles'
+                  ? null
+                  : { name: winners[tables.table2[i][j] - 1].title };
+              team2 = {
+                user1: { name: winners[tables.table2[i][j] - 1].title },
+                user2,
+              };
+              status = MatchStatus.scheduled.toString();
+            } else {
+              status = MatchStatus.skipped.toString();
+            }
 
             if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
               status = MatchStatus.no_show.toString();

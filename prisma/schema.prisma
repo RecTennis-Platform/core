@@ -226,27 +226,24 @@ model fixtures {
   id                   String           @id @default(uuid())
   tournamentId         Int              @map("tournament_id")
   numberOfParticipants Int              @map("number_of_participants")
-  numberOfGroups       Int?              @map("number_of_groups")
+  numberOfGroups       Int?             @map("number_of_groups")
   fixtureStartDate     DateTime         @map("fixture_start_date")
   fixtureEndDate       DateTime         @map("fixture_end_date")
-  matchesStartTime       String           @map("matches_start_time")
-  matchesEndTime         String?           @map("matches_end_time")
+  matchesStartTime     String           @map("matches_start_time")
+  matchesEndTime       String?          @map("matches_end_time")
   status               FixtureStatus    @default(draft)
   matchDuration        Int              @map("match_duration")
   breakDuration        Int              @map("break_duration")
   createdAt            DateTime         @default(now()) @map("created_at")
   updatedAt            DateTime         @updatedAt @map("updated_at")
-  number_of_groups     Int?
-  matches_end_time     String?
-  matches_start_time   String
   tournament           tournaments      @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixtures_tournaments")
-  groupFixtures       group_fixtures[]
+  groupFixtures        group_fixtures[]
 }
 
 model group_fixtures {
   id                 String             @id @default(uuid())
   fixtureId          String             @map("fixture_id")
-  title               String
+  title              String
   groupWinnerId      Int[]              @map("group_winner_id")
   isFinal            Boolean            @map("is_final")
   createdAt          DateTime           @default(now()) @map("created_at")
@@ -262,7 +259,6 @@ model group_fixtures {
 model rounds {
   id             String         @id @default(uuid())
   groupFixtureId String         @map("group_fixture_id")
-  title           String
   elo            Int            @map("elo")
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")
@@ -277,7 +273,7 @@ model teams {
   userId1       Int         @map("user_id_1")
   userId2       Int?        @map("user_id_2")
   totalElo      Int?        @map("total_elo")
-  point         Int?         @default(0)
+  point         Int?        @default(0)
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")
   tournamentId  Int         @map("tournament_id")
@@ -296,22 +292,22 @@ model matches {
   groupFixtureTeamId2 String?         @map("group_fixture_team_id_2")
   rankGroupTeam1      Int?            @map("rank_group_team1")
   rankGroupTeam2      Int?            @map("rank_group_team2")
-  teamId1             String?          @map("team_id_1")
+  teamId1             String?         @map("team_id_1")
   teamId2             String?         @map("team_id_2")
   teamWinnerId        String?         @map("team_winner_id")
-  title                String
+  title               String
   matchStartDate      DateTime        @map("match_start_date")
-  matchEndDate        DateTime?        @map("match_end_date")
+  matchEndDate        DateTime?       @map("match_end_date")
   venue               String
   status              MatchStatus     @default(scheduled)
-  matchDuration      Int             @map("match_duration")
-  breakDuration      Int             @map("break_duration")
+  matchDuration       Int             @map("match_duration")
+  breakDuration       Int             @map("break_duration")
   createdAt           DateTime        @default(now()) @map("created_at")
   updatedAt           DateTime        @updatedAt @map("updated_at")
   nextMatchId         String?         @map("next_match_id")
   groupFixture1       group_fixtures? @relation("groupFixture1", fields: [groupFixtureTeamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match1")
   groupFixture2       group_fixtures? @relation("groupFixture2", fields: [groupFixtureTeamId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match2")
-  team1               teams?           @relation("team1", fields: [teamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team1")
+  team1               teams?          @relation("team1", fields: [teamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team1")
   team2               teams?          @relation("team2", fields: [teamId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team2")
   teamWinner          teams?          @relation("teamWinner", fields: [teamWinnerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team_winner")
   nextMatch           matches?        @relation("nextMatch", fields: [nextMatchId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_matches_next_match")
@@ -424,10 +420,4 @@ enum RegistrationStatus {
   pending
   approved
   rejected
-}
-
-enum GroupFixtureStatus {
-  scheduled
-  walk_over
-  done
 }
