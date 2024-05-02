@@ -21,7 +21,10 @@ import {
   tournaments,
 } from '@prisma/client';
 import { FormatTournamentService } from 'src/services/format_tournament/format_tournament.service';
-import { CreateFixtureDto } from 'src/fixture/dto/create-fixture.dto';
+import {
+  CreateFixtureDto,
+  GenerateFixtureDto,
+} from 'src/fixture/dto/create-fixture.dto';
 import { randomUUID } from 'crypto';
 import { CreateFixtureGroupPlayoffDto } from 'src/fixture/dto/create-fixture-groupplayoff.dto';
 
@@ -1662,11 +1665,23 @@ export class TournamentService {
         tournamentId: id,
       },
       orderBy: {
-        rank: Prisma.SortOrder.desc,
+        totalElo: Prisma.SortOrder.desc,
       },
       include: {
-        user1: true,
-        user2: true,
+        user1: {
+          select: {
+            id: true,
+            image: true,
+            name: true,
+          },
+        },
+        user2: {
+          select: {
+            id: true,
+            image: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -1680,7 +1695,7 @@ export class TournamentService {
     return groups;
   }
 
-  async generateFixture(id: number, dto: CreateFixtureDto) {
+  async generateFixture(id: number, dto: GenerateFixtureDto) {
     try {
       if (
         dto.format === TournamentFormat.round_robin ||
@@ -1691,7 +1706,7 @@ export class TournamentService {
             tournamentId: id,
           },
           orderBy: {
-            rank: Prisma.SortOrder.desc,
+            totalElo: Prisma.SortOrder.desc,
           },
           include: {
             user1: {
@@ -1724,16 +1739,18 @@ export class TournamentService {
               const team1 = {
                 user1: teams[tables.table1[i][j] - 1].user1,
                 user2: teams[tables.table1[i][j] - 1].user2,
+                id: teams[tables.table1[i][j] - 1].id,
               };
 
               const team2 = {
                 user1: teams[tables.table2[i][j] - 1].user1,
                 user2: teams[tables.table2[i][j] - 1].user2,
+                id: teams[tables.table2[i][j] - 1].id,
               };
               const match = {
                 id: randomUUID(),
                 nextMatchId: null,
-                name: `Match ${j + 1}`,
+                title: `Match ${j + 1}`,
                 date: null,
                 duration: dto.maxDuration,
                 status: MatchStatus.scheduled,
@@ -1748,8 +1765,15 @@ export class TournamentService {
             };
             rounds.push(round);
           }
+          const group = {
+            id: randomUUID(),
+            title: 'Round Robin Group',
+            isFinal: true,
+            rounds: rounds,
+          };
           return {
-            roundRobinRounds: rounds,
+            id: randomUUID(),
+            roundRobinGroups: [group],
             status: 'new',
             participantType: teams[0].tournaments.participantType,
             format: 'round_robin',
@@ -1787,6 +1811,7 @@ export class TournamentService {
                 team1 = {
                   user1: teams[tables.table1[i][j] - 1].user1,
                   user2: teams[tables.table1[i][j] - 1].user2,
+                  id: teams[tables.table1[i][j] - 1].id,
                 };
               } else {
                 status = MatchStatus.skipped.toString();
@@ -1796,6 +1821,7 @@ export class TournamentService {
                 team2 = {
                   user1: teams[tables.table2[i][j] - 1].user1,
                   user2: teams[tables.table2[i][j] - 1].user2,
+                  id: teams[tables.table2[i][j] - 1].id,
                 };
                 status = MatchStatus.scheduled.toString();
               } else {
@@ -1808,7 +1834,7 @@ export class TournamentService {
               const match = {
                 id: id,
                 nextMatchId: nextMatchId,
-                name: `Match ${j + 1}`,
+                title: `Match ${j + 1}`,
                 date: null,
                 duration: dto.maxDuration,
                 status: status,
@@ -1823,8 +1849,15 @@ export class TournamentService {
             };
             rounds.push(round);
           }
+          const group = {
+            id: randomUUID(),
+            title: 'Knockout Group',
+            isFinal: true,
+            rounds: rounds,
+          };
           return {
-            knockoutRounds: rounds,
+            id: randomUUID(),
+            knockoutGroup: group,
             status: 'new',
             participantType: teams[0].tournaments.participantType,
             format: 'knockout',
@@ -1851,8 +1884,20 @@ export class TournamentService {
                   id: memberId,
                 },
                 include: {
-                  user1: true,
-                  user2: true,
+                  user1: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                    },
+                  },
+                  user2: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                    },
+                  },
                   tournaments: true,
                 },
               });
@@ -1870,16 +1915,18 @@ export class TournamentService {
               const team1 = {
                 user1: teams[tables.table1[i][j] - 1].user1,
                 user2: teams[tables.table1[i][j] - 1].user2,
+                id: teams[tables.table1[i][j] - 1].id,
               };
 
               const team2 = {
                 user1: teams[tables.table2[i][j] - 1].user1,
                 user2: teams[tables.table2[i][j] - 1].user2,
+                id: teams[tables.table2[i][j] - 1].id,
               };
               const match = {
                 id: randomUUID(),
                 nextMatchId: null,
-                name: `Match ${j + 1}`,
+                title: `Match ${j + 1}`,
                 date: null,
                 duration: dto.maxDuration,
                 status: MatchStatus.scheduled,
@@ -1899,6 +1946,7 @@ export class TournamentService {
             rounds: groupRounds,
             id: randomUUID(),
             numberOfProceeders: dto.groups[i].numberOfProceeders,
+            isFinal: false,
           };
           groups.push(group);
         }
@@ -1914,7 +1962,6 @@ export class TournamentService {
           winnersByGroup.push(winners);
         }
         const winners = mergeArrays(winnersByGroup);
-        console.log(winners);
         const tables = this.formatTournamentService.generateTables(
           'knockout',
           1,
@@ -1983,7 +2030,7 @@ export class TournamentService {
             const match = {
               id: id,
               nextMatchId: nextMatchId,
-              name: `Match ${j + 1}`,
+              title: `Match ${j + 1}`,
               date: null,
               duration: dto.maxDuration,
               status: status,
@@ -2002,15 +2049,508 @@ export class TournamentService {
           };
           rounds.push(round);
         }
+
+        const knockoutGroup = {
+          id: randomUUID(),
+          title: 'Knockout Group',
+          isFinal: true,
+          rounds: rounds,
+        };
         return {
-          roundRobinRounds: groups,
-          knockoutRounds: rounds,
+          id: randomUUID(),
+          roundRobinGroups: groups,
+          knockoutGroup,
           status: 'new',
           participantType: tournament.participantType,
           format: 'group_playoff',
         };
       }
     } catch (error) {}
+  }
+
+  async createFixture(id: number, dto: CreateFixtureDto) {
+    const numberOfParticipants = await this.prismaService.teams.count({
+      where: {
+        tournamentId: id,
+      },
+    });
+    await this.prismaService.$transaction(async (tx) => {
+      const fixture = await tx.fixtures.upsert({
+        where: {
+          id: dto.id,
+        },
+        update: {
+          numberOfParticipants: numberOfParticipants,
+          numberOfGroups: dto.roundRobinGroups?.length ?? 1,
+          fixtureStartDate: dto.fixtureStartDate,
+          fixtureEndDate: dto.fixtureEndDate,
+          matchesStartTime: dto.matchesStartTime,
+          matchesEndTime: dto.matchesEndTime,
+          matchDuration: dto.maxDuration,
+          breakDuration: dto.breakDuration,
+          status: dto.status,
+        },
+        create: {
+          id: dto.id,
+          tournamentId: id,
+          numberOfParticipants: numberOfParticipants,
+          numberOfGroups: dto.roundRobinGroups.length,
+          fixtureStartDate: dto.fixtureStartDate,
+          fixtureEndDate: dto.fixtureEndDate,
+          matchesStartTime: dto.matchesStartTime,
+          matchesEndTime: dto.matchesEndTime,
+          matchDuration: dto.maxDuration,
+          breakDuration: dto.breakDuration,
+          status: dto.status,
+        },
+      });
+
+      if (dto.format === TournamentFormat.round_robin) {
+        await Promise.all(
+          dto.roundRobinGroups.map(async (group) => {
+            await tx.group_fixtures.upsert({
+              where: {
+                id: group.id,
+              },
+              update: {
+                fixtureId: fixture.id,
+                title: group.title,
+                isFinal: true,
+              },
+              create: {
+                id: group.id,
+                fixtureId: fixture.id,
+                title: group.title,
+                isFinal: true,
+              },
+            });
+            await Promise.all(
+              group.rounds.map(async (round) => {
+                await tx.rounds.upsert({
+                  where: {
+                    id: round.id,
+                  },
+                  update: {
+                    groupFixtureId: group.id,
+                    title: round.title,
+                    elo: 100,
+                  },
+                  create: {
+                    id: round.id,
+                    groupFixtureId: group.id,
+                    title: round.title,
+                    elo: 100,
+                  },
+                });
+                //apply elo
+                await Promise.all(
+                  round.matches.map(async (match) => {
+                    await tx.matches.upsert({
+                      where: {
+                        id: match.id,
+                      },
+                      update: {
+                        roundId: round.id,
+                        title: match.title,
+                        status: match.status,
+                        rankGroupTeam1: match.rankGroupTeam1,
+                        rankGroupTeam2: match.rankGroupTeam2,
+                        nextMatchId: match.nextMatchId,
+                        matchStartDate: match.date,
+                        teamId1: match.teams.team1?.id,
+                        teamId2: match.teams.team2?.id,
+                        venue: match?.venue,
+                        matchDuration: dto.maxDuration,
+                        breakDuration: dto.breakDuration,
+                      },
+
+                      create: {
+                        id: match.id,
+                        roundId: round.id,
+                        title: match.title,
+                        status: match.status,
+                        rankGroupTeam1: match.rankGroupTeam1,
+                        rankGroupTeam2: match.rankGroupTeam2,
+                        nextMatchId: match.nextMatchId,
+                        matchStartDate: match.date,
+                        teamId1: match.teams.team1?.id,
+                        teamId2: match.teams.team2?.id,
+                        venue: match.venue,
+                        matchDuration: dto.maxDuration,
+                        breakDuration: dto.breakDuration,
+                      },
+                    });
+                  }),
+                );
+              }),
+            );
+          }),
+        );
+      } else if (dto.format === TournamentFormat.knockout) {
+        await tx.group_fixtures.upsert({
+          where: {
+            id: dto.knockoutGroup.id,
+          },
+          update: {
+            fixtureId: fixture.id,
+            title: dto.knockoutGroup.title,
+            isFinal: true,
+          },
+          create: {
+            id: dto.knockoutGroup.id,
+            fixtureId: fixture.id,
+            title: dto.knockoutGroup.title,
+            isFinal: true,
+          },
+        });
+        await Promise.all(
+          dto.knockoutGroup.rounds.map(async (round) => {
+            await tx.rounds.upsert({
+              where: {
+                id: round.id,
+              },
+              update: {
+                groupFixtureId: dto.knockoutGroup.id,
+                title: round.title,
+                elo: 100,
+              },
+              create: {
+                id: round.id,
+                groupFixtureId: dto.knockoutGroup.id,
+                title: round.title,
+                elo: 100,
+              },
+            });
+            //apply elo
+            await Promise.all(
+              round.matches.map(async (match) => {
+                await tx.matches.upsert({
+                  where: {
+                    id: match.id,
+                  },
+                  update: {
+                    roundId: round.id,
+                    title: match.title,
+                    status: match.status,
+                    rankGroupTeam1: match.rankGroupTeam1,
+                    rankGroupTeam2: match.rankGroupTeam2,
+                    nextMatchId: match.nextMatchId,
+                    matchStartDate: match.date,
+                    teamId1: match.teams.team1?.id,
+                    teamId2: match.teams.team2?.id,
+                    venue: match.venue,
+                    matchDuration: dto.maxDuration,
+                    breakDuration: dto.breakDuration,
+                  },
+
+                  create: {
+                    id: match.id,
+                    roundId: round.id,
+                    title: match.title,
+                    status: match.status,
+                    rankGroupTeam1: match.rankGroupTeam1,
+                    rankGroupTeam2: match.rankGroupTeam2,
+                    nextMatchId: match.nextMatchId,
+                    matchStartDate: match.date,
+                    teamId1: match.teams.team1?.id,
+                    teamId2: match.teams.team2?.id,
+                    venue: match.venue,
+                    matchDuration: dto.maxDuration,
+                    breakDuration: dto.breakDuration,
+                  },
+                });
+              }),
+            );
+          }),
+        );
+      } else if (dto.format === TournamentFormat.group_playoff) {
+        await Promise.all(
+          dto.roundRobinGroups.map(async (group) => {
+            await tx.group_fixtures.upsert({
+              where: {
+                id: group.id,
+              },
+              update: {
+                fixtureId: fixture.id,
+                title: group.title,
+                isFinal: false,
+              },
+              create: {
+                id: group.id,
+                fixtureId: fixture.id,
+                title: group.title,
+                isFinal: false,
+              },
+            });
+            await Promise.all(
+              group.rounds.map(async (round) => {
+                await tx.rounds.upsert({
+                  where: {
+                    id: round.id,
+                  },
+                  update: {
+                    groupFixtureId: group.id,
+                    title: round.title,
+                    elo: 100,
+                  },
+                  create: {
+                    id: round.id,
+                    groupFixtureId: group.id,
+                    title: round.title,
+                    elo: 100,
+                  },
+                });
+                //apply elo
+                await Promise.all(
+                  round.matches.map(async (match) => {
+                    await tx.matches.upsert({
+                      where: {
+                        id: match.id,
+                      },
+                      update: {
+                        roundId: round.id,
+                        title: match.title,
+                        status: match.status,
+                        rankGroupTeam1: match.rankGroupTeam1,
+                        rankGroupTeam2: match.rankGroupTeam2,
+                        nextMatchId: match.nextMatchId,
+                        matchStartDate: match.date,
+                        teamId1: match.teams.team1.id,
+                        teamId2: match.teams.team2.id,
+                        venue: match.venue,
+                        matchDuration: dto.maxDuration,
+                        breakDuration: dto.breakDuration,
+                      },
+
+                      create: {
+                        id: match.id,
+                        roundId: round.id,
+                        title: match.title,
+                        status: match.status,
+                        rankGroupTeam1: match.rankGroupTeam1,
+                        rankGroupTeam2: match.rankGroupTeam2,
+                        nextMatchId: match.nextMatchId,
+                        matchStartDate: match.date,
+                        teamId1: match.teams.team1.id,
+                        teamId2: match.teams.team2.id,
+                        venue: match.venue,
+                        matchDuration: dto.maxDuration,
+                        breakDuration: dto.breakDuration,
+                      },
+                    });
+                  }),
+                );
+              }),
+            );
+          }),
+        );
+
+        //knockout
+        await tx.group_fixtures.upsert({
+          where: {
+            id: dto.knockoutGroup.id,
+          },
+          update: {
+            fixtureId: fixture.id,
+            title: dto.knockoutGroup.title,
+            isFinal: true,
+          },
+          create: {
+            id: dto.knockoutGroup.id,
+            fixtureId: fixture.id,
+            title: dto.knockoutGroup.title,
+            isFinal: true,
+          },
+        });
+        await Promise.all(
+          dto.knockoutGroup.rounds.map(async (round) => {
+            await tx.rounds.upsert({
+              where: {
+                id: round.id,
+              },
+              update: {
+                groupFixtureId: dto.knockoutGroup.id,
+                title: round.title,
+                elo: 100,
+              },
+              create: {
+                id: round.id,
+                groupFixtureId: dto.knockoutGroup.id,
+                title: round.title,
+                elo: 100,
+              },
+            });
+            //apply elo
+            await Promise.all(
+              round.matches.map(async (match) => {
+                await tx.matches.upsert({
+                  where: {
+                    id: match.id,
+                  },
+                  update: {
+                    roundId: round.id,
+                    title: match.title,
+                    status: match.status,
+                    rankGroupTeam1: match.rankGroupTeam1,
+                    rankGroupTeam2: match.rankGroupTeam2,
+                    nextMatchId: match.nextMatchId,
+                    matchStartDate: match.date,
+                    teamId1: match.teams.team1?.id,
+                    teamId2: match.teams.team2?.id,
+                    venue: match.venue,
+                    matchDuration: dto.maxDuration,
+                    breakDuration: dto.breakDuration,
+                  },
+
+                  create: {
+                    id: match.id,
+                    roundId: round.id,
+                    title: match.title,
+                    status: match.status,
+                    rankGroupTeam1: match.rankGroupTeam1,
+                    rankGroupTeam2: match.rankGroupTeam2,
+                    nextMatchId: match.nextMatchId,
+                    matchStartDate: match.date,
+                    teamId1: match.teams.team1?.id,
+                    teamId2: match.teams.team2?.id,
+                    venue: match.venue,
+                    matchDuration: dto.maxDuration,
+                    breakDuration: dto.breakDuration,
+                  },
+                });
+              }),
+            );
+          }),
+        );
+      }
+    });
+
+    //return response
+    const { groupFixtures, ...others } =
+      await this.prismaService.fixtures.findFirst({
+        where: {
+          id: dto.id,
+        },
+        include: {
+          groupFixtures: {
+            where: {
+              isFinal: true,
+            },
+            include: {
+              rounds: {
+                include: {
+                  matches: {
+                    include: {
+                      team1: {
+                        include: {
+                          user1: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                          user2: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                        },
+                      },
+                      team2: {
+                        include: {
+                          user1: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                          user2: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+    if (dto.format === TournamentFormat.round_robin) {
+      return { ...others, roundRobinGroups: groupFixtures };
+    } else if (dto.format === TournamentFormat.knockout) {
+      return { ...others, knockoutGroup: groupFixtures[0] };
+    } else if (dto.format === TournamentFormat.group_playoff) {
+      const knockoutGroup = groupFixtures[0];
+      const roundRobinGroups = await this.prismaService.group_fixtures.findMany(
+        {
+          where: {
+            isFinal: false,
+            fixtureId: dto.id,
+          },
+          include: {
+            rounds: {
+              include: {
+                matches: {
+                  include: {
+                    team1: {
+                      include: {
+                        user1: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                        user2: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                      },
+                    },
+                    team2: {
+                      include: {
+                        user1: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                        user2: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      );
+      return {
+        ...others,
+        knockoutGroup,
+        roundRobinGroups,
+      };
+    }
   }
 }
 

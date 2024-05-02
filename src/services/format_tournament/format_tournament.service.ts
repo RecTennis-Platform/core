@@ -93,7 +93,7 @@ export class FormatTournamentService {
       );
       return { table1, table2 };
     } else if (fixtureType === 'knockout') {
-      return this.createKnockOutGroupPlayer(numberOfParticipants);
+      return this.createknockoutGroupPlayer(numberOfParticipants);
     }
   }
 
@@ -169,7 +169,7 @@ export class FormatTournamentService {
     return table;
   }
 
-  private createKnockOutGroupPlayer(numberOfParticipants: number) {
+  private createknockoutGroupPlayer(numberOfParticipants: number) {
     const numberOfRounds = Math.ceil(Math.log2(numberOfParticipants));
     const maxParticipants = Math.pow(
       2,
