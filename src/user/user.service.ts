@@ -191,16 +191,20 @@ export class UserService {
       ],
       where: {
         OR: [{ userId1: { equals: userId } }, { userId2: { equals: userId } }],
-        tournament: {
-          status: {
-            equals: PageOptionsUserParticipatedTournamentsDto.status,
-          },
-        },
       },
       select: {
         tournament: true,
       },
     };
+
+    // Check if status is provided
+    if (PageOptionsUserParticipatedTournamentsDto.status) {
+      conditions.where['tournament'] = {
+        status: {
+          equals: PageOptionsUserParticipatedTournamentsDto.status,
+        },
+      };
+    }
 
     const pageOption =
       PageOptionsUserParticipatedTournamentsDto.page &&

@@ -215,39 +215,39 @@ export class TournamentController {
     );
   }
 
-  @Post('/:id/fixtures/generate')
-  async generateFixture(
-    @Param('id') tournamentId: number,
-    @Body() dto: CreateFixtureDto,
-  ) {
-    try {
-      return this.tournamentService.generateFixture(tournamentId, dto);
-    } catch (error) {
-      throw new HttpException(
-        {
-          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-          message: error.message || 'Internal Server Error',
-        },
-        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
+  // @Post('/:id/fixtures/generate')
+  // async generateFixture(
+  //   @Param('id') tournamentId: number,
+  //   @Body() dto: CreateFixtureDto,
+  // ) {
+  //   try {
+  //     return this.tournamentService.generateFixture(tournamentId, dto);
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       {
+  //         statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+  //         message: error.message || 'Internal Server Error',
+  //       },
+  //       error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
+  // }
 
-  @Post('/:id/fixture-groups/generate')
-  async generateFixtureGroup(
-    @Param('id') tournamentId: number,
-    @Body() dto: CreateFixtureGroupPlayoffDto,
-  ) {
-    try {
-      return this.tournamentService.generateFixtureGroup(tournamentId, dto);
-    } catch (error) {
-      throw new HttpException(
-        {
-          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-          message: error.message || 'Internal Server Error',
-        },
-        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
+  // @Post('/:id/fixture-groups/generate')
+  // async generateFixtureGroup(
+  //   @Param('id') tournamentId: number,
+  //   @Body() dto: CreateFixtureGroupPlayoffDto,
+  // ) {
+  //   try {
+  //     return this.tournamentService.generateFixtureGroup(tournamentId, dto);
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       {
+  //         statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+  //         message: error.message || 'Internal Server Error',
+  //       },
+  //       error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
+  // }
 }
