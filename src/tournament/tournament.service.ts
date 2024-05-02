@@ -160,7 +160,8 @@ export class TournamentService {
     const filteredPurchasedPackages = purchasedPackages.filter(
       (purchasedPackage) =>
         purchasedPackage.package.services.some(
-          (service) => service.name.toLowerCase() === 'tournament',
+          (service) =>
+            service.name.toLowerCase().includes('tournament') === true,
         ),
     );
 
@@ -234,7 +235,7 @@ export class TournamentService {
 
     // Check if the Purchased package have the service == "Tournament"
     const tournamentService = purchasedPackage.package.services.find(
-      (service) => service.name.toLowerCase() == 'tournament',
+      (service) => service.name.toLowerCase().includes('tournament') === true,
     );
 
     if (!tournamentService) {
@@ -296,7 +297,7 @@ export class TournamentService {
 
       // Update purchased service
       const newServices = purchasedPackage.package.services.map((service) => {
-        if (service.name.toLowerCase() == 'tournament') {
+        if (service.name.toLowerCase().includes('tournament') === true) {
           const serviceConfig = JSON.parse(service.config);
           serviceConfig.used += 1;
           service.config = JSON.stringify(serviceConfig);
