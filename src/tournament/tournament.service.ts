@@ -2486,14 +2486,22 @@ export class TournamentService {
           },
         },
       });
+    const groups = groupFixtures.map((groupFixture) => {
+      return groupFixture.rounds.map((round) => {
+        return round.matches.map((match) => {
+          const { team1, team2, ...others } = match;
+          return { ...others, teams: { team1, team2 } };
+        });
+      });
+    });
     if (dto.format === TournamentFormat.round_robin) {
-      return { ...others, roundRobinGroups: groupFixtures };
+      return { ...others, roundRobinGroups: groups };
     } else if (dto.format === TournamentFormat.knockout) {
-      return { ...others, knockoutGroup: groupFixtures[0] };
+      return { ...others, knockoutGroup: groups[0] };
     } else if (dto.format === TournamentFormat.group_playoff) {
-      const knockoutGroup = groupFixtures[0];
-      const roundRobinGroups = await this.prismaService.group_fixtures.findMany(
-        {
+      const knockoutGroup = groups[0];
+      const roundRobinGroups = (
+        await this.prismaService.group_fixtures.findMany({
           where: {
             isFinal: false,
             fixtureId: dto.id,
@@ -2544,8 +2552,15 @@ export class TournamentService {
               },
             },
           },
-        },
-      );
+        })
+      ).map((groupFixture) => {
+        return groupFixture.rounds.map((round) => {
+          return round.matches.map((match) => {
+            const { team1, team2, ...others } = match;
+            return { ...others, teams: { team1, team2 } };
+          });
+        });
+      });
       return {
         ...others,
         knockoutGroup,
