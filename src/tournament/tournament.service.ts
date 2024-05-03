@@ -1126,6 +1126,9 @@ export class TournamentService {
           where: {
             tournamentId: tournamentId,
             userId1: userId,
+            NOT: {
+              status: RegistrationStatus.canceled,
+            },
           },
         });
 
@@ -1183,13 +1186,13 @@ export class TournamentService {
             tournamentId: tournamentId,
             userId1: userId,
             userId2: user2Res.id,
+            NOT: {
+              status: RegistrationStatus.canceled,
+            },
           },
         });
 
-      if (
-        existingRegistration &&
-        existingRegistration.status !== RegistrationStatus.canceled
-      ) {
+      if (existingRegistration) {
         throw new BadRequestException({
           message: 'User has already applied for this tournament',
           data: null,
