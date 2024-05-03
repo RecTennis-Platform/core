@@ -476,7 +476,7 @@ export class TournamentService {
     }
 
     let projection = {};
-    if (tournament.participantType === ParticipantType.singles) {
+    if (tournament.participantType === ParticipantType.single) {
       projection = {
         userId1: true,
         message: true,
@@ -864,7 +864,7 @@ export class TournamentService {
       },
     };
 
-    if (tournament.participantType === ParticipantType.singles) {
+    if (tournament.participantType === ParticipantType.single) {
       conditions['select'] = {
         userId1: true,
         message: true,
@@ -981,7 +981,7 @@ export class TournamentService {
     }
 
     let response_data = {};
-    if (tournament.participantType === ParticipantType.singles) {
+    if (tournament.participantType === ParticipantType.single) {
       // Build response data
       response_data = {
         user1: {
@@ -1119,7 +1119,7 @@ export class TournamentService {
     let user2 = null;
     let tournament_registration_status = 'pending';
     let appliedDate = null;
-    if (tournament.participantType === ParticipantType.singles) {
+    if (tournament.participantType === ParticipantType.single) {
       // Check if user has already applied
       const existingRegistration =
         await this.prismaService.tournament_registrations.findFirst({
@@ -1238,7 +1238,7 @@ export class TournamentService {
       });
 
     let response_data = {};
-    if (tournament.participantType === ParticipantType.singles) {
+    if (tournament.participantType === ParticipantType.single) {
       // Build response data
       response_data = {
         user1: {
@@ -1998,7 +1998,7 @@ export class TournamentService {
               groupFixtureTeamId1 = winners[tables.table1[i][j] - 1].id;
               rankGroupTeam1 = winners[tables.table1[i][j] - 1].rank;
               const user2 =
-                tournament.participantType === 'singles'
+                tournament.participantType === ParticipantType.single
                   ? null
                   : { name: winners[tables.table1[i][j] - 1].title };
               team1 = {
@@ -2013,7 +2013,7 @@ export class TournamentService {
               groupFixtureTeamId2 = winners[tables.table2[i][j] - 1].id;
               rankGroupTeam2 = winners[tables.table2[i][j] - 1].rank;
               const user2 =
-                tournament.participantType === 'singles'
+                tournament.participantType === ParticipantType.single
                   ? null
                   : { name: winners[tables.table2[i][j] - 1].title };
               team2 = {
