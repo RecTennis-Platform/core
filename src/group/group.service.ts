@@ -43,13 +43,12 @@ export class GroupService {
     private readonly mongodbPrismaService: MongoDBPrismaService,
   ) {}
 
-  // Group
-  async create(adminId: number, dto: CreateGroupDto) {
+  // Validation functions
+  private async checkPurchasePackage(purchasedPackageId: string) {
     const purchasedPackage =
       await this.mongodbPrismaService.purchasedPackage.findUnique({
         where: {
-          id: dto.purchasedPackageId,
-          userId: adminId,
+          id: purchasedPackageId,
         },
       });
 
@@ -60,12 +59,69 @@ export class GroupService {
       });
     }
 
-    if (purchasedPackage.expired) {
+    if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
         message: 'Bought package is expired',
         data: null,
       });
     }
+
+    return purchasedPackage;
+  }
+
+  private async checkValidGroup(groupId: number) {
+    const group = await this.prismaService.groups.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException({
+        message: 'Group not found',
+        data: null,
+      });
+    }
+
+    await this.checkPurchasePackage(group.purchasedPackageId);
+
+    return group;
+  }
+
+  private async checkMember(
+    userId: number,
+    groupId: number,
+    isAdmin?: boolean,
+  ) {
+    const member = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId,
+        groupId,
+      },
+    });
+
+    if (!member) {
+      throw new ForbiddenException({
+        message: 'You are not a member of this group',
+        data: null,
+      });
+    }
+
+    if (isAdmin && member.role !== MemberRole.group_admin) {
+      throw new ForbiddenException({
+        message: 'You are not an admin of this group',
+        data: null,
+      });
+    }
+
+    return member;
+  }
+
+  // Group
+  async create(adminId: number, dto: CreateGroupDto) {
+    const purchasedPackage = await this.checkPurchasePackage(
+      dto.purchasedPackageId,
+    );
 
     // NOTE: Use this if we need to check order of the bought package
 
@@ -103,7 +159,6 @@ export class GroupService {
     // }
 
     // Check if the bought package have the service include "Group" word
-
     const groupService = purchasedPackage.package.services.find((service) =>
       service.name.toLowerCase().includes('group'),
     );
@@ -347,18 +402,9 @@ export class GroupService {
   }
 
   async update(adminId: number, id: number, dto: UpdateGroupDto) {
-    const group = await this.prismaService.groups.findUnique({
-      where: {
-        id,
-      },
-    });
+    const group = await this.checkValidGroup(id);
 
-    if (!group) {
-      throw new NotFoundException({
-        message: 'Group not found',
-        data: null,
-      });
-    }
+    await this.checkMember(adminId, id, true);
 
     // const order = await this.prismaService.orders.findUnique({
     //   where: {
@@ -798,20 +844,9 @@ export class GroupService {
     groupId: number,
     dto: PageOptionsUserDto,
   ) {
-    // Check if the user is a member of the group
-    const isMember = await this.prismaService.member_ships.findFirst({
-      where: {
-        userId,
-        groupId,
-      },
-    });
+    await this.checkValidGroup(groupId);
 
-    if (!isMember) {
-      throw new ForbiddenException({
-        message: 'You are not a member of this group',
-        data: null,
-      });
-    }
+    await this.checkMember(userId, groupId);
 
     const conditions = {
       orderBy: [
@@ -861,21 +896,9 @@ export class GroupService {
   }
 
   async removeMember(adminId: number, groupId: number, userId: number) {
-    // Check if the admin is a member of the group
-    const isAdmin = await this.prismaService.member_ships.findFirst({
-      where: {
-        userId: adminId,
-        groupId,
-        role: MemberRole.group_admin,
-      },
-    });
+    await this.checkValidGroup(groupId);
 
-    if (!isAdmin) {
-      throw new ForbiddenException({
-        message: 'You are not an admin of this group',
-        data: null,
-      });
-    }
+    await this.checkMember(adminId, groupId, true);
 
     // Check if the user is a member of the group
     const userIsMember = await this.prismaService.member_ships.findFirst({
@@ -922,54 +945,9 @@ export class GroupService {
     groupId: number,
     dto: CreateGroupTournamentDto,
   ) {
-    const group = await this.prismaService.groups.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
+    await this.checkValidGroup(groupId);
 
-    if (!group) {
-      throw new NotFoundException({
-        message: 'Group not found, cannot create tournament',
-        data: null,
-      });
-    }
-
-    const isAdmin = await this.prismaService.member_ships.findFirst({
-      where: {
-        userId,
-        groupId,
-        role: MemberRole.group_admin,
-      },
-    });
-
-    if (!isAdmin) {
-      throw new ForbiddenException({
-        message: 'You are not an admin of this group',
-        data: null,
-      });
-    }
-
-    const purchasedPackage =
-      await this.mongodbPrismaService.purchasedPackage.findUnique({
-        where: {
-          id: group.purchasedPackageId,
-        },
-      });
-
-    if (!purchasedPackage) {
-      throw new NotFoundException({
-        message: 'Bought package not found',
-        data: null,
-      });
-    }
-
-    if (new Date(purchasedPackage.endDate) < new Date()) {
-      throw new BadRequestException({
-        message: 'Bought package is expired',
-        data: null,
-      });
-    }
+    await this.checkMember(userId, groupId, true);
 
     try {
       const data = await this.prismaService.group_tournaments.create({
@@ -999,6 +977,10 @@ export class GroupService {
     groupId: number,
     dto: PageOptionsGroupTournamentDto,
   ) {
+    await this.checkValidGroup(groupId);
+
+    const member = await this.checkMember(userId, groupId);
+
     const conditions = {
       orderBy: [
         {
@@ -1007,56 +989,8 @@ export class GroupService {
       ],
     };
 
-    const group = await this.prismaService.groups.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
-
-    if (!group) {
-      throw new NotFoundException({
-        message: 'Group not found, cannot view tournaments',
-        data: null,
-      });
-    }
-
-    const purchasedPackage =
-      await this.mongodbPrismaService.purchasedPackage.findUnique({
-        where: {
-          id: group.purchasedPackageId,
-        },
-      });
-
-    if (!purchasedPackage) {
-      throw new NotFoundException({
-        message: 'Bought package not found',
-        data: null,
-      });
-    }
-
-    if (new Date(purchasedPackage.endDate) < new Date()) {
-      throw new BadRequestException({
-        message: 'Bought package is expired',
-        data: null,
-      });
-    }
-
-    const isMember = await this.prismaService.member_ships.findFirst({
-      where: {
-        userId,
-        groupId,
-      },
-    });
-
-    if (!isMember) {
-      throw new ForbiddenException({
-        message: 'You are not a member of this group',
-        data: null,
-      });
-    }
-
     let result;
-    if (isMember.role === MemberRole.group_admin) {
+    if (member.role === MemberRole.group_admin) {
       result = await this.prismaService.group_tournaments.findMany({
         where: {
           groupId,
@@ -1083,53 +1017,9 @@ export class GroupService {
     groupId: number,
     tournamentId: number,
   ) {
-    const group = await this.prismaService.groups.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
+    await this.checkValidGroup(groupId);
 
-    if (!group) {
-      throw new NotFoundException({
-        message: 'Group not found, cannot view tournament',
-        data: null,
-      });
-    }
-
-    const purchasedPackage =
-      await this.mongodbPrismaService.purchasedPackage.findUnique({
-        where: {
-          id: group.purchasedPackageId,
-        },
-      });
-
-    if (!purchasedPackage) {
-      throw new NotFoundException({
-        message: 'Bought package not found',
-        data: null,
-      });
-    }
-
-    if (new Date(purchasedPackage.endDate) < new Date()) {
-      throw new BadRequestException({
-        message: 'Bought package is expired',
-        data: null,
-      });
-    }
-
-    const isMember = await this.prismaService.member_ships.findFirst({
-      where: {
-        userId,
-        groupId,
-      },
-    });
-
-    if (!isMember) {
-      throw new ForbiddenException({
-        message: 'You are not a member of this group',
-        data: null,
-      });
-    }
+    const member = await this.checkMember(userId, groupId);
 
     const tournament = await this.prismaService.group_tournaments.findUnique({
       where: {
@@ -1142,7 +1032,7 @@ export class GroupService {
 
     if (
       !tournament ||
-      (isMember.role === MemberRole.member &&
+      (member.role === MemberRole.member &&
         tournament.phase === GroupTournamentPhase.new)
     ) {
       throw new NotFoundException({
@@ -1163,7 +1053,7 @@ export class GroupService {
     return {
       ...tournament,
       participants,
-      isCreator: isMember.role === MemberRole.group_admin,
+      isCreator: member.role === MemberRole.group_admin,
     };
   }
 
@@ -1173,69 +1063,9 @@ export class GroupService {
     tournamentId: number,
     dto: PageOptionsParticipantsDto,
   ) {
-    const conditions = {
-      orderBy: [
-        {
-          createdAt: dto.order,
-        },
-      ],
-    };
+    await this.checkValidGroup(groupId);
 
-    const pageOption =
-      dto.page && dto.take
-        ? {
-            skip: dto.skip,
-            take: dto.take,
-          }
-        : undefined;
-
-    const group = await this.prismaService.groups.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
-
-    if (!group) {
-      throw new NotFoundException({
-        message: 'Group not found, cannot view participants',
-        data: null,
-      });
-    }
-
-    const purchasedPackage =
-      await this.mongodbPrismaService.purchasedPackage.findUnique({
-        where: {
-          id: group.purchasedPackageId,
-        },
-      });
-
-    if (!purchasedPackage) {
-      throw new NotFoundException({
-        message: 'Bought package not found',
-        data: null,
-      });
-    }
-
-    if (new Date(purchasedPackage.endDate) < new Date()) {
-      throw new BadRequestException({
-        message: 'Bought package is expired',
-        data: null,
-      });
-    }
-
-    const isMember = await this.prismaService.member_ships.findFirst({
-      where: {
-        userId,
-        groupId,
-      },
-    });
-
-    if (!isMember) {
-      throw new ForbiddenException({
-        message: 'You are not a member of this group',
-        data: null,
-      });
-    }
+    const member = await this.checkMember(userId, groupId);
 
     const tournament = await this.prismaService.group_tournaments.findUnique({
       where: {
@@ -1245,7 +1075,7 @@ export class GroupService {
 
     if (
       !tournament ||
-      (isMember.role === MemberRole.member &&
+      (member.role === MemberRole.member &&
         tournament.phase === GroupTournamentPhase.new)
     ) {
       throw new NotFoundException({
@@ -1254,7 +1084,7 @@ export class GroupService {
       });
     }
 
-    if (isMember.role === MemberRole.member) {
+    if (member.role === MemberRole.member) {
       const isParticipant =
         await this.prismaService.group_tournament_registrations.findFirst({
           where: {
@@ -1270,6 +1100,22 @@ export class GroupService {
         });
       }
     }
+
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: dto.order,
+        },
+      ],
+    };
+
+    const pageOption =
+      dto.page && dto.take
+        ? {
+            skip: dto.skip,
+            take: dto.take,
+          }
+        : undefined;
 
     const [result, totalCount] = await Promise.all([
       this.prismaService.group_tournament_registrations.findMany({
@@ -1304,7 +1150,7 @@ export class GroupService {
           ...participant.user,
           role:
             participant.userId === userId &&
-            isMember.role === MemberRole.group_admin
+            member.role === MemberRole.group_admin
               ? MemberRole.group_admin
               : MemberRole.member,
         },
@@ -1315,7 +1161,7 @@ export class GroupService {
       data: participants,
       totalPages: Math.ceil(totalCount / dto.take),
       totalCount,
-      isCreator: isMember.role === MemberRole.group_admin,
+      isCreator: member.role === MemberRole.group_admin,
     };
   }
 
@@ -1324,54 +1170,9 @@ export class GroupService {
     groupId: number,
     tournamentId: number,
   ) {
-    // Find member in group, who not in tournament
-    const group = await this.prismaService.groups.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
+    await this.checkValidGroup(groupId);
 
-    if (!group) {
-      throw new NotFoundException({
-        message: 'Group not found, cannot view participants',
-        data: null,
-      });
-    }
-
-    const purchasedPackage =
-      await this.mongodbPrismaService.purchasedPackage.findUnique({
-        where: {
-          id: group.purchasedPackageId,
-        },
-      });
-
-    if (!purchasedPackage) {
-      throw new NotFoundException({
-        message: 'Bought package not found',
-        data: null,
-      });
-    }
-
-    if (new Date(purchasedPackage.endDate) < new Date()) {
-      throw new BadRequestException({
-        message: 'Bought package is expired',
-        data: null,
-      });
-    }
-
-    const isMember = await this.prismaService.member_ships.findFirst({
-      where: {
-        userId,
-        groupId,
-      },
-    });
-
-    if (!isMember) {
-      throw new ForbiddenException({
-        message: 'You are not a member of this group',
-        data: null,
-      });
-    }
+    const member = await this.checkMember(userId, groupId);
 
     const tournament = await this.prismaService.group_tournaments.findUnique({
       where: {
@@ -1381,7 +1182,7 @@ export class GroupService {
 
     if (
       !tournament ||
-      (isMember.role === MemberRole.member &&
+      (member.role === MemberRole.member &&
         tournament.phase === GroupTournamentPhase.new)
     ) {
       throw new NotFoundException({
@@ -1390,7 +1191,7 @@ export class GroupService {
       });
     }
 
-    if (isMember.role === MemberRole.member) {
+    if (member.role === MemberRole.member) {
       const isParticipant =
         await this.prismaService.group_tournament_registrations.findFirst({
           where: {
@@ -1454,54 +1255,9 @@ export class GroupService {
     tournamentId: number,
     dto: AddParticipantsDto,
   ) {
-    const group = await this.prismaService.groups.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
+    await this.checkValidGroup(groupId);
 
-    if (!group) {
-      throw new NotFoundException({
-        message: 'Group not found, cannot add participant',
-        data: null,
-      });
-    }
-
-    const purchasedPackage =
-      await this.mongodbPrismaService.purchasedPackage.findUnique({
-        where: {
-          id: group.purchasedPackageId,
-        },
-      });
-
-    if (!purchasedPackage) {
-      throw new NotFoundException({
-        message: 'Bought package not found',
-        data: null,
-      });
-    }
-
-    if (new Date(purchasedPackage.endDate) < new Date()) {
-      throw new BadRequestException({
-        message: 'Bought package is expired',
-        data: null,
-      });
-    }
-
-    const isAdmin = await this.prismaService.member_ships.findFirst({
-      where: {
-        userId,
-        groupId,
-        role: MemberRole.group_admin,
-      },
-    });
-
-    if (!isAdmin) {
-      throw new ForbiddenException({
-        message: 'You are not an admin of this group',
-        data: null,
-      });
-    }
+    await this.checkMember(userId, groupId, true);
 
     const tournament = await this.prismaService.group_tournaments.findUnique({
       where: {
@@ -1581,54 +1337,9 @@ export class GroupService {
     tournamentId: number,
     participantId: number,
   ) {
-    const group = await this.prismaService.groups.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
+    await this.checkValidGroup(groupId);
 
-    if (!group) {
-      throw new NotFoundException({
-        message: 'Group not found, cannot remove participant',
-        data: null,
-      });
-    }
-
-    const purchasedPackage =
-      await this.mongodbPrismaService.purchasedPackage.findUnique({
-        where: {
-          id: group.purchasedPackageId,
-        },
-      });
-
-    if (!purchasedPackage) {
-      throw new NotFoundException({
-        message: 'Bought package not found',
-        data: null,
-      });
-    }
-
-    if (new Date(purchasedPackage.endDate) < new Date()) {
-      throw new BadRequestException({
-        message: 'Bought package is expired',
-        data: null,
-      });
-    }
-
-    const isAdmin = await this.prismaService.member_ships.findFirst({
-      where: {
-        userId,
-        groupId,
-        role: MemberRole.group_admin,
-      },
-    });
-
-    if (!isAdmin) {
-      throw new ForbiddenException({
-        message: 'You are not an admin of this group',
-        data: null,
-      });
-    }
+    await this.checkMember(userId, groupId, true);
 
     const tournament = await this.prismaService.group_tournaments.findUnique({
       where: {
