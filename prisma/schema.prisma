@@ -148,6 +148,7 @@ model users {
   team2                        teams[]                          @relation("user2")
   tournamentRegistration1      tournament_registrations[]       @relation("user1")
   tournamentRegistration2      tournament_registrations[]       @relation("user2")
+  elo                          Int?
 }
 
 model tournaments {
