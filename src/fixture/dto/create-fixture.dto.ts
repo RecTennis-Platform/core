@@ -53,7 +53,7 @@ export class GenerateFixtureDto {
 
   @IsOptional()
   @IsNumber()
-  maxDuration: number = 30;
+  matchDuration: number = 30;
 
   @IsOptional()
   @IsNumber()
@@ -200,7 +200,7 @@ export class CreateFixtureDto {
 
   @IsOptional()
   @IsNumber()
-  maxDuration: number = 30;
+  matchDuration: number = 30;
 
   @IsOptional()
   @IsNumber()

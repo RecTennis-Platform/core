@@ -1756,7 +1756,7 @@ export class TournamentService {
                 nextMatchId: null,
                 title: `Match ${j + 1}`,
                 date: null,
-                duration: dto.maxDuration,
+                duration: dto.matchDuration,
                 status: MatchStatus.scheduled,
                 teams: { team1, team2 },
               };
@@ -1840,7 +1840,7 @@ export class TournamentService {
                 nextMatchId: nextMatchId,
                 title: `Match ${j + 1}`,
                 date: null,
-                duration: dto.maxDuration,
+                duration: dto.matchDuration,
                 status: status,
                 teams: { team1, team2 },
               };
@@ -1932,7 +1932,7 @@ export class TournamentService {
                 nextMatchId: null,
                 title: `Match ${j + 1}`,
                 date: null,
-                duration: dto.maxDuration,
+                duration: dto.matchDuration,
                 status: MatchStatus.scheduled,
                 teams: { team1, team2 },
               };
@@ -2036,7 +2036,7 @@ export class TournamentService {
               nextMatchId: nextMatchId,
               title: `Match ${j + 1}`,
               date: null,
-              duration: dto.maxDuration,
+              duration: dto.matchDuration,
               status: status,
               teams: { team1, team2 },
               groupFixtureTeamId1,
@@ -2090,7 +2090,7 @@ export class TournamentService {
           fixtureEndDate: dto.fixtureEndDate,
           matchesStartTime: dto.matchesStartTime,
           matchesEndTime: dto.matchesEndTime,
-          matchDuration: dto.maxDuration,
+          matchDuration: dto.matchDuration,
           breakDuration: dto.breakDuration,
           status: dto.status,
         },
@@ -2103,7 +2103,7 @@ export class TournamentService {
           fixtureEndDate: dto.fixtureEndDate,
           matchesStartTime: dto.matchesStartTime,
           matchesEndTime: dto.matchesEndTime,
-          matchDuration: dto.maxDuration,
+          matchDuration: dto.matchDuration,
           breakDuration: dto.breakDuration,
           status: dto.status,
         },
@@ -2164,7 +2164,7 @@ export class TournamentService {
                         teamId1: match.teams.team1?.id,
                         teamId2: match.teams.team2?.id,
                         venue: match?.venue,
-                        matchDuration: dto.maxDuration,
+                        matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
                       },
 
@@ -2180,7 +2180,7 @@ export class TournamentService {
                         teamId1: match.teams.team1?.id,
                         teamId2: match.teams.team2?.id,
                         venue: match.venue,
-                        matchDuration: dto.maxDuration,
+                        matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
                       },
                     });
@@ -2243,7 +2243,7 @@ export class TournamentService {
                     teamId1: match.teams.team1?.id,
                     teamId2: match.teams.team2?.id,
                     venue: match.venue,
-                    matchDuration: dto.maxDuration,
+                    matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
                   },
 
@@ -2259,7 +2259,7 @@ export class TournamentService {
                     teamId1: match.teams.team1?.id,
                     teamId2: match.teams.team2?.id,
                     venue: match.venue,
-                    matchDuration: dto.maxDuration,
+                    matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
                   },
                 });
@@ -2322,7 +2322,7 @@ export class TournamentService {
                         teamId1: match.teams.team1.id,
                         teamId2: match.teams.team2.id,
                         venue: match.venue,
-                        matchDuration: dto.maxDuration,
+                        matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
                       },
 
@@ -2338,7 +2338,7 @@ export class TournamentService {
                         teamId1: match.teams.team1.id,
                         teamId2: match.teams.team2.id,
                         venue: match.venue,
-                        matchDuration: dto.maxDuration,
+                        matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
                       },
                     });
@@ -2402,7 +2402,7 @@ export class TournamentService {
                     teamId1: match.teams.team1?.id,
                     teamId2: match.teams.team2?.id,
                     venue: match.venue,
-                    matchDuration: dto.maxDuration,
+                    matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
                   },
 
@@ -2418,7 +2418,7 @@ export class TournamentService {
                     teamId1: match.teams.team1?.id,
                     teamId2: match.teams.team2?.id,
                     venue: match.venue,
-                    matchDuration: dto.maxDuration,
+                    matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
                   },
                 });
