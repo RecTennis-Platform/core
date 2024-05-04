@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { FixtureService } from './fixture.service';
 import { CreateFixtureDto } from './dto/create-fixture.dto';
 import { UpdateFixtureDto } from './dto/update-fixture.dto';
@@ -19,7 +27,7 @@ export class FixtureController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.fixtureService.findOne(+id);
+    return this.fixtureService.findOne(id);
   }
 
   @Patch(':id')
@@ -29,6 +37,6 @@ export class FixtureController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.fixtureService.remove(+id);
+    return this.fixtureService.remove(id);
   }
 }

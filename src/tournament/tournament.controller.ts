@@ -25,10 +25,14 @@ import {
   GenerateFixtureDto,
 } from 'src/fixture/dto/create-fixture.dto';
 import { CreateFixtureGroupPlayoffDto } from 'src/fixture/dto/create-fixture-groupplayoff.dto';
+import { FixtureService } from 'src/fixture/fixture.service';
 
 @Controller('tournaments')
 export class TournamentController {
-  constructor(private readonly tournamentService: TournamentService) {}
+  constructor(
+    private readonly tournamentService: TournamentService,
+    private readonly fixtureService: FixtureService,
+  ) {}
 
   // Tournaments
   @UseGuards(JwtGuard, RolesGuard)
@@ -261,6 +265,36 @@ export class TournamentController {
   ) {
     try {
       return this.tournamentService.createFixture(tournamentId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/:id/fixtures')
+  async getFixture(@Param('id') tournamentId: number) {
+    try {
+      return this.fixtureService.getByTournamentId(tournamentId);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Delete('/:id/fixtures/reset')
+  async deleteFixture(@Param('id') tournamentId: number) {
+    try {
+      return this.fixtureService.removeByTournamentId(tournamentId);
     } catch (error) {
       throw new HttpException(
         {

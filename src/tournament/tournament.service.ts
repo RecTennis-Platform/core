@@ -12,6 +12,7 @@ import {
   PageOptionsTournamentDto,
 } from './dto';
 import {
+  FixtureStatus,
   MatchStatus,
   ParticipantType,
   Prisma,
@@ -2078,7 +2079,27 @@ export class TournamentService {
         tournamentId: id,
       },
     });
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        id: dto.id,
+      },
+    });
+    if (fixture?.status === FixtureStatus.published) {
+      throw new BadRequestException({
+        message: 'Fixture is already published',
+      });
+    }
     await this.prismaService.$transaction(async (tx) => {
+      if (dto.status === FixtureStatus.published) {
+        await tx.tournaments.update({
+          where: {
+            id: id,
+          },
+          data: {
+            phase: TournamentPhase.generated_fixtures,
+          },
+        });
+      }
       const fixture = await tx.fixtures.upsert({
         where: {
           id: dto.id,
@@ -2490,12 +2511,14 @@ export class TournamentService {
         },
       });
     const groups = groupFixtures.map((groupFixture) => {
-      return groupFixture.rounds.map((round) => {
-        return round.matches.map((match) => {
+      const rounds = groupFixture.rounds.map((round) => {
+        const matches = round.matches.map((match) => {
           const { team1, team2, ...others } = match;
           return { ...others, teams: { team1, team2 } };
         });
+        return { ...round, matches: matches };
       });
+      return { ...groupFixture, rounds: rounds };
     });
     if (dto.format === TournamentFormat.round_robin) {
       return { ...others, roundRobinGroups: groups };
@@ -2557,12 +2580,14 @@ export class TournamentService {
           },
         })
       ).map((groupFixture) => {
-        return groupFixture.rounds.map((round) => {
-          return round.matches.map((match) => {
+        const rounds = groupFixture.rounds.map((round) => {
+          const matches = round.matches.map((match) => {
             const { team1, team2, ...others } = match;
             return { ...others, teams: { team1, team2 } };
           });
+          return { ...round, matches: matches };
         });
+        return { ...groupFixture, rounds: rounds };
       });
       return {
         ...others,
