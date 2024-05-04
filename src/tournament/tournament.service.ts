@@ -782,13 +782,46 @@ export class TournamentService {
 
     // Update tournament status -> finalized_applicants
     try {
-      await this.prismaService.tournaments.update({
-        where: {
-          id: tournamentId,
-        },
-        data: {
-          phase: TournamentPhase.finalized_applicants,
-        },
+      return await this.prismaService.$transaction(async (tx) => {
+        await tx.tournaments.update({
+          where: {
+            id: tournamentId,
+          },
+          data: {
+            phase: TournamentPhase.finalized_applicants,
+          },
+        });
+        const applicants = await tx.tournament_registrations.findMany({
+          where: {
+            tournamentId: tournamentId,
+          },
+        });
+        const teams = await Promise.all(
+          applicants.map(async (applicant) => {
+            const { tournamentId, userId1, userId2, name } = applicant;
+            const user1 = await tx.users.findFirst({
+              where: {
+                id: userId1,
+              },
+            });
+            const user2 = await tx.users.findFirst({
+              where: {
+                id: userId2,
+              },
+            });
+            const totalElo = (user1?.elo ?? 0) + (user2?.elo ?? 0);
+            return {
+              name,
+              userId1,
+              userId2,
+              totalElo,
+              tournamentId,
+            };
+          }),
+        );
+        return await tx.teams.createMany({
+          data: teams,
+        });
       });
     } catch (error) {
       console.log('Error:', error.message);
