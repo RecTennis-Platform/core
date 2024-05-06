@@ -37,21 +37,38 @@ export class TournamentService {
     private readonly formatTournamentService: FormatTournamentService,
   ) {}
 
-  async getTournamentsList(pageOptionsTournamentDto: PageOptionsTournamentDto) {
-    // Build pagination options
+  async getTournamentsList(pageOptions: PageOptionsTournamentDto) {
+    // Build page options
     const conditions = {
       orderBy: [
         {
-          createdAt: pageOptionsTournamentDto.order,
+          createdAt: pageOptions.order,
         },
       ],
+      where: {},
     };
 
+    if (pageOptions.gender) {
+      conditions.where['gender'] = pageOptions.gender;
+    }
+
+    if (pageOptions.format) {
+      conditions.where['format'] = pageOptions.format;
+    }
+
+    if (pageOptions.status) {
+      conditions.where['status'] = pageOptions.status;
+    }
+
+    if (pageOptions.phase) {
+      conditions.where['phase'] = pageOptions.phase;
+    }
+
     const pageOption =
-      pageOptionsTournamentDto.page && pageOptionsTournamentDto.take
+      pageOptions.page && pageOptions.take
         ? {
-            skip: pageOptionsTournamentDto.skip,
-            take: pageOptionsTournamentDto.take,
+            skip: pageOptions.skip,
+            take: pageOptions.take,
           }
         : undefined;
 
@@ -66,7 +83,7 @@ export class TournamentService {
 
     return {
       data: result,
-      totalPages: Math.ceil(totalCount / pageOptionsTournamentDto.take),
+      totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
   }
@@ -418,7 +435,7 @@ export class TournamentService {
     } catch (error) {
       console.log('Error:', error.message);
       throw new BadRequestException({
-        message: 'Failed to create tournament',
+        message: 'Failed to publish tournament',
         data: null,
       });
     }

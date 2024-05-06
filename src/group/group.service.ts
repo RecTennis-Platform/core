@@ -488,7 +488,6 @@ export class GroupService {
     try {
       const token = await this.generateToken({
         email: null,
-        role: null,
         groupId: dto.groupId,
         sub: null,
       });
@@ -514,13 +513,11 @@ export class GroupService {
     const token = !user
       ? await this.generateToken({
           email: email,
-          role: null,
           groupId: groupId,
           sub: null,
         })
       : await this.generateToken({
           email: user.email,
-          role: user.role,
           groupId: groupId,
           sub: user.id,
         });
@@ -814,10 +811,9 @@ export class GroupService {
   async getJwtToInviteUserToGroup(
     sub: number,
     email: string,
-    role: string,
     groupId: number,
   ): Promise<string> {
-    const payload: ITokenPayload = { sub, email, role, groupId };
+    const payload: ITokenPayload = { sub, email, groupId };
     const verificationToken = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_INVITE_USER_TO_GROUP_SECRET,
       expiresIn: process.env.JWT_INVITE_USER_TO_GROUP_EXPIRES,
@@ -829,7 +825,6 @@ export class GroupService {
     const token = await this.getJwtToInviteUserToGroup(
       payload.sub,
       payload?.email,
-      payload.role,
       payload.groupId,
     );
 

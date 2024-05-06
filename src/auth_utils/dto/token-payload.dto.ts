@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class TokenPayloadDto {
   @IsNumber()
@@ -9,13 +9,12 @@ export class TokenPayloadDto {
   @IsNotEmpty()
   email: string;
 
-  @IsString()
-  @IsNotEmpty()
-  role: string;
-
   @IsNumber()
   iat?: number;
 
   @IsNumber()
   exp?: number;
+
+  @IsNumber()
+  groupId?: number;
 }

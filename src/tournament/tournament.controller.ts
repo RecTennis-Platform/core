@@ -34,14 +34,12 @@ export class TournamentController {
     private readonly fixtureService: FixtureService,
   ) {}
 
-  // Tournaments
+  // **Tournaments
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.admin)
   @Get()
-  async getTournamentsList(
-    @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
-  ) {
-    return this.tournamentService.getTournamentsList(pageOptionsTournamentDto);
+  async fetchTournaments(@Query() pageOptions: PageOptionsTournamentDto) {
+    return this.tournamentService.getTournamentsList(pageOptions);
   }
 
   @UseGuards(JwtGuard)
@@ -55,7 +53,8 @@ export class TournamentController {
 
   @UseGuards(JwtGuard)
   @Get('/me')
-  async getMyTournaments(
+  // Get my created tournaments
+  async getMyCreatedTournaments(
     @GetUser('sub') userId: number,
     @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
   ) {
@@ -67,6 +66,7 @@ export class TournamentController {
 
   @UseGuards(JwtGuard)
   @Post()
+  // Create tournament
   async createTournament(
     @GetUser('sub') userId: number,
     @Body() dto: CreateTournamentDto,
@@ -76,6 +76,7 @@ export class TournamentController {
 
   @UseGuards(JwtGuard)
   @Patch(':tournamentId/publish')
+  // Publish tournament
   async publishTournament(
     @GetUser('sub') userId: number,
     @Param('tournamentId') tournamentId: number,
@@ -83,8 +84,8 @@ export class TournamentController {
     return this.tournamentService.publishTournament(userId, tournamentId);
   }
 
-  // Participants
-  // For Creator
+  // **Participants
+  // ****For Creator
   @UseGuards(JwtGuard)
   @Get(':tournamentId/applicants')
   async getApplicantsList(
@@ -148,7 +149,7 @@ export class TournamentController {
     );
   }
 
-  // For Applicant
+  // **For Applicant
   @UseGuards(JwtGuard)
   @Get(':tournamentId/applicants/apply')
   async getSubmittedApplications(
