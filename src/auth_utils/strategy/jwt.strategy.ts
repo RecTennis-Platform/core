@@ -22,6 +22,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new ForbiddenException('Token has expired');
     }
 
+    if (typeof payload.sub !== 'string') {
+      throw new ForbiddenException('Unauthorized');
+    }
+
     // Check if user exists
     const user = await this.prismaService.users.findUnique({
       where: {
