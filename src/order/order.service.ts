@@ -58,7 +58,7 @@ export class OrderService {
     }
   }
 
-  async findAll(userId: number, dto: PageOptionsOrderDto) {
+  async findAll(userId: string, dto: PageOptionsOrderDto) {
     const conditions = {
       orderBy: [
         {

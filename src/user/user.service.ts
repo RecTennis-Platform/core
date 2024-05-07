@@ -17,7 +17,7 @@ import { UserRole } from '@prisma/client';
 export class UserService {
   constructor(private prismaService: PrismaService) {}
 
-  async getUserDetails(userId: number): Promise<any> {
+  async getUserDetails(userId: string): Promise<any> {
     const user = await this.prismaService.users.findUnique({
       where: {
         id: userId,
@@ -120,7 +120,7 @@ export class UserService {
   }
 
   async updateUserDetails(
-    userId: number,
+    userId: string,
     dto: UpdateUserAccountDto,
   ): Promise<{
     message: string;
@@ -165,7 +165,7 @@ export class UserService {
   }
 
   async getUserParticipatedTournaments(
-    userId: number,
+    userId: string,
     PageOptionsUserParticipatedTournamentsDto: PageOptionsUserParticipatedTournamentsDto,
   ) {
     // Check if user exists

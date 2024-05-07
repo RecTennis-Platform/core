@@ -1,13 +1,19 @@
-import { IsEnum, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsEnum,
+  IsString,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+} from 'class-validator';
 
 export enum PartnerPayment {
   vnpay = 'VNPAY',
 }
 
 export class CreateOrderDto {
-  @IsInt()
+  @IsString()
   @IsNotEmpty()
-  readonly userId: number;
+  readonly userId: string;
 
   @IsInt()
   @IsNotEmpty()

@@ -36,14 +36,14 @@ export class GroupController {
   // Group
   @UseGuards(JwtGuard)
   @Post()
-  async create(@GetUser('sub') adminId: number, @Body() dto: CreateGroupDto) {
+  async create(@GetUser('sub') adminId: string, @Body() dto: CreateGroupDto) {
     return await this.groupService.create(adminId, dto);
   }
 
   @UseGuards(JwtGuard)
   @Get()
   async findAllGroupsByUserId(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Query() dto: PageOptionsGroupMembershipDto,
   ) {
     return await this.groupService.findAllGroupsByUserId(userId, dto);
@@ -59,7 +59,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Get(':id')
   async findOne(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('id', ParseIntPipe) groupId: number,
   ) {
     return await this.groupService.findOne(userId, groupId);
@@ -68,7 +68,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Patch(':id')
   async update(
-    @GetUser('sub') adminId: number,
+    @GetUser('sub') adminId: string,
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateGroupDto,
   ) {
@@ -78,7 +78,7 @@ export class GroupController {
   // @UseGuards(JwtGuard)
   // @Patch(':id/activate')
   // async activate(
-  //   @GetUser('sub') adminId: number,
+  //   @GetUser('sub') adminId: string,
   //   @Param('id', ParseIntPipe) id: number,
   // ) {
   //   return await this.groupService.activate(adminId, id);
@@ -104,7 +104,7 @@ export class GroupController {
   // @UseGuards(JwtGuard)
   // @Post(':id/posts')
   // async createPost(
-  //   @GetUser('sub') userId: number,
+  //   @GetUser('sub') userId: string,
   //   @Param('id', ParseIntPipe) groupId: number,
   // ) {
   //   return await this.groupService.createPost(userId, groupId);
@@ -113,7 +113,7 @@ export class GroupController {
   // @UseGuards(JwtGuard)
   // @Patch(':id/posts/:postId')
   // async updatePost(
-  //   @GetUser('sub') adminId: number,
+  //   @GetUser('sub') adminId: string,
   //   @Param('id', ParseIntPipe) id: number,
   //   @Param('postId', ParseIntPipe) postId: number,
   // ) {}
@@ -121,7 +121,7 @@ export class GroupController {
   // @UseGuards(JwtGuard)
   // @Patch(':id/posts/:postId/delete') // @Delete(':id/posts/:postId') instead
   // async deletePost(
-  //   @GetUser('sub') adminId: number,
+  //   @GetUser('sub') adminId: string,
   //   @Param('id', ParseIntPipe) id: number,
   //   @Param('postId', ParseIntPipe) postId: number,
   // ) {}
@@ -130,7 +130,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Post('invite')
   async inviteUsers(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Body() dto: InviteUser2GroupDto,
   ) {
     return await this.groupService.inviteUser(userId, dto);
@@ -139,7 +139,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Post('/user')
   async addUserToGroup(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Query() dto: AddUser2GroupDto,
   ) {
     return await this.groupService.addUserToGroup(userId, dto);
@@ -149,7 +149,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Get(':id/members')
   async findAllMembersByGroupId(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('id', ParseIntPipe) groupId: number,
     @Query() dto: PageOptionsUserDto,
   ) {
@@ -163,9 +163,9 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Delete(':id/members/:userId')
   async removeMember(
-    @GetUser('sub') adminId: number,
+    @GetUser('sub') adminId: string,
     @Param('id', ParseIntPipe) groupId: number,
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('userId', ParseIntPipe) userId: string,
   ) {
     return await this.groupService.removeMember(adminId, groupId, userId);
   }
@@ -174,7 +174,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Post(':groupId/tournaments')
   async createGroupTournament(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('groupId', ParseIntPipe) groupId: number,
     @Body() dto: CreateGroupTournamentDto,
   ) {
@@ -184,7 +184,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Get(':groupId/tournaments')
   async getGroupTournaments(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('groupId', ParseIntPipe) groupId: number,
     @Query() dto: PageOptionsGroupTournamentDto,
   ) {
@@ -194,7 +194,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Get(':groupId/tournaments/:tournamentId/general-info')
   async getGroupTournamentGeneralInfo(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('groupId', ParseIntPipe) groupId: number,
     @Param('tournamentId', ParseIntPipe) tournamentId: number,
   ) {
@@ -208,7 +208,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Get(':groupId/tournaments/:tournamentId/participants')
   async getGroupTournamentParticipants(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('groupId', ParseIntPipe) groupId: number,
     @Param('tournamentId', ParseIntPipe) tournamentId: number,
     @Query() dto: PageOptionsParticipantsDto,
@@ -224,7 +224,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Get(':groupId/tournaments/:tournamentId/non-participants')
   async getGroupTournamentNonParticipants(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('groupId', ParseIntPipe) groupId: number,
     @Param('tournamentId', ParseIntPipe) tournamentId: number,
   ) {
@@ -238,7 +238,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Post(':groupId/tournaments/:tournamentId/participants')
   async addGroupTournamentParticipant(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('groupId', ParseIntPipe) groupId: number,
     @Param('tournamentId', ParseIntPipe) tournamentId: number,
     @Body() dto: AddParticipantsDto,
@@ -254,10 +254,10 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Delete(':groupId/tournaments/:tournamentId/participants/:userId')
   async removeGroupTournamentParticipant(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('groupId', ParseIntPipe) groupId: number,
     @Param('tournamentId', ParseIntPipe) tournamentId: number,
-    @Param('userId', ParseIntPipe) participantId: number,
+    @Param('userId', ParseIntPipe) participantId: string,
   ) {
     return await this.groupService.removeGroupTournamentParticipant(
       userId,

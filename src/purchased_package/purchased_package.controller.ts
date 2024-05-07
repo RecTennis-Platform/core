@@ -29,7 +29,7 @@ export class PurchasedPackageController {
 
   @UseGuards(JwtGuard)
   @Get('/me')
-  async addUserToGroup(@GetUser('sub') userId: number) {
+  async addUserToGroup(@GetUser('sub') userId: string) {
     try {
       return await this.purchasedPackageService.getUserPurchasedPackages(
         userId,
@@ -77,7 +77,7 @@ export class MyPackageController {
 
   @UseGuards(JwtGuard)
   @Get('/')
-  async addUserToGroup(@GetUser('sub') userId: number) {
+  async addUserToGroup(@GetUser('sub') userId: string) {
     try {
       return await this.purchasedPackageService.getUserPurchasedPackages(
         userId,

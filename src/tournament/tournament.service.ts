@@ -89,7 +89,7 @@ export class TournamentService {
   }
 
   // For normal usage
-  async getTournamentDetails(userId: number, tournamentId: number) {
+  async getTournamentDetails(userId: string, tournamentId: number) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
       where: {
@@ -160,7 +160,7 @@ export class TournamentService {
   }
 
   async getMyTournaments(
-    userId: number,
+    userId: string,
     pageOptionsTournamentDto: PageOptionsTournamentDto,
   ) {
     // Get user's purchased packages
@@ -226,7 +226,7 @@ export class TournamentService {
     };
   }
 
-  async createTournament(userId: number, dto: CreateTournamentDto) {
+  async createTournament(userId: string, dto: CreateTournamentDto) {
     // Get purchased package info
     const purchasedPackage =
       await this.mongodbPrismaService.purchasedPackage.findUnique({
@@ -371,7 +371,7 @@ export class TournamentService {
     }
   }
 
-  async publishTournament(userId: number, tournamentId: number) {
+  async publishTournament(userId: string, tournamentId: number) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
       where: {
@@ -444,7 +444,7 @@ export class TournamentService {
   // Participants
   // Creator
   async getApplicantsList(
-    userId: number,
+    userId: string,
     tournamentId: number,
     pageOptionsTournamentDto: PageOptionsTournamentDto,
   ) {
@@ -563,8 +563,8 @@ export class TournamentService {
 
   async approveApplicant(
     tournamentId: number,
-    userId: number,
-    applicantId: number,
+    userId: string,
+    applicantId: string,
   ) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
@@ -654,8 +654,8 @@ export class TournamentService {
 
   async rejectApplicant(
     tournamentId: number,
-    userId: number,
-    applicantId: number,
+    userId: string,
+    applicantId: string,
   ) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
@@ -743,7 +743,7 @@ export class TournamentService {
     };
   }
 
-  async finalizeApplicantList(tournamentId: number, userId: number) {
+  async finalizeApplicantList(tournamentId: number, userId: string) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
       where: {
@@ -963,7 +963,7 @@ export class TournamentService {
   }
 
   // Applicant
-  async getSubmittedApplications(userId: number, tournamentId: number) {
+  async getSubmittedApplications(userId: string, tournamentId: number) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
       where: {
@@ -1101,7 +1101,7 @@ export class TournamentService {
   }
 
   async submitApplication(
-    userId: number,
+    userId: string,
     tournamentId: number,
     dto: CreateApplyApplicantDto,
   ) {
@@ -1337,7 +1337,7 @@ export class TournamentService {
     };
   }
 
-  async cancelApplication(userId: number, tournamentId: number) {
+  async cancelApplication(userId: string, tournamentId: number) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
       where: {
@@ -1436,7 +1436,7 @@ export class TournamentService {
   }
 
   async getTournamentInvitations(
-    userId: number,
+    userId: string,
     tournamentId: number,
     pageOptionsTournamentDto: PageOptionsTournamentDto,
   ) {
@@ -1526,7 +1526,7 @@ export class TournamentService {
   }
 
   async acceptInvitation(
-    userId: number,
+    userId: string,
     tournamentId: number,
     inviterId: number,
   ) {
@@ -1611,7 +1611,7 @@ export class TournamentService {
   }
 
   async rejectInvitation(
-    userId: number,
+    userId: string,
     tournamentId: number,
     inviterId: number,
   ) {
@@ -1701,7 +1701,7 @@ export class TournamentService {
     });
   }
 
-  async cancelAllTournamentInvitations(userId: number, tournamentId: number) {
+  async cancelAllTournamentInvitations(userId: string, tournamentId: number) {
     await this.prismaService.tournament_registrations.updateMany({
       where: {
         userId2: userId,

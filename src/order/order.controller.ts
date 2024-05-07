@@ -46,7 +46,7 @@ export class OrderController {
   @UseGuards(JwtGuard)
   @Get()
   async findAll(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Query() dto: PageOptionsOrderDto,
   ) {
     try {

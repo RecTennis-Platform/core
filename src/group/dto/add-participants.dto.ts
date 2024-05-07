@@ -4,5 +4,5 @@ export class AddParticipantsDto {
   @IsNotEmpty()
   @IsArray()
   @ArrayMinSize(1)
-  userIds: number[];
+  userIds: string[];
 }

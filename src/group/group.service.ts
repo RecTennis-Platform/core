@@ -89,7 +89,7 @@ export class GroupService {
   }
 
   private async checkMember(
-    userId: number,
+    userId: string,
     groupId: number,
     isAdmin?: boolean,
   ) {
@@ -118,7 +118,7 @@ export class GroupService {
   }
 
   // Group
-  async create(adminId: number, dto: CreateGroupDto) {
+  async create(adminId: string, dto: CreateGroupDto) {
     const purchasedPackage = await this.checkPurchasePackage(
       dto.purchasedPackageId,
     );
@@ -233,7 +233,7 @@ export class GroupService {
   }
 
   async findAllGroupsByUserId(
-    userId: number,
+    userId: string,
     dto: PageOptionsGroupMembershipDto,
   ) {
     const conditions = {
@@ -357,7 +357,7 @@ export class GroupService {
     };
   }
 
-  async findOne(userId: number, groupId: number) {
+  async findOne(userId: string, groupId: number) {
     const groupWithMember = await this.prismaService.groups.findUnique({
       where: {
         id: groupId,
@@ -401,7 +401,7 @@ export class GroupService {
     };
   }
 
-  async update(adminId: number, id: number, dto: UpdateGroupDto) {
+  async update(adminId: string, id: number, dto: UpdateGroupDto) {
     const group = await this.checkValidGroup(id);
 
     await this.checkMember(adminId, id, true);
@@ -460,7 +460,7 @@ export class GroupService {
   }
 
   // Invite User
-  async inviteUser(userId: number, dto: InviteUser2GroupDto) {
+  async inviteUser(userId: string, dto: InviteUser2GroupDto) {
     const userGroup = await this.prismaService.member_ships.findFirst({
       where: {
         userId: userId,
@@ -539,7 +539,7 @@ export class GroupService {
     await this.mailService.sendEmailTemplate(data);
   }
 
-  async addUserToGroup(userId: number, dto: AddUser2GroupDto) {
+  async addUserToGroup(userId: string, dto: AddUser2GroupDto) {
     const user = await this.prismaService.users.findFirst({
       where: {
         id: userId,
@@ -594,8 +594,8 @@ export class GroupService {
   }
 
   // NOTE: If the group is expired, we will buy a new package to activate the group
-  // async activate(adminId: number, groupId: number, purchasedPackageId: number) { // WILL USE THIS
-  // async activate(adminId: number, id: number) {
+  // async activate(adminId: string, groupId: number, purchasedPackageId: number) { // WILL USE THIS
+  // async activate(adminId: string, id: number) {
   //   const group = await this.prismaService.groups.findUnique({
   //     where: {
   //       id,
@@ -757,7 +757,7 @@ export class GroupService {
     };
   }
 
-  // async createPost(userId: number, groupId: number) {
+  // async createPost(userId: string, groupId: number) {
   //   // Check if group exists
   //   const group = await this.prismaService.groups.findUnique({
   //     where: {
@@ -809,7 +809,7 @@ export class GroupService {
   // }
 
   async getJwtToInviteUserToGroup(
-    sub: number,
+    sub: string,
     email: string,
     groupId: number,
   ): Promise<string> {
@@ -835,7 +835,7 @@ export class GroupService {
 
   // Group Member
   async findAllMembersByGroupId(
-    userId: number,
+    userId: string,
     groupId: number,
     dto: PageOptionsUserDto,
   ) {
@@ -890,7 +890,7 @@ export class GroupService {
     };
   }
 
-  async removeMember(adminId: number, groupId: number, userId: number) {
+  async removeMember(adminId: string, groupId: number, userId: string) {
     await this.checkValidGroup(groupId);
 
     await this.checkMember(adminId, groupId, true);
@@ -936,7 +936,7 @@ export class GroupService {
   // Group Tournament
   // Note: Need to limit the number of current tournaments (ongoing and upcoming)?
   async createGroupTournament(
-    userId: number,
+    userId: string,
     groupId: number,
     dto: CreateGroupTournamentDto,
   ) {
@@ -968,7 +968,7 @@ export class GroupService {
   }
 
   async getGroupTournaments(
-    userId: number,
+    userId: string,
     groupId: number,
     dto: PageOptionsGroupTournamentDto,
   ) {
@@ -1008,7 +1008,7 @@ export class GroupService {
   }
 
   async getGroupTournamentGeneralInfo(
-    userId: number,
+    userId: string,
     groupId: number,
     tournamentId: number,
   ) {
@@ -1053,7 +1053,7 @@ export class GroupService {
   }
 
   async getGroupTournamentParticipants(
-    userId: number,
+    userId: string,
     groupId: number,
     tournamentId: number,
     dto: PageOptionsParticipantsDto,
@@ -1161,7 +1161,7 @@ export class GroupService {
   }
 
   async getGroupTournamentNonParticipants(
-    userId: number,
+    userId: string,
     groupId: number,
     tournamentId: number,
   ) {
@@ -1245,7 +1245,7 @@ export class GroupService {
   }
 
   async addGroupTournamentParticipant(
-    userId: number,
+    userId: string,
     groupId: number,
     tournamentId: number,
     dto: AddParticipantsDto,
@@ -1327,10 +1327,10 @@ export class GroupService {
   }
 
   async removeGroupTournamentParticipant(
-    userId: number,
+    userId: string,
     groupId: number,
     tournamentId: number,
-    participantId: number,
+    participantId: string,
   ) {
     await this.checkValidGroup(groupId);
 
