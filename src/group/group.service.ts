@@ -16,6 +16,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { SendMailTemplateDto } from 'src/services/mail/mail.dto';
 import { MailService } from 'src/services/mail/mail.service';
 
+import { deleteFilesFromFirebase } from 'src/services/files/delete';
+import {
+  EUploadFolder,
+  uploadFilesFromFirebase,
+} from 'src/services/files/upload';
 import {
   CreateGroupDto,
   PageOptionsPostDto,
@@ -118,7 +123,19 @@ export class GroupService {
   }
 
   // Group
-  async create(adminId: string, dto: CreateGroupDto) {
+  async create(
+    adminId: string,
+    dto: CreateGroupDto,
+    image: Express.Multer.File,
+  ) {
+    if (!image) {
+      throw new BadRequestException({
+        message: 'Image is required',
+        statusCode: '400',
+        error: 'Bad Request',
+      });
+    }
+
     const purchasedPackage = await this.checkPurchasePackage(
       dto.purchasedPackageId,
     );
@@ -183,9 +200,23 @@ export class GroupService {
       });
     }
 
+    let imageUrls = [];
+
     try {
+      const uploadImagesData = await uploadFilesFromFirebase(
+        [image],
+        EUploadFolder.group,
+      );
+
+      if (!uploadImagesData.success) {
+        throw new Error('Failed to upload images!');
+      }
+
+      imageUrls = uploadImagesData.urls;
+
       const data = await this.prismaService.groups.create({
         data: {
+          image: imageUrls[0],
           status: GroupStatus.active,
           maxMember,
           ...dto,
@@ -225,6 +256,8 @@ export class GroupService {
       };
     } catch (error) {
       console.log('Error:', error.message);
+      if (!imageUrls.length) await deleteFilesFromFirebase(imageUrls);
+
       throw new BadRequestException({
         message: 'Failed to create group',
         data: null,

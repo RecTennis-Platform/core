@@ -6,7 +6,7 @@ import { getAllConstraints } from './helper/validation-error';
 import InitFirebase from './services/firebase';
 
 // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// import { Multer } from 'multer'; // cheating type, dont delete
+import { Multer } from 'multer'; // cheating type, dont delete
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
