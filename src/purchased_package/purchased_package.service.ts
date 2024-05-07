@@ -30,7 +30,7 @@ export class PurchasedPackageService {
     return `This action removes a #${id} PurchasedPackage`;
   }
 
-  async getUserPurchasedPackages(userId: number) {
+  async getUserPurchasedPackages(userId: string) {
     const packages = await this.mongodbPrismaService.purchasedPackage.findMany({
       where: {
         userId: userId,

@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty, IsNumber } from 'class-validator';
 export class TokenPayloadDto {
   @IsNumber()
   @IsNotEmpty()
-  sub: number;
+  sub: string;
 
   @IsEmail()
   @IsNotEmpty()

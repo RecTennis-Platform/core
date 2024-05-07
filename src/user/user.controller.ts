@@ -4,7 +4,6 @@ import {
   Controller,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -36,7 +35,7 @@ export class UserController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.admin)
   @Get('admin/:id')
-  async adminGetUserDetails(@Param('id', ParseIntPipe) id: number) {
+  async adminGetUserDetails(@Param('id') id: string) {
     return await this.userService.getUserDetails(id);
   }
 
@@ -51,7 +50,7 @@ export class UserController {
   @Roles(UserRole.admin)
   @Patch('admin/:id')
   async adminUpdateUser(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() dto: UpdateUserAccountDto,
   ) {
     console.log('Admin update user');
@@ -77,7 +76,7 @@ export class UserController {
   // Get participated tournaments
   @Get(':userId/tournaments')
   async getUserParticipatedTournaments(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('userId') userId: string,
     @Query() pageOptions: PageOptionsUserParticipatedTournamentsDto,
   ) {
     return await this.userService.getUserParticipatedTournaments(

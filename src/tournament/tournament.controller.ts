@@ -45,7 +45,7 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Get(':tournamentId/general-info')
   async getTournamentDetails(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
   ) {
     return this.tournamentService.getTournamentDetails(userId, tournamentId);
@@ -55,7 +55,7 @@ export class TournamentController {
   @Get('/me')
   // Get my created tournaments
   async getMyCreatedTournaments(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
   ) {
     return this.tournamentService.getMyTournaments(
@@ -68,7 +68,7 @@ export class TournamentController {
   @Post()
   // Create tournament
   async createTournament(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Body() dto: CreateTournamentDto,
   ) {
     return this.tournamentService.createTournament(userId, dto);
@@ -78,7 +78,7 @@ export class TournamentController {
   @Patch(':tournamentId/publish')
   // Publish tournament
   async publishTournament(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
   ) {
     return this.tournamentService.publishTournament(userId, tournamentId);
@@ -89,7 +89,7 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Get(':tournamentId/applicants')
   async getApplicantsList(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
     @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
   ) {
@@ -103,9 +103,9 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Patch(':tournamentId/applicants/approve')
   async approveApplicant(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
-    @Body('userId') applicantId: number,
+    @Body('userId') applicantId: string,
   ) {
     return this.tournamentService.approveApplicant(
       tournamentId,
@@ -117,9 +117,9 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Patch(':tournamentId/applicants/reject')
   async rejectApplicant(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
-    @Body('userId') applicantId: number,
+    @Body('userId') applicantId: string,
   ) {
     return this.tournamentService.rejectApplicant(
       tournamentId,
@@ -131,7 +131,7 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Patch(':tournamentId/applicants/finalize')
   async finalizeApplicantList(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
   ) {
     return this.tournamentService.finalizeApplicantList(tournamentId, userId);
@@ -153,7 +153,7 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Get(':tournamentId/applicants/apply')
   async getSubmittedApplications(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
   ) {
     return this.tournamentService.getSubmittedApplications(
@@ -165,7 +165,7 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Post(':tournamentId/applicants/apply')
   async submitApplication(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
     @Body() dto: CreateApplyApplicantDto,
   ) {
@@ -175,7 +175,7 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Delete(':tournamentId/applicants/apply')
   async cancelApplication(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
   ) {
     return this.tournamentService.cancelApplication(userId, tournamentId);
@@ -184,7 +184,7 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Get(':tournamentId/applicants/invitations')
   async getTournamentInvitations(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
     @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
   ) {
@@ -198,7 +198,7 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Patch(':tournamentId/applicants/invitations/accept')
   async acceptInvitation(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
     @Body('inviterId') inviterId: number,
   ) {
@@ -212,7 +212,7 @@ export class TournamentController {
   @UseGuards(JwtGuard)
   @Patch(':tournamentId/applicants/invitations/reject')
   async rejectInvitation(
-    @GetUser('sub') userId: number,
+    @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
     @Body('inviterId') inviterId: number,
   ) {
