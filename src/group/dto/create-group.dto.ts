@@ -12,10 +12,6 @@ export class CreateGroupDto {
 
   @IsString()
   @IsNotEmpty()
-  image: string;
-
-  @IsString()
-  @IsNotEmpty()
   language: string;
 
   @IsString()

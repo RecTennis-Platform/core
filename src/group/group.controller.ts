@@ -4,12 +4,16 @@ import {
   Delete,
   Get,
   Param,
+  ParseFilePipeBuilder,
   ParseIntPipe,
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { UserRole } from '@prisma/client';
 import { GetUser, Roles } from 'src/auth_utils/decorators';
 import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
@@ -28,6 +32,7 @@ import { CreateGroupTournamentDto } from './dto/create-group-tournament.dto';
 import { PageOptionsGroupTournamentDto } from './dto/page-options-group-tournament.dto';
 import { PageOptionsParticipantsDto } from './dto/page-options-participants.dto';
 import { GroupService } from './group.service';
+import { FILE_TYPES_REGEX } from 'constants/images';
 
 @Controller('groups')
 export class GroupController {
@@ -36,8 +41,22 @@ export class GroupController {
   // Group
   @UseGuards(JwtGuard)
   @Post()
-  async create(@GetUser('sub') adminId: string, @Body() dto: CreateGroupDto) {
-    return await this.groupService.create(adminId, dto);
+  @UseInterceptors(FileInterceptor('image'))
+  async create(
+    @GetUser('sub') adminId: string,
+    @Body() dto: CreateGroupDto,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: FILE_TYPES_REGEX,
+        })
+        .build({
+          fileIsRequired: false,
+        }),
+    )
+    image: Express.Multer.File,
+  ) {
+    return await this.groupService.create(adminId, dto, image);
   }
 
   @UseGuards(JwtGuard)
