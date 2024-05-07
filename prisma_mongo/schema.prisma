@@ -10,33 +10,33 @@ generator client {
 
 
 model PurchasedPackage {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId  String 
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String 
   expired   Boolean
   orderId   String
   package   Package
-  startDate       DateTime            @default(now()) 
-  endDate         DateTime 
-  createdAt       DateTime            @default(now()) 
-  updatedAt       DateTime            @updatedAt 
+  startDate DateTime @default(now())
+  endDate   DateTime 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Service is an embedded document
 type Service {
-  id              Int
-  name            String
-  createdAt       DateTime           
-  updatedAt       DateTime           
-  config          String
+  id        Int
+  name      String
+  createdAt DateTime           
+  updatedAt DateTime           
+  config    String
 }
 
 type Package {
-  id              Int                 
-  name            String
-  price           Float
-  duration        Int
-  images          String[]
-  services Service[]
-  createdAt       DateTime           
-  updatedAt       DateTime
+  id        Int                 
+  name      String
+  price     Float
+  duration  Int
+  images    String[]
+  services  Service[]
+  createdAt DateTime           
+  updatedAt DateTime
 }

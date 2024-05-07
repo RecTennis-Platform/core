@@ -19,6 +19,7 @@ import {
   RegistrationStatus,
   TournamentFormat,
   TournamentPhase,
+  TournamentStatus,
   tournaments,
 } from '@prisma/client';
 import { FormatTournamentService } from 'src/services/format_tournament/format_tournament.service';
@@ -28,6 +29,8 @@ import {
 } from 'src/fixture/dto/create-fixture.dto';
 import { randomUUID } from 'crypto';
 import { CreateFixtureGroupPlayoffDto } from 'src/fixture/dto/create-fixture-groupplayoff.dto';
+import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-code';
+import { CustomResponseMessages } from 'src/helper/custom-response-message';
 
 @Injectable()
 export class TournamentService {
@@ -99,7 +102,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -114,7 +120,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -122,7 +131,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -161,7 +173,7 @@ export class TournamentService {
 
   async getMyTournaments(
     userId: string,
-    pageOptionsTournamentDto: PageOptionsTournamentDto,
+    pageOptions: PageOptionsTournamentDto,
   ) {
     // Get user's purchased packages
     const purchasedPackages =
@@ -192,7 +204,7 @@ export class TournamentService {
     const conditions = {
       orderBy: [
         {
-          createdAt: pageOptionsTournamentDto.order,
+          createdAt: pageOptions.order,
         },
       ],
       where: {
@@ -203,10 +215,10 @@ export class TournamentService {
     };
 
     const pageOption =
-      pageOptionsTournamentDto.page && pageOptionsTournamentDto.take
+      pageOptions.page && pageOptions.take
         ? {
-            skip: pageOptionsTournamentDto.skip,
-            take: pageOptionsTournamentDto.take,
+            skip: pageOptions.skip,
+            take: pageOptions.take,
           }
         : undefined;
 
@@ -221,7 +233,7 @@ export class TournamentService {
 
     return {
       data: result,
-      totalPages: Math.ceil(totalCount / pageOptionsTournamentDto.take),
+      totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
   }
@@ -238,7 +250,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -246,7 +261,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -258,7 +276,10 @@ export class TournamentService {
 
     if (!tournamentService) {
       throw new BadRequestException({
-        message: 'This package does not have the service to create tournament',
+        code: CustomResponseStatusCodes.PACKAGE_DOES_NOT_HAVE_CREATE_TOURNAMENT_SERVICE,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PACKAGE_DOES_NOT_HAVE_CREATE_TOURNAMENT_SERVICE,
+        ),
         data: null,
       });
     }
@@ -271,7 +292,10 @@ export class TournamentService {
     });
     if (count >= JSON.parse(tournamentService.config).maxTournament) {
       throw new BadRequestException({
-        message: 'Exceeded the allowed number of tournaments',
+        code: CustomResponseStatusCodes.PACKAGE_EXCEEDED_CREATE_TOURNAMENT_LIMIT,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PACKAGE_EXCEEDED_CREATE_TOURNAMENT_LIMIT,
+        ),
         data: null,
       });
     }
@@ -285,7 +309,10 @@ export class TournamentService {
       dto.maxParticipants > JSON.parse(tournamentService.config).maxParticipants
     ) {
       throw new BadRequestException({
-        message: 'Max participants exceeds the limit',
+        code: CustomResponseStatusCodes.PACKAGE_EXCEEDED_MAX_PARTICIPANTS_LIMIT,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PACKAGE_EXCEEDED_MAX_PARTICIPANTS_LIMIT,
+        ),
         data: null,
       });
     }
@@ -365,7 +392,10 @@ export class TournamentService {
     } catch (error) {
       console.log('Error:', error.message);
       throw new BadRequestException({
-        message: 'Failed to create tournament',
+        code: CustomResponseStatusCodes.TOURNAMENT_CREATED_FAILED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_CREATED_FAILED,
+        ),
         data: null,
       });
     }
@@ -381,7 +411,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -396,7 +429,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -404,7 +440,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -412,7 +451,10 @@ export class TournamentService {
     // Check if the user is the creator of the tournament
     if (purchasedPackage.userId !== userId) {
       throw new BadRequestException({
-        message: 'Unauthorized to publish this tournament',
+        code: CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_UNAUTHORIZED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_UNAUTHORIZED,
+        ),
         data: null,
       });
     }
@@ -435,7 +477,10 @@ export class TournamentService {
     } catch (error) {
       console.log('Error:', error.message);
       throw new BadRequestException({
-        message: 'Failed to publish tournament',
+        code: CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_FAILED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_FAILED,
+        ),
         data: null,
       });
     }
@@ -457,7 +502,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -472,7 +520,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -480,7 +531,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -488,7 +542,10 @@ export class TournamentService {
     // Check if the user is the creator of the tournament
     if (purchasedPackage.userId !== userId) {
       throw new UnauthorizedException({
-        message: 'Unauthorized to access this tournament',
+        code: CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        ),
         data: null,
       });
     }
@@ -575,7 +632,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -590,7 +650,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -598,7 +661,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -606,7 +672,10 @@ export class TournamentService {
     // Check if the user is the creator of the tournament
     if (purchasedPackage.userId !== userId) {
       throw new UnauthorizedException({
-        message: 'Unauthorized to access this tournament',
+        code: CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        ),
         data: null,
       });
     }
@@ -623,7 +692,10 @@ export class TournamentService {
 
     if (!tournament_registration) {
       throw new NotFoundException({
-        message: 'Applicant not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -641,7 +713,10 @@ export class TournamentService {
     } catch (err) {
       console.log('Error:', err.message);
       throw new BadRequestException({
-        message: 'Failed to approve the applicant',
+        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_APPROVE_FAILED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_APPROVE_FAILED,
+        ),
         data: null,
       });
     }
@@ -666,7 +741,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -681,7 +759,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -689,7 +770,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -697,7 +781,10 @@ export class TournamentService {
     // Check if the user is the creator of the tournament
     if (purchasedPackage.userId !== userId) {
       throw new UnauthorizedException({
-        message: 'Unauthorized to access this tournament',
+        code: CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        ),
         data: null,
       });
     }
@@ -714,7 +801,10 @@ export class TournamentService {
 
     if (!tournament_registration) {
       throw new NotFoundException({
-        message: 'Applicant not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -732,7 +822,10 @@ export class TournamentService {
     } catch (err) {
       console.log('Error:', err.message);
       throw new BadRequestException({
-        message: 'Failed to reject the applicant',
+        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_REJECT_FAILED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_REJECT_FAILED,
+        ),
         data: null,
       });
     }
@@ -753,7 +846,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -768,7 +864,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -776,7 +875,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -784,7 +886,10 @@ export class TournamentService {
     // Check if the user is the creator of the tournament
     if (purchasedPackage.userId !== userId) {
       throw new UnauthorizedException({
-        message: 'Unauthorized to access this tournament',
+        code: CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        ),
         data: null,
       });
     }
@@ -792,12 +897,17 @@ export class TournamentService {
     // Check if the tournament status is already finalized_applicants
     if (tournament.phase === TournamentPhase.finalized_applicants) {
       return {
-        message: 'Applicant list already finalized',
+        code: CustomResponseStatusCodes.TOURNAMENT_APPLICANT_LIST_ALREADY_FINALIZED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_APPLICANT_LIST_ALREADY_FINALIZED,
+        ),
         data: null,
       };
     }
 
-    // Update tournament status -> finalized_applicants
+    // Update tournament
+    // phase -> finalized_applicants
+    // status -> on_going
     try {
       return await this.prismaService.$transaction(async (tx) => {
         await tx.tournaments.update({
@@ -806,6 +916,7 @@ export class TournamentService {
           },
           data: {
             phase: TournamentPhase.finalized_applicants,
+            status: TournamentStatus.on_going,
           },
         });
         const applicants = await tx.tournament_registrations.findMany({
@@ -843,15 +954,13 @@ export class TournamentService {
     } catch (error) {
       console.log('Error:', error.message);
       throw new BadRequestException({
-        message: 'Failed to finalize the applicant list',
+        code: CustomResponseStatusCodes.TOURNAMENT_FINALIZED_APPLICANT_LIST_FAILED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_FINALIZED_APPLICANT_LIST_FAILED,
+        ),
         data: null,
       });
     }
-
-    return {
-      message: 'Applicant list finalized successfully',
-      data: null,
-    };
   }
 
   async getTournamentParticipants(
@@ -867,7 +976,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -882,7 +994,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -890,7 +1005,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -898,7 +1016,10 @@ export class TournamentService {
     // Check if the tournament status is finalized_applicants
     if (tournament.phase !== TournamentPhase.finalized_applicants) {
       return {
-        message: 'Applicants list not finalized',
+        code: CustomResponseStatusCodes.TOURNAMENT_APPLICANT_LIST_NOT_FINALIZED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_APPLICANT_LIST_NOT_FINALIZED,
+        ),
         data: null,
       };
     }
@@ -973,7 +1094,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -988,7 +1112,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -996,7 +1123,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -1012,7 +1142,10 @@ export class TournamentService {
 
     if (!tournament_registration) {
       return {
-        message: 'No submitted applications',
+        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_NOT_FOUND,
+        ),
         data: null,
       };
     }
@@ -1053,7 +1186,10 @@ export class TournamentService {
         tournament_registration.status !== RegistrationStatus.inviting
       ) {
         return {
-          message: 'Invalid submitted application',
+          code: CustomResponseStatusCodes.TOURNAMENT_SUBMITTED_REGISTRATION_INVALID,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_SUBMITTED_REGISTRATION_INVALID,
+          ),
           data: null,
         };
       }
@@ -1114,7 +1250,24 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if tournament's status and phase is valid
+    if (
+      tournament.phase !== TournamentPhase.published ||
+      tournament.status !== TournamentStatus.upcoming
+    ) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -1129,15 +1282,21 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
 
-    // Check if the purchased package expired
+    // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -1147,7 +1306,10 @@ export class TournamentService {
       await this.getTournamentParticipantsCount(tournamentId);
     if (participantsCount >= tournament.maxParticipants) {
       throw new BadRequestException({
-        message: 'Exceeded the maximum number of participants',
+        code: CustomResponseStatusCodes.PACKAGE_EXCEEDED_MAX_PARTICIPANTS_LIMIT,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PACKAGE_EXCEEDED_MAX_PARTICIPANTS_LIMIT,
+        ),
         data: null,
       });
     }
@@ -1185,7 +1347,10 @@ export class TournamentService {
 
       if (existingRegistration) {
         throw new BadRequestException({
-          message: 'User has already applied for this tournament',
+          code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_ALREADY_APPLIED,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_ALREADY_APPLIED,
+          ),
           data: null,
         });
       }
@@ -1193,7 +1358,10 @@ export class TournamentService {
       // Check tournament participant type gender
       if (user1.gender !== tournament.gender) {
         throw new BadRequestException({
-          message: 'Invalid applicant gender',
+          code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION0_INVALID_GENDER,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_REGISTRATION0_INVALID_GENDER,
+          ),
           data: null,
         });
       }
@@ -1245,7 +1413,10 @@ export class TournamentService {
 
       if (existingRegistration) {
         throw new BadRequestException({
-          message: 'User has already applied for this tournament',
+          code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_ALREADY_APPLIED,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_ALREADY_APPLIED,
+          ),
           data: null,
         });
       }
@@ -1253,7 +1424,10 @@ export class TournamentService {
       if (tournament.participantType === ParticipantType.mixed_doubles) {
         if (user1.gender === user2Res.gender) {
           throw new BadRequestException({
-            message: 'Invalid applicants gender',
+            code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION0_INVALID_GENDER,
+            message: CustomResponseMessages.getMessage(
+              CustomResponseStatusCodes.TOURNAMENT_REGISTRATION0_INVALID_GENDER,
+            ),
             data: null,
           });
         }
@@ -1263,7 +1437,10 @@ export class TournamentService {
           user2Res.gender !== tournament.gender
         ) {
           throw new BadRequestException({
-            message: 'Invalid applicants gender',
+            code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION0_INVALID_GENDER,
+            message: CustomResponseMessages.getMessage(
+              CustomResponseStatusCodes.TOURNAMENT_REGISTRATION0_INVALID_GENDER,
+            ),
             data: null,
           });
         }
@@ -1332,7 +1509,7 @@ export class TournamentService {
     }
 
     return {
-      message: 'Tournament published successfully',
+      message: 'Application submitted successfully',
       data: response_data,
     };
   }
@@ -1347,7 +1524,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -1362,7 +1542,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -1370,7 +1553,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -1393,7 +1579,10 @@ export class TournamentService {
 
     if (!tournament_registration) {
       return {
-        message: 'No submitted applications',
+        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_NOT_FOUND,
+        ),
         data: null,
       };
     }
@@ -1405,8 +1594,10 @@ export class TournamentService {
       )
     ) {
       return {
-        message:
-          'Cannot cancel the tournament application after admin approval',
+        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANNOT_CANCEL,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANNOT_CANCEL,
+        ),
         data: null,
       };
     }
@@ -1424,13 +1615,16 @@ export class TournamentService {
     } catch (error) {
       console.log('Error:', error.message);
       throw new BadRequestException({
-        message: 'Failed to cancel the tournament application',
+        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANCEL_FAILED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANCEL_FAILED,
+        ),
         data: null,
       });
     }
 
     return {
-      message: 'Tournament application canceled successfully',
+      message: 'Application canceled successfully',
       data: null,
     };
   }
@@ -1449,7 +1643,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -1464,7 +1661,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -1472,7 +1672,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -1539,7 +1742,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -1554,7 +1760,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -1562,7 +1771,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
@@ -1624,7 +1836,10 @@ export class TournamentService {
 
     if (!tournament) {
       throw new NotFoundException({
-        message: 'Tournament not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -1639,7 +1854,10 @@ export class TournamentService {
 
     if (!purchasedPackage) {
       throw new NotFoundException({
-        message: 'Purchased package not found',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
         data: null,
       });
     }
@@ -1647,7 +1865,10 @@ export class TournamentService {
     // Check expiration date of the purchased package
     if (new Date(purchasedPackage.endDate) < new Date()) {
       throw new BadRequestException({
-        message: 'Purchased package is expired',
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
         data: null,
       });
     }
