@@ -54,7 +54,7 @@ model groups {
   updatedAt          DateTime            @updatedAt @map("updated_at")
   image              String?
   purchasedPackageId String              @map("purchased_package_id")
-  maxMember          Int                 @map("max_member")
+  maxMembers         Int                 @map("max_member")
   group_tournaments  group_tournaments[]
   member_ships       member_ships[]
 }
@@ -89,6 +89,8 @@ model services {
   createdAt       DateTime            @default(now()) @map("created_at")
   updatedAt       DateTime            @updatedAt @map("updated_at")
   config          String
+  type            String?
+  level           String?
   packageServices packages_services[]
 }
 

@@ -361,7 +361,7 @@ export class TournamentService {
         purchasedPackageId: dto.purchasedPackageId,
       },
     });
-    if (count >= JSON.parse(tournamentService.config).maxTournament) {
+    if (count >= JSON.parse(tournamentService.config).maxTournaments) {
       throw new BadRequestException({
         code: CustomResponseStatusCodes.PACKAGE_EXCEEDED_CREATE_TOURNAMENT_LIMIT,
         message: CustomResponseMessages.getMessage(

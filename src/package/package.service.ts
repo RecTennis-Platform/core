@@ -43,7 +43,12 @@ export class PackageService {
     return packageList.map((p) => {
       const { packageServices, ...packageData } = p;
       const services = packageServices.map((value) => {
-        return value.service;
+        const { config, ...serviceInfo } = value.service;
+        const configValue = JSON.parse(config);
+        return {
+          ...serviceInfo,
+          config: configValue,
+        };
       });
       return { ...packageData, services };
     });
@@ -70,7 +75,12 @@ export class PackageService {
     }
     const { packageServices, ...packageData } = packageDetail;
     const services = packageServices.map((value) => {
-      return value.service;
+      const { config, ...serviceInfo } = value.service;
+      const configValue = JSON.parse(config);
+      return {
+        ...serviceInfo,
+        config: configValue,
+      };
     });
     return { ...packageData, services };
   }

@@ -187,13 +187,13 @@ export class GroupService {
       });
     }
 
-    const maxMember = JSON.parse(groupService.config).maxMember;
+    const maxMembers = JSON.parse(groupService.config).maxMembers;
     const count = await this.prismaService.groups.count({
       where: {
         purchasedPackageId: dto.purchasedPackageId,
       },
     });
-    if (count >= JSON.parse(groupService.config).maxGroup) {
+    if (count >= JSON.parse(groupService.config).maxGroups) {
       throw new BadRequestException({
         message: 'Exceeded the allowed number of groups',
         data: null,
@@ -218,7 +218,7 @@ export class GroupService {
         data: {
           image: imageUrls[0],
           status: GroupStatus.active,
-          maxMember,
+          maxMembers,
           ...dto,
         },
       });
@@ -297,7 +297,7 @@ export class GroupService {
               language: true,
               description: true,
               status: true,
-              maxMember: true,
+              maxMembers: true,
               createdAt: true,
               updatedAt: true,
               _count: {
