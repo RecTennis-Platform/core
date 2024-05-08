@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -10,6 +11,7 @@ import {
   CreateApplyApplicantDto,
   CreateTournamentDto,
   PageOptionsTournamentDto,
+  PageOptionsTournamentRegistrationDto,
 } from './dto';
 import {
   FixtureStatus,
@@ -59,12 +61,33 @@ export class TournamentService {
       conditions.where['format'] = pageOptions.format;
     }
 
+    if (pageOptions.participantType) {
+      conditions.where['participantType'] = pageOptions.participantType;
+      if (pageOptions.participantType === ParticipantType.mixed_doubles) {
+        conditions.where['gender'] = null;
+      }
+    }
+
     if (pageOptions.status) {
       conditions.where['status'] = pageOptions.status;
     }
 
     if (pageOptions.phase) {
-      conditions.where['phase'] = pageOptions.phase;
+      if (pageOptions.phase !== TournamentPhase.new) {
+        conditions.where['phase'] = pageOptions.phase;
+      } else {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+          ),
+          data: null,
+        });
+      }
+    } else {
+      conditions.where['NOT'] = {
+        phase: TournamentPhase.new,
+      };
     }
 
     const pageOption =
@@ -80,19 +103,37 @@ export class TournamentService {
       this.prismaService.tournaments.findMany({
         ...conditions,
         ...pageOption,
+        include: {
+          _count: {
+            select: {
+              tournament_registrations: true,
+            }, // Count registrations for each tournament
+          },
+        },
       }),
-      this.prismaService.tournaments.count({}),
+      this.prismaService.tournaments.count(conditions),
     ]);
 
+    // Modify the structure of the returned data
+    const modified_result = result.map((tournament) => {
+      const participantCount = tournament._count.tournament_registrations;
+      delete tournament._count;
+
+      return {
+        ...tournament,
+        participants: participantCount,
+      };
+    });
+
     return {
-      data: result,
+      data: modified_result,
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
   }
 
   // For normal usage
-  async getTournamentDetails(userId: string, tournamentId: number) {
+  async getTournamentDetails(userId: string | undefined, tournamentId: number) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
       where: {
@@ -123,17 +164,6 @@ export class TournamentService {
         code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
         message: CustomResponseMessages.getMessage(
           CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
-        ),
-        data: null,
-      });
-    }
-
-    // Check expiration date of the purchased package
-    if (new Date(purchasedPackage.endDate) < new Date()) {
-      throw new BadRequestException({
-        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
-        message: CustomResponseMessages.getMessage(
-          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
         ),
         data: null,
       });
@@ -181,7 +211,7 @@ export class TournamentService {
         where: {
           userId: userId,
           endDate: {
-            lt: new Date(),
+            gt: new Date(), // Not expired purchased packages
           },
         },
       });
@@ -214,6 +244,29 @@ export class TournamentService {
       },
     };
 
+    if (pageOptions.gender) {
+      conditions.where['gender'] = pageOptions.gender;
+    }
+
+    if (pageOptions.format) {
+      conditions.where['format'] = pageOptions.format;
+    }
+
+    if (pageOptions.participantType) {
+      conditions.where['participantType'] = pageOptions.participantType;
+      if (pageOptions.participantType === ParticipantType.mixed_doubles) {
+        conditions.where['gender'] = null;
+      }
+    }
+
+    if (pageOptions.status) {
+      conditions.where['status'] = pageOptions.status;
+    }
+
+    if (pageOptions.phase) {
+      conditions.where['phase'] = pageOptions.phase;
+    }
+
     const pageOption =
       pageOptions.page && pageOptions.take
         ? {
@@ -227,12 +280,30 @@ export class TournamentService {
       this.prismaService.tournaments.findMany({
         ...conditions,
         ...pageOption,
+        include: {
+          _count: {
+            select: {
+              tournament_registrations: true,
+            },
+          },
+        },
       }),
-      this.prismaService.tournaments.count({ ...conditions }),
+      this.prismaService.tournaments.count(conditions),
     ]);
 
+    // Modify the structure of the returned data
+    const modified_result = result.map((tournament) => {
+      const participantCount = tournament._count.tournament_registrations;
+      delete tournament._count;
+
+      return {
+        ...tournament,
+        participants: participantCount,
+      };
+    });
+
     return {
-      data: result,
+      data: modified_result,
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
@@ -315,6 +386,19 @@ export class TournamentService {
         ),
         data: null,
       });
+    }
+
+    // Check tournament format
+    if (dto.participantType === ParticipantType.mixed_doubles) {
+      dto.gender = null;
+    } else {
+      if (!dto.gender) {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_CREATED_FAILED,
+          message: "Missing 'gender' field",
+          data: null,
+        });
+      }
     }
 
     try {
@@ -459,6 +543,13 @@ export class TournamentService {
       });
     }
 
+    if (tournament.phase === TournamentPhase.published) {
+      return {
+        message: 'Tournament already published',
+        data: null,
+      };
+    }
+
     // Update tournament status
     try {
       await this.prismaService.tournaments.update({
@@ -491,7 +582,7 @@ export class TournamentService {
   async getApplicantsList(
     userId: string,
     tournamentId: number,
-    pageOptionsTournamentDto: PageOptionsTournamentDto,
+    pageOptions: PageOptionsTournamentRegistrationDto,
   ) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
@@ -573,7 +664,7 @@ export class TournamentService {
     const conditions = {
       orderBy: [
         {
-          createdAt: pageOptionsTournamentDto.order,
+          createdAt: pageOptions.order,
         },
       ],
       where: {
@@ -584,15 +675,15 @@ export class TournamentService {
       },
     };
 
-    if (pageOptionsTournamentDto.status) {
-      conditions.where['status'] = pageOptionsTournamentDto.status;
+    if (pageOptions.status) {
+      conditions.where['status'] = pageOptions.status;
     }
 
     const pageOption =
-      pageOptionsTournamentDto.page && pageOptionsTournamentDto.take
+      pageOptions.page && pageOptions.take
         ? {
-            skip: pageOptionsTournamentDto.skip,
-            take: pageOptionsTournamentDto.take,
+            skip: pageOptions.skip,
+            take: pageOptions.take,
           }
         : undefined;
 
@@ -613,7 +704,7 @@ export class TournamentService {
       data: result,
       participantType: tournament.participantType,
       maxParticipants: tournament.maxParticipants,
-      totalPages: Math.ceil(totalCount / pageOptionsTournamentDto.take),
+      totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
   }
@@ -680,6 +771,18 @@ export class TournamentService {
       });
     }
 
+    // Check if applicantId is provided
+    if (!applicantId) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.TOURNAMENT_SUBMITTED_REGISTRATION_INVALID,
+        message:
+          CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_SUBMITTED_REGISTRATION_INVALID,
+          ) + ": 'applicantId - userId' is required",
+        data: null,
+      });
+    }
+
     // Get tournament registration info
     const tournament_registration =
       await this.prismaService.tournament_registrations.findFirst({
@@ -712,7 +815,7 @@ export class TournamentService {
       });
     } catch (err) {
       console.log('Error:', err.message);
-      throw new BadRequestException({
+      throw new InternalServerErrorException({
         code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_APPROVE_FAILED,
         message: CustomResponseMessages.getMessage(
           CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_APPROVE_FAILED,
@@ -927,16 +1030,22 @@ export class TournamentService {
         const teams = await Promise.all(
           applicants.map(async (applicant) => {
             const { tournamentId, userId1, userId2, name } = applicant;
+
             const user1 = await tx.users.findFirst({
               where: {
                 id: userId1,
               },
             });
-            const user2 = await tx.users.findFirst({
-              where: {
-                id: userId2,
-              },
-            });
+
+            let user2 = null;
+            if (userId2) {
+              user2 = await tx.users.findFirst({
+                where: {
+                  id: userId2,
+                },
+              });
+            }
+
             const totalElo = (user1?.elo ?? 0) + (user2?.elo ?? 0);
             return {
               name,
@@ -953,7 +1062,7 @@ export class TournamentService {
       });
     } catch (error) {
       console.log('Error:', error.message);
-      throw new BadRequestException({
+      throw new InternalServerErrorException({
         code: CustomResponseStatusCodes.TOURNAMENT_FINALIZED_APPLICANT_LIST_FAILED,
         message: CustomResponseMessages.getMessage(
           CustomResponseStatusCodes.TOURNAMENT_FINALIZED_APPLICANT_LIST_FAILED,
@@ -965,7 +1074,7 @@ export class TournamentService {
 
   async getTournamentParticipants(
     tournamentId: number,
-    pageOptionsTournamentDto: PageOptionsTournamentDto,
+    pageOptions: PageOptionsTournamentRegistrationDto,
   ) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
@@ -1027,12 +1136,12 @@ export class TournamentService {
     const conditions = {
       orderBy: [
         {
-          createdAt: pageOptionsTournamentDto.order,
+          createdAt: pageOptions.order,
         },
       ],
       where: {
         tournamentId: tournamentId,
-        status: RegistrationStatus.approved,
+        status: RegistrationStatus.approved, // Only approved participants
       },
     };
 
@@ -1054,10 +1163,10 @@ export class TournamentService {
     }
 
     const pageOption =
-      pageOptionsTournamentDto.page && pageOptionsTournamentDto.take
+      pageOptions.page && pageOptions.take
         ? {
-            skip: pageOptionsTournamentDto.skip,
-            take: pageOptionsTournamentDto.take,
+            skip: pageOptions.skip,
+            take: pageOptions.take,
           }
         : undefined;
 
@@ -1078,7 +1187,7 @@ export class TournamentService {
       data: result,
       participantType: tournament.participantType,
       maxParticipants: tournament.maxParticipants,
-      totalPages: Math.ceil(totalCount / pageOptionsTournamentDto.take),
+      totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
   }
@@ -1532,35 +1641,6 @@ export class TournamentService {
       });
     }
 
-    // Get purchased package info
-    const purchasedPackage =
-      await this.mongodbPrismaService.purchasedPackage.findUnique({
-        where: {
-          id: tournament.purchasedPackageId,
-        },
-      });
-
-    if (!purchasedPackage) {
-      throw new NotFoundException({
-        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
-        message: CustomResponseMessages.getMessage(
-          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
-        ),
-        data: null,
-      });
-    }
-
-    // Check expiration date of the purchased package
-    if (new Date(purchasedPackage.endDate) < new Date()) {
-      throw new BadRequestException({
-        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
-        message: CustomResponseMessages.getMessage(
-          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
-        ),
-        data: null,
-      });
-    }
-
     // Get tournament registration info
     const tournament_registration =
       await this.prismaService.tournament_registrations.findFirst({
@@ -1593,13 +1673,26 @@ export class TournamentService {
         tournament_registration.status.toString(),
       )
     ) {
-      return {
-        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANNOT_CANCEL,
-        message: CustomResponseMessages.getMessage(
-          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANNOT_CANCEL,
-        ),
-        data: null,
-      };
+      if (
+        tournament_registration.status.toString() ===
+        RegistrationStatus.canceled
+      ) {
+        return {
+          code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_ALREADY_CANCEL,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_ALREADY_CANCEL,
+          ),
+          data: null,
+        };
+      } else {
+        return {
+          code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANNOT_CANCEL,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANNOT_CANCEL,
+          ),
+          data: null,
+        };
+      }
     }
 
     // Update tournament registration status
@@ -1632,7 +1725,7 @@ export class TournamentService {
   async getTournamentInvitations(
     userId: string,
     tournamentId: number,
-    pageOptionsTournamentDto: PageOptionsTournamentDto,
+    pageOptions: PageOptionsTournamentRegistrationDto,
   ) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
@@ -1685,7 +1778,7 @@ export class TournamentService {
     const conditions = {
       orderBy: [
         {
-          createdAt: pageOptionsTournamentDto.order,
+          createdAt: pageOptions.order,
         },
       ],
       where: {
@@ -1701,10 +1794,10 @@ export class TournamentService {
     };
 
     const pageOption =
-      pageOptionsTournamentDto.page && pageOptionsTournamentDto.take
+      pageOptions.page && pageOptions.take
         ? {
-            skip: pageOptionsTournamentDto.skip,
-            take: pageOptionsTournamentDto.take,
+            skip: pageOptions.skip,
+            take: pageOptions.take,
           }
         : undefined;
 
@@ -1723,7 +1816,7 @@ export class TournamentService {
 
     return {
       data: result,
-      totalPages: Math.ceil(totalCount / pageOptionsTournamentDto.take),
+      totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
   }
@@ -1731,7 +1824,7 @@ export class TournamentService {
   async acceptInvitation(
     userId: string,
     tournamentId: number,
-    inviterId: number,
+    inviterId: string,
   ) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
@@ -1768,38 +1861,41 @@ export class TournamentService {
       });
     }
 
-    // Check expiration date of the purchased package
-    if (new Date(purchasedPackage.endDate) < new Date()) {
-      throw new BadRequestException({
-        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
-        message: CustomResponseMessages.getMessage(
-          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
-        ),
-        data: null,
-      });
-    }
-
     // Get tournament registration info
     const tournament_registration =
       await this.prismaService.tournament_registrations.findFirst({
         where: {
-          id: inviterId,
-          status: RegistrationStatus.inviting,
+          tournamentId: tournamentId,
+          userId1: inviterId,
+          userId2: userId,
         },
       });
 
     if (!tournament_registration) {
       throw new NotFoundException({
-        message: 'Invitation not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_INVITATION_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_INVITATION_NOT_FOUND,
+        ),
         data: null,
       });
+    }
+
+    if (tournament_registration.status === RegistrationStatus.pending) {
+      return {
+        code: CustomResponseStatusCodes.TOURNAMENT_INVITATION_ALREADY_ACCEPTED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_INVITATION_ALREADY_ACCEPTED,
+        ),
+        data: null,
+      };
     }
 
     // Update tournament registration status -> pending
     try {
       await this.prismaService.tournament_registrations.update({
         where: {
-          id: inviterId,
+          id: tournament_registration.id,
         },
         data: {
           status: RegistrationStatus.pending,
@@ -1807,8 +1903,11 @@ export class TournamentService {
       });
     } catch (error) {
       console.log('Error:', error.message);
-      throw new BadRequestException({
-        message: 'Failed to accept the tournament invitation',
+      throw new InternalServerErrorException({
+        code: CustomResponseStatusCodes.TOURNAMENT_INVITATION_ACCEPT_FAILED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_INVITATION_ACCEPT_FAILED,
+        ),
         data: null,
       });
     }
@@ -1825,7 +1924,7 @@ export class TournamentService {
   async rejectInvitation(
     userId: string,
     tournamentId: number,
-    inviterId: number,
+    inviterId: string,
   ) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
@@ -1862,38 +1961,57 @@ export class TournamentService {
       });
     }
 
-    // Check expiration date of the purchased package
-    if (new Date(purchasedPackage.endDate) < new Date()) {
-      throw new BadRequestException({
-        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
-        message: CustomResponseMessages.getMessage(
-          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
-        ),
-        data: null,
-      });
-    }
-
     // Get tournament registration info
     const tournament_registration =
       await this.prismaService.tournament_registrations.findFirst({
         where: {
-          id: inviterId,
-          status: RegistrationStatus.inviting,
+          tournamentId: tournamentId,
+          userId1: inviterId,
+          userId2: userId,
         },
       });
 
     if (!tournament_registration) {
       throw new NotFoundException({
-        message: 'Invitation not found',
+        code: CustomResponseStatusCodes.TOURNAMENT_INVITATION_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_INVITATION_NOT_FOUND,
+        ),
         data: null,
       });
+    }
+
+    // Check if the application status is inviting or not
+    if (
+      !['inviting', 'pending'].includes(
+        tournament_registration.status.toString(),
+      )
+    ) {
+      if (tournament_registration.status === RegistrationStatus.canceled) {
+        return {
+          code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_ALREADY_CANCEL,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_ALREADY_CANCEL,
+          ),
+          data: null,
+        };
+      } else {
+        // Status is approved or rejected by admin
+        return {
+          code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANNOT_CANCEL,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANNOT_CANCEL,
+          ),
+          data: null,
+        };
+      }
     }
 
     // Update tournament registration status -> canceled
     try {
       await this.prismaService.tournament_registrations.update({
         where: {
-          id: inviterId,
+          id: tournament_registration.id,
         },
         data: {
           status: RegistrationStatus.canceled,
@@ -1901,8 +2019,11 @@ export class TournamentService {
       });
     } catch (error) {
       console.log('Error:', error.message);
-      throw new BadRequestException({
-        message: 'Failed to cancel the tournament invitation',
+      throw new InternalServerErrorException({
+        code: CustomResponseStatusCodes.TOURNAMENT_INVITATION_REJECT_FAILED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_INVITATION_REJECT_FAILED,
+        ),
         data: null,
       });
     }

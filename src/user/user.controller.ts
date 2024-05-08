@@ -20,33 +20,32 @@ import {
 } from './dto';
 import { UserService } from './user.service';
 
-@UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.admin)
   @Get('admin/all')
   async adminGetAllUsers() {
     return await this.userService.getAllUsers();
   }
 
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.admin)
   @Get('admin/:id')
   async adminGetUserDetails(@Param('id') id: string) {
     return await this.userService.getUserDetails(id);
   }
 
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.admin)
   @Post('admin')
   async createAdminAccount(@Body() dto: CreateAdminAccountDto) {
     return await this.userService.createAdminAccount(dto);
   }
 
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.admin)
   @Patch('admin/:id')
   async adminUpdateUser(
@@ -57,12 +56,14 @@ export class UserController {
     return await this.userService.updateUserDetails(id, dto);
   }
 
+  @UseGuards(JwtGuard)
   @Get('me')
   async getUserDetails(@Req() req: IRequestWithUser) {
     const userId = req.user['sub'];
     return await this.userService.getUserDetails(userId);
   }
 
+  @UseGuards(JwtGuard)
   @Patch(':id')
   async updateUser(
     @Req() req: IRequestWithUser,

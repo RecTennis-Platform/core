@@ -10,6 +10,7 @@ export class CustomResponseMessages {
     [1007, 'Failed to finalize the applicant list'],
     [1008, 'Applicant list already finalized'],
     [1009, 'Applicant list not finalized'],
+    [1010, 'Invalid tournament phase'],
 
     // 2xxx - Purchased package
     [2001, 'Purchased package not found'],
@@ -27,8 +28,15 @@ export class CustomResponseMessages {
     [4004, 'Invalid submitted application'],
     [4005, 'Already applied for this tournament'],
     [4006, 'Invalid applicant gender'],
-    [4007, 'ot cancel the tournament application after admin approval'],
+    [4007, 'Cannot cancel the tournament application after admin approval'],
     [4008, 'Failed to cancel the tournament application'],
+    [4009, 'Already canceled the tournament application'],
+
+    // 5xxx - Tournament invitation
+    [5001, 'Tournament invitation not found'],
+    [5002, 'Failed to accept the tournament invitation'],
+    [5003, 'Failed to reject the tournament invitation'],
+    [5004, 'Already accepted the tournament invitation'],
   ]);
 
   private static readonly UNKNOWN_ERROR = 'Unknown error';

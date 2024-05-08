@@ -3,6 +3,7 @@ import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
 import { Order } from '../../../constants/order';
 import {
   Gender,
+  ParticipantType,
   TournamentFormat,
   TournamentPhase,
   TournamentStatus,
@@ -17,6 +18,10 @@ export class PageOptionsTournamentDto {
   @IsEnum(TournamentFormat)
   @IsOptional()
   readonly format?: TournamentFormat;
+
+  @IsEnum(ParticipantType)
+  @IsOptional()
+  participantType?: ParticipantType;
 
   @IsEnum(TournamentStatus)
   @IsOptional()

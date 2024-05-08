@@ -68,9 +68,9 @@ export class CreateTournamentDto {
   @IsNumber()
   maxParticipants?: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(Gender)
-  gender: Gender;
+  gender?: Gender;
 
   @IsNotEmpty()
   @IsEnum(ParticipantType)

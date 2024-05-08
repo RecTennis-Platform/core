@@ -16,10 +16,10 @@ import {
   CreateApplyApplicantDto,
   CreateTournamentDto,
   PageOptionsTournamentDto,
+  PageOptionsTournamentRegistrationDto,
 } from './dto';
-import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
-import { GetUser, Roles } from 'src/auth_utils/decorators';
-import { UserRole } from '@prisma/client';
+import { JwtGuard, OptionalJwtGuard } from 'src/auth_utils/guards';
+import { GetUser } from 'src/auth_utils/decorators';
 import {
   CreateFixtureDto,
   GenerateFixtureDto,
@@ -35,19 +35,17 @@ export class TournamentController {
   ) {}
 
   // **Tournaments
-  @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.admin)
   @Get()
-  // Fetch all tournaments - For admin
+  // Fetch all tournaments
   async fetchTournaments(@Query() pageOptions: PageOptionsTournamentDto) {
     return this.tournamentService.getTournamentsList(pageOptions);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(OptionalJwtGuard) // Use this when endpoint allow both authenticated and unauthenticated users
   @Get(':tournamentId/general-info')
   // Get tournament general info
   async getTournamentDetails(
-    @GetUser('sub') userId: string,
+    @GetUser('sub') userId: string | undefined,
     @Param('tournamentId') tournamentId: number,
   ) {
     return this.tournamentService.getTournamentDetails(userId, tournamentId);
@@ -58,12 +56,9 @@ export class TournamentController {
   // Get my created tournaments
   async getMyCreatedTournaments(
     @GetUser('sub') userId: string,
-    @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
+    @Query() pageOptions: PageOptionsTournamentDto,
   ) {
-    return this.tournamentService.getMyTournaments(
-      userId,
-      pageOptionsTournamentDto,
-    );
+    return this.tournamentService.getMyTournaments(userId, pageOptions);
   }
 
   @UseGuards(JwtGuard)
@@ -94,12 +89,13 @@ export class TournamentController {
   async getApplicantsList(
     @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
-    @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
+    @Query() pageOptions: PageOptionsTournamentRegistrationDto,
   ) {
+    console.log('Get applicants list');
     return this.tournamentService.getApplicantsList(
       userId,
       tournamentId,
-      pageOptionsTournamentDto,
+      pageOptions,
     );
   }
 
@@ -148,11 +144,11 @@ export class TournamentController {
   // Get tournament participants
   async getTournamentParticipants(
     @Param('tournamentId') tournamentId: number,
-    @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
+    @Query() pageOptions: PageOptionsTournamentRegistrationDto,
   ) {
     return this.tournamentService.getTournamentParticipants(
       tournamentId,
-      pageOptionsTournamentDto,
+      pageOptions,
     );
   }
 
@@ -197,12 +193,12 @@ export class TournamentController {
   async getTournamentInvitations(
     @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
-    @Query() pageOptionsTournamentDto: PageOptionsTournamentDto,
+    @Query() pageOptions: PageOptionsTournamentRegistrationDto,
   ) {
     return this.tournamentService.getTournamentInvitations(
       userId,
       tournamentId,
-      pageOptionsTournamentDto,
+      pageOptions,
     );
   }
 
@@ -212,7 +208,7 @@ export class TournamentController {
   async acceptInvitation(
     @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
-    @Body('inviterId') inviterId: number,
+    @Body('inviterId') inviterId: string,
   ) {
     return this.tournamentService.acceptInvitation(
       userId,
@@ -227,7 +223,7 @@ export class TournamentController {
   async rejectInvitation(
     @GetUser('sub') userId: string,
     @Param('tournamentId') tournamentId: number,
-    @Body('inviterId') inviterId: number,
+    @Body('inviterId') inviterId: string,
   ) {
     return this.tournamentService.rejectInvitation(
       userId,
