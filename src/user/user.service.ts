@@ -170,23 +170,6 @@ export class UserService {
     userId: string,
     pageOptions: PageOptionsUserParticipatedTournamentsDto,
   ) {
-    // Check if user exists
-    const user = await this.prismaService.users.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-
-    if (!user) {
-      throw new BadRequestException({
-        code: CustomResponseStatusCodes.USER_NOT_FOUND,
-        message: CustomResponseMessages.getMessage(
-          CustomResponseStatusCodes.USER_NOT_FOUND,
-        ),
-        data: null,
-      });
-    }
-
     // Build pagination options
     const conditions = {
       orderBy: [
