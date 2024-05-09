@@ -52,13 +52,26 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Get('/me')
+  @Get('me')
   // Get my created tournaments
   async getMyCreatedTournaments(
     @GetUser('sub') userId: string,
     @Query() pageOptions: PageOptionsTournamentDto,
   ) {
     return this.tournamentService.getMyTournaments(userId, pageOptions);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('unregistered')
+  // Get tournaments that user has not registered (Allow user to participate)
+  async getUnregisteredTournaments(
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsTournamentDto,
+  ) {
+    return this.tournamentService.getUnregisteredTournaments(
+      userId,
+      pageOptions,
+    );
   }
 
   @UseGuards(JwtGuard)

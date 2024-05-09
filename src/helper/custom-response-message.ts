@@ -37,6 +37,9 @@ export class CustomResponseMessages {
     [5002, 'Failed to accept the tournament invitation'],
     [5003, 'Failed to reject the tournament invitation'],
     [5004, 'Already accepted the tournament invitation'],
+
+    // 6000 - User
+    [6001, 'User not found'],
   ]);
 
   private static readonly UNKNOWN_ERROR = 'Unknown error';

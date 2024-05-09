@@ -309,6 +309,88 @@ export class TournamentService {
     };
   }
 
+  async getUnregisteredTournaments(
+    userId: string,
+    pageOptions: PageOptionsTournamentDto,
+  ) {
+    // Get tournament registrations that the user has registered
+    const userTournamentRegistrations =
+      await this.prismaService.tournament_registrations.findMany({
+        where: {
+          OR: [
+            {
+              userId1: userId,
+            },
+            {
+              userId2: userId,
+            },
+          ],
+          NOT: {
+            OR: [
+              {
+                status: RegistrationStatus.canceled,
+              },
+              {
+                status: RegistrationStatus.rejected,
+              },
+            ],
+          },
+        },
+        select: {
+          tournamentId: true,
+        },
+      });
+
+    // Map to get only tournamentId as an array
+    const userRegisteredTournamentIds = userTournamentRegistrations.map(
+      (registration) => registration.tournamentId,
+    );
+
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        NOT: {
+          id: {
+            in: userRegisteredTournamentIds,
+          },
+        },
+        status: TournamentStatus.upcoming,
+        phase: TournamentPhase.published,
+        registrationDueDate: {
+          gt: new Date(),
+        },
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get user's tournament registrations (participated)
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.tournaments.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.tournaments.count(conditions),
+    ]);
+
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
+
   async createTournament(userId: string, dto: CreateTournamentDto) {
     // Get purchased package info
     const purchasedPackage =
@@ -1147,15 +1229,39 @@ export class TournamentService {
 
     if (tournament.participantType === ParticipantType.single) {
       conditions['select'] = {
-        userId1: true,
+        user1: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+            elo: true,
+          },
+        },
         message: true,
         status: true,
         appliedDate: true,
       };
     } else {
       conditions['select'] = {
-        userId1: true,
-        userId2: true,
+        user1: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+            elo: true,
+          },
+        },
+        user2: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+            elo: true,
+          },
+        },
         message: true,
         status: true,
         appliedDate: true,

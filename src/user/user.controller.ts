@@ -10,7 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { Roles } from 'src/auth_utils/decorators';
+import { GetUser, Roles } from 'src/auth_utils/decorators';
 import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import { IRequestWithUser } from 'src/auth_utils/interfaces';
 import {
@@ -74,9 +74,22 @@ export class UserController {
     return await this.userService.updateUserDetails(userId, dto);
   }
 
-  // Get participated tournaments
-  @Get(':userId/tournaments')
-  async getUserParticipatedTournaments(
+  // Get my participated tournaments
+  @UseGuards(JwtGuard)
+  @Get('tournaments')
+  async getMyParticipatedTournaments(
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsUserParticipatedTournamentsDto,
+  ) {
+    return await this.userService.getMyParticipatedTournaments(
+      userId,
+      pageOptions,
+    );
+  }
+
+  // Get other user's participated tournaments (status = completed)
+  @Get(':userId/tournaments-history')
+  async getUserTournamentsHistory(
     @Param('userId') userId: string,
     @Query() pageOptions: PageOptionsUserParticipatedTournamentsDto,
   ) {
