@@ -11,9 +11,8 @@ export enum PartnerPayment {
 }
 
 export class CreateOrderDto {
-  @IsString()
-  @IsNotEmpty()
-  readonly userId: string;
+  @IsOptional()
+  userId: string;
 
   @IsInt()
   @IsNotEmpty()

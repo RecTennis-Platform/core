@@ -24,13 +24,16 @@ import { GetUser } from 'src/auth_utils/decorators';
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+  @UseGuards(JwtGuard)
   @Post()
   async create(
+    @GetUser('sub') userId: string,
     @Body() createOrderDto: CreateOrderDto,
     @Ip() ip,
     @Headers() headers,
   ) {
     try {
+      createOrderDto.userId = userId;
       return this.orderService.create(createOrderDto, ip, headers);
     } catch (error) {
       throw new HttpException(

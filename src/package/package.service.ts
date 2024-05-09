@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { PageOptionsPackageDto } from './dto/page-options-package.dto';
 
 @Injectable()
 export class PackageService {
@@ -30,12 +31,21 @@ export class PackageService {
     });
   }
 
-  async findAll() {
+  async findAll(dto: PageOptionsPackageDto) {
     const packageList = await this.prismaService.packages.findMany({
       include: {
         packageServices: {
           include: {
             service: true,
+          },
+        },
+      },
+      where: {
+        packageServices: {
+          some: {
+            service: {
+              type: dto.type,
+            },
           },
         },
       },

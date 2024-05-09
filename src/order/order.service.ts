@@ -38,6 +38,7 @@ export class OrderService {
         groupId: createOrderDto.groupId,
         packageId: createOrderDto.packageId,
         price: packageIdentity.price,
+        partner: createOrderDto.partner,
       };
       const order = await this.prismaService.orders.create({ data });
       const returnUrl = headers?.ismobile
@@ -67,6 +68,10 @@ export class OrderService {
       ],
       where: {
         userId,
+        status: dto?.status,
+        NOT: {
+          status: 'new',
+        },
       },
     };
 
@@ -83,10 +88,30 @@ export class OrderService {
         include: {
           package: true,
         },
-        ...conditions,
+        //...conditions,
+        orderBy: [
+          {
+            createdAt: dto.order,
+          },
+        ],
+        where: {
+          userId,
+          status: dto?.status,
+          NOT: {
+            status: OrderStatus.new,
+          },
+        },
         ...pageOption,
       }),
-      this.prismaService.orders.count({ ...conditions }),
+      this.prismaService.orders.count({
+        where: {
+          userId,
+          status: dto?.status,
+          NOT: {
+            status: OrderStatus.new,
+          },
+        },
+      }),
     ]);
 
     return {
@@ -110,6 +135,7 @@ export class OrderService {
             image: true,
             name: true,
             role: true,
+            phoneNumber: true,
           },
         },
       },

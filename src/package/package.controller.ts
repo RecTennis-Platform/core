@@ -8,10 +8,12 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { PackageService } from './package.service';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
+import { PageOptionsPackageDto } from './dto/page-options-package.dto';
 
 @Controller('packages')
 export class PackageController {
@@ -33,9 +35,9 @@ export class PackageController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Query() dto: PageOptionsPackageDto) {
     try {
-      return await this.packageService.findAll();
+      return await this.packageService.findAll(dto);
     } catch (error) {
       throw new HttpException(
         {

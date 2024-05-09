@@ -1,16 +1,19 @@
 import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
 import { Order } from '../../../constants/order';
-import { OrderStatus } from '@prisma/client';
 
-export class PageOptionsOrderDto {
+export enum PackageType {
+  TOURNAMENT = 'tournament',
+  GROUP = 'group',
+}
+export class PageOptionsPackageDto {
   @IsEnum(Order)
   @IsOptional()
   order?: Order = Order.DESC;
 
-  @IsEnum(OrderStatus)
+  @IsEnum(PackageType)
   @IsOptional()
-  status?: OrderStatus;
+  type?: PackageType;
 
   @Type(() => Number)
   @IsInt()
