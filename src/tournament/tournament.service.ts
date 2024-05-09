@@ -1228,15 +1228,39 @@ export class TournamentService {
 
     if (tournament.participantType === ParticipantType.single) {
       conditions['select'] = {
-        userId1: true,
+        user1: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+            elo: true,
+          },
+        },
         message: true,
         status: true,
         appliedDate: true,
       };
     } else {
       conditions['select'] = {
-        userId1: true,
-        userId2: true,
+        user1: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+            elo: true,
+          },
+        },
+        user2: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+            elo: true,
+          },
+        },
         message: true,
         status: true,
         appliedDate: true,
