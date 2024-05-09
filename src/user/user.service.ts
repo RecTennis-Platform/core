@@ -33,6 +33,7 @@ export class UserService {
         phoneNumber: true,
         gender: true,
         role: true,
+        elo: true,
       },
     });
 
@@ -43,16 +44,7 @@ export class UserService {
       });
     }
 
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      image: user.image,
-      dob: user.dob,
-      phoneNumber: user.phoneNumber,
-      gender: user.gender,
-      role: user.role,
-    };
+    return user;
   }
 
   async createAdminAccount(dto: CreateAdminAccountDto): Promise<{

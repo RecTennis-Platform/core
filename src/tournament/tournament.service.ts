@@ -360,6 +360,7 @@ export class TournamentService {
           },
         },
         status: TournamentStatus.upcoming,
+        phase: TournamentPhase.published,
         registrationDueDate: {
           gt: new Date(),
         },
