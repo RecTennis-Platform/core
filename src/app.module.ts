@@ -14,6 +14,7 @@ import { PurchasedPackageModule } from './purchased_package/purchased_package.mo
 import { TournamentModule } from './tournament/tournament.module';
 import { FixtureModule } from './fixture/fixture.module';
 import { ConfigModule } from '@nestjs/config';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ConfigModule } from '@nestjs/config';
     TournamentModule,
     FixtureModule,
     ConfigModule.forRoot({ cache: true }),
+    FileModule,
   ],
 })
 export class AppModule {}

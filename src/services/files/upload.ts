@@ -6,6 +6,7 @@ export enum EUploadFolder {
   group = 'group',
   group_tournament = 'group-tournament',
   tournament = 'tournament',
+  storage = 'storage',
 }
 
 /**
