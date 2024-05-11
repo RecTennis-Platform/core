@@ -26,6 +26,9 @@ import {
 } from 'src/fixture/dto/create-fixture.dto';
 import { CreateFixtureGroupPlayoffDto } from 'src/fixture/dto/create-fixture-groupplayoff.dto';
 import { FixtureService } from 'src/fixture/fixture.service';
+import { CreateRefereesTournamentDto } from 'src/referees_tournaments/dto/create-referees_tournament.dto';
+import { AddRefereesTournamentDto } from './dto/create-referees_tournament.dto';
+import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/page-options-referees-tournaments.dto';
 
 @Controller('tournaments')
 export class TournamentController {
@@ -82,6 +85,30 @@ export class TournamentController {
     @Body() dto: CreateTournamentDto,
   ) {
     return this.tournamentService.createTournament(userId, dto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post(':tournamentId/referees')
+  // Add referees
+  async addReferee(
+    @GetUser('sub') userId: string,
+    @Body() dto: AddRefereesTournamentDto,
+    @Param('tournamentId') tournamentId: number,
+  ) {
+    const params: CreateRefereesTournamentDto = {
+      email: dto.email,
+      tournamentId: tournamentId,
+    };
+    return this.tournamentService.addReferee(userId, params);
+  }
+
+  @Get(':tournamentId/referees')
+  // Get tournaments that user has not registered (Allow user to participate)
+  async getlistReferees(
+    @Query() pageOptions: PageOptionsRefereesTournamentsDto,
+    @Param('tournamentId') tournamentId: number,
+  ) {
+    return this.tournamentService.listReferees(pageOptions, tournamentId);
   }
 
   @UseGuards(JwtGuard)

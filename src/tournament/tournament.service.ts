@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -33,6 +34,10 @@ import { randomUUID } from 'crypto';
 import { CreateFixtureGroupPlayoffDto } from 'src/fixture/dto/create-fixture-groupplayoff.dto';
 import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-code';
 import { CustomResponseMessages } from 'src/helper/custom-response-message';
+import { RefereesTournamentsService } from 'src/referees_tournaments/referees_tournaments.service';
+import { CreateRefereesTournamentDto } from 'src/referees_tournaments/dto/create-referees_tournament.dto';
+import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/page-options-referees-tournaments.dto';
+import { TournamentRole } from './tournament.enum';
 
 @Injectable()
 export class TournamentService {
@@ -40,8 +45,135 @@ export class TournamentService {
     private readonly prismaService: PrismaService,
     private readonly mongodbPrismaService: MongoDBPrismaService,
     private readonly formatTournamentService: FormatTournamentService,
+    private readonly refereesTournamentsService: RefereesTournamentsService,
   ) {}
 
+  async addReferee(
+    userId: string,
+    createRefereesTournamentDto: CreateRefereesTournamentDto,
+  ) {
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: createRefereesTournamentDto.tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    if (tournament.phase != TournamentPhase.finalized_applicants) {
+      throw new BadRequestException({
+        code: 400,
+        message: 'Tournament phase must be finalized_applicants',
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    const isCreator = purchasedPackage.userId === userId;
+    if (!isCreator) {
+      throw new ForbiddenException({
+        message: 'You are not a creator of this group',
+        data: null,
+      });
+    }
+    //Check if referee exist
+    const referee = await this.prismaService.users.findFirst({
+      where: {
+        email: createRefereesTournamentDto.email,
+      },
+    });
+    if (!referee) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.USER_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.USER_NOT_FOUND,
+        ),
+      });
+    }
+    //Check if referee is creator
+    if (referee.id === userId) {
+      throw new BadRequestException({
+        code: 400,
+        message: 'Referee must not be creator of tournament',
+      });
+    }
+
+    //Check if referee is participant
+
+    const participant = await this.prismaService.teams.findFirst({
+      where: {
+        OR: [
+          {
+            userId1: referee.id,
+          },
+          {
+            userId2: referee.id,
+          },
+        ],
+      },
+    });
+
+    if (participant) {
+      throw new BadRequestException({
+        code: 400,
+        message: 'Referee must not be participant of tournament',
+      });
+    }
+    const refereeTournament =
+      await this.prismaService.referees_tournaments.findFirst({
+        where: {
+          refereeId: referee.id,
+          tournamentId: createRefereesTournamentDto.tournamentId,
+        },
+      });
+    if (refereeTournament) {
+      throw new BadRequestException({
+        code: 400,
+        message: "Referee's already in tournament",
+      });
+    }
+    await this.prismaService.referees_tournaments.create({
+      data: {
+        refereeId: referee.id,
+        tournamentId: createRefereesTournamentDto.tournamentId,
+      },
+    });
+  }
+
+  async listReferees(
+    pageOptionsRefereesTournamentsDto: PageOptionsRefereesTournamentsDto,
+    tournamentId: number,
+  ) {
+    return this.refereesTournamentsService.findByTournament(
+      pageOptionsRefereesTournamentsDto,
+      tournamentId,
+    );
+  }
   async getTournamentsList(pageOptions: PageOptionsTournamentDto) {
     // Build page options
     const conditions = {
@@ -169,8 +301,26 @@ export class TournamentService {
       });
     }
 
+    const tournamentRoles = [];
+    const user = await this.prismaService.users.findFirst({
+      where: {
+        id: userId,
+      },
+      include: {
+        referees_tournaments: true,
+      },
+    });
     // Check if the user is the creator of the tournament
-    const isCreator = purchasedPackage.userId === userId;
+    if (purchasedPackage.userId === userId) {
+      tournamentRoles.push(TournamentRole.CREATOR);
+    } else if (user.referees_tournaments.length > 0) {
+      // Check if the user is the referee of the tournament
+      tournamentRoles.push(TournamentRole.REFEREE);
+    } else {
+      tournamentRoles.push(TournamentRole.PARTICIPANT);
+    }
+
+    //Check if user is participant
 
     // Parse the config field for each service in the services array
     const parsedServices = purchasedPackage.package.services.map((service) => {
@@ -192,7 +342,7 @@ export class TournamentService {
         services: parsedServices,
       },
       participants: 0,
-      isCreator: isCreator,
+      tournamentRoles,
     };
 
     return {
@@ -548,7 +698,7 @@ export class TournamentService {
           services: parsedServices,
         },
         participants: 0,
-        isCreator: true,
+        tournamentRoles: [TournamentRole.CREATOR],
       };
 
       return {

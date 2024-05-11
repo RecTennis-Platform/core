@@ -146,8 +146,10 @@ model users {
   phoneNumber                  String?                          @map("phone_number")
   elo                          Int?
   groupTournamentRegistrations group_tournament_registrations[]
+  matches                      matches[]
   memberShips                  member_ships[]
   orders                       orders[]
+  referees_tournaments         referees_tournaments[]
   team1                        teams[]                          @relation("user1")
   team2                        teams[]                          @relation("user2")
   tournamentRegistration1      tournament_registrations[]       @relation("user1")
@@ -177,6 +179,7 @@ model tournaments {
   phase                    TournamentPhase            @default(new)
   image                    String?
   fixtures                 fixtures[]
+  referees_tournaments     referees_tournaments[]
   teams                    teams[]
   tournament_registrations tournament_registrations[]
 }
@@ -195,6 +198,17 @@ model tournament_registrations {
   tournament   tournaments        @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_tournament_registration_tournaments")
   user1        users              @relation("user1", fields: [userId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user1_tournament_registration")
   user2        users?             @relation("user2", fields: [userId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user2_tournament_registration")
+}
+
+model referees_tournaments {
+  tournamentId Int         @map("tournament_id")
+  refereeId    String      @map("referee_id") @db.Uuid
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+  tournament   tournaments @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_referees_tournaments_tournaments")
+  referee      users       @relation(fields: [refereeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_referees_tournaments_users")
+
+  @@id([tournamentId, refereeId])
 }
 
 model group_tournaments {
@@ -309,11 +323,13 @@ model matches {
   updatedAt           DateTime        @updatedAt @map("updated_at")
   nextMatchId         String?         @map("next_match_id")
   title               String
+  refereeId           String?         @map("referee_id") @db.Uuid
   groupFixture1       group_fixtures? @relation("groupFixture1", fields: [groupFixtureTeamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match1")
   groupFixture2       group_fixtures? @relation("groupFixture2", fields: [groupFixtureTeamId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match2")
   team1               teams?          @relation("team1", fields: [teamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team1")
   team2               teams?          @relation("team2", fields: [teamId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team2")
   teamWinner          teams?          @relation("teamWinner", fields: [teamWinnerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team_winner")
+  referee             users?          @relation(fields: [refereeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_user")
   nextMatch           matches?        @relation("nextMatch", fields: [nextMatchId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_matches_next_match")
   nextMatches         matches[]       @relation("nextMatch")
   round               rounds          @relation(fields: [roundId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_matches_rounds")

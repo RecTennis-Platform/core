@@ -15,6 +15,7 @@ import { TournamentModule } from './tournament/tournament.module';
 import { FixtureModule } from './fixture/fixture.module';
 import { ConfigModule } from '@nestjs/config';
 import { FileModule } from './file/file.module';
+import { RefereesTournamentsModule } from './referees_tournaments/referees_tournaments.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { FileModule } from './file/file.module';
     FixtureModule,
     ConfigModule.forRoot({ cache: true }),
     FileModule,
+    RefereesTournamentsModule,
   ],
 })
 export class AppModule {}

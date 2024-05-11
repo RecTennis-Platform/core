@@ -9417,7 +9417,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1OThlZGZmYy05OWRkLTQxNzYtYmVjOS04NmY4Yjk1ZTNhNDYiLCJlbWFpbCI6ImNoaWhpZW4yMDAyQGdtYWlsLmNvbSIsImlhdCI6MTcxNTA2NzE2NSwiZXhwIjoxNzE3NjU5MTY1fQ.y3lyiGj7KZZWM6vvdmlLQIqZ62yF5qbD6I4JAwO4miw",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxODZmYTUwNS02YWE1LTQ3MDktOTBjYi0wMmYxN2RjMzM5YjUiLCJlbWFpbCI6Imhxa2hhaTE2MzlAZ21haWwuY29tIiwiaWF0IjoxNzE1NDQxMzczLCJleHAiOjE3MTY3MzczNzN9.mWOYT-Ql64XPURMKWXSGpcGubUkLdlmVAaMUAX-Kp0A",
 											"type": "string"
 										}
 									]
@@ -9425,13 +9425,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{CORE_URL}}/tournaments/3/general-info",
+									"raw": "{{CORE_URL}}/tournaments/12/general-info",
 									"host": [
 										"{{CORE_URL}}"
 									],
 									"path": [
 										"tournaments",
-										"3",
+										"12",
 										"general-info"
 									]
 								}
@@ -9443,13 +9443,13 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{CORE_URL}}/tournaments/3/general-info",
+											"raw": "{{CORE_URL}}/tournaments/12/general-info",
 											"host": [
 												"{{CORE_URL}}"
 											],
 											"path": [
 												"tournaments",
-												"3",
+												"12",
 												"general-info"
 											]
 										}
@@ -9472,15 +9472,15 @@
 										},
 										{
 											"key": "Content-Length",
-											"value": "1277"
+											"value": "1183"
 										},
 										{
 											"key": "ETag",
-											"value": "W/\"4fd-8hZqhUIz8ZfDZbAhaYhP7r7oVQY\""
+											"value": "W/\"49f-/cC+yd1rX7OLqVXxoRqLfzibNi8\""
 										},
 										{
 											"key": "Date",
-											"value": "Wed, 08 May 2024 11:59:00 GMT"
+											"value": "Sat, 11 May 2024 16:24:48 GMT"
 										},
 										{
 											"key": "Connection",
@@ -9492,7 +9492,7 @@
 										}
 									],
 									"cookie": [],
-									"body": "{\n    \"message\": \"Get tournament details successfully\",\n    \"data\": {\n        \"id\": 3,\n        \"name\": \"2022 PAC-12 Championships\",\n        \"maxParticipants\": 20,\n        \"gender\": \"male\",\n        \"format\": \"round_robin\",\n        \"participantType\": \"single\",\n        \"description\": \"This is a description of tournament 1\",\n        \"playersBornAfterDate\": \"1989-12-31T17:00:00.000Z\",\n        \"registrationDueDate\": \"2024-05-09T09:13:19.167Z\",\n        \"startDate\": \"2024-05-15T09:13:19.167Z\",\n        \"endDate\": \"2024-06-07T09:13:19.167Z\",\n        \"status\": \"upcoming\",\n        \"address\": \"123 Main Stasdsadsada\",\n        \"contactPersonName\": \"John Doe\",\n        \"contactNumber\": \"123-456-7890\",\n        \"contactEmail\": \"john@gmail.com\",\n        \"createdAt\": \"2024-05-08T09:13:19.280Z\",\n        \"updatedAt\": \"2024-05-08T09:13:19.280Z\",\n        \"phase\": \"published\",\n        \"image\": null,\n        \"purchasedPackage\": {\n            \"id\": \"663a438b8d660145edb8e39a\",\n            \"name\": \"Basic\",\n            \"services\": [\n                {\n                    \"id\": 1,\n                    \"name\": \"Group Basic\",\n                    \"createdAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"updatedAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"config\": {\n                        \"maxGroup\": 1,\n                        \"maxMember\": 20,\n                        \"used\": 0\n                    }\n                },\n                {\n                    \"id\": 2,\n                    \"name\": \"Group Advanced\",\n                    \"createdAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"updatedAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"config\": {\n                        \"maxGroup\": 3,\n                        \"maxMember\": 50,\n                        \"used\": 0\n                    }\n                },\n                {\n                    \"id\": 3,\n                    \"name\": \"Tournament Basic\",\n                    \"createdAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"updatedAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"config\": {\n                        \"maxTournament\": 3,\n                        \"used\": 3,\n                        \"maxParticipants\": 20\n                    }\n                }\n            ]\n        },\n        \"participants\": 0,\n        \"isCreator\": true\n    }\n}"
+									"body": "{\n    \"message\": \"Get tournament details successfully\",\n    \"data\": {\n        \"id\": 12,\n        \"name\": \"2022 PAC-12 Championships\",\n        \"maxParticipants\": 20,\n        \"gender\": null,\n        \"format\": \"round_robin\",\n        \"participantType\": \"mixed_doubles\",\n        \"description\": \"This is a description of tournament 1\",\n        \"playersBornAfterDate\": \"1989-12-31T17:00:00.000Z\",\n        \"registrationDueDate\": \"2024-05-12T16:24:11.533Z\",\n        \"startDate\": \"2024-05-18T16:24:11.533Z\",\n        \"endDate\": \"2024-06-10T16:24:11.533Z\",\n        \"status\": \"upcoming\",\n        \"address\": \"123 Main Stasdsadsada\",\n        \"contactPersonName\": \"John Doe\",\n        \"contactNumber\": \"123-456-7890\",\n        \"contactEmail\": \"john@gmail.com\",\n        \"createdAt\": \"2024-05-11T16:24:11.623Z\",\n        \"updatedAt\": \"2024-05-11T16:24:11.623Z\",\n        \"phase\": \"new\",\n        \"image\": null,\n        \"purchasedPackage\": {\n            \"id\": \"663f1315f50784afe49c0225\",\n            \"name\": \"Basic\",\n            \"services\": [\n                {\n                    \"id\": 1,\n                    \"name\": \"Group Basic\",\n                    \"createdAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"updatedAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"type\": \"group\",\n                    \"level\": \"basic\",\n                    \"config\": {\n                        \"maxGroups\": 1,\n                        \"maxMembers\": 20,\n                        \"used\": 0\n                    }\n                },\n                {\n                    \"id\": 3,\n                    \"name\": \"Tournament Basic\",\n                    \"createdAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"updatedAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"type\": \"tournament\",\n                    \"level\": \"basic\",\n                    \"config\": {\n                        \"maxTournaments\": 1000,\n                        \"used\": 2\n                    }\n                }\n            ]\n        },\n        \"participants\": 0,\n        \"tournamentRoles\": [\n            \"creator\"\n        ]\n    }\n}"
 								}
 							]
 						},
@@ -9864,7 +9864,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1OThlZGZmYy05OWRkLTQxNzYtYmVjOS04NmY4Yjk1ZTNhNDYiLCJlbWFpbCI6ImNoaWhpZW4yMDAyQGdtYWlsLmNvbSIsImlhdCI6MTcxNTA2NzE2NSwiZXhwIjoxNzE3NjU5MTY1fQ.y3lyiGj7KZZWM6vvdmlLQIqZ62yF5qbD6I4JAwO4miw",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxODZmYTUwNS02YWE1LTQ3MDktOTBjYi0wMmYxN2RjMzM5YjUiLCJlbWFpbCI6Imhxa2hhaTE2MzlAZ21haWwuY29tIiwiaWF0IjoxNzE1NDQxMzczLCJleHAiOjE3MTY3MzczNzN9.mWOYT-Ql64XPURMKWXSGpcGubUkLdlmVAaMUAX-Kp0A",
 											"type": "string"
 										}
 									]
@@ -9873,7 +9873,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"name\": \"2022 PAC-12 Championships\",\n  \"description\": \"This is a description of tournament 1\",\n  \"contactPersonName\": \"John Doe\",\n  \"contactNumber\": \"123-456-7890\",\n  \"contactEmail\": \"john@gmail.com\",\n//   \"startDate\": \"2023-12-04T15:30:00\",\n//   \"endDate\": \"2024-03-25T23:59:59\",\n//   \"registrationDueDate\": \"2024-03-15T23:59:59\",\n  \"address\": \"123 Main Stasdsadsada\",\n  \"format\": \"round_robin\", // round_robin | knockout | group_playoff\n  \"maxParticipants\": 20,\n//   \"gender\": \"male\", // male | female | any\n  \"participantType\": \"mixed_doubles\", // single | doubles | mixed_doubles\n//   \"playersBornAfterDate\": \"2024-03-25T23:59:59\",\n  \"purchasedPackageId\": \"663a438b8d660145edb8e39a\"\n}",
+									"raw": "{\n  \"name\": \"2022 PAC-12 Championships\",\n  \"description\": \"This is a description of tournament 1\",\n  \"contactPersonName\": \"John Doe\",\n  \"contactNumber\": \"123-456-7890\",\n  \"contactEmail\": \"john@gmail.com\",\n//   \"startDate\": \"2023-12-04T15:30:00\",\n//   \"endDate\": \"2024-03-25T23:59:59\",\n//   \"registrationDueDate\": \"2024-03-15T23:59:59\",\n  \"address\": \"123 Main Stasdsadsada\",\n  \"format\": \"round_robin\", // round_robin | knockout | group_playoff\n  \"maxParticipants\": 20,\n//   \"gender\": \"male\", // male | female | any\n  \"participantType\": \"mixed_doubles\", // single | doubles | mixed_doubles\n//   \"playersBornAfterDate\": \"2024-03-25T23:59:59\",\n  \"purchasedPackageId\": \"663f1315f50784afe49c0225\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -9898,7 +9898,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n  \"name\": \"2022 PAC-12 Championships\",\n  \"description\": \"This is a description of tournament 1\",\n  \"contactPersonName\": \"John Doe\",\n  \"contactNumber\": \"123-456-7890\",\n  \"contactEmail\": \"john@gmail.com\",\n//   \"startDate\": \"2023-12-04T15:30:00\",\n//   \"endDate\": \"2024-03-25T23:59:59\",\n//   \"registrationDueDate\": \"2024-03-15T23:59:59\",\n  \"address\": \"123 Main Stasdsadsada\",\n  \"format\": \"round_robin\", // round_robin | knockout | group_playoff\n  \"maxParticipants\": 20,\n//   \"gender\": \"male\", // male | female | any\n  \"participantType\": \"mixed_doubles\", // single | doubles | mixed_doubles\n//   \"playersBornAfterDate\": \"2024-03-25T23:59:59\",\n  \"purchasedPackageId\": \"663a438b8d660145edb8e39a\"\n}",
+											"raw": "{\n  \"name\": \"2022 PAC-12 Championships\",\n  \"description\": \"This is a description of tournament 1\",\n  \"contactPersonName\": \"John Doe\",\n  \"contactNumber\": \"123-456-7890\",\n  \"contactEmail\": \"john@gmail.com\",\n//   \"startDate\": \"2023-12-04T15:30:00\",\n//   \"endDate\": \"2024-03-25T23:59:59\",\n//   \"registrationDueDate\": \"2024-03-15T23:59:59\",\n  \"address\": \"123 Main Stasdsadsada\",\n  \"format\": \"round_robin\", // round_robin | knockout | group_playoff\n  \"maxParticipants\": 20,\n//   \"gender\": \"male\", // male | female | any\n  \"participantType\": \"mixed_doubles\", // single | doubles | mixed_doubles\n//   \"playersBornAfterDate\": \"2024-03-25T23:59:59\",\n  \"purchasedPackageId\": \"663f1315f50784afe49c0225\"\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -9933,15 +9933,15 @@
 										},
 										{
 											"key": "Content-Length",
-											"value": "1272"
+											"value": "1179"
 										},
 										{
 											"key": "ETag",
-											"value": "W/\"4f8-xfU1iu9fLfXVfLS7tGkAE88caRE\""
+											"value": "W/\"49b-u+hEym3shFd5KRt7vj4vFS1S/DM\""
 										},
 										{
 											"key": "Date",
-											"value": "Wed, 08 May 2024 11:59:31 GMT"
+											"value": "Sat, 11 May 2024 16:24:12 GMT"
 										},
 										{
 											"key": "Connection",
@@ -9953,7 +9953,132 @@
 										}
 									],
 									"cookie": [],
-									"body": "{\n    \"message\": \"Tournament created successfully\",\n    \"data\": {\n        \"id\": 6,\n        \"name\": \"2022 PAC-12 Championships\",\n        \"maxParticipants\": 20,\n        \"gender\": null,\n        \"format\": \"round_robin\",\n        \"participantType\": \"mixed_doubles\",\n        \"description\": \"This is a description of tournament 1\",\n        \"playersBornAfterDate\": \"1989-12-31T17:00:00.000Z\",\n        \"registrationDueDate\": \"2024-05-09T11:59:31.071Z\",\n        \"startDate\": \"2024-05-15T11:59:31.071Z\",\n        \"endDate\": \"2024-06-07T11:59:31.071Z\",\n        \"status\": \"upcoming\",\n        \"address\": \"123 Main Stasdsadsada\",\n        \"contactPersonName\": \"John Doe\",\n        \"contactNumber\": \"123-456-7890\",\n        \"contactEmail\": \"john@gmail.com\",\n        \"createdAt\": \"2024-05-08T11:59:31.195Z\",\n        \"updatedAt\": \"2024-05-08T11:59:31.195Z\",\n        \"phase\": \"new\",\n        \"image\": null,\n        \"purchasedPackage\": {\n            \"id\": \"663a438b8d660145edb8e39a\",\n            \"name\": \"Basic\",\n            \"services\": [\n                {\n                    \"id\": 1,\n                    \"name\": \"Group Basic\",\n                    \"createdAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"updatedAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"config\": {\n                        \"maxGroup\": 1,\n                        \"maxMember\": 20,\n                        \"used\": 0\n                    }\n                },\n                {\n                    \"id\": 2,\n                    \"name\": \"Group Advanced\",\n                    \"createdAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"updatedAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"config\": {\n                        \"maxGroup\": 3,\n                        \"maxMember\": 50,\n                        \"used\": 0\n                    }\n                },\n                {\n                    \"id\": 3,\n                    \"name\": \"Tournament Basic\",\n                    \"createdAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"updatedAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"config\": {\n                        \"maxTournament\": 4,\n                        \"used\": 4,\n                        \"maxParticipants\": 20\n                    }\n                }\n            ]\n        },\n        \"participants\": 0,\n        \"isCreator\": true\n    }\n}"
+									"body": "{\n    \"message\": \"Tournament created successfully\",\n    \"data\": {\n        \"id\": 12,\n        \"name\": \"2022 PAC-12 Championships\",\n        \"maxParticipants\": 20,\n        \"gender\": null,\n        \"format\": \"round_robin\",\n        \"participantType\": \"mixed_doubles\",\n        \"description\": \"This is a description of tournament 1\",\n        \"playersBornAfterDate\": \"1989-12-31T17:00:00.000Z\",\n        \"registrationDueDate\": \"2024-05-12T16:24:11.533Z\",\n        \"startDate\": \"2024-05-18T16:24:11.533Z\",\n        \"endDate\": \"2024-06-10T16:24:11.533Z\",\n        \"status\": \"upcoming\",\n        \"address\": \"123 Main Stasdsadsada\",\n        \"contactPersonName\": \"John Doe\",\n        \"contactNumber\": \"123-456-7890\",\n        \"contactEmail\": \"john@gmail.com\",\n        \"createdAt\": \"2024-05-11T16:24:11.623Z\",\n        \"updatedAt\": \"2024-05-11T16:24:11.623Z\",\n        \"phase\": \"new\",\n        \"image\": null,\n        \"purchasedPackage\": {\n            \"id\": \"663f1315f50784afe49c0225\",\n            \"name\": \"Basic\",\n            \"services\": [\n                {\n                    \"id\": 1,\n                    \"name\": \"Group Basic\",\n                    \"createdAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"updatedAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"type\": \"group\",\n                    \"level\": \"basic\",\n                    \"config\": {\n                        \"maxGroups\": 1,\n                        \"maxMembers\": 20,\n                        \"used\": 0\n                    }\n                },\n                {\n                    \"id\": 3,\n                    \"name\": \"Tournament Basic\",\n                    \"createdAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"updatedAt\": \"2024-05-07T14:04:13.942Z\",\n                    \"type\": \"tournament\",\n                    \"level\": \"basic\",\n                    \"config\": {\n                        \"maxTournaments\": 1000,\n                        \"used\": 2\n                    }\n                }\n            ]\n        },\n        \"participants\": 0,\n        \"tournamentRoles\": [\n            \"creator\"\n        ]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Add Referees",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxODZmYTUwNS02YWE1LTQ3MDktOTBjYi0wMmYxN2RjMzM5YjUiLCJlbWFpbCI6Imhxa2hhaTE2MzlAZ21haWwuY29tIiwiaWF0IjoxNzE1NDQxMzczLCJleHAiOjE3MTY3MzczNzN9.mWOYT-Ql64XPURMKWXSGpcGubUkLdlmVAaMUAX-Kp0A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"hqkhai1636@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/tournaments/11/referees",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"tournaments",
+										"11",
+										"referees"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Referees",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxODZmYTUwNS02YWE1LTQ3MDktOTBjYi0wMmYxN2RjMzM5YjUiLCJlbWFpbCI6Imhxa2hhaTE2MzlAZ21haWwuY29tIiwiaWF0IjoxNzE1NDQxMzczLCJleHAiOjE3MTY3MzczNzN9.mWOYT-Ql64XPURMKWXSGpcGubUkLdlmVAaMUAX-Kp0A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/tournaments/11/referees",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"tournaments",
+										"11",
+										"referees"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/tournaments/11/referees",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"tournaments",
+												"11",
+												"referees"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "375"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"177-M0IxUjkHgX9oj/KQdMYrPo6/8aY\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 11 May 2024 15:50:29 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"data\": [\n        {\n            \"id\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n            \"image\": null,\n            \"name\": \"Ho Quang Khai\",\n            \"gender\": \"male\",\n            \"dob\": \"2024-05-07T14:35:39.641Z\",\n            \"phoneNumber\": \"0767097575\",\n            \"elo\": null\n        },\n        {\n            \"id\": \"6e58e555-b452-4205-93c9-eb26adac7e98\",\n            \"image\": null,\n            \"name\": \"Huy Nguyen\",\n            \"gender\": \"male\",\n            \"dob\": \"2002-03-19T15:49:55.000Z\",\n            \"phoneNumber\": \"0987654321\",\n            \"elo\": null\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 2\n}"
 								}
 							]
 						},
