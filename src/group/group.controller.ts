@@ -168,7 +168,7 @@ export class GroupController {
   async removeMember(
     @GetUser('sub') adminId: string,
     @Param('id', ParseIntPipe) groupId: number,
-    @Param('userId', ParseIntPipe) userId: string,
+    @Param('userId') userId: string,
   ) {
     return await this.groupService.removeMember(adminId, groupId, userId);
   }
@@ -260,7 +260,7 @@ export class GroupController {
     @GetUser('sub') userId: string,
     @Param('groupId', ParseIntPipe) groupId: number,
     @Param('tournamentId', ParseIntPipe) tournamentId: number,
-    @Param('userId', ParseIntPipe) participantId: string,
+    @Param('userId') participantId: string,
   ) {
     return await this.groupService.removeGroupTournamentParticipant(
       userId,
