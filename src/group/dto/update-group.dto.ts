@@ -16,4 +16,8 @@ export class UpdateGroupDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @IsString()
+  @IsOptional()
+  image?: string;
 }
