@@ -21,4 +21,8 @@ export class CreateGroupDto {
   @IsString()
   @IsNotEmpty()
   description: string;
+
+  @IsString()
+  @IsNotEmpty()
+  image: string;
 }
