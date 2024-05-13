@@ -2349,10 +2349,16 @@ export class TournamentService {
   }
 
   async generateFixture(id: number, dto: GenerateFixtureDto) {
+    const tournament = await this.prismaService.tournaments.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    const format = tournament.format;
     try {
       if (
-        dto.format === TournamentFormat.round_robin ||
-        dto.format === TournamentFormat.knockout
+        format === TournamentFormat.round_robin ||
+        format === TournamentFormat.knockout
       ) {
         const teams = await this.prismaService.teams.findMany({
           where: {
@@ -2380,9 +2386,9 @@ export class TournamentService {
           },
         });
         const rounds = [];
-        if (dto.format === TournamentFormat.round_robin) {
+        if (format === TournamentFormat.round_robin) {
           const tables = this.formatTournamentService.generateTables(
-            dto.format,
+            format,
             1,
             teams.length,
           );
@@ -2431,9 +2437,9 @@ export class TournamentService {
             participantType: teams[0].tournaments.participantType,
             format: 'round_robin',
           };
-        } else if (dto.format === TournamentFormat.knockout) {
+        } else if (format === TournamentFormat.knockout) {
           const tables = this.formatTournamentService.generateTables(
-            dto.format,
+            format,
             1,
             teams.length,
           );
@@ -2526,7 +2532,7 @@ export class TournamentService {
         },
       });
       //generate matches
-      if (dto.format === TournamentFormat.group_playoff) {
+      if (format === TournamentFormat.group_playoff) {
         const groups = [];
         for (let i = 0; i < dto.groups.length; i++) {
           const teams = await Promise.all(
@@ -2722,6 +2728,14 @@ export class TournamentService {
   }
 
   async createFixture(id: number, dto: CreateFixtureDto) {
+    const format = (
+      await this.prismaService.tournaments.findFirst({
+        where: {
+          id: id,
+        },
+      })
+    ).format;
+
     const numberOfParticipants = await this.prismaService.teams.count({
       where: {
         tournamentId: id,
@@ -2778,7 +2792,7 @@ export class TournamentService {
         },
       });
 
-      if (dto.format === TournamentFormat.round_robin) {
+      if (format === TournamentFormat.round_robin) {
         await Promise.all(
           dto.roundRobinGroups.map(async (group) => {
             await tx.group_fixtures.upsert({
@@ -2859,7 +2873,7 @@ export class TournamentService {
             );
           }),
         );
-      } else if (dto.format === TournamentFormat.knockout) {
+      } else if (format === TournamentFormat.knockout) {
         await tx.group_fixtures.upsert({
           where: {
             id: dto.knockoutGroup.id,
@@ -2936,7 +2950,7 @@ export class TournamentService {
             );
           }),
         );
-      } else if (dto.format === TournamentFormat.group_playoff) {
+      } else if (format === TournamentFormat.group_playoff) {
         await Promise.all(
           dto.roundRobinGroups.map(async (group) => {
             await tx.group_fixtures.upsert({
@@ -3168,11 +3182,11 @@ export class TournamentService {
       });
       return { ...groupFixture, rounds: rounds };
     });
-    if (dto.format === TournamentFormat.round_robin) {
+    if (format === TournamentFormat.round_robin) {
       return { ...others, roundRobinGroups: groups };
-    } else if (dto.format === TournamentFormat.knockout) {
+    } else if (format === TournamentFormat.knockout) {
       return { ...others, knockoutGroup: groups[0] };
-    } else if (dto.format === TournamentFormat.group_playoff) {
+    } else if (format === TournamentFormat.group_playoff) {
       const knockoutGroup = groups[0];
       const roundRobinGroups = (
         await this.prismaService.group_fixtures.findMany({

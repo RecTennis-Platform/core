@@ -47,9 +47,9 @@ export class GenerateFixtureDto {
   @IsString()
   matchesEndTime: string = '20:00:00';
 
-  @IsNotEmpty()
-  @IsEnum(TournamentFormat)
-  format: TournamentFormat;
+  // @IsNotEmpty()
+  // @IsEnum(TournamentFormat)
+  // format: TournamentFormat;
 
   @IsOptional()
   @IsNumber()
