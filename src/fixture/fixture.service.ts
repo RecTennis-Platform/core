@@ -95,6 +95,15 @@ export class FixtureService {
                         },
                       },
                     },
+                    referee: {
+                      select: {
+                        id: true,
+                        image: true,
+                        name: true,
+                        dob: true,
+                        phoneNumber: true,
+                      },
+                    },
                   },
                 },
               },
@@ -123,8 +132,10 @@ export class FixtureService {
     if (tournament.format === TournamentFormat.round_robin) {
       return { ...others, roundRobinGroups: groups };
     } else if (tournament.format === TournamentFormat.knockout) {
+      groups[0].rounds.reverse();
       return { ...others, knockoutGroup: groups[0] };
     } else if (tournament.format === TournamentFormat.group_playoff) {
+      groups[0].rounds.reverse();
       const knockoutGroup = groups[0];
       const roundRobinGroups = (
         await this.prismaService.group_fixtures.findMany({
@@ -171,6 +182,15 @@ export class FixtureService {
                             name: true,
                           },
                         },
+                      },
+                    },
+                    referee: {
+                      select: {
+                        id: true,
+                        image: true,
+                        name: true,
+                        dob: true,
+                        phoneNumber: true,
                       },
                     },
                   },

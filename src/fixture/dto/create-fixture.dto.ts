@@ -89,7 +89,13 @@ export class Match {
   @IsString()
   id: string;
 
-  nextMatchId?: string;
+  @IsOptional()
+  @IsString()
+  nextMatchId?: string = null;
+
+  @IsOptional()
+  @IsString()
+  refereeId: string = null;
 
   @IsNotEmpty()
   @IsString()
@@ -98,7 +104,7 @@ export class Match {
   @IsNotEmpty()
   @IsDate()
   @Type(() => Date)
-  date: Date;
+  matchStartDate: Date;
 
   @IsNotEmpty()
   @IsEnum(MatchStatus)
@@ -154,6 +160,10 @@ export class GroupFixture {
   @IsNotEmpty()
   @IsString()
   title: string;
+
+  @IsOptional()
+  @IsNumber()
+  numberOfProceeders = 1;
 
   @IsOptional()
   @ValidateNested({ each: true })

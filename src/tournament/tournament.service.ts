@@ -2410,10 +2410,11 @@ export class TournamentService {
                 id: randomUUID(),
                 nextMatchId: null,
                 title: `Match ${j + 1}`,
-                date: null,
+                matchStartDate: null,
                 duration: dto.matchDuration,
                 status: MatchStatus.scheduled,
                 teams: { team1, team2 },
+                refereeId: null,
               };
               matches.push(match);
             }
@@ -2494,10 +2495,11 @@ export class TournamentService {
                 id: id,
                 nextMatchId: nextMatchId,
                 title: `Match ${j + 1}`,
-                date: null,
+                matchStartDate: null,
                 duration: dto.matchDuration,
                 status: status,
                 teams: { team1, team2 },
+                refereeId: null,
               };
               rawMatches.push(match);
             }
@@ -2586,10 +2588,11 @@ export class TournamentService {
                 id: randomUUID(),
                 nextMatchId: null,
                 title: `Match ${j + 1}`,
-                date: null,
+                matchStartDate: null,
                 duration: dto.matchDuration,
                 status: MatchStatus.scheduled,
                 teams: { team1, team2 },
+                refereeId: null,
               };
               matches.push(match);
             }
@@ -2690,7 +2693,7 @@ export class TournamentService {
               id: id,
               nextMatchId: nextMatchId,
               title: `Match ${j + 1}`,
-              date: null,
+              matchStartDate: null,
               duration: dto.matchDuration,
               status: status,
               teams: { team1, team2 },
@@ -2698,6 +2701,7 @@ export class TournamentService {
               groupFixtureTeamId2,
               rankGroupTeam1,
               rankGroupTeam2,
+              refereeId: null,
             };
             rawMatches.push(match);
           }
@@ -2803,12 +2807,14 @@ export class TournamentService {
                 fixtureId: fixture.id,
                 title: group.title,
                 isFinal: true,
+                numberOfProceeders: group.numberOfProceeders,
               },
               create: {
                 id: group.id,
                 fixtureId: fixture.id,
                 title: group.title,
                 isFinal: true,
+                numberOfProceeders: group.numberOfProceeders,
               },
             });
             await Promise.all(
@@ -2843,12 +2849,13 @@ export class TournamentService {
                         rankGroupTeam1: match.rankGroupTeam1,
                         rankGroupTeam2: match.rankGroupTeam2,
                         nextMatchId: match.nextMatchId,
-                        matchStartDate: match.date,
+                        matchStartDate: match.matchStartDate,
                         teamId1: match.teams.team1?.id,
                         teamId2: match.teams.team2?.id,
                         venue: match?.venue,
                         matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
+                        refereeId: match.refereeId,
                       },
 
                       create: {
@@ -2859,12 +2866,13 @@ export class TournamentService {
                         rankGroupTeam1: match.rankGroupTeam1,
                         rankGroupTeam2: match.rankGroupTeam2,
                         nextMatchId: match.nextMatchId,
-                        matchStartDate: match.date,
+                        matchStartDate: match.matchStartDate,
                         teamId1: match.teams.team1?.id,
                         teamId2: match.teams.team2?.id,
                         venue: match.venue,
                         matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
+                        refereeId: match.refereeId,
                       },
                     });
                   }),
@@ -2882,16 +2890,18 @@ export class TournamentService {
             fixtureId: fixture.id,
             title: dto.knockoutGroup.title,
             isFinal: true,
+            numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
           },
           create: {
             id: dto.knockoutGroup.id,
             fixtureId: fixture.id,
             title: dto.knockoutGroup.title,
             isFinal: true,
+            numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
           },
         });
         await Promise.all(
-          dto.knockoutGroup.rounds.map(async (round) => {
+          dto.knockoutGroup.rounds.reverse().map(async (round) => {
             await tx.rounds.upsert({
               where: {
                 id: round.id,
@@ -2922,12 +2932,13 @@ export class TournamentService {
                     rankGroupTeam1: match.rankGroupTeam1,
                     rankGroupTeam2: match.rankGroupTeam2,
                     nextMatchId: match.nextMatchId,
-                    matchStartDate: match.date,
+                    matchStartDate: match.matchStartDate,
                     teamId1: match.teams.team1?.id,
                     teamId2: match.teams.team2?.id,
                     venue: match.venue,
                     matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
+                    refereeId: match.refereeId,
                   },
 
                   create: {
@@ -2938,12 +2949,13 @@ export class TournamentService {
                     rankGroupTeam1: match.rankGroupTeam1,
                     rankGroupTeam2: match.rankGroupTeam2,
                     nextMatchId: match.nextMatchId,
-                    matchStartDate: match.date,
+                    matchStartDate: match.matchStartDate,
                     teamId1: match.teams.team1?.id,
                     teamId2: match.teams.team2?.id,
                     venue: match.venue,
                     matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
+                    refereeId: match.refereeId,
                   },
                 });
               }),
@@ -2961,12 +2973,14 @@ export class TournamentService {
                 fixtureId: fixture.id,
                 title: group.title,
                 isFinal: false,
+                numberOfProceeders: group.numberOfProceeders,
               },
               create: {
                 id: group.id,
                 fixtureId: fixture.id,
                 title: group.title,
                 isFinal: false,
+                numberOfProceeders: group.numberOfProceeders,
               },
             });
             await Promise.all(
@@ -3001,12 +3015,13 @@ export class TournamentService {
                         rankGroupTeam1: match.rankGroupTeam1,
                         rankGroupTeam2: match.rankGroupTeam2,
                         nextMatchId: match.nextMatchId,
-                        matchStartDate: match.date,
+                        matchStartDate: match.matchStartDate,
                         teamId1: match.teams.team1.id,
                         teamId2: match.teams.team2.id,
                         venue: match.venue,
                         matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
+                        refereeId: match.refereeId,
                       },
 
                       create: {
@@ -3017,12 +3032,13 @@ export class TournamentService {
                         rankGroupTeam1: match.rankGroupTeam1,
                         rankGroupTeam2: match.rankGroupTeam2,
                         nextMatchId: match.nextMatchId,
-                        matchStartDate: match.date,
+                        matchStartDate: match.matchStartDate,
                         teamId1: match.teams.team1.id,
                         teamId2: match.teams.team2.id,
                         venue: match.venue,
                         matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
+                        refereeId: match.refereeId,
                       },
                     });
                   }),
@@ -3041,16 +3057,18 @@ export class TournamentService {
             fixtureId: fixture.id,
             title: dto.knockoutGroup.title,
             isFinal: true,
+            numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
           },
           create: {
             id: dto.knockoutGroup.id,
             fixtureId: fixture.id,
             title: dto.knockoutGroup.title,
             isFinal: true,
+            numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
           },
         });
         await Promise.all(
-          dto.knockoutGroup.rounds.map(async (round) => {
+          dto.knockoutGroup.rounds.reverse().map(async (round) => {
             await tx.rounds.upsert({
               where: {
                 id: round.id,
@@ -3081,12 +3099,13 @@ export class TournamentService {
                     rankGroupTeam1: match.rankGroupTeam1,
                     rankGroupTeam2: match.rankGroupTeam2,
                     nextMatchId: match.nextMatchId,
-                    matchStartDate: match.date,
+                    matchStartDate: match.matchStartDate,
                     teamId1: match.teams.team1?.id,
                     teamId2: match.teams.team2?.id,
                     venue: match.venue,
                     matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
+                    refereeId: match.refereeId,
                   },
 
                   create: {
@@ -3097,12 +3116,13 @@ export class TournamentService {
                     rankGroupTeam1: match.rankGroupTeam1,
                     rankGroupTeam2: match.rankGroupTeam2,
                     nextMatchId: match.nextMatchId,
-                    matchStartDate: match.date,
+                    matchStartDate: match.matchStartDate,
                     teamId1: match.teams.team1?.id,
                     teamId2: match.teams.team2?.id,
                     venue: match.venue,
                     matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
+                    refereeId: match.refereeId,
                   },
                 });
               }),
@@ -3164,6 +3184,15 @@ export class TournamentService {
                           },
                         },
                       },
+                      referee: {
+                        select: {
+                          id: true,
+                          image: true,
+                          name: true,
+                          dob: true,
+                          phoneNumber: true,
+                        },
+                      },
                     },
                   },
                 },
@@ -3185,8 +3214,10 @@ export class TournamentService {
     if (format === TournamentFormat.round_robin) {
       return { ...others, roundRobinGroups: groups };
     } else if (format === TournamentFormat.knockout) {
+      groups[0].rounds.reverse();
       return { ...others, knockoutGroup: groups[0] };
     } else if (format === TournamentFormat.group_playoff) {
+      groups[0].rounds.reverse();
       const knockoutGroup = groups[0];
       const roundRobinGroups = (
         await this.prismaService.group_fixtures.findMany({
@@ -3233,6 +3264,15 @@ export class TournamentService {
                             name: true,
                           },
                         },
+                      },
+                    },
+                    referee: {
+                      select: {
+                        id: true,
+                        image: true,
+                        name: true,
+                        dob: true,
+                        phoneNumber: true,
                       },
                     },
                   },
