@@ -341,6 +341,24 @@ export class TournamentController {
     }
   }
 
+  @Get('/:id/teams')
+  async getAllTeams(
+    @Param('id') tournamentId: number,
+    @Query() pageOptions: PageOptionsTournamentDto,
+  ) {
+    try {
+      return this.tournamentService.getAllTeams(tournamentId, pageOptions);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Delete('/:id/fixtures/reset')
   async deleteFixture(@Param('id') tournamentId: number) {
     try {

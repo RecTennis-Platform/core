@@ -3298,6 +3298,60 @@ export class TournamentService {
       };
     }
   }
+
+  async getAllTeams(
+    tournamentId: number,
+    pageOptions: PageOptionsTournamentDto,
+  ) {
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        tournamentId: tournamentId,
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.teams.findMany({
+        ...conditions,
+        ...pageOption,
+        include: {
+          user1: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+            },
+          },
+          user2: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+            },
+          },
+        },
+      }),
+      this.prismaService.teams.count({ ...conditions }),
+    ]);
+
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
 }
 
 function mergeArrays(arrays) {

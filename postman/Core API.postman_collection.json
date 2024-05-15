@@ -9297,6 +9297,103 @@
 							]
 						},
 						{
+							"name": "Get all teams by tournament",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/tournaments/10/teams?page=1&take=5",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"tournaments",
+										"10",
+										"teams"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "take",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get all teams by tournament",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/tournaments/10/teams?page=1&take=5",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"tournaments",
+												"10",
+												"teams"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "1"
+												},
+												{
+													"key": "take",
+													"value": "5"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "1735"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"6c7-nVMwvvlJE9OuZ4KU73q6KoHtC3A\""
+										},
+										{
+											"key": "Date",
+											"value": "Wed, 15 May 2024 14:24:36 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"data\": [\n        {\n            \"id\": \"33360f12-345c-4064-ae05-7e577e9f2277\",\n            \"name\": \"shin2\",\n            \"userId1\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"userId2\": null,\n            \"totalElo\": 0,\n            \"point\": 0,\n            \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n            \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n            \"tournamentId\": 10,\n            \"user1\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"image\": null,\n                \"name\": \"shin2\"\n            },\n            \"user2\": null\n        },\n        {\n            \"id\": \"171fc61b-d95c-483b-9756-05140a08aded\",\n            \"name\": \"shin3\",\n            \"userId1\": \"60288e3c-165c-4918-bbe9-ff1b84992d72\",\n            \"userId2\": null,\n            \"totalElo\": 0,\n            \"point\": 0,\n            \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n            \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n            \"tournamentId\": 10,\n            \"user1\": {\n                \"id\": \"60288e3c-165c-4918-bbe9-ff1b84992d72\",\n                \"image\": null,\n                \"name\": \"shin3\"\n            },\n            \"user2\": null\n        },\n        {\n            \"id\": \"bde4b4f1-1890-456c-8714-09a219d755f7\",\n            \"name\": \"shin4\",\n            \"userId1\": \"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\n            \"userId2\": null,\n            \"totalElo\": 0,\n            \"point\": 0,\n            \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n            \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n            \"tournamentId\": 10,\n            \"user1\": {\n                \"id\": \"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\n                \"image\": null,\n                \"name\": \"shin4\"\n            },\n            \"user2\": null\n        },\n        {\n            \"id\": \"40602efd-c624-46c8-a7d6-179ba2555d67\",\n            \"name\": \"shin5\",\n            \"userId1\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\n            \"userId2\": null,\n            \"totalElo\": 0,\n            \"point\": 0,\n            \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n            \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n            \"tournamentId\": 10,\n            \"user1\": {\n                \"id\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\n                \"image\": null,\n                \"name\": \"shin5\"\n            },\n            \"user2\": null\n        },\n        {\n            \"id\": \"d48562c3-e43e-44d2-9a3d-281257cf2777\",\n            \"name\": \"shin6\",\n            \"userId1\": \"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\n            \"userId2\": null,\n            \"totalElo\": 0,\n            \"point\": 0,\n            \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n            \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n            \"tournamentId\": 10,\n            \"user1\": {\n                \"id\": \"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\n                \"image\": null,\n                \"name\": \"shin6\"\n            },\n            \"user2\": null\n        }\n    ],\n    \"totalPages\": 2,\n    \"totalCount\": 8\n}"
+								}
+							]
+						},
+						{
 							"name": "Get unregistered tournaments",
 							"request": {
 								"auth": {
@@ -10619,13 +10716,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{CORE_URL}}/tournaments/4/fixtures/",
+							"raw": "{{CORE_URL}}/tournaments/10/fixtures/",
 							"host": [
 								"{{CORE_URL}}"
 							],
 							"path": [
 								"tournaments",
-								"4",
+								"10",
 								"fixtures",
 								""
 							]
@@ -10705,13 +10802,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{CORE_URL}}/tournaments/15/fixtures/",
+									"raw": "{{CORE_URL}}/tournaments/10/fixtures/",
 									"host": [
 										"{{CORE_URL}}"
 									],
 									"path": [
 										"tournaments",
-										"15",
+										"10",
 										"fixtures",
 										""
 									]
@@ -10765,13 +10862,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{CORE_URL}}/tournaments/4/fixtures/reset",
+							"raw": "{{CORE_URL}}/tournaments/10/fixtures/reset",
 							"host": [
 								"{{CORE_URL}}"
 							],
 							"path": [
 								"tournaments",
-								"4",
+								"10",
 								"fixtures",
 								"reset"
 							]
