@@ -1259,6 +1259,14 @@ export class TournamentService {
             tournamentId: tournamentId,
           },
         });
+        if (applicants.length < 5) {
+          throw new BadRequestException({
+            code: CustomResponseStatusCodes.TOURNAMENT_INVALID_NUMBER_APPLICANT,
+            message: CustomResponseMessages.getMessage(
+              CustomResponseStatusCodes.TOURNAMENT_INVALID_NUMBER_APPLICANT,
+            ),
+          });
+        }
         const teams = await Promise.all(
           applicants.map(async (applicant) => {
             const { tournamentId, userId1, userId2, name } = applicant;

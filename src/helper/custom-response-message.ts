@@ -11,6 +11,7 @@ export class CustomResponseMessages {
     [1008, 'Applicant list already finalized'],
     [1009, 'Applicant list not finalized'],
     [1010, 'Invalid tournament phase'],
+    [1011, 'Invalid number of applicants'],
 
     // 2xxx - Purchased package
     [2001, 'Purchased package not found'],
