@@ -334,6 +334,8 @@ export class TournamentService {
 
     // Build response data
     delete tournament.purchasedPackageId;
+    delete tournament.createdAt;
+    delete tournament.updatedAt;
 
     const response_data = {
       ...tournament,
