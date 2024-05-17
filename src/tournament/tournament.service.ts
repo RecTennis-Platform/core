@@ -16,6 +16,7 @@ import {
 } from './dto';
 import {
   FixtureStatus,
+  Gender,
   MatchStatus,
   ParticipantType,
   Prisma,
@@ -876,15 +877,48 @@ export class TournamentService {
     let projection = {};
     if (tournament.participantType === ParticipantType.single) {
       projection = {
-        userId1: true,
+        user1: {
+          select: {
+            id: true,
+            image: true,
+            name: true,
+            elo: true,
+            dob: true,
+            gender: true,
+            email: true,
+            phoneNumber: true,
+          },
+        },
         message: true,
         status: true,
         appliedDate: true,
       };
     } else {
       projection = {
-        userId1: true,
-        userId2: true,
+        user1: {
+          select: {
+            id: true,
+            image: true,
+            name: true,
+            elo: true,
+            dob: true,
+            gender: true,
+            email: true,
+            phoneNumber: true,
+          },
+        },
+        user2: {
+          select: {
+            id: true,
+            image: true,
+            name: true,
+            elo: true,
+            dob: true,
+            gender: true,
+            email: true,
+            phoneNumber: true,
+          },
+        },
         message: true,
         status: true,
         appliedDate: true,
@@ -902,9 +936,14 @@ export class TournamentService {
       where: {
         tournamentId: tournamentId,
       },
-      select: {
-        ...projection,
-      },
+      // include: {
+      //   user1: true,
+      //   user2: true,
+      //   message: true,
+      //   status: true,
+      //   appliedDate: true,
+      // },
+      select: projection,
     };
 
     if (pageOptions.status) {
