@@ -16,7 +16,6 @@ import {
 } from './dto';
 import {
   FixtureStatus,
-  Gender,
   MatchStatus,
   ParticipantType,
   Prisma,
@@ -39,7 +38,7 @@ import { RefereesTournamentsService } from 'src/referees_tournaments/referees_to
 import { CreateRefereesTournamentDto } from 'src/referees_tournaments/dto/create-referees_tournament.dto';
 import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/page-options-referees-tournaments.dto';
 import { TournamentRole } from './tournament.enum';
-import e from 'express';
+import { registerSchema } from 'class-validator';
 
 @Injectable()
 export class TournamentService {
@@ -497,7 +496,7 @@ export class TournamentService {
     userId: string,
     pageOptions: PageOptionsTournamentDto,
   ) {
-    // Get tournament registrations that the user has registered
+    //// Get tournament registrations that the user has registered
     const userTournamentRegistrations =
       await this.prismaService.tournament_registrations.findMany({
         where: {
@@ -530,6 +529,32 @@ export class TournamentService {
       (registration) => registration.tournamentId,
     );
 
+    //// Get this user's created tournaments
+    // Get user's purchased packages
+    const purchasedPackages =
+      await this.mongodbPrismaService.purchasedPackage.findMany({
+        where: {
+          userId: userId,
+          // endDate: {
+          //   gt: new Date(), // Not expired purchased packages
+          // },
+        },
+      });
+
+    // Get purchased packages that have the "Tournament" service
+    const filteredPurchasedPackages = purchasedPackages.filter(
+      (purchasedPackage) =>
+        purchasedPackage.package.services.some(
+          (service) =>
+            service.name.toLowerCase().includes('tournament') === true,
+        ),
+    );
+
+    // Get purchased packages id
+    const purchasedPackageIds = filteredPurchasedPackages.map(
+      (purchasedPackage) => purchasedPackage.id,
+    );
+
     // Build pagination options
     const conditions = {
       orderBy: [
@@ -539,9 +564,10 @@ export class TournamentService {
       ],
       where: {
         NOT: {
-          id: {
-            in: userRegisteredTournamentIds,
-          },
+          OR: [
+            { id: { in: userRegisteredTournamentIds } },
+            { purchasedPackageId: { in: purchasedPackageIds } },
+          ],
         },
         status: TournamentStatus.upcoming,
         phase: TournamentPhase.published,
@@ -567,6 +593,13 @@ export class TournamentService {
       }),
       this.prismaService.tournaments.count(conditions),
     ]);
+
+    // Get each tournament participants count
+    for (const tournament of result) {
+      tournament['participants'] = await this.getTournamentParticipantsCount(
+        tournament.id,
+      );
+    }
 
     return {
       data: result,
@@ -1582,6 +1615,12 @@ export class TournamentService {
         where: {
           tournamentId: tournamentId,
           userId1: userId,
+          NOT: {
+            status: RegistrationStatus.canceled,
+          },
+        },
+        orderBy: {
+          createdAt: 'desc', // Order by created_at descending (latest first)
         },
       });
 
@@ -1741,6 +1780,17 @@ export class TournamentService {
         code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
         message: CustomResponseMessages.getMessage(
           CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if this user is the creator of the tournament -> Cannot apply to own tournament
+    if (purchasedPackage.userId === userId) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANNOT_APPLY_OWN_TOURNAMENT,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_CANNOT_APPLY_OWN_TOURNAMENT,
         ),
         data: null,
       });
@@ -2371,13 +2421,20 @@ export class TournamentService {
   }
 
   // Utils
-  async getTournamentParticipantsCount(tournamentId: number) {
+  async getTournamentParticipantsCount(tournamentId: number): Promise<number> {
     return await this.prismaService.tournament_registrations.count({
       where: {
         tournamentId: tournamentId,
+        NOT: {
+          status: {
+            in: [RegistrationStatus.canceled, RegistrationStatus.rejected],
+          },
+        },
       },
     });
   }
+
+  //
 
   async cancelAllTournamentInvitations(userId: string, tournamentId: number) {
     await this.prismaService.tournament_registrations.updateMany({

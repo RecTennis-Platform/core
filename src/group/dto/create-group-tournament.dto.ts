@@ -12,7 +12,7 @@ export class CreateGroupTournamentDto {
 
   @IsNotEmpty()
   @IsString()
-  imageUrl: string;
+  image: string;
 
   @IsNotEmpty()
   @IsEnum(GroupTournamentFormat)
