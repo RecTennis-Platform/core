@@ -39,6 +39,7 @@ import { RefereesTournamentsService } from 'src/referees_tournaments/referees_to
 import { CreateRefereesTournamentDto } from 'src/referees_tournaments/dto/create-referees_tournament.dto';
 import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/page-options-referees-tournaments.dto';
 import { TournamentRole } from './tournament.enum';
+import e from 'express';
 
 @Injectable()
 export class TournamentService {
@@ -301,27 +302,49 @@ export class TournamentService {
         data: null,
       });
     }
-
     const tournamentRoles = [];
-    const user = await this.prismaService.users.findFirst({
-      where: {
-        id: userId,
-      },
-      include: {
-        referees_tournaments: true,
-      },
-    });
-    // Check if the user is the creator of the tournament
-    if (purchasedPackage.userId === userId) {
-      tournamentRoles.push(TournamentRole.CREATOR);
-    } else if (user.referees_tournaments.length > 0) {
-      // Check if the user is the referee of the tournament
-      tournamentRoles.push(TournamentRole.REFEREE);
+    if (userId) {
+      const user = await this.prismaService.users.findFirst({
+        where: {
+          id: userId,
+        },
+        include: {
+          referees_tournaments: true,
+        },
+      });
+      const participant =
+        await this.prismaService.tournament_registrations.findFirst({
+          where: {
+            OR: [
+              {
+                userId1: userId,
+              },
+              {
+                userId2: userId,
+              },
+            ],
+          },
+        });
+      // Check if the user is the creator of the tournament
+      if (purchasedPackage.userId === userId) {
+        tournamentRoles.push(TournamentRole.CREATOR);
+      } else if (user.referees_tournaments.length > 0) {
+        // Check if the user is the referee of the tournament
+        const referees = user.referees_tournaments.filter((r) => {
+          return r.tournamentId === tournamentId;
+        });
+        if (referees.length > 0) {
+          tournamentRoles.push(TournamentRole.REFEREE);
+        }
+      } else if (participant) {
+        tournamentRoles.push(TournamentRole.PARTICIPANT);
+      }
+      if (tournamentRoles.length === 0) {
+        tournamentRoles.push(TournamentRole.VIEWER);
+      }
     } else {
-      tournamentRoles.push(TournamentRole.PARTICIPANT);
+      tournamentRoles.push(TournamentRole.VIEWER);
     }
-
-    //Check if user is participant
 
     // Parse the config field for each service in the services array
     const parsedServices = purchasedPackage.package.services.map((service) => {
@@ -331,6 +354,14 @@ export class TournamentService {
         config: config,
       };
     });
+
+    //count number of participants
+    const numberOfParticipants =
+      await this.prismaService.tournament_registrations.count({
+        where: {
+          tournamentId: tournamentId,
+        },
+      });
 
     // Build response data
     delete tournament.purchasedPackageId;
@@ -344,7 +375,7 @@ export class TournamentService {
         name: purchasedPackage.package.name,
         services: parsedServices,
       },
-      participants: 0,
+      participants: numberOfParticipants,
       tournamentRoles,
     };
 
