@@ -17,25 +17,22 @@ export class FormatTournamentService {
   generateGroupPlayOffPhase2(fixtureGroups: Group[]) {
     const result = fixtureGroups.map((group) => {
       const firstTable = this.repeatArray(
-        this.createRoundRobinGroupPlayer1(group.groupMembers.length),
+        this.createRoundRobinGroupPlayer1(group.teams.length),
         1,
       );
 
       const table1 = firstTable.map((values) => {
         return values.map((value) => {
-          return group.groupMembers[value - 1];
+          return group.teams[value - 1];
         });
       });
 
       const table2 = this.repeatArray(
-        this.createRoundRobinGroupPlayer2(
-          group.groupMembers.length,
-          firstTable,
-        ),
+        this.createRoundRobinGroupPlayer2(group.teams.length, firstTable),
         1,
       ).map((values) => {
         return values.map((value) => {
-          return group.groupMembers[value - 1];
+          return group.teams[value - 1];
         });
       });
       return { table1, table2 };

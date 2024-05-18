@@ -2385,14 +2385,31 @@ export class TournamentService {
       },
     });
 
-    const groups = this.formatTournamentService
-      .generateGroupPlayOffPhase1(teams.length, dto.numberOfGroups)
-      .map((group) => {
-        return group.map((member) => {
-          return teams[member - 1];
-        });
+    if (teams.length < dto.numberOfGroups * 2) {
+      throw new BadRequestException({
+        code: 400,
+        message: 'Invalid number of groups',
       });
-    return groups;
+    }
+
+    const groups = this.formatTournamentService.generateGroupPlayOffPhase1(
+      teams.length,
+      dto.numberOfGroups,
+    );
+    const fixtureGroups = [];
+    for (let i = 0; i < groups.length; i++) {
+      const teamInfo = groups[i].map((member) => {
+        return teams[member - 1];
+      });
+      const group = {
+        title: `Group ${String.fromCharCode(65 + i)}`,
+        id: randomUUID(),
+        numberOfProceeders: 1,
+        teams: teamInfo,
+      };
+      fixtureGroups.push(group);
+    }
+    return fixtureGroups;
   }
 
   async generateFixture(id: number, dto: GenerateFixtureDto) {
@@ -2585,7 +2602,7 @@ export class TournamentService {
         const groups = [];
         for (let i = 0; i < dto.groups.length; i++) {
           const teams = await Promise.all(
-            dto.groups[i].groupMembers.map((memberId) => {
+            dto.groups[i].teams.map((memberId) => {
               return this.prismaService.teams.findFirst({
                 where: {
                   tournamentId: id,
@@ -2651,9 +2668,9 @@ export class TournamentService {
             groupRounds.push(round);
           }
           const group = {
-            title: `Group ${String.fromCharCode(65 + i)}`,
+            title: dto.groups[i].title,
             rounds: groupRounds,
-            id: randomUUID(),
+            id: dto.groups[i].id,
             numberOfProceeders: dto.groups[i].numberOfProceeders,
             isFinal: false,
           };
@@ -2705,13 +2722,10 @@ export class TournamentService {
             if (tables.table1[i][j] !== 0 && tables.table1[i][j] !== -1) {
               groupFixtureTeamId1 = winners[tables.table1[i][j] - 1].id;
               rankGroupTeam1 = winners[tables.table1[i][j] - 1].rank;
-              const user2 =
-                tournament.participantType === ParticipantType.single
-                  ? null
-                  : { name: winners[tables.table1[i][j] - 1].title };
               team1 = {
-                user1: { name: winners[tables.table1[i][j] - 1].title },
-                user2,
+                user1: null,
+                user2: null,
+                name: winners[tables.table1[i][j] - 1].title,
               };
             } else {
               status = MatchStatus.skipped.toString();
@@ -2720,13 +2734,10 @@ export class TournamentService {
             if (tables.table2[i][j] !== 0 && tables.table2[i][j] !== -1) {
               groupFixtureTeamId2 = winners[tables.table2[i][j] - 1].id;
               rankGroupTeam2 = winners[tables.table2[i][j] - 1].rank;
-              const user2 =
-                tournament.participantType === ParticipantType.single
-                  ? null
-                  : { name: winners[tables.table2[i][j] - 1].title };
               team2 = {
-                user1: { name: winners[tables.table2[i][j] - 1].title },
-                user2,
+                user1: null,
+                user2: null,
+                name: winners[tables.table2[i][j] - 1].title,
               };
               status = MatchStatus.scheduled.toString();
             } else {
@@ -2903,6 +2914,8 @@ export class TournamentService {
                         matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
                         refereeId: match.refereeId,
+                        groupFixtureTeamId1: match.groupFixtureTeamId1,
+                        groupFixtureTeamId2: match.groupFixtureTeamId2,
                       },
 
                       create: {
@@ -2920,6 +2933,8 @@ export class TournamentService {
                         matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
                         refereeId: match.refereeId,
+                        groupFixtureTeamId1: match.groupFixtureTeamId1,
+                        groupFixtureTeamId2: match.groupFixtureTeamId2,
                       },
                     });
                   }),
@@ -2986,6 +3001,8 @@ export class TournamentService {
                     matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
                     refereeId: match.refereeId,
+                    groupFixtureTeamId1: match.groupFixtureTeamId1,
+                    groupFixtureTeamId2: match.groupFixtureTeamId2,
                   },
 
                   create: {
@@ -3003,6 +3020,8 @@ export class TournamentService {
                     matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
                     refereeId: match.refereeId,
+                    groupFixtureTeamId1: match.groupFixtureTeamId1,
+                    groupFixtureTeamId2: match.groupFixtureTeamId2,
                   },
                 });
               }),
@@ -3069,6 +3088,8 @@ export class TournamentService {
                         matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
                         refereeId: match.refereeId,
+                        groupFixtureTeamId1: match.groupFixtureTeamId1,
+                        groupFixtureTeamId2: match.groupFixtureTeamId2,
                       },
 
                       create: {
@@ -3086,6 +3107,8 @@ export class TournamentService {
                         matchDuration: dto.matchDuration,
                         breakDuration: dto.breakDuration,
                         refereeId: match.refereeId,
+                        groupFixtureTeamId1: match.groupFixtureTeamId1,
+                        groupFixtureTeamId2: match.groupFixtureTeamId2,
                       },
                     });
                   }),
@@ -3153,6 +3176,8 @@ export class TournamentService {
                     matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
                     refereeId: match.refereeId,
+                    groupFixtureTeamId1: match.groupFixtureTeamId1,
+                    groupFixtureTeamId2: match.groupFixtureTeamId2,
                   },
 
                   create: {
@@ -3170,6 +3195,8 @@ export class TournamentService {
                     matchDuration: dto.matchDuration,
                     breakDuration: dto.breakDuration,
                     refereeId: match.refereeId,
+                    groupFixtureTeamId1: match.groupFixtureTeamId1,
+                    groupFixtureTeamId2: match.groupFixtureTeamId2,
                   },
                 });
               }),
@@ -3177,6 +3204,21 @@ export class TournamentService {
           }),
         );
       }
+      //update teams
+      await Promise.all(
+        dto.groups.map(async (group) => {
+          await tx.teams.updateMany({
+            where: {
+              id: {
+                in: group.teams,
+              },
+            },
+            data: {
+              groupFixtureId: group.id,
+            },
+          });
+        }),
+      );
     });
 
     //return response
@@ -3195,6 +3237,8 @@ export class TournamentService {
                 include: {
                   matches: {
                     include: {
+                      groupFixture1: true,
+                      groupFixture2: true,
                       team1: {
                         include: {
                           user1: {
@@ -3251,8 +3295,36 @@ export class TournamentService {
     const groups = groupFixtures.map((groupFixture) => {
       const rounds = groupFixture.rounds.map((round) => {
         const matches = round.matches.map((match) => {
-          const { team1, team2, ...others } = match;
-          return { ...others, teams: { team1, team2 } };
+          const { team1, team2, groupFixture1, groupFixture2, ...others } =
+            match;
+          let team1R = null,
+            team2R = null;
+          if (
+            team1 === null &&
+            !match.rankGroupTeam1 != null &&
+            groupFixture1 != null
+          ) {
+            team1R = {
+              user1: null,
+              user2: null,
+              name: `Winner ${match.rankGroupTeam1} of ${groupFixture1.title}`,
+            };
+          }
+          if (
+            team2 === null &&
+            match.rankGroupTeam2 != null &&
+            groupFixture2 != null
+          ) {
+            team2R = {
+              user1: null,
+              user2: null,
+              name: `Winner ${match.rankGroupTeam2} of ${groupFixture2.title}`,
+            };
+          }
+          return {
+            ...others,
+            teams: { team1: team1 || team1R, team2: team2 || team2R },
+          };
         });
         return { ...round, matches: matches };
       });

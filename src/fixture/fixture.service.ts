@@ -36,6 +36,25 @@ export class FixtureService {
   }
 
   async removeByTournamentId(tournamentId: number) {
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        tournamentId: tournamentId,
+      },
+      select: {
+        groupFixtures: true,
+      },
+    });
+    for (const groupFixture of fixture.groupFixtures) {
+      await this.prismaService.teams.updateMany({
+        where: {
+          groupFixtureId: groupFixture.id,
+        },
+        data: {
+          groupFixtureId: null,
+        },
+      });
+    }
+
     await this.prismaService.fixtures.deleteMany({
       where: {
         tournamentId: tournamentId,
@@ -59,6 +78,8 @@ export class FixtureService {
               include: {
                 matches: {
                   include: {
+                    groupFixture1: true,
+                    groupFixture2: true,
                     team1: {
                       include: {
                         user1: {
@@ -122,8 +143,36 @@ export class FixtureService {
     const groups = groupFixtures.map((groupFixture) => {
       const rounds = groupFixture.rounds.map((round) => {
         const matches = round.matches.map((match) => {
-          const { team1, team2, ...others } = match;
-          return { ...others, teams: { team1, team2 } };
+          const { team1, team2, groupFixture1, groupFixture2, ...others } =
+            match;
+          let team1R = null,
+            team2R = null;
+          if (
+            team1 === null &&
+            !match.rankGroupTeam1 != null &&
+            groupFixture1 != null
+          ) {
+            team1R = {
+              user1: null,
+              user2: null,
+              name: `Winner ${match.rankGroupTeam1} of ${groupFixture1.title}`,
+            };
+          }
+          if (
+            team2 === null &&
+            match.rankGroupTeam2 != null &&
+            groupFixture2 != null
+          ) {
+            team2R = {
+              user1: null,
+              user2: null,
+              name: `Winner ${match.rankGroupTeam2} of ${groupFixture2.title}`,
+            };
+          }
+          return {
+            ...others,
+            teams: { team1: team1 || team1R, team2: team2 || team2R },
+          };
         });
         return { ...round, matches: matches };
       });

@@ -16,11 +16,19 @@ import {
 export class Group {
   @IsNotEmpty()
   @IsArray()
-  groupMembers: string[];
+  teams: string[];
 
   @IsNotEmpty()
   @IsNumber()
   numberOfProceeders: number;
+
+  @IsNotEmpty()
+  @IsString()
+  id: string;
+
+  @IsNotEmpty()
+  @IsString()
+  title: string;
 }
 
 export class GenerateFixtureDto {
@@ -67,7 +75,7 @@ export class GenerateFixtureDto {
 }
 
 export class Team {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   id: string;
 }
@@ -124,11 +132,11 @@ export class Match {
   groupFixtureTeamId2: string = null;
 
   @IsOptional()
-  @IsString()
+  @IsNumber()
   rankGroupTeam1: number = null;
 
   @IsOptional()
-  @IsString()
+  @IsNumber()
   rankGroupTeam2: number = null;
 
   @IsNotEmpty()
@@ -229,4 +237,10 @@ export class CreateFixtureDto {
   @IsNotEmpty()
   @IsEnum(FixtureStatus)
   status: FixtureStatus;
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @ArrayMinSize(1)
+  @Type(() => Group)
+  groups: Group[];
 }
