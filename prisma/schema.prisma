@@ -318,14 +318,14 @@ model matches {
   teamWinnerId        String?         @map("team_winner_id")
   matchStartDate      DateTime?        @map("match_start_date")
   matchEndDate        DateTime?       @map("match_end_date")
-  venue               String
+  venue               String?
   status              MatchStatus     @default(scheduled)
-  matchDuration       Int             @map("match_duration")
-  breakDuration       Int             @map("break_duration")
+  matchDuration       Int?             @map("match_duration")
+  breakDuration       Int?             @map("break_duration")
   createdAt           DateTime        @default(now()) @map("created_at")
   updatedAt           DateTime        @updatedAt @map("updated_at")
   nextMatchId         String?         @map("next_match_id")
-  title               String
+  title               String?
   refereeId           String?         @map("referee_id") @db.Uuid
   groupFixture1       group_fixtures? @relation("groupFixture1", fields: [groupFixtureTeamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match1")
   groupFixture2       group_fixtures? @relation("groupFixture2", fields: [groupFixtureTeamId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match2")
