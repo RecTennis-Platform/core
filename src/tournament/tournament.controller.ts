@@ -6,7 +6,6 @@ import {
   HttpException,
   HttpStatus,
   Param,
-  Patch,
   Post,
   Query,
   UseGuards,
@@ -106,7 +105,7 @@ export class TournamentController {
 
   @Get(':tournamentId/referees')
   // Get tournaments that user has not registered (Allow user to participate)
-  async getlistReferees(
+  async getListReferees(
     @Query() pageOptions: PageOptionsRefereesTournamentsDto,
     @Param('tournamentId') tournamentId: number,
   ) {
@@ -114,7 +113,7 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Patch(':tournamentId/publish')
+  @Post(':tournamentId/publish')
   // Publish tournament for user to apply
   async publishTournament(
     @GetUser('sub') userId: string,
@@ -133,7 +132,6 @@ export class TournamentController {
     @Param('tournamentId') tournamentId: number,
     @Query() pageOptions: PageOptionsTournamentRegistrationDto,
   ) {
-    console.log('Get applicants list');
     return this.tournamentService.getApplicantsList(
       userId,
       tournamentId,
@@ -142,7 +140,7 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Patch(':tournamentId/applicants/approve')
+  @Post(':tournamentId/applicants/approve')
   // Approve applicant
   async approveApplicant(
     @GetUser('sub') userId: string,
@@ -157,7 +155,7 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Patch(':tournamentId/applicants/reject')
+  @Post(':tournamentId/applicants/reject')
   // Reject applicant
   async rejectApplicant(
     @GetUser('sub') userId: string,
@@ -172,7 +170,7 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Patch(':tournamentId/applicants/finalize')
+  @Post(':tournamentId/applicants/finalize')
   // Finalize applicant list
   async finalizeApplicantList(
     @GetUser('sub') userId: string,
@@ -245,7 +243,7 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Patch(':tournamentId/applicants/invitations/accept')
+  @Post(':tournamentId/applicants/invitations/accept')
   // Accept invitation
   async acceptInvitation(
     @GetUser('sub') userId: string,
@@ -260,7 +258,7 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Patch(':tournamentId/applicants/invitations/reject')
+  @Post(':tournamentId/applicants/invitations/reject')
   // Reject invitation
   async rejectInvitation(
     @GetUser('sub') userId: string,

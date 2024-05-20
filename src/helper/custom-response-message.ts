@@ -32,6 +32,7 @@ export class CustomResponseMessages {
     [4007, 'Cannot cancel the tournament application after admin approval'],
     [4008, 'Failed to cancel the tournament application'],
     [4009, 'Already canceled the tournament application'],
+    [4010, 'Cannot apply to own tournament'],
 
     // 5xxx - Tournament invitation
     [5001, 'Tournament invitation not found'],
