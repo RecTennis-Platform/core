@@ -316,7 +316,7 @@ model matches {
   teamId1             String?         @map("team_id_1")
   teamId2             String?         @map("team_id_2")
   teamWinnerId        String?         @map("team_winner_id")
-  matchStartDate      DateTime        @map("match_start_date")
+  matchStartDate      DateTime?        @map("match_start_date")
   matchEndDate        DateTime?       @map("match_end_date")
   venue               String
   status              MatchStatus     @default(scheduled)

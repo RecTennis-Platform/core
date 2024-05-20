@@ -38,7 +38,7 @@ import { RefereesTournamentsService } from 'src/referees_tournaments/referees_to
 import { CreateRefereesTournamentDto } from 'src/referees_tournaments/dto/create-referees_tournament.dto';
 import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/page-options-referees-tournaments.dto';
 import { TournamentRole } from './tournament.enum';
-import { registerSchema } from 'class-validator';
+import { FixtureService } from 'src/fixture/fixture.service';
 
 @Injectable()
 export class TournamentService {
@@ -47,6 +47,7 @@ export class TournamentService {
     private readonly mongodbPrismaService: MongoDBPrismaService,
     private readonly formatTournamentService: FormatTournamentService,
     private readonly refereesTournamentsService: RefereesTournamentsService,
+    private readonly fixtureService: FixtureService,
   ) {}
 
   async addReferee(
@@ -2908,6 +2909,7 @@ export class TournamentService {
       });
     }
     await this.prismaService.$transaction(async (tx) => {
+      await this.fixtureService.removeByTournamentId(id);
       if (dto.status === FixtureStatus.published) {
         await tx.tournaments.update({
           where: {
@@ -3297,22 +3299,23 @@ export class TournamentService {
             );
           }),
         );
-      }
-      //update teams
-      await Promise.all(
-        dto.groups.map(async (group) => {
-          await tx.teams.updateMany({
-            where: {
-              id: {
-                in: group.teams,
+
+        //update teams
+        await Promise.all(
+          dto.groups.map(async (group) => {
+            await tx.teams.updateMany({
+              where: {
+                id: {
+                  in: group.teams,
+                },
               },
-            },
-            data: {
-              groupFixtureId: group.id,
-            },
-          });
-        }),
-      );
+              data: {
+                groupFixtureId: group.id,
+              },
+            });
+          }),
+        );
+      }
     });
 
     //return response
