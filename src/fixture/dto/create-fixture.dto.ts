@@ -109,7 +109,7 @@ export class Match {
   @IsString()
   title: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
   @Type(() => Date)
   matchStartDate: Date;
@@ -139,7 +139,7 @@ export class Match {
   @IsNumber()
   rankGroupTeam2: number = null;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   venue: string;
 }

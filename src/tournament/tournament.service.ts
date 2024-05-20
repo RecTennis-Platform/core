@@ -2512,6 +2512,7 @@ export class TournamentService {
                 status: MatchStatus.scheduled,
                 teams: { team1, team2 },
                 refereeId: null,
+                venue: dto.venue,
               };
               matches.push(match);
             }
@@ -2597,6 +2598,7 @@ export class TournamentService {
                 status: status,
                 teams: { team1, team2 },
                 refereeId: null,
+                venue: dto.venue,
               };
               rawMatches.push(match);
             }
@@ -2690,6 +2692,7 @@ export class TournamentService {
                 status: MatchStatus.scheduled,
                 teams: { team1, team2 },
                 refereeId: null,
+                venue: dto.venue,
               };
               matches.push(match);
             }
@@ -2793,6 +2796,7 @@ export class TournamentService {
               rankGroupTeam1,
               rankGroupTeam2,
               refereeId: null,
+              venue: dto.venue,
             };
             rawMatches.push(match);
           }

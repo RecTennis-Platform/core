@@ -29,12 +29,14 @@ import { FixtureService } from 'src/fixture/fixture.service';
 import { CreateRefereesTournamentDto } from 'src/referees_tournaments/dto/create-referees_tournament.dto';
 import { AddRefereesTournamentDto } from './dto/create-referees_tournament.dto';
 import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/page-options-referees-tournaments.dto';
+import { FcmNotificationService } from 'src/services/notification/fcm-notification';
 
 @Controller('tournaments')
 export class TournamentController {
   constructor(
     private readonly tournamentService: TournamentService,
     private readonly fixtureService: FixtureService,
+    private readonly fcmNotificationService: FcmNotificationService,
   ) {}
 
   // **Tournaments
@@ -363,6 +365,35 @@ export class TournamentController {
   async deleteFixture(@Param('id') tournamentId: number) {
     try {
       return this.fixtureService.removeByTournamentId(tournamentId);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/:id/notification')
+  async sendNotification(@Param('id') tournamentId: number) {
+    try {
+      const token =
+        'eFz6vcB-Rf2Q7H2DwApe2S:APA91bEIRuHIqnkPR-lBOuDSHXuw-ApLn1D67xI04IE6beaoKjvDajNPXkEmNLwbNv2fmR_mMz3jYRurmuTKccUwNJR5LBuvzZtSCx03-m_HpTGI-pMmXUV4rYjukMNoj8C8g09HYkyG';
+      const data = {
+        age: '21',
+        name: 'Khai',
+      };
+      const notification = {
+        title: 'Hello',
+        body: 'Xin chao',
+      };
+      return this.fcmNotificationService.sendingNotificationOneUser(
+        token,
+        data,
+        notification,
+      );
     } catch (error) {
       throw new HttpException(
         {
