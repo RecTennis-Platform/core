@@ -839,13 +839,23 @@ export class TournamentService {
 
     // Check if the user is the creator of the tournament
     if (purchasedPackage.userId !== userId) {
-      throw new BadRequestException({
-        code: CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_UNAUTHORIZED,
-        message: CustomResponseMessages.getMessage(
-          CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_UNAUTHORIZED,
-        ),
-        data: null,
-      });
+      if (unpublish) {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_UNPUBLISHED_UNAUTHORIZED,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_UNPUBLISHED_UNAUTHORIZED,
+          ),
+          data: null,
+        });
+      } else {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_UNAUTHORIZED,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_UNAUTHORIZED,
+          ),
+          data: null,
+        });
+      }
     }
 
     // Update tournament status
@@ -859,19 +869,26 @@ export class TournamentService {
         },
       });
 
-      return {
-        message: 'Tournament published successfully',
-        data: null,
-      };
+      return {};
     } catch (error) {
       console.log('Error:', error.message);
-      throw new BadRequestException({
-        code: CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_FAILED,
-        message: CustomResponseMessages.getMessage(
-          CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_FAILED,
-        ),
-        data: null,
-      });
+      if (unpublish) {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_UNPUBLISHED_FAILED,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_UNPUBLISHED_FAILED,
+          ),
+          data: null,
+        });
+      } else {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_FAILED,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_FAILED,
+          ),
+          data: null,
+        });
+      }
     }
   }
 
