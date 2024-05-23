@@ -13,6 +13,7 @@ import {
   CreateTournamentDto,
   PageOptionsTournamentDto,
   PageOptionsTournamentRegistrationDto,
+  UpdateTournamentDto,
 } from './dto';
 import {
   FixtureStatus,
@@ -785,7 +786,11 @@ export class TournamentService {
     }
   }
 
-  async publishTournament(userId: string, tournamentId: number) {
+  async publishTournament(
+    userId: string,
+    tournamentId: number,
+    unpublish: boolean = false,
+  ) {
     // Get tournament info
     const tournament = await this.prismaService.tournaments.findUnique({
       where: {
@@ -843,13 +848,6 @@ export class TournamentService {
       });
     }
 
-    if (tournament.phase === TournamentPhase.published) {
-      return {
-        message: 'Tournament already published',
-        data: null,
-      };
-    }
-
     // Update tournament status
     try {
       await this.prismaService.tournaments.update({
@@ -857,7 +855,7 @@ export class TournamentService {
           id: tournamentId,
         },
         data: {
-          phase: TournamentPhase.published,
+          phase: unpublish ? TournamentPhase.new : TournamentPhase.published,
         },
       });
 
@@ -871,6 +869,110 @@ export class TournamentService {
         code: CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_FAILED,
         message: CustomResponseMessages.getMessage(
           CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_FAILED,
+        ),
+        data: null,
+      });
+    }
+  }
+
+  async updateTournamentInfo(
+    userId: string,
+    tournamentId: number,
+    updateDto: UpdateTournamentDto,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the owner of this tournament
+    if (purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        code: CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        ),
+        data: null,
+      });
+    }
+
+    // Only allow to update tournament info when the tournament is not published (phase = new)
+    if (tournament.phase !== TournamentPhase.new) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+        message:
+          "Can't update tournament info when the tournament is published",
+        data: null,
+      });
+    }
+
+    // Validate update data (participantType and gender)
+    if (updateDto.participantType) {
+      if (
+        updateDto.participantType === ParticipantType.single ||
+        updateDto.participantType === ParticipantType.doubles
+      ) {
+        if (!updateDto.gender) {
+          throw new BadRequestException({
+            code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+            message: `Missing 'gender' field for 'participantType': '${updateDto.participantType}'`,
+          });
+        }
+      } else {
+        updateDto.gender = null;
+      }
+    } else {
+      delete updateDto['gender'];
+    }
+
+    // Update tournament info
+    try {
+      const updatedTournament = await this.prismaService.tournaments.update({
+        where: {
+          id: tournamentId,
+        },
+        data: {
+          ...updateDto,
+        },
+      });
+
+      return updatedTournament;
+    } catch (err) {
+      console.log('Error:', err.message);
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
         ),
         data: null,
       });
