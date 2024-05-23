@@ -230,7 +230,7 @@ export class UserService {
       }
     });
 
-    // Calculate each tournament's participants
+    // Get each tournament participants count
     for (const tournament of userParticipatedTournaments) {
       tournament['participants'] =
         await this.tournamentService.getTournamentParticipantsCount(
