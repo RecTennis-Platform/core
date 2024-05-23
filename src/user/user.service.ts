@@ -11,13 +11,17 @@ import {
   PageOptionsUserParticipatedTournamentsDto,
   UpdateUserAccountDto,
 } from './dto';
-import { TournamentStatus, UserRole } from '@prisma/client';
+import { RegistrationStatus, TournamentStatus, UserRole } from '@prisma/client';
 import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-code';
 import { CustomResponseMessages } from 'src/helper/custom-response-message';
+import { TournamentService } from 'src/tournament/tournament.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly tournamentService: TournamentService,
+  ) {}
 
   async getUserDetails(userId: string): Promise<any> {
     const user = await this.prismaService.users.findUnique({
@@ -171,8 +175,12 @@ export class UserService {
       ],
       where: {
         OR: [{ userId1: { equals: userId } }, { userId2: { equals: userId } }],
+        NOT: {
+          status: RegistrationStatus.canceled,
+        },
       },
       select: {
+        status: true,
         tournament: true,
       },
     };
@@ -206,9 +214,29 @@ export class UserService {
     ]);
 
     // Map to get only tournament details
-    const userParticipatedTournaments = result.map(
-      (registration) => registration.tournament,
-    );
+    const userParticipatedTournaments = result.map((registration) => {
+      if (registration.status !== RegistrationStatus.rejected) {
+        return {
+          ...registration.tournament,
+          applicationStatus: registration.status,
+        };
+      } else {
+        if (registration.tournament.status === TournamentStatus.upcoming) {
+          return {
+            ...registration.tournament,
+            applicationStatus: registration.status,
+          };
+        }
+      }
+    });
+
+    // Calculate each tournament's participants
+    for (const tournament of userParticipatedTournaments) {
+      tournament['participants'] =
+        await this.tournamentService.getTournamentParticipantsCount(
+          tournament.id,
+        );
+    }
 
     return {
       data: userParticipatedTournaments,

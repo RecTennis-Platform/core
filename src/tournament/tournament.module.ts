@@ -15,5 +15,6 @@ import { FcmNotificationService } from 'src/services/notification/fcm-notificati
     RefereesTournamentsService,
     FcmNotificationService,
   ],
+  exports: [TournamentService],
 })
 export class TournamentModule {}
