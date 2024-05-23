@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import {
   CreateTournamentDto,
   PageOptionsTournamentDto,
   PageOptionsTournamentRegistrationDto,
+  UpdateTournamentDto,
 } from './dto';
 import { JwtGuard, OptionalJwtGuard } from 'src/auth_utils/guards';
 import { GetUser } from 'src/auth_utils/decorators';
@@ -120,6 +122,36 @@ export class TournamentController {
     @Param('tournamentId') tournamentId: number,
   ) {
     return this.tournamentService.publishTournament(userId, tournamentId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post(':tournamentId/unpublish')
+  // Unpublish tournament for user to apply
+  async unpublishTournament(
+    @GetUser('sub') userId: string,
+    @Param('tournamentId') tournamentId: number,
+  ) {
+    const unpublish = true;
+    return this.tournamentService.publishTournament(
+      userId,
+      tournamentId,
+      unpublish,
+    );
+  }
+
+  @UseGuards(JwtGuard)
+  @Put(':tournamentId')
+  // Update tournament info
+  async updateTournamentInfo(
+    @GetUser('sub') userId: string,
+    @Param('tournamentId') tournamentId: number,
+    @Body() updateDto: UpdateTournamentDto,
+  ) {
+    return this.tournamentService.updateTournamentInfo(
+      userId,
+      tournamentId,
+      updateDto,
+    );
   }
 
   // **Participants
