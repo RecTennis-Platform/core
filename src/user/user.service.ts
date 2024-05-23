@@ -173,7 +173,15 @@ export class UserService {
         OR: [{ userId1: { equals: userId } }, { userId2: { equals: userId } }],
       },
       select: {
-        tournament: true,
+        tournament: {
+          include: {
+            _count: {
+              select: {
+                tournament_registrations: true,
+              }, // Count registrations for each tournament
+            },
+          },
+        },
       },
     };
 
@@ -206,9 +214,15 @@ export class UserService {
     ]);
 
     // Map to get only tournament details
-    const userParticipatedTournaments = result.map(
-      (registration) => registration.tournament,
-    );
+    const userParticipatedTournaments = result.map((registration) => {
+      const participantCount =
+        registration.tournament._count.tournament_registrations;
+      delete registration.tournament._count;
+      return {
+        ...registration.tournament,
+        participants: participantCount,
+      };
+    });
 
     return {
       data: userParticipatedTournaments,

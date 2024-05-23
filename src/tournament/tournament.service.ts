@@ -2934,6 +2934,7 @@ export class TournamentService {
           matchDuration: dto.matchDuration,
           breakDuration: dto.breakDuration,
           status: dto.status,
+          venue: dto.venue,
         },
         create: {
           id: dto.id,
@@ -2947,6 +2948,7 @@ export class TournamentService {
           matchDuration: dto.matchDuration,
           breakDuration: dto.breakDuration,
           status: dto.status,
+          venue: dto.venue,
         },
       });
 
