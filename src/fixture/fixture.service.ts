@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFixtureDto } from './dto/create-fixture.dto';
 import { UpdateFixtureDto } from './dto/update-fixture.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -44,6 +44,11 @@ export class FixtureService {
         groupFixtures: true,
       },
     });
+    if (!fixture) {
+      throw new NotFoundException({
+        message: 'Fixture not found',
+      });
+    }
     for (const groupFixture of fixture.groupFixtures) {
       await this.prismaService.teams.updateMany({
         where: {
@@ -61,6 +66,35 @@ export class FixtureService {
       },
     });
     return { message: 'success' };
+  }
+
+  async removeByTournamentIdIdempontent(tournamentId: number) {
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        tournamentId: tournamentId,
+      },
+      select: {
+        groupFixtures: true,
+      },
+    });
+    if (fixture) {
+      for (const groupFixture of fixture.groupFixtures) {
+        await this.prismaService.teams.updateMany({
+          where: {
+            groupFixtureId: groupFixture.id,
+          },
+          data: {
+            groupFixtureId: null,
+          },
+        });
+      }
+
+      await this.prismaService.fixtures.deleteMany({
+        where: {
+          tournamentId: tournamentId,
+        },
+      });
+    }
   }
 
   async getByTournamentId(tournamentId: number) {

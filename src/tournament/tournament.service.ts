@@ -3031,7 +3031,7 @@ export class TournamentService {
       });
     }
     await this.prismaService.$transaction(async (tx) => {
-      await this.fixtureService.removeByTournamentId(id);
+      await this.fixtureService.removeByTournamentIdIdempontent(id);
       if (dto.status === FixtureStatus.published) {
         await tx.tournaments.update({
           where: {
