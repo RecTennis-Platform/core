@@ -3552,10 +3552,10 @@ export class TournamentService {
       return { ...groupFixture, rounds: rounds };
     });
     if (format === TournamentFormat.round_robin) {
-      return { ...others, roundRobinGroups: groups };
+      return { ...others, roundRobinGroups: groups, format };
     } else if (format === TournamentFormat.knockout) {
       groups[0].rounds.reverse();
-      return { ...others, knockoutGroup: groups[0] };
+      return { ...others, knockoutGroup: groups[0], format };
     } else if (format === TournamentFormat.group_playoff) {
       groups[0].rounds.reverse();
       const knockoutGroup = groups[0];
@@ -3633,6 +3633,7 @@ export class TournamentService {
       });
       return {
         ...others,
+        format,
         knockoutGroup,
         roundRobinGroups,
       };

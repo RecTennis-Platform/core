@@ -213,10 +213,10 @@ export class FixtureService {
       return { ...groupFixture, rounds: rounds };
     });
     if (tournament.format === TournamentFormat.round_robin) {
-      return { ...others, roundRobinGroups: groups };
+      return { ...others, roundRobinGroups: groups, format: tournament.format };
     } else if (tournament.format === TournamentFormat.knockout) {
       groups[0].rounds.reverse();
-      return { ...others, knockoutGroup: groups[0] };
+      return { ...others, knockoutGroup: groups[0], format: tournament.format };
     } else if (tournament.format === TournamentFormat.group_playoff) {
       groups[0].rounds.reverse();
       const knockoutGroup = groups[0];
@@ -294,6 +294,7 @@ export class FixtureService {
       });
       return {
         ...others,
+        format: tournament.format,
         knockoutGroup,
         roundRobinGroups,
       };
