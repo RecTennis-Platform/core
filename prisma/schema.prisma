@@ -298,9 +298,12 @@ model teams {
   updatedAt      DateTime        @updatedAt @map("updated_at")
   tournamentId   Int             @map("tournament_id")
   groupFixtureId String?         @map("group_fixture_id")
+  games          games[]
   matches1       matches[]       @relation("team1")
   matches2       matches[]       @relation("team2")
   matchesWinner  matches[]       @relation("teamWinner")
+  scores         scores[]
+  sets           sets[]
   group_fixture  group_fixtures? @relation(fields: [groupFixtureId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_fixture_teams")
   user1          users           @relation("user1", fields: [userId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user1_teams")
   user2          users?          @relation("user2", fields: [userId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user2_teams")
@@ -321,7 +324,7 @@ model matches {
   matchEndDate        DateTime?       @map("match_end_date")
   venue               String?
   status              MatchStatus     @default(scheduled)
-  matchDuration       Int?            @map("match_duration")
+  duration            Int?
   breakDuration       Int?            @map("break_duration")
   createdAt           DateTime        @default(now()) @map("created_at")
   updatedAt           DateTime        @updatedAt @map("updated_at")
@@ -337,6 +340,50 @@ model matches {
   nextMatch           matches?        @relation("nextMatch", fields: [nextMatchId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_matches_next_match")
   nextMatches         matches[]       @relation("nextMatch")
   round               rounds          @relation(fields: [roundId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_matches_rounds")
+  sets                sets[]
+}
+
+model games {
+  id           String   @id @db.Uuid
+  set_id       String   @db.Uuid
+  created_at   DateTime @default(now())
+  updated_at   DateTime
+  is_tie_break Boolean  @default(false)
+  team_win_id  String?
+  sets         sets     @relation(fields: [set_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_games_sets")
+  teams        teams?   @relation(fields: [team_win_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_games_teams")
+  scores       scores[]
+}
+
+model scores {
+  id           Int       @id @default(autoincrement())
+  game_id      String    @db.Uuid
+  type         ScoreType @default(ace)
+  team_1_score Int       @default(0)
+  team_2_score Int       @default(0)
+  time         DateTime  @default(now())
+  created_at   DateTime  @default(now())
+  updated_at   DateTime
+  team_win_id  String?
+  games        games     @relation(fields: [game_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_scores_games")
+  teams        teams?    @relation(fields: [team_win_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_scores_teams")
+}
+
+model sets {
+  id               String    @id @db.Uuid
+  match_id         String
+  time             DateTime  @default(now())
+  team_1_set_score Int
+  team_2_set_score Int
+  created_at       DateTime  @default(now())
+  updated_at       DateTime
+  is_tie_break     Boolean   @default(false)
+  set_start_time   DateTime  @default(now())
+  status           SetStatus @default(not_started)
+  team_win_id      String?
+  games            games[]
+  matches          matches   @relation(fields: [match_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sets_matches")
+  teams            teams?    @relation(fields: [team_win_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sets_teams")
 }
 
 enum AffiliateStatus {
@@ -449,4 +496,18 @@ enum RegistrationStatus {
 enum PartnerPayment {
   VNPAY
   ZALOPAY
+}
+
+enum ScoreType {
+  ace
+  fault
+  winner
+  f_error
+  unf_error
+}
+
+enum SetStatus {
+  not_started
+  on_going
+  ended
 }
