@@ -15,6 +15,8 @@ import { RegistrationStatus, TournamentStatus, UserRole } from '@prisma/client';
 import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-code';
 import { CustomResponseMessages } from 'src/helper/custom-response-message';
 import { TournamentService } from 'src/tournament/tournament.service';
+import { match } from 'assert';
+import { PageOptionsUserFollowedMatchesDto } from './dto/page-options-user-followed-matches.dto copy';
 
 @Injectable()
 export class UserService {
@@ -310,6 +312,87 @@ export class UserService {
 
     return {
       data: userParticipatedTournaments,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
+
+  async followMatch(userId: string, matchId: string) {
+    try {
+      return await this.prismaService.users_follow_matches.create({
+        data: {
+          userId: userId,
+          matchId: matchId,
+        },
+      });
+    } catch (err) {
+      console.log('Error:', err.message);
+
+      throw new InternalServerErrorException({
+        message: err.message,
+      });
+    }
+  }
+
+  async getUserFollowedMatches(
+    userId: string,
+    pageOptions: PageOptionsUserFollowedMatchesDto,
+  ) {
+    // Check if user exists
+    const user = await this.prismaService.users.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.USER_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.USER_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        userId: userId,
+      },
+      select: {
+        match: true,
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get user's tournament registrations
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.users_follow_matches.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.users_follow_matches.count({
+        where: conditions.where,
+      }),
+    ]);
+
+    const matches = result.map((r) => r.match);
+
+    return {
+      data: matches,
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
