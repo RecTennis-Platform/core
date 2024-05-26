@@ -15,14 +15,15 @@ import { RegistrationStatus, TournamentStatus, UserRole } from '@prisma/client';
 import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-code';
 import { CustomResponseMessages } from 'src/helper/custom-response-message';
 import { TournamentService } from 'src/tournament/tournament.service';
-import { match } from 'assert';
 import { PageOptionsUserFollowedMatchesDto } from './dto/page-options-user-followed-matches.dto copy';
+import { FcmNotificationService } from 'src/services/notification/fcm-notification';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly tournamentService: TournamentService,
+    private readonly fcmNotificationService: FcmNotificationService,
   ) {}
 
   async getUserDetails(userId: string): Promise<any> {
@@ -40,6 +41,7 @@ export class UserService {
         gender: true,
         role: true,
         elo: true,
+        fcmToken: true,
       },
     });
 
@@ -162,6 +164,42 @@ export class UserService {
         data: null,
       });
     }
+  }
+
+  async testNotification(userId: string) {
+    // Check if user exists
+    const user = await this.prismaService.users.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException({
+        message: 'User not found',
+        data: null,
+      });
+    }
+    if (!user.fcmToken) {
+      throw new BadRequestException({
+        message: 'User does not have fcm token',
+        data: null,
+      });
+    }
+    const token = user.fcmToken;
+    const data = {
+      params: JSON.stringify({ matchId: 1 }),
+      type: 'MATCH_UPDATE',
+    };
+    const notification = {
+      title: 'Test Notification',
+      body: 'This is a test message',
+    };
+    return this.fcmNotificationService.sendingNotificationOneUser(
+      token,
+      data,
+      notification,
+    );
   }
 
   async getMyParticipatedTournaments(

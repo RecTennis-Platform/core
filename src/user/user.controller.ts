@@ -117,4 +117,9 @@ export class UserController {
   ) {
     return await this.userService.getUserFollowedMatches(userId, pageOptions);
   }
+
+  @Get(':userId/test-noti')
+  async testNoti(@Param('userId') userId: string) {
+    return await this.userService.testNotification(userId);
+  }
 }
