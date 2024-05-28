@@ -138,6 +138,7 @@ export class TournamentService {
             userId2: referee.id,
           },
         ],
+        tournamentId: createRefereesTournamentDto.tournamentId,
       },
     });
 
