@@ -142,6 +142,10 @@ export class Match {
   @IsOptional()
   @IsString()
   venue: string;
+
+  @IsOptional()
+  @IsNumber()
+  duration: number = 30;
 }
 
 export class Round {

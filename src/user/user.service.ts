@@ -17,12 +17,15 @@ import { CustomResponseMessages } from 'src/helper/custom-response-message';
 import { TournamentService } from 'src/tournament/tournament.service';
 import { PageOptionsRefereeMatchesDto } from './dto/page-options-referee-matches.dto';
 import { Order } from 'constants/order';
+import { PageOptionsUserFollowedMatchesDto } from './dto/page-options-user-followed-matches.dto copy';
+import { FcmNotificationService } from 'src/services/notification/fcm-notification';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly tournamentService: TournamentService,
+    private readonly fcmNotificationService: FcmNotificationService,
   ) {}
 
   async getUserDetails(userId: string): Promise<any> {
@@ -40,6 +43,7 @@ export class UserService {
         gender: true,
         role: true,
         elo: true,
+        fcmToken: true,
       },
     });
 
@@ -162,6 +166,42 @@ export class UserService {
         data: null,
       });
     }
+  }
+
+  async testNotification(userId: string) {
+    // Check if user exists
+    const user = await this.prismaService.users.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException({
+        message: 'User not found',
+        data: null,
+      });
+    }
+    if (!user.fcmToken) {
+      throw new BadRequestException({
+        message: 'User does not have fcm token',
+        data: null,
+      });
+    }
+    const token = user.fcmToken;
+    const data = {
+      params: JSON.stringify({ matchId: 1 }),
+      type: 'MATCH_UPDATE',
+    };
+    const notification = {
+      title: 'Test Notification',
+      body: 'This is a test message',
+    };
+    return this.fcmNotificationService.sendingNotificationOneUser(
+      token,
+      data,
+      notification,
+    );
   }
 
   async getMyParticipatedTournaments(
@@ -317,47 +357,56 @@ export class UserService {
     };
   }
 
-  // Referee
-  async getRefereeMatches(
+  async followMatch(userId: string, matchId: string) {
+    try {
+      return await this.prismaService.users_follow_matches.create({
+        data: {
+          userId: userId,
+          matchId: matchId,
+        },
+      });
+    } catch (err) {
+      console.log('Error:', err.message);
+
+      throw new InternalServerErrorException({
+        message: err.message,
+      });
+    }
+  }
+
+  async getUserFollowedMatches(
     userId: string,
-    pageOptions: PageOptionsRefereeMatchesDto,
+    pageOptions: PageOptionsUserFollowedMatchesDto,
   ) {
+    // Check if user exists
+    const user = await this.prismaService.users.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.USER_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.USER_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
     // Build pagination options
     const conditions = {
       orderBy: [
         {
-          matchStartDate: Order.DESC,
+          createdAt: pageOptions.order,
         },
       ],
       where: {
-        refereeId: userId,
+        userId: userId,
       },
       select: {
-        team1: {
-          user1: {
-            id: true,
-            name: true,
-            image: true,
-          },
-          user2: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
-        team2: {
-          user1: {
-            id: true,
-            name: true,
-            image: true,
-          },
-          user2: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
-        sets: [{}],
+        match: true,
       },
     };
 
@@ -369,17 +418,21 @@ export class UserService {
           }
         : undefined;
 
-    // Get referee's matches
+    // Get user's tournament registrations
     const [result, totalCount] = await Promise.all([
-      this.prismaService.matches.findMany({
+      this.prismaService.users_follow_matches.findMany({
         ...conditions,
         ...pageOption,
       }),
-      this.prismaService.matches.count(conditions),
+      this.prismaService.users_follow_matches.count({
+        where: conditions.where,
+      }),
     ]);
 
+    const matches = result.map((r) => r.match);
+
     return {
-      data: result,
+      data: matches,
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };

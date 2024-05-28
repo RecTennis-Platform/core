@@ -1469,62 +1469,68 @@ export class TournamentService {
     // phase -> finalized_applicants
     // status -> on_going
     try {
-      return await this.prismaService.$transaction(async (tx) => {
-        await tx.tournaments.update({
-          where: {
-            id: tournamentId,
-          },
-          data: {
-            phase: TournamentPhase.finalized_applicants,
-            status: TournamentStatus.on_going,
-          },
-        });
-        const applicants = await tx.tournament_registrations.findMany({
-          where: {
-            tournamentId: tournamentId,
-          },
-        });
-        if (applicants.length < 5) {
-          throw new BadRequestException({
-            code: CustomResponseStatusCodes.TOURNAMENT_INVALID_NUMBER_APPLICANT,
-            message: CustomResponseMessages.getMessage(
-              CustomResponseStatusCodes.TOURNAMENT_INVALID_NUMBER_APPLICANT,
-            ),
+      return await this.prismaService.$transaction(
+        async (tx) => {
+          await tx.tournaments.update({
+            where: {
+              id: tournamentId,
+            },
+            data: {
+              phase: TournamentPhase.finalized_applicants,
+              status: TournamentStatus.on_going,
+            },
           });
-        }
-        const teams = await Promise.all(
-          applicants.map(async (applicant) => {
-            const { tournamentId, userId1, userId2, name } = applicant;
-
-            const user1 = await tx.users.findFirst({
-              where: {
-                id: userId1,
-              },
+          const applicants = await tx.tournament_registrations.findMany({
+            where: {
+              tournamentId: tournamentId,
+            },
+          });
+          if (applicants.length < 5) {
+            throw new BadRequestException({
+              code: CustomResponseStatusCodes.TOURNAMENT_INVALID_NUMBER_APPLICANT,
+              message: CustomResponseMessages.getMessage(
+                CustomResponseStatusCodes.TOURNAMENT_INVALID_NUMBER_APPLICANT,
+              ),
             });
+          }
+          const teams = await Promise.all(
+            applicants.map(async (applicant) => {
+              const { tournamentId, userId1, userId2, name } = applicant;
 
-            let user2 = null;
-            if (userId2) {
-              user2 = await tx.users.findFirst({
+              const user1 = await tx.users.findFirst({
                 where: {
-                  id: userId2,
+                  id: userId1,
                 },
               });
-            }
 
-            const totalElo = (user1?.elo ?? 0) + (user2?.elo ?? 0);
-            return {
-              name,
-              userId1,
-              userId2,
-              totalElo,
-              tournamentId,
-            };
-          }),
-        );
-        return await tx.teams.createMany({
-          data: teams,
-        });
-      });
+              let user2 = null;
+              if (userId2) {
+                user2 = await tx.users.findFirst({
+                  where: {
+                    id: userId2,
+                  },
+                });
+              }
+
+              const totalElo = (user1?.elo ?? 0) + (user2?.elo ?? 0);
+              return {
+                name,
+                userId1,
+                userId2,
+                totalElo,
+                tournamentId,
+              };
+            }),
+          );
+          return await tx.teams.createMany({
+            data: teams,
+          });
+        },
+        {
+          maxWait: 10000, // default: 2000
+          timeout: 10000, // default: 5000
+        },
+      );
     } catch (error) {
       console.log('Error:', error.message);
       throw new InternalServerErrorException({
@@ -2628,7 +2634,7 @@ export class TournamentService {
         id: id,
       },
     });
-    const format = tournament.format;
+    const format = tournament?.format;
     try {
       if (
         format === TournamentFormat.round_robin ||
@@ -2666,9 +2672,12 @@ export class TournamentService {
             1,
             teams.length,
           );
+          let k = 1;
           for (let i = 0; i < tables.table1.length; i++) {
             const matches = [];
             for (let j = 0; j < tables.table1[i].length; j++) {
+              if (tables.table1[i][j] === tables.table2[i][j]) continue;
+
               const team1 = {
                 user1: teams[tables.table1[i][j] - 1].user1,
                 user2: teams[tables.table1[i][j] - 1].user2,
@@ -2683,7 +2692,7 @@ export class TournamentService {
               const match = {
                 id: randomUUID(),
                 nextMatchId: null,
-                title: `Match ${j + 1}`,
+                title: `Match ${k++}`,
                 matchStartDate: null,
                 duration: dto.matchDuration,
                 status: MatchStatus.scheduled,
@@ -3027,417 +3036,423 @@ export class TournamentService {
         message: 'Fixture is already published',
       });
     }
-    await this.prismaService.$transaction(async (tx) => {
-      await this.fixtureService.removeByTournamentId(id);
-      if (dto.status === FixtureStatus.published) {
-        await tx.tournaments.update({
+    await this.prismaService.$transaction(
+      async (tx) => {
+        await this.fixtureService.removeByTournamentIdIdempontent(id);
+        if (dto.status === FixtureStatus.published) {
+          await tx.tournaments.update({
+            where: {
+              id: id,
+            },
+            data: {
+              phase: TournamentPhase.generated_fixtures,
+            },
+          });
+        }
+        const fixture = await tx.fixtures.upsert({
           where: {
-            id: id,
-          },
-          data: {
-            phase: TournamentPhase.generated_fixtures,
-          },
-        });
-      }
-      const fixture = await tx.fixtures.upsert({
-        where: {
-          id: dto.id,
-        },
-        update: {
-          numberOfParticipants: numberOfParticipants,
-          numberOfGroups: dto.roundRobinGroups?.length ?? 1,
-          fixtureStartDate: dto.fixtureStartDate,
-          fixtureEndDate: dto.fixtureEndDate,
-          matchesStartTime: dto.matchesStartTime,
-          matchesEndTime: dto.matchesEndTime,
-          matchDuration: dto.matchDuration,
-          breakDuration: dto.breakDuration,
-          status: dto.status,
-          venue: dto.venue,
-        },
-        create: {
-          id: dto.id,
-          tournamentId: id,
-          numberOfParticipants: numberOfParticipants,
-          numberOfGroups: dto.roundRobinGroups.length,
-          fixtureStartDate: dto.fixtureStartDate,
-          fixtureEndDate: dto.fixtureEndDate,
-          matchesStartTime: dto.matchesStartTime,
-          matchesEndTime: dto.matchesEndTime,
-          matchDuration: dto.matchDuration,
-          breakDuration: dto.breakDuration,
-          status: dto.status,
-          venue: dto.venue,
-        },
-      });
-
-      if (format === TournamentFormat.round_robin) {
-        await Promise.all(
-          dto.roundRobinGroups.map(async (group) => {
-            await tx.group_fixtures.upsert({
-              where: {
-                id: group.id,
-              },
-              update: {
-                fixtureId: fixture.id,
-                title: group.title,
-                isFinal: true,
-                numberOfProceeders: group.numberOfProceeders,
-              },
-              create: {
-                id: group.id,
-                fixtureId: fixture.id,
-                title: group.title,
-                isFinal: true,
-                numberOfProceeders: group.numberOfProceeders,
-              },
-            });
-            await Promise.all(
-              group.rounds.map(async (round) => {
-                await tx.rounds.upsert({
-                  where: {
-                    id: round.id,
-                  },
-                  update: {
-                    groupFixtureId: group.id,
-                    title: round.title,
-                    elo: 100,
-                  },
-                  create: {
-                    id: round.id,
-                    groupFixtureId: group.id,
-                    title: round.title,
-                    elo: 100,
-                  },
-                });
-                //apply elo
-                await Promise.all(
-                  round.matches.map(async (match) => {
-                    await tx.matches.upsert({
-                      where: {
-                        id: match.id,
-                      },
-                      update: {
-                        roundId: round.id,
-                        title: match.title,
-                        status: match.status,
-                        rankGroupTeam1: match.rankGroupTeam1,
-                        rankGroupTeam2: match.rankGroupTeam2,
-                        nextMatchId: match.nextMatchId,
-                        matchStartDate: match.matchStartDate,
-                        teamId1: match.teams.team1?.id,
-                        teamId2: match.teams.team2?.id,
-                        venue: match?.venue,
-                        matchDuration: dto.matchDuration,
-                        breakDuration: dto.breakDuration,
-                        refereeId: match.refereeId,
-                        groupFixtureTeamId1: match.groupFixtureTeamId1,
-                        groupFixtureTeamId2: match.groupFixtureTeamId2,
-                      },
-
-                      create: {
-                        id: match.id,
-                        roundId: round.id,
-                        title: match.title,
-                        status: match.status,
-                        rankGroupTeam1: match.rankGroupTeam1,
-                        rankGroupTeam2: match.rankGroupTeam2,
-                        nextMatchId: match.nextMatchId,
-                        matchStartDate: match.matchStartDate,
-                        teamId1: match.teams.team1?.id,
-                        teamId2: match.teams.team2?.id,
-                        venue: match.venue,
-                        matchDuration: dto.matchDuration,
-                        breakDuration: dto.breakDuration,
-                        refereeId: match.refereeId,
-                        groupFixtureTeamId1: match.groupFixtureTeamId1,
-                        groupFixtureTeamId2: match.groupFixtureTeamId2,
-                      },
-                    });
-                  }),
-                );
-              }),
-            );
-          }),
-        );
-      } else if (format === TournamentFormat.knockout) {
-        await tx.group_fixtures.upsert({
-          where: {
-            id: dto.knockoutGroup.id,
+            id: dto.id,
           },
           update: {
-            fixtureId: fixture.id,
-            title: dto.knockoutGroup.title,
-            isFinal: true,
-            numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+            numberOfParticipants: numberOfParticipants,
+            numberOfGroups: dto.roundRobinGroups?.length ?? 1,
+            fixtureStartDate: dto.fixtureStartDate,
+            fixtureEndDate: dto.fixtureEndDate,
+            matchesStartTime: dto.matchesStartTime,
+            matchesEndTime: dto.matchesEndTime,
+            matchDuration: dto.matchDuration,
+            breakDuration: dto.breakDuration,
+            status: dto.status,
+            venue: dto.venue,
           },
           create: {
-            id: dto.knockoutGroup.id,
-            fixtureId: fixture.id,
-            title: dto.knockoutGroup.title,
-            isFinal: true,
-            numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+            id: dto.id,
+            tournamentId: id,
+            numberOfParticipants: numberOfParticipants,
+            numberOfGroups: dto.roundRobinGroups.length,
+            fixtureStartDate: dto.fixtureStartDate,
+            fixtureEndDate: dto.fixtureEndDate,
+            matchesStartTime: dto.matchesStartTime,
+            matchesEndTime: dto.matchesEndTime,
+            matchDuration: dto.matchDuration,
+            breakDuration: dto.breakDuration,
+            status: dto.status,
+            venue: dto.venue,
           },
         });
-        await Promise.all(
-          dto.knockoutGroup.rounds.reverse().map(async (round) => {
-            await tx.rounds.upsert({
-              where: {
-                id: round.id,
-              },
-              update: {
-                groupFixtureId: dto.knockoutGroup.id,
-                title: round.title,
-                elo: 100,
-              },
-              create: {
-                id: round.id,
-                groupFixtureId: dto.knockoutGroup.id,
-                title: round.title,
-                elo: 100,
-              },
-            });
-            //apply elo
-            await Promise.all(
-              round.matches.map(async (match) => {
-                await tx.matches.upsert({
-                  where: {
-                    id: match.id,
-                  },
-                  update: {
-                    roundId: round.id,
-                    title: match.title,
-                    status: match.status,
-                    rankGroupTeam1: match.rankGroupTeam1,
-                    rankGroupTeam2: match.rankGroupTeam2,
-                    nextMatchId: match.nextMatchId,
-                    matchStartDate: match.matchStartDate,
-                    teamId1: match.teams.team1?.id,
-                    teamId2: match.teams.team2?.id,
-                    venue: match.venue,
-                    matchDuration: dto.matchDuration,
-                    breakDuration: dto.breakDuration,
-                    refereeId: match.refereeId,
-                    groupFixtureTeamId1: match.groupFixtureTeamId1,
-                    groupFixtureTeamId2: match.groupFixtureTeamId2,
-                  },
 
-                  create: {
-                    id: match.id,
-                    roundId: round.id,
-                    title: match.title,
-                    status: match.status,
-                    rankGroupTeam1: match.rankGroupTeam1,
-                    rankGroupTeam2: match.rankGroupTeam2,
-                    nextMatchId: match.nextMatchId,
-                    matchStartDate: match.matchStartDate,
-                    teamId1: match.teams.team1?.id,
-                    teamId2: match.teams.team2?.id,
-                    venue: match.venue,
-                    matchDuration: dto.matchDuration,
-                    breakDuration: dto.breakDuration,
-                    refereeId: match.refereeId,
-                    groupFixtureTeamId1: match.groupFixtureTeamId1,
-                    groupFixtureTeamId2: match.groupFixtureTeamId2,
-                  },
-                });
-              }),
-            );
-          }),
-        );
-      } else if (format === TournamentFormat.group_playoff) {
-        await Promise.all(
-          dto.roundRobinGroups.map(async (group) => {
-            await tx.group_fixtures.upsert({
-              where: {
-                id: group.id,
-              },
-              update: {
-                fixtureId: fixture.id,
-                title: group.title,
-                isFinal: false,
-                numberOfProceeders: group.numberOfProceeders,
-              },
-              create: {
-                id: group.id,
-                fixtureId: fixture.id,
-                title: group.title,
-                isFinal: false,
-                numberOfProceeders: group.numberOfProceeders,
-              },
-            });
-            await Promise.all(
-              group.rounds.map(async (round) => {
-                await tx.rounds.upsert({
-                  where: {
-                    id: round.id,
-                  },
-                  update: {
-                    groupFixtureId: group.id,
-                    title: round.title,
-                    elo: 100,
-                  },
-                  create: {
-                    id: round.id,
-                    groupFixtureId: group.id,
-                    title: round.title,
-                    elo: 100,
-                  },
-                });
-                //apply elo
-                await Promise.all(
-                  round.matches.map(async (match) => {
-                    await tx.matches.upsert({
-                      where: {
-                        id: match.id,
-                      },
-                      update: {
-                        roundId: round.id,
-                        title: match.title,
-                        status: match.status,
-                        rankGroupTeam1: match.rankGroupTeam1,
-                        rankGroupTeam2: match.rankGroupTeam2,
-                        nextMatchId: match.nextMatchId,
-                        matchStartDate: match.matchStartDate,
-                        teamId1: match.teams.team1.id,
-                        teamId2: match.teams.team2.id,
-                        venue: match.venue,
-                        matchDuration: dto.matchDuration,
-                        breakDuration: dto.breakDuration,
-                        refereeId: match.refereeId,
-                        groupFixtureTeamId1: match.groupFixtureTeamId1,
-                        groupFixtureTeamId2: match.groupFixtureTeamId2,
-                      },
-
-                      create: {
-                        id: match.id,
-                        roundId: round.id,
-                        title: match.title,
-                        status: match.status,
-                        rankGroupTeam1: match.rankGroupTeam1,
-                        rankGroupTeam2: match.rankGroupTeam2,
-                        nextMatchId: match.nextMatchId,
-                        matchStartDate: match.matchStartDate,
-                        teamId1: match.teams.team1.id,
-                        teamId2: match.teams.team2.id,
-                        venue: match.venue,
-                        matchDuration: dto.matchDuration,
-                        breakDuration: dto.breakDuration,
-                        refereeId: match.refereeId,
-                        groupFixtureTeamId1: match.groupFixtureTeamId1,
-                        groupFixtureTeamId2: match.groupFixtureTeamId2,
-                      },
-                    });
-                  }),
-                );
-              }),
-            );
-          }),
-        );
-
-        //knockout
-        await tx.group_fixtures.upsert({
-          where: {
-            id: dto.knockoutGroup.id,
-          },
-          update: {
-            fixtureId: fixture.id,
-            title: dto.knockoutGroup.title,
-            isFinal: true,
-            numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
-          },
-          create: {
-            id: dto.knockoutGroup.id,
-            fixtureId: fixture.id,
-            title: dto.knockoutGroup.title,
-            isFinal: true,
-            numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
-          },
-        });
-        await Promise.all(
-          dto.knockoutGroup.rounds.reverse().map(async (round) => {
-            await tx.rounds.upsert({
-              where: {
-                id: round.id,
-              },
-              update: {
-                groupFixtureId: dto.knockoutGroup.id,
-                title: round.title,
-                elo: 100,
-              },
-              create: {
-                id: round.id,
-                groupFixtureId: dto.knockoutGroup.id,
-                title: round.title,
-                elo: 100,
-              },
-            });
-            //apply elo
-            await Promise.all(
-              round.matches.map(async (match) => {
-                await tx.matches.upsert({
-                  where: {
-                    id: match.id,
-                  },
-                  update: {
-                    roundId: round.id,
-                    title: match.title,
-                    status: match.status,
-                    rankGroupTeam1: match.rankGroupTeam1,
-                    rankGroupTeam2: match.rankGroupTeam2,
-                    nextMatchId: match.nextMatchId,
-                    matchStartDate: match.matchStartDate,
-                    teamId1: match.teams.team1?.id,
-                    teamId2: match.teams.team2?.id,
-                    venue: match.venue,
-                    matchDuration: dto.matchDuration,
-                    breakDuration: dto.breakDuration,
-                    refereeId: match.refereeId,
-                    groupFixtureTeamId1: match.groupFixtureTeamId1,
-                    groupFixtureTeamId2: match.groupFixtureTeamId2,
-                  },
-
-                  create: {
-                    id: match.id,
-                    roundId: round.id,
-                    title: match.title,
-                    status: match.status,
-                    rankGroupTeam1: match.rankGroupTeam1,
-                    rankGroupTeam2: match.rankGroupTeam2,
-                    nextMatchId: match.nextMatchId,
-                    matchStartDate: match.matchStartDate,
-                    teamId1: match.teams.team1?.id,
-                    teamId2: match.teams.team2?.id,
-                    venue: match.venue,
-                    matchDuration: dto.matchDuration,
-                    breakDuration: dto.breakDuration,
-                    refereeId: match.refereeId,
-                    groupFixtureTeamId1: match.groupFixtureTeamId1,
-                    groupFixtureTeamId2: match.groupFixtureTeamId2,
-                  },
-                });
-              }),
-            );
-          }),
-        );
-
-        //update teams
-        await Promise.all(
-          dto.groups.map(async (group) => {
-            await tx.teams.updateMany({
-              where: {
-                id: {
-                  in: group.teams,
+        if (format === TournamentFormat.round_robin) {
+          await Promise.all(
+            dto.roundRobinGroups.map(async (group) => {
+              await tx.group_fixtures.upsert({
+                where: {
+                  id: group.id,
                 },
-              },
-              data: {
-                groupFixtureId: group.id,
-              },
-            });
-          }),
-        );
-      }
-    });
+                update: {
+                  fixtureId: fixture.id,
+                  title: group.title,
+                  isFinal: true,
+                  numberOfProceeders: group.numberOfProceeders,
+                },
+                create: {
+                  id: group.id,
+                  fixtureId: fixture.id,
+                  title: group.title,
+                  isFinal: true,
+                  numberOfProceeders: group.numberOfProceeders,
+                },
+              });
+              await Promise.all(
+                group.rounds.map(async (round) => {
+                  await tx.rounds.upsert({
+                    where: {
+                      id: round.id,
+                    },
+                    update: {
+                      groupFixtureId: group.id,
+                      title: round.title,
+                      elo: 100,
+                    },
+                    create: {
+                      id: round.id,
+                      groupFixtureId: group.id,
+                      title: round.title,
+                      elo: 100,
+                    },
+                  });
+                  //apply elo
+                  await Promise.all(
+                    round.matches.map(async (match) => {
+                      await tx.matches.upsert({
+                        where: {
+                          id: match.id,
+                        },
+                        update: {
+                          roundId: round.id,
+                          title: match.title,
+                          status: match.status,
+                          rankGroupTeam1: match.rankGroupTeam1,
+                          rankGroupTeam2: match.rankGroupTeam2,
+                          nextMatchId: match.nextMatchId,
+                          matchStartDate: match.matchStartDate,
+                          teamId1: match.teams.team1?.id,
+                          teamId2: match.teams.team2?.id,
+                          venue: match?.venue,
+                          duration: match.duration,
+                          breakDuration: dto.breakDuration,
+                          refereeId: match.refereeId,
+                          groupFixtureTeamId1: match.groupFixtureTeamId1,
+                          groupFixtureTeamId2: match.groupFixtureTeamId2,
+                        },
+
+                        create: {
+                          id: match.id,
+                          roundId: round.id,
+                          title: match.title,
+                          status: match.status,
+                          rankGroupTeam1: match.rankGroupTeam1,
+                          rankGroupTeam2: match.rankGroupTeam2,
+                          nextMatchId: match.nextMatchId,
+                          matchStartDate: match.matchStartDate,
+                          teamId1: match.teams.team1?.id,
+                          teamId2: match.teams.team2?.id,
+                          venue: match.venue,
+                          duration: match.duration,
+                          breakDuration: dto.breakDuration,
+                          refereeId: match.refereeId,
+                          groupFixtureTeamId1: match.groupFixtureTeamId1,
+                          groupFixtureTeamId2: match.groupFixtureTeamId2,
+                        },
+                      });
+                    }),
+                  );
+                }),
+              );
+            }),
+          );
+        } else if (format === TournamentFormat.knockout) {
+          await tx.group_fixtures.upsert({
+            where: {
+              id: dto.knockoutGroup.id,
+            },
+            update: {
+              fixtureId: fixture.id,
+              title: dto.knockoutGroup.title,
+              isFinal: true,
+              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+            },
+            create: {
+              id: dto.knockoutGroup.id,
+              fixtureId: fixture.id,
+              title: dto.knockoutGroup.title,
+              isFinal: true,
+              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+            },
+          });
+          await Promise.all(
+            dto.knockoutGroup.rounds.reverse().map(async (round) => {
+              await tx.rounds.upsert({
+                where: {
+                  id: round.id,
+                },
+                update: {
+                  groupFixtureId: dto.knockoutGroup.id,
+                  title: round.title,
+                  elo: 100,
+                },
+                create: {
+                  id: round.id,
+                  groupFixtureId: dto.knockoutGroup.id,
+                  title: round.title,
+                  elo: 100,
+                },
+              });
+              //apply elo
+              await Promise.all(
+                round.matches.map(async (match) => {
+                  await tx.matches.upsert({
+                    where: {
+                      id: match.id,
+                    },
+                    update: {
+                      roundId: round.id,
+                      title: match.title,
+                      status: match.status,
+                      rankGroupTeam1: match.rankGroupTeam1,
+                      rankGroupTeam2: match.rankGroupTeam2,
+                      nextMatchId: match.nextMatchId,
+                      matchStartDate: match.matchStartDate,
+                      teamId1: match.teams.team1?.id,
+                      teamId2: match.teams.team2?.id,
+                      venue: match.venue,
+                      duration: match.duration,
+                      breakDuration: dto.breakDuration,
+                      refereeId: match.refereeId,
+                      groupFixtureTeamId1: match.groupFixtureTeamId1,
+                      groupFixtureTeamId2: match.groupFixtureTeamId2,
+                    },
+
+                    create: {
+                      id: match.id,
+                      roundId: round.id,
+                      title: match.title,
+                      status: match.status,
+                      rankGroupTeam1: match.rankGroupTeam1,
+                      rankGroupTeam2: match.rankGroupTeam2,
+                      nextMatchId: match.nextMatchId,
+                      matchStartDate: match.matchStartDate,
+                      teamId1: match.teams.team1?.id,
+                      teamId2: match.teams.team2?.id,
+                      venue: match.venue,
+                      duration: match.duration,
+                      breakDuration: dto.breakDuration,
+                      refereeId: match.refereeId,
+                      groupFixtureTeamId1: match.groupFixtureTeamId1,
+                      groupFixtureTeamId2: match.groupFixtureTeamId2,
+                    },
+                  });
+                }),
+              );
+            }),
+          );
+        } else if (format === TournamentFormat.group_playoff) {
+          await Promise.all(
+            dto.roundRobinGroups.map(async (group) => {
+              await tx.group_fixtures.upsert({
+                where: {
+                  id: group.id,
+                },
+                update: {
+                  fixtureId: fixture.id,
+                  title: group.title,
+                  isFinal: false,
+                  numberOfProceeders: group.numberOfProceeders,
+                },
+                create: {
+                  id: group.id,
+                  fixtureId: fixture.id,
+                  title: group.title,
+                  isFinal: false,
+                  numberOfProceeders: group.numberOfProceeders,
+                },
+              });
+              await Promise.all(
+                group.rounds.map(async (round) => {
+                  await tx.rounds.upsert({
+                    where: {
+                      id: round.id,
+                    },
+                    update: {
+                      groupFixtureId: group.id,
+                      title: round.title,
+                      elo: 100,
+                    },
+                    create: {
+                      id: round.id,
+                      groupFixtureId: group.id,
+                      title: round.title,
+                      elo: 100,
+                    },
+                  });
+                  //apply elo
+                  await Promise.all(
+                    round.matches.map(async (match) => {
+                      await tx.matches.upsert({
+                        where: {
+                          id: match.id,
+                        },
+                        update: {
+                          roundId: round.id,
+                          title: match.title,
+                          status: match.status,
+                          rankGroupTeam1: match.rankGroupTeam1,
+                          rankGroupTeam2: match.rankGroupTeam2,
+                          nextMatchId: match.nextMatchId,
+                          matchStartDate: match.matchStartDate,
+                          teamId1: match.teams.team1.id,
+                          teamId2: match.teams.team2.id,
+                          venue: match.venue,
+                          duration: match.duration,
+                          breakDuration: dto.breakDuration,
+                          refereeId: match.refereeId,
+                          groupFixtureTeamId1: match.groupFixtureTeamId1,
+                          groupFixtureTeamId2: match.groupFixtureTeamId2,
+                        },
+
+                        create: {
+                          id: match.id,
+                          roundId: round.id,
+                          title: match.title,
+                          status: match.status,
+                          rankGroupTeam1: match.rankGroupTeam1,
+                          rankGroupTeam2: match.rankGroupTeam2,
+                          nextMatchId: match.nextMatchId,
+                          matchStartDate: match.matchStartDate,
+                          teamId1: match.teams.team1.id,
+                          teamId2: match.teams.team2.id,
+                          venue: match.venue,
+                          duration: match.duration,
+                          breakDuration: dto.breakDuration,
+                          refereeId: match.refereeId,
+                          groupFixtureTeamId1: match.groupFixtureTeamId1,
+                          groupFixtureTeamId2: match.groupFixtureTeamId2,
+                        },
+                      });
+                    }),
+                  );
+                }),
+              );
+            }),
+          );
+
+          //knockout
+          await tx.group_fixtures.upsert({
+            where: {
+              id: dto.knockoutGroup.id,
+            },
+            update: {
+              fixtureId: fixture.id,
+              title: dto.knockoutGroup.title,
+              isFinal: true,
+              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+            },
+            create: {
+              id: dto.knockoutGroup.id,
+              fixtureId: fixture.id,
+              title: dto.knockoutGroup.title,
+              isFinal: true,
+              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+            },
+          });
+          await Promise.all(
+            dto.knockoutGroup.rounds.reverse().map(async (round) => {
+              await tx.rounds.upsert({
+                where: {
+                  id: round.id,
+                },
+                update: {
+                  groupFixtureId: dto.knockoutGroup.id,
+                  title: round.title,
+                  elo: 100,
+                },
+                create: {
+                  id: round.id,
+                  groupFixtureId: dto.knockoutGroup.id,
+                  title: round.title,
+                  elo: 100,
+                },
+              });
+              //apply elo
+              await Promise.all(
+                round.matches.map(async (match) => {
+                  await tx.matches.upsert({
+                    where: {
+                      id: match.id,
+                    },
+                    update: {
+                      roundId: round.id,
+                      title: match.title,
+                      status: match.status,
+                      rankGroupTeam1: match.rankGroupTeam1,
+                      rankGroupTeam2: match.rankGroupTeam2,
+                      nextMatchId: match.nextMatchId,
+                      matchStartDate: match.matchStartDate,
+                      teamId1: match.teams.team1?.id,
+                      teamId2: match.teams.team2?.id,
+                      venue: match.venue,
+                      duration: match.duration,
+                      breakDuration: dto.breakDuration,
+                      refereeId: match.refereeId,
+                      groupFixtureTeamId1: match.groupFixtureTeamId1,
+                      groupFixtureTeamId2: match.groupFixtureTeamId2,
+                    },
+
+                    create: {
+                      id: match.id,
+                      roundId: round.id,
+                      title: match.title,
+                      status: match.status,
+                      rankGroupTeam1: match.rankGroupTeam1,
+                      rankGroupTeam2: match.rankGroupTeam2,
+                      nextMatchId: match.nextMatchId,
+                      matchStartDate: match.matchStartDate,
+                      teamId1: match.teams.team1?.id,
+                      teamId2: match.teams.team2?.id,
+                      venue: match.venue,
+                      duration: match.duration,
+                      breakDuration: dto.breakDuration,
+                      refereeId: match.refereeId,
+                      groupFixtureTeamId1: match.groupFixtureTeamId1,
+                      groupFixtureTeamId2: match.groupFixtureTeamId2,
+                    },
+                  });
+                }),
+              );
+            }),
+          );
+
+          //update teams
+          await Promise.all(
+            dto.groups.map(async (group) => {
+              await tx.teams.updateMany({
+                where: {
+                  id: {
+                    in: group.teams,
+                  },
+                },
+                data: {
+                  groupFixtureId: group.id,
+                },
+              });
+            }),
+          );
+        }
+      },
+      {
+        maxWait: 10000, // default: 2000
+        timeout: 10000, // default: 5000
+      },
+    );
 
     //return response
     const { groupFixtures, ...others } =
@@ -3549,10 +3564,10 @@ export class TournamentService {
       return { ...groupFixture, rounds: rounds };
     });
     if (format === TournamentFormat.round_robin) {
-      return { ...others, roundRobinGroups: groups };
+      return { ...others, roundRobinGroups: groups, format };
     } else if (format === TournamentFormat.knockout) {
       groups[0].rounds.reverse();
-      return { ...others, knockoutGroup: groups[0] };
+      return { ...others, knockoutGroup: groups[0], format };
     } else if (format === TournamentFormat.group_playoff) {
       groups[0].rounds.reverse();
       const knockoutGroup = groups[0];
@@ -3630,6 +3645,7 @@ export class TournamentService {
       });
       return {
         ...others,
+        format,
         knockoutGroup,
         roundRobinGroups,
       };

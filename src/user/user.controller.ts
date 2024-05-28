@@ -20,6 +20,7 @@ import {
 } from './dto';
 import { UserService } from './user.service';
 import { PageOptionsRefereeMatchesDto } from './dto/page-options-referee-matches.dto';
+import { PageOptionsUserFollowedMatchesDto } from './dto/page-options-user-followed-matches.dto copy';
 
 @Controller('users')
 export class UserController {
@@ -88,6 +89,15 @@ export class UserController {
     );
   }
 
+  @UseGuards(JwtGuard)
+  @Post('matches/:matchId/follow')
+  async followMatch(
+    @GetUser('sub') userId: string,
+    @Param('matchId') matchId: string,
+  ) {
+    return await this.userService.followMatch(userId, matchId);
+  }
+
   // Get other user's participated tournaments (status = completed)
   @Get(':userId/tournaments-history')
   async getUserTournamentsHistory(
@@ -108,5 +118,19 @@ export class UserController {
     @Query() pageOptions: PageOptionsRefereeMatchesDto,
   ) {
     return await this.userService.getRefereeMatches(userId, pageOptions);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('matches/follow')
+  async getUserFollowedMatches(
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsUserFollowedMatchesDto,
+  ) {
+    return await this.userService.getUserFollowedMatches(userId, pageOptions);
+  }
+
+  @Get(':userId/test-noti')
+  async testNoti(@Param('userId') userId: string) {
+    return await this.userService.testNotification(userId);
   }
 }
