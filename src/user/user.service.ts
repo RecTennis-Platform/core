@@ -8,6 +8,7 @@ import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   CreateAdminAccountDto,
+  PageOptionsRefereeMatchesDto,
   PageOptionsUserFollowedMatchesDto,
   PageOptionsUserParticipatedTournamentsDto,
   UpdateUserAccountDto,
@@ -17,6 +18,7 @@ import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-cod
 import { CustomResponseMessages } from 'src/helper/custom-response-message';
 import { TournamentService } from 'src/tournament/tournament.service';
 import { FcmNotificationService } from 'src/services/notification/fcm-notification';
+import { TournamentModule } from 'src/tournament/tournament.module';
 
 @Injectable()
 export class UserService {
@@ -431,6 +433,89 @@ export class UserService {
 
     return {
       data: matches,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
+
+  // Referee
+  async getRefereeMatches(
+    userId: string,
+    pageOptions: PageOptionsRefereeMatchesDto,
+  ) {
+    // Build pagination options
+    const conditions = {
+      where: {
+        refereeId: userId,
+      },
+      select: {
+        team1: {
+          select: {
+            user1: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+            user2: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+          },
+        },
+        team2: {
+          select: {
+            user1: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+            user2: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+          },
+        },
+        sets: {
+          select: {
+            status: true,
+            teamWinId: true,
+            setStartTime: true,
+          },
+        },
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get referee's matches
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.matches.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.matches.count({
+        where: conditions.where,
+      }),
+    ]);
+
+    return {
+      data: result,
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };

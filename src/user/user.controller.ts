@@ -111,14 +111,14 @@ export class UserController {
   }
 
   // Referee
-  // @UseGuards(JwtGuard)
-  // @Get('referee/match')
-  // async getRefereeMatches(
-  //   @GetUser('sub') userId: string,
-  //   @Query() pageOptions: PageOptionsRefereeMatchesDto,
-  // ) {
-  //   return await this.userService.getRefereeMatches(userId, pageOptions);
-  // }
+  @UseGuards(JwtGuard)
+  @Get('referee/match')
+  async getRefereeMatches(
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsRefereeMatchesDto,
+  ) {
+    return await this.userService.getRefereeMatches(userId, pageOptions);
+  }
 
   @UseGuards(JwtGuard)
   @Get('matches/follow')

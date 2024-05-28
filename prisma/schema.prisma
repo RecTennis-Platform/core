@@ -346,47 +346,47 @@ model matches {
   followUsers         users_follow_matches[]
 }
 
+model sets {
+  time          DateTime  @default(now())
+  team1SetScore Int       @default(0) @map("team_1_set_score")
+  team2SetScore Int       @default(0) @map("team_2_set_score")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  isTieBreak    Boolean   @default(false) @map("is_tie_break")
+  setStartTime  DateTime  @default(now()) @map("set_start_time")
+  status        SetStatus @default(not_started)
+  teamWinId     String?   @map("team_win_id")
+  matchId       String    @map("match_id")
+  id            Int       @id @default(autoincrement())
+  games         games[]
+  matches       matches   @relation(fields: [matchId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sets_matches")
+  teams         teams?    @relation(fields: [teamWinId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sets_teams")
+}
+
 model games {
-  id           String   @id @db.Uuid
-  set_id       String   @db.Uuid
-  created_at   DateTime @default(now())
-  updated_at   DateTime
-  is_tie_break Boolean  @default(false)
-  team_win_id  String?
-  sets         sets     @relation(fields: [set_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_games_sets")
-  teams        teams?   @relation(fields: [team_win_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_games_teams")
-  scores       scores[]
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  isTieBreak Boolean  @default(false) @map("is_tie_break")
+  teamWinId  String?  @map("team_win_id")
+  id         Int      @id @default(autoincrement())
+  setId      Int      @map("set_id")
+  sets       sets     @relation(fields: [setId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_games_sets")
+  teams      teams?   @relation(fields: [teamWinId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_games_teams")
+  scores     scores[]
 }
 
 model scores {
-  id           Int       @id @default(autoincrement())
-  game_id      String    @db.Uuid
-  type         ScoreType @default(ace)
-  team_1_score Int       @default(0)
-  team_2_score Int       @default(0)
-  time         DateTime  @default(now())
-  created_at   DateTime  @default(now())
-  updated_at   DateTime
-  team_win_id  String?
-  games        games     @relation(fields: [game_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_scores_games")
-  teams        teams?    @relation(fields: [team_win_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_scores_teams")
-}
-
-model sets {
-  id               String    @id @db.Uuid
-  match_id         String
-  time             DateTime  @default(now())
-  team_1_set_score Int
-  team_2_set_score Int
-  created_at       DateTime  @default(now())
-  updated_at       DateTime
-  is_tie_break     Boolean   @default(false)
-  set_start_time   DateTime  @default(now())
-  status           SetStatus @default(not_started)
-  team_win_id      String?
-  games            games[]
-  matches          matches   @relation(fields: [match_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sets_matches")
-  teams            teams?    @relation(fields: [team_win_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sets_teams")
+  id         Int       @id @default(autoincrement())
+  type       ScoreType @default(ace)
+  team1Score Int       @default(0) @map("team_1_score")
+  team2Score Int       @default(0) @map("team_2_score")
+  time       DateTime  @default(now())
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  teamWinId  String?   @map("team_win_id")
+  gameId     Int       @map("game_id")
+  games      games     @relation(fields: [gameId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_scores_games")
+  teams      teams?    @relation(fields: [teamWinId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_scores_teams")
 }
 
 model users_follow_matches {

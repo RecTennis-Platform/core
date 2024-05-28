@@ -1005,7 +1005,7 @@ export class TournamentService {
       return updatedTournament;
     } catch (err) {
       console.log('Error:', err.message);
-      throw new BadRequestException({
+      throw new InternalServerErrorException({
         code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
         message: CustomResponseMessages.getMessage(
           CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
@@ -1400,7 +1400,7 @@ export class TournamentService {
       });
     } catch (err) {
       console.log('Error:', err.message);
-      throw new BadRequestException({
+      throw new InternalServerErrorException({
         code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_REJECT_FAILED,
         message: CustomResponseMessages.getMessage(
           CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_REJECT_FAILED,
