@@ -19,6 +19,7 @@ import {
   UpdateUserAccountDto,
 } from './dto';
 import { UserService } from './user.service';
+import { PageOptionsRefereeMatchesDto } from './dto/page-options-referee-matches.dto';
 
 @Controller('users')
 export class UserController {
@@ -97,5 +98,15 @@ export class UserController {
       userId,
       pageOptions,
     );
+  }
+
+  // Referee
+  @UseGuards(JwtGuard)
+  @Get('referee/match')
+  async getRefereeMatches(
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsRefereeMatchesDto,
+  ) {
+    return await this.userService.getRefereeMatches(userId, pageOptions);
   }
 }

@@ -15,6 +15,8 @@ import { RegistrationStatus, TournamentStatus, UserRole } from '@prisma/client';
 import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-code';
 import { CustomResponseMessages } from 'src/helper/custom-response-message';
 import { TournamentService } from 'src/tournament/tournament.service';
+import { PageOptionsRefereeMatchesDto } from './dto/page-options-referee-matches.dto';
+import { Order } from 'constants/order';
 
 @Injectable()
 export class UserService {
@@ -310,6 +312,74 @@ export class UserService {
 
     return {
       data: userParticipatedTournaments,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
+
+  // Referee
+  async getRefereeMatches(
+    userId: string,
+    pageOptions: PageOptionsRefereeMatchesDto,
+  ) {
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          matchStartDate: Order.DESC,
+        },
+      ],
+      where: {
+        refereeId: userId,
+      },
+      select: {
+        team1: {
+          user1: {
+            id: true,
+            name: true,
+            image: true,
+          },
+          user2: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+        team2: {
+          user1: {
+            id: true,
+            name: true,
+            image: true,
+          },
+          user2: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+        sets: [{}],
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get referee's matches
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.matches.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.matches.count(conditions),
+    ]);
+
+    return {
+      data: result,
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
