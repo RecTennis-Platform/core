@@ -943,33 +943,52 @@ export class TournamentService {
       });
     }
 
-    // Only allow to update tournament info when the tournament is not published (phase = new)
-    if (tournament.phase !== TournamentPhase.new) {
-      throw new BadRequestException({
-        code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
-        message:
-          "Can't update tournament info when the tournament is published",
-        data: null,
-      });
-    }
-
-    // Validate update data (participantType and gender)
-    if (updateDto.participantType) {
-      if (
-        updateDto.participantType === ParticipantType.single ||
-        updateDto.participantType === ParticipantType.doubles
-      ) {
-        if (!updateDto.gender) {
-          throw new BadRequestException({
-            code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
-            message: `Missing 'gender' field for 'participantType': '${updateDto.participantType}'`,
-          });
+    // Update some fields based on the phase
+    if (tournament.phase === TournamentPhase.new) {
+      // new
+      // Validate update data (participantType and gender)
+      if (updateDto.participantType) {
+        if (
+          updateDto.participantType === ParticipantType.single ||
+          updateDto.participantType === ParticipantType.doubles
+        ) {
+          if (!updateDto.gender) {
+            throw new BadRequestException({
+              code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+              message: `Missing 'gender' field for 'participantType': '${updateDto.participantType}'`,
+            });
+          }
+        } else {
+          updateDto.gender = null;
         }
       } else {
-        updateDto.gender = null;
+        delete updateDto['gender'];
+      }
+    } else if (tournament.phase === TournamentPhase.published) {
+      // published
+      if (updateDto.format || updateDto.participantType || updateDto.gender) {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+          message: `The tournament phase is ${tournament.phase}. Invalid update data`,
+        });
       }
     } else {
-      delete updateDto['gender'];
+      // finalized_applicants -> completed
+      if (
+        updateDto.startDate ||
+        updateDto.endDate ||
+        updateDto.registrationDueDate ||
+        updateDto.format ||
+        updateDto.maxParticipants ||
+        updateDto.gender ||
+        updateDto.participantType ||
+        updateDto.playersBornAfterDate
+      ) {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+          message: `The tournament phase is ${tournament.phase}. Invalid update data`,
+        });
+      }
     }
 
     // Update tournament info
