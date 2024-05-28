@@ -242,7 +242,11 @@ export class TournamentService {
         include: {
           _count: {
             select: {
-              tournament_registrations: true,
+              tournament_registrations: {
+                where: {
+                  status: RegistrationStatus.approved,
+                },
+              },
             }, // Count registrations for each tournament
           },
         },
@@ -362,6 +366,7 @@ export class TournamentService {
       await this.prismaService.tournament_registrations.count({
         where: {
           tournamentId: tournamentId,
+          status: RegistrationStatus.approved,
         },
       });
 
@@ -1503,6 +1508,7 @@ export class TournamentService {
           const applicants = await tx.tournament_registrations.findMany({
             where: {
               tournamentId: tournamentId,
+              status: RegistrationStatus.approved,
             },
           });
           if (applicants.length < 5) {
