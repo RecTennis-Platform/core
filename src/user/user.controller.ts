@@ -15,12 +15,12 @@ import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import { IRequestWithUser } from 'src/auth_utils/interfaces';
 import {
   CreateAdminAccountDto,
+  PageOptionsRefereeMatchesDto,
+  PageOptionsUserFollowedMatchesDto,
   PageOptionsUserParticipatedTournamentsDto,
   UpdateUserAccountDto,
 } from './dto';
 import { UserService } from './user.service';
-import { PageOptionsRefereeMatchesDto } from './dto/page-options-referee-matches.dto';
-import { PageOptionsUserFollowedMatchesDto } from './dto/page-options-user-followed-matches.dto copy';
 
 @Controller('users')
 export class UserController {
@@ -111,14 +111,14 @@ export class UserController {
   }
 
   // Referee
-  @UseGuards(JwtGuard)
-  @Get('referee/match')
-  async getRefereeMatches(
-    @GetUser('sub') userId: string,
-    @Query() pageOptions: PageOptionsRefereeMatchesDto,
-  ) {
-    return await this.userService.getRefereeMatches(userId, pageOptions);
-  }
+  // @UseGuards(JwtGuard)
+  // @Get('referee/match')
+  // async getRefereeMatches(
+  //   @GetUser('sub') userId: string,
+  //   @Query() pageOptions: PageOptionsRefereeMatchesDto,
+  // ) {
+  //   return await this.userService.getRefereeMatches(userId, pageOptions);
+  // }
 
   @UseGuards(JwtGuard)
   @Get('matches/follow')

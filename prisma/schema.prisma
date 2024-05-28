@@ -155,7 +155,7 @@ model users {
   team2                        teams[]                          @relation("user2")
   tournamentRegistration1      tournament_registrations[]       @relation("user1")
   tournamentRegistration2      tournament_registrations[]       @relation("user2")
-  followMatches         users_follow_matches[]
+  followMatches                users_follow_matches[]
 }
 
 model tournaments {
@@ -313,37 +313,37 @@ model teams {
 }
 
 model matches {
-  id                   String                 @id @default(uuid())
-  roundId              String                 @map("round_id")
-  groupFixtureTeamId1  String?                @map("group_fixture_team_id_1")
-  groupFixtureTeamId2  String?                @map("group_fixture_team_id_2")
-  rankGroupTeam1       Int?                   @map("rank_group_team1")
-  rankGroupTeam2       Int?                   @map("rank_group_team2")
-  teamId1              String?                @map("team_id_1")
-  teamId2              String?                @map("team_id_2")
-  teamWinnerId         String?                @map("team_winner_id")
-  matchStartDate       DateTime?              @map("match_start_date")
-  matchEndDate         DateTime?              @map("match_end_date")
-  venue                String?
-  status               MatchStatus            @default(scheduled)
-  duration             Int?
-  breakDuration        Int?                   @map("break_duration")
-  createdAt            DateTime               @default(now()) @map("created_at")
-  updatedAt            DateTime               @updatedAt @map("updated_at")
-  nextMatchId          String?                @map("next_match_id")
-  title                String?
-  refereeId            String?                @map("referee_id") @db.Uuid
-  groupFixture1        group_fixtures?        @relation("groupFixture1", fields: [groupFixtureTeamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match1")
-  groupFixture2        group_fixtures?        @relation("groupFixture2", fields: [groupFixtureTeamId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match2")
-  team1                teams?                 @relation("team1", fields: [teamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team1")
-  team2                teams?                 @relation("team2", fields: [teamId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team2")
-  teamWinner           teams?                 @relation("teamWinner", fields: [teamWinnerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team_winner")
-  referee              users?                 @relation(fields: [refereeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_user")
-  nextMatch            matches?               @relation("nextMatch", fields: [nextMatchId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_matches_next_match")
-  nextMatches          matches[]              @relation("nextMatch")
-  round                rounds                 @relation(fields: [roundId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_matches_rounds")
-  sets                 sets[]
-  followUsers users_follow_matches[]
+  id                  String                 @id @default(uuid())
+  roundId             String                 @map("round_id")
+  groupFixtureTeamId1 String?                @map("group_fixture_team_id_1")
+  groupFixtureTeamId2 String?                @map("group_fixture_team_id_2")
+  rankGroupTeam1      Int?                   @map("rank_group_team1")
+  rankGroupTeam2      Int?                   @map("rank_group_team2")
+  teamId1             String?                @map("team_id_1")
+  teamId2             String?                @map("team_id_2")
+  teamWinnerId        String?                @map("team_winner_id")
+  matchStartDate      DateTime?              @map("match_start_date")
+  matchEndDate        DateTime?              @map("match_end_date")
+  venue               String?
+  status              MatchStatus            @default(scheduled)
+  duration            Int?
+  breakDuration       Int?                   @map("break_duration")
+  createdAt           DateTime               @default(now()) @map("created_at")
+  updatedAt           DateTime               @updatedAt @map("updated_at")
+  nextMatchId         String?                @map("next_match_id")
+  title               String?
+  refereeId           String?                @map("referee_id") @db.Uuid
+  groupFixture1       group_fixtures?        @relation("groupFixture1", fields: [groupFixtureTeamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match1")
+  groupFixture2       group_fixtures?        @relation("groupFixture2", fields: [groupFixtureTeamId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match2")
+  team1               teams?                 @relation("team1", fields: [teamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team1")
+  team2               teams?                 @relation("team2", fields: [teamId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team2")
+  teamWinner          teams?                 @relation("teamWinner", fields: [teamWinnerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team_winner")
+  referee             users?                 @relation(fields: [refereeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_user")
+  nextMatch           matches?               @relation("nextMatch", fields: [nextMatchId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_matches_next_match")
+  nextMatches         matches[]              @relation("nextMatch")
+  round               rounds                 @relation(fields: [roundId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_matches_rounds")
+  sets                sets[]
+  followUsers         users_follow_matches[]
 }
 
 model games {

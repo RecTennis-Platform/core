@@ -8,6 +8,7 @@ import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   CreateAdminAccountDto,
+  PageOptionsUserFollowedMatchesDto,
   PageOptionsUserParticipatedTournamentsDto,
   UpdateUserAccountDto,
 } from './dto';
@@ -15,9 +16,6 @@ import { RegistrationStatus, TournamentStatus, UserRole } from '@prisma/client';
 import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-code';
 import { CustomResponseMessages } from 'src/helper/custom-response-message';
 import { TournamentService } from 'src/tournament/tournament.service';
-import { PageOptionsRefereeMatchesDto } from './dto/page-options-referee-matches.dto';
-import { Order } from 'constants/order';
-import { PageOptionsUserFollowedMatchesDto } from './dto/page-options-user-followed-matches.dto copy';
 import { FcmNotificationService } from 'src/services/notification/fcm-notification';
 
 @Injectable()
