@@ -1552,13 +1552,7 @@ export class TournamentService {
       );
     } catch (error) {
       console.log('Error:', error.message);
-      throw new InternalServerErrorException({
-        code: CustomResponseStatusCodes.TOURNAMENT_FINALIZED_APPLICANT_LIST_FAILED,
-        message: CustomResponseMessages.getMessage(
-          CustomResponseStatusCodes.TOURNAMENT_FINALIZED_APPLICANT_LIST_FAILED,
-        ),
-        data: null,
-      });
+      throw error;
     }
   }
 
