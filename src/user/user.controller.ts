@@ -117,6 +117,16 @@ export class UserController {
     @GetUser('sub') userId: string,
     @Query() pageOptions: PageOptionsRefereeMatchesDto,
   ) {
+    // const start = new Date(); // Date is in milliseconds
+    // const end = new Date(start.getTime() + 5 * 60 * 1000);
+    // // Difference in milliseconds
+    // const difference = end.getTime() - start.getTime();
+    // console.log('difference: ', difference);
+    // // Convert milliseconds to minutes
+    // const differenceInMinutes = difference / (1000 * 60);
+    // console.log('differenceInMinutes: ', differenceInMinutes);
+    // console.log('differenceInMinutes type: ', typeof differenceInMinutes);
+    // return 'ok';
     return await this.userService.getRefereeMatches(userId, pageOptions);
   }
 

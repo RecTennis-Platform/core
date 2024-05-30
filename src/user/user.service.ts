@@ -18,13 +18,15 @@ import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-cod
 import { CustomResponseMessages } from 'src/helper/custom-response-message';
 import { TournamentService } from 'src/tournament/tournament.service';
 import { FcmNotificationService } from 'src/services/notification/fcm-notification';
-import { TournamentModule } from 'src/tournament/tournament.module';
+import { MatchService } from 'src/match/match.service';
+import { Order } from 'constants/order';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly tournamentService: TournamentService,
+    private readonly matchService: MatchService,
     private readonly fcmNotificationService: FcmNotificationService,
   ) {}
 
@@ -442,13 +444,17 @@ export class UserService {
   async getRefereeMatches(
     userId: string,
     pageOptions: PageOptionsRefereeMatchesDto,
-  ) {
+  ): Promise<any> {
     // Build pagination options
     const conditions = {
       where: {
         refereeId: userId,
       },
+      orderBy: {
+        matchStartDate: Order.ASC,
+      },
       select: {
+        // Team 1
         team1: {
           select: {
             user1: {
@@ -467,6 +473,7 @@ export class UserService {
             },
           },
         },
+        // Team 2
         team2: {
           select: {
             user1: {
@@ -485,13 +492,53 @@ export class UserService {
             },
           },
         },
+        // Sets
         sets: {
+          orderBy: {
+            id: Order.DESC,
+          },
           select: {
+            id: true,
+            team1SetScore: true,
+            team2SetScore: true,
+            isTieBreak: true,
             status: true,
             teamWinId: true,
             setStartTime: true,
+            // Games
+            games: {
+              orderBy: {
+                id: Order.DESC,
+              },
+              select: {
+                id: true,
+                teamWinId: true,
+                scores: {
+                  orderBy: {
+                    id: Order.DESC,
+                  },
+                  select: {
+                    id: true,
+                    type: true,
+                    team1Score: true,
+                    team2Score: true,
+                    teamWinId: true,
+                    time: true,
+                  },
+                },
+              },
+            },
           },
         },
+        // Other match details
+        id: true,
+        teamId1: true,
+        teamId2: true,
+        status: true,
+        venue: true,
+        teamWinnerId: true,
+        matchStartDate: true,
+        matchEndDate: true,
       },
     };
 
@@ -514,8 +561,85 @@ export class UserService {
       }),
     ]);
 
+    // Modify match data
+    const modifiedData = await Promise.all(
+      result.map(async (match) => {
+        // Modify sets
+        match.sets = await Promise.all(
+          match.sets.map(async (set) => {
+            // Set final score
+            const setFinalScore = {
+              team1: set.team1SetScore,
+              team2: set.team2SetScore,
+              tieBreak: null,
+            };
+
+            // If this set has tiebreak
+            if (set.isTieBreak) {
+              // Get tiebreak score
+              const tieBreakScore = await this.matchService.getTieBreakScore(
+                set.id,
+              );
+
+              // console.log('tieBreakScore:', tieBreakScore);
+
+              setFinalScore.tieBreak = {
+                team1: tieBreakScore.team1Score,
+                team2: tieBreakScore.team2Score,
+              };
+            }
+
+            // Remove unnecessary data
+            delete set.team1SetScore;
+            delete set.team2SetScore;
+
+            return {
+              ...set,
+              setFinalScore,
+            };
+          }),
+        );
+
+        // matchFinalScore (Max 3 sets, win 2 sets -> win match)
+        // Team 1 win sets
+        const team1WinSets = await this.matchService.getWinSetsOfTeam(
+          match.id,
+          match.teamId1,
+        );
+
+        // console.log('team1WinSets:', team1WinSets);
+
+        // Team 2 win sets
+        const team2WinSets = await this.matchService.getWinSetsOfTeam(
+          match.id,
+          match.teamId2,
+        );
+
+        // console.log('team2WinSets:', team2WinSets);
+
+        const matchFinalScore = {
+          team1: team1WinSets.length,
+          team2: team2WinSets.length,
+          teamWinnerId: match.teamWinnerId,
+        };
+
+        // console.log('matchFinalScore:', matchFinalScore);
+
+        // Remove unnecessary data
+        delete match.teamId1;
+        delete match.teamId2;
+
+        return {
+          ...match,
+          matchFinalScore,
+        };
+      }),
+    );
+
+    // console.log('modifiedData:', modifiedData);
+
     return {
-      data: result,
+      data: modifiedData,
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
