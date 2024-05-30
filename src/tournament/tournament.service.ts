@@ -3051,6 +3051,11 @@ export class TournamentService {
         id: dto.id,
       },
     });
+    const phase =
+      dto.status === FixtureStatus.published
+        ? TournamentPhase.generated_fixtures
+        : undefined;
+
     if (fixture?.status === FixtureStatus.published) {
       throw new BadRequestException({
         message: 'Fixture is already published',
@@ -3065,7 +3070,7 @@ export class TournamentService {
               id: id,
             },
             data: {
-              phase: TournamentPhase.generated_fixtures,
+              phase: phase,
             },
           });
         }

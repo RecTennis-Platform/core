@@ -376,6 +376,26 @@ export class UserService {
     }
   }
 
+  async unFollowMatch(userId: string, matchId: string) {
+    try {
+      await this.prismaService.users_follow_matches.deleteMany({
+        where: {
+          userId: userId,
+          matchId: matchId,
+        },
+      });
+      return {
+        message: 'Unfollow match successfully',
+      };
+    } catch (err) {
+      console.log('Error:', err.message);
+
+      throw new InternalServerErrorException({
+        message: err.message,
+      });
+    }
+  }
+
   async getUserFollowedMatches(
     userId: string,
     pageOptions: PageOptionsUserFollowedMatchesDto,

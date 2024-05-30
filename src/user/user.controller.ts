@@ -2,6 +2,7 @@ import { UserRole } from '@prisma/client';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -96,6 +97,15 @@ export class UserController {
     @Param('matchId') matchId: string,
   ) {
     return await this.userService.followMatch(userId, matchId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete('matches/:matchId/unfollow')
+  async unFollowMatch(
+    @GetUser('sub') userId: string,
+    @Param('matchId') matchId: string,
+  ) {
+    return await this.userService.unFollowMatch(userId, matchId);
   }
 
   // Get other user's participated tournaments (status = completed)

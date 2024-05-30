@@ -358,10 +358,14 @@ export class TournamentController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Get('/:id/fixtures')
-  async getFixture(@Param('id') tournamentId: number) {
+  async getFixture(
+    @Param('id') tournamentId: number,
+    @GetUser('sub') userId: string,
+  ) {
     try {
-      return this.fixtureService.getByTournamentId(tournamentId);
+      return this.fixtureService.getByTournamentId(tournamentId, userId);
     } catch (error) {
       throw new HttpException(
         {
