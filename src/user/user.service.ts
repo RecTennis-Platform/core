@@ -477,6 +477,7 @@ export class UserService {
         // Team 1
         team1: {
           select: {
+            id: true,
             user1: {
               select: {
                 id: true,
@@ -496,6 +497,7 @@ export class UserService {
         // Team 2
         team2: {
           select: {
+            id: true,
             user1: {
               select: {
                 id: true,
