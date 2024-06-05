@@ -18,6 +18,7 @@ export class MatchService {
         // Team 1
         team1: {
           select: {
+            id: true,
             user1: {
               select: {
                 id: true,
@@ -37,6 +38,7 @@ export class MatchService {
         // Team 2
         team2: {
           select: {
+            id: true,
             user1: {
               select: {
                 id: true,
@@ -173,6 +175,20 @@ export class MatchService {
     matchDetails['matchFinalScore'] = matchFinalScore;
 
     return matchDetails;
+  }
+
+  async startMatch(refereeId: string, id: string) {
+    // Validate referee if is assigned to this match
+    // Validate match status if it is not "walk_over"
+    // Create new set
+    // Create new game
+    // Creat init score (0 - 0)
+  }
+
+  async endMatch(refereeId: string, id: string) {
+    // Validate referee if is assigned to this match
+    // Validate match status if it is "walk_over"
+    // Update match status to "done"
   }
 
   // Utils
