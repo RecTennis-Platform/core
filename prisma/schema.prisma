@@ -193,6 +193,7 @@ model tournament_registrations {
   userId2      String?            @map("user_id_2") @db.Uuid
   name         String
   message      String?
+  seed           Int?            
   status       RegistrationStatus
   createdAt    DateTime           @default(now()) @map("created_at")
   updatedAt    DateTime           @updatedAt @map("updated_at")
@@ -300,6 +301,7 @@ model teams {
   updatedAt      DateTime        @updatedAt @map("updated_at")
   tournamentId   Int             @map("tournament_id")
   groupFixtureId String?         @map("group_fixture_id")
+  seed           Int?           
   games          games[]
   matches1       matches[]       @relation("team1")
   matches2       matches[]       @relation("team2")

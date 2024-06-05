@@ -31,6 +31,7 @@ import { CreateRefereesTournamentDto } from 'src/referees_tournaments/dto/create
 import { AddRefereesTournamentDto } from './dto/create-referees_tournament.dto';
 import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/page-options-referees-tournaments.dto';
 import { FcmNotificationService } from 'src/services/notification/fcm-notification';
+import { SelectSeedDto } from './dto/select-seed.dto';
 
 @Controller('tournaments')
 export class TournamentController {
@@ -184,6 +185,17 @@ export class TournamentController {
       userId,
       applicantId,
     );
+  }
+
+  @UseGuards(JwtGuard)
+  @Post(':tournamentId/applicants/seeds')
+  // Approve applicant
+  async selectSeed(
+    @GetUser('sub') userId: string,
+    @Param('tournamentId') tournamentId: number,
+    @Body() dto: SelectSeedDto,
+  ) {
+    return this.tournamentService.selectSeed(tournamentId, userId, dto);
   }
 
   @UseGuards(JwtGuard)

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c828d656-eaae-4563-8ab3-4f8bb4a0d3d0",
+		"_postman_id": "b3ea15f4-e08f-4779-ab12-b216c250b554",
 		"name": "Core API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "24967219"
@@ -10832,6 +10832,118 @@
 									],
 									"cookie": [],
 									"body": "{\n    \"id\": 17,\n    \"purchasedPackageId\": \"66485fff2d487337cec959cd\",\n    \"name\": \"Hien1's Championships\",\n    \"maxParticipants\": 20,\n    \"gender\": null,\n    \"format\": \"round_robin\",\n    \"participantType\": \"mixed_doubles\",\n    \"description\": \"This is a description of tournament 1\",\n    \"playersBornAfterDate\": \"1989-12-31T17:00:00.000Z\",\n    \"registrationDueDate\": \"2024-05-19T08:00:50.283Z\",\n    \"startDate\": \"2024-05-25T08:00:50.283Z\",\n    \"endDate\": \"2024-06-17T08:00:50.283Z\",\n    \"status\": \"upcoming\",\n    \"address\": \"123 Main Stasdsadsada\",\n    \"contactPersonName\": \"John Doe\",\n    \"contactNumber\": \"123-456-7890\",\n    \"contactEmail\": \"john@gmail.com\",\n    \"createdAt\": \"2024-05-18T08:00:50.461Z\",\n    \"updatedAt\": \"2024-05-23T04:49:54.113Z\",\n    \"phase\": \"new\",\n    \"image\": null\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Seed",
+					"item": [
+						{
+							"name": "Select Seed",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1OThlZGZmYy05OWRkLTQxNzYtYmVjOS04NmY4Yjk1ZTNhNDYiLCJlbWFpbCI6ImNoaWhpZW4yMDAyQGdtYWlsLmNvbSIsImlhdCI6MTcxNTA2NzE2NSwiZXhwIjoxNzE3NjU5MTY1fQ.y3lyiGj7KZZWM6vvdmlLQIqZ62yF5qbD6I4JAwO4miw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n    \"seed\": 4\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/tournaments/10/applicants/seeds",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"tournaments",
+										"10",
+										"applicants",
+										"seeds"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Select seed",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"userId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n    \"seed\": 4\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{CORE_URL}}/tournaments/10/applicants/seeds",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"tournaments",
+												"10",
+												"applicants",
+												"seeds"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "275"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"113-6c4ZwKgc3RiEQFu8fFn/GuqsMYw\""
+										},
+										{
+											"key": "Date",
+											"value": "Wed, 05 Jun 2024 08:08:01 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 6,\n    \"tournamentId\": 10,\n    \"userId1\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n    \"userId2\": null,\n    \"name\": \"shin2\",\n    \"message\": \"Let me in\",\n    \"seed\": 4,\n    \"status\": \"approved\",\n    \"createdAt\": \"2024-05-11T05:50:29.251Z\",\n    \"updatedAt\": \"2024-06-05T08:08:01.804Z\",\n    \"appliedDate\": \"2024-05-11T05:50:29.248Z\"\n}"
 								}
 							]
 						}

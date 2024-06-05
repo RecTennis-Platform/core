@@ -40,6 +40,7 @@ import { CreateRefereesTournamentDto } from 'src/referees_tournaments/dto/create
 import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/page-options-referees-tournaments.dto';
 import { TournamentRole } from './tournament.enum';
 import { FixtureService } from 'src/fixture/fixture.service';
+import { SelectSeedDto } from './dto/select-seed.dto';
 
 @Injectable()
 export class TournamentService {
@@ -1103,6 +1104,7 @@ export class TournamentService {
         message: true,
         status: true,
         appliedDate: true,
+        seed: true,
       };
     } else {
       projection = {
@@ -1133,6 +1135,7 @@ export class TournamentService {
         message: true,
         status: true,
         appliedDate: true,
+        seed: true,
       };
     }
 
@@ -1310,6 +1313,117 @@ export class TournamentService {
       message: 'Applicant approved successfully',
       data: null,
     };
+  }
+
+  async selectSeed(tournamentId: number, userId: string, dto: SelectSeedDto) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    //Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check expiration date of the purchased package
+    if (new Date(purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    if (purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        code: CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if applicantId is provided
+    if (!dto.userId) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.TOURNAMENT_SUBMITTED_REGISTRATION_INVALID,
+        message:
+          CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_SUBMITTED_REGISTRATION_INVALID,
+          ) + ": 'applicantId - userId' is required",
+        data: null,
+      });
+    }
+
+    // Get tournament registration info
+    const tournament_registration =
+      await this.prismaService.tournament_registrations.findFirst({
+        where: {
+          tournamentId: tournamentId,
+          userId1: dto.userId,
+        },
+      });
+
+    if (!tournament_registration) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Update tournament registration status -> approved
+    try {
+      return await this.prismaService.tournament_registrations.update({
+        where: {
+          id: tournament_registration.id,
+        },
+        data: {
+          seed: dto.seed,
+        },
+      });
+    } catch (err) {
+      console.log('Error:', err.message);
+      throw new InternalServerErrorException({
+        code: CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_APPROVE_FAILED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_REGISTRATION_APPROVE_FAILED,
+        ),
+        data: null,
+      });
+    }
   }
 
   async rejectApplicant(
@@ -1545,6 +1659,7 @@ export class TournamentService {
                 userId2,
                 totalElo,
                 tournamentId,
+                seed: applicant.seed,
               };
             }),
           );
@@ -1650,6 +1765,7 @@ export class TournamentService {
         message: true,
         status: true,
         appliedDate: true,
+        seed: true,
       };
     } else {
       conditions['select'] = {
@@ -1674,6 +1790,7 @@ export class TournamentService {
         message: true,
         status: true,
         appliedDate: true,
+        seed: true,
       };
     }
 
@@ -2322,6 +2439,7 @@ export class TournamentService {
         userId2: true,
         message: true,
         status: true,
+        seed: true,
       },
     };
 
@@ -2601,6 +2719,7 @@ export class TournamentService {
         tournamentId: id,
       },
       orderBy: {
+        seed: Prisma.SortOrder.asc,
         totalElo: Prisma.SortOrder.desc,
       },
       include: {
@@ -2665,6 +2784,7 @@ export class TournamentService {
             tournamentId: id,
           },
           orderBy: {
+            seed: Prisma.SortOrder.asc,
             totalElo: Prisma.SortOrder.desc,
           },
           include: {
