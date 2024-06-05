@@ -1614,7 +1614,7 @@ export class TournamentService {
     }
 
     // Check if the tournament status is finalized_applicants
-    if (tournament.phase !== TournamentPhase.finalized_applicants) {
+    if (tournament.phase === TournamentPhase.new) {
       return {
         code: CustomResponseStatusCodes.TOURNAMENT_APPLICANT_LIST_NOT_FINALIZED,
         message: CustomResponseMessages.getMessage(
