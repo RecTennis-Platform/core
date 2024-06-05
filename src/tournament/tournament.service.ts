@@ -1216,6 +1216,16 @@ export class TournamentService {
       });
     }
 
+    if (tournament.phase !== TournamentPhase.new) {
+      return {
+        code: CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+        ),
+        data: null,
+      };
+    }
+
     // Get purchased package info
     const purchasedPackage =
       await this.mongodbPrismaService.purchasedPackage.findUnique({
@@ -1331,6 +1341,16 @@ export class TournamentService {
         ),
         data: null,
       });
+    }
+
+    if (tournament.phase !== TournamentPhase.new) {
+      return {
+        code: CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+        ),
+        data: null,
+      };
     }
 
     //Get purchased package info
