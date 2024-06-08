@@ -193,11 +193,11 @@ model tournament_registrations {
   userId2      String?            @map("user_id_2") @db.Uuid
   name         String
   message      String?
-  seed           Int?            
   status       RegistrationStatus
   createdAt    DateTime           @default(now()) @map("created_at")
   updatedAt    DateTime           @updatedAt @map("updated_at")
   appliedDate  DateTime?          @map("applied_date")
+  seed         Int?
   tournament   tournaments        @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_tournament_registration_tournaments")
   user1        users              @relation("user1", fields: [userId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user1_tournament_registration")
   user2        users?             @relation("user2", fields: [userId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user2_tournament_registration")
@@ -301,7 +301,7 @@ model teams {
   updatedAt      DateTime        @updatedAt @map("updated_at")
   tournamentId   Int             @map("tournament_id")
   groupFixtureId String?         @map("group_fixture_id")
-  seed           Int?           
+  seed           Int?
   games          games[]
   matches1       matches[]       @relation("team1")
   matches2       matches[]       @relation("team2")
