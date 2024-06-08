@@ -107,7 +107,6 @@ export class TournamentController {
   }
 
   @Get(':tournamentId/referees')
-  // Get tournaments that user has not registered (Allow user to participate)
   async getListReferees(
     @Query() pageOptions: PageOptionsRefereesTournamentsDto,
     @Param('tournamentId') tournamentId: number,

@@ -1216,7 +1216,10 @@ export class TournamentService {
       });
     }
 
-    if (tournament.phase !== TournamentPhase.new) {
+    if (
+      tournament.phase !== TournamentPhase.new &&
+      tournament.phase !== TournamentPhase.published
+    ) {
       return {
         code: CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
         message: CustomResponseMessages.getMessage(
@@ -1343,7 +1346,10 @@ export class TournamentService {
       });
     }
 
-    if (tournament.phase !== TournamentPhase.new) {
+    if (
+      tournament.phase !== TournamentPhase.new &&
+      tournament.phase !== TournamentPhase.published
+    ) {
       return {
         code: CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
         message: CustomResponseMessages.getMessage(

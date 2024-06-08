@@ -69,6 +69,7 @@ export class RefereesTournamentsService {
               dob: true,
               phoneNumber: true,
               elo: true,
+              email: true,
             },
           },
         },
