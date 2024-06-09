@@ -2744,10 +2744,10 @@ export class TournamentService {
       where: {
         tournamentId: id,
       },
-      orderBy: {
-        seed: Prisma.SortOrder.asc,
-        totalElo: Prisma.SortOrder.desc,
-      },
+      orderBy: [
+        { seed: Prisma.SortOrder.asc },
+        { totalElo: Prisma.SortOrder.desc },
+      ],
       include: {
         user1: {
           select: {
@@ -2809,10 +2809,10 @@ export class TournamentService {
           where: {
             tournamentId: id,
           },
-          orderBy: {
-            seed: Prisma.SortOrder.asc,
-            totalElo: Prisma.SortOrder.desc,
-          },
+          orderBy: [
+            { seed: Prisma.SortOrder.asc },
+            { totalElo: Prisma.SortOrder.desc },
+          ],
           include: {
             user1: {
               select: {
