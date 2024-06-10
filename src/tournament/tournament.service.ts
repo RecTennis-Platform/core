@@ -3742,6 +3742,7 @@ export class TournamentService {
     } else if (format === TournamentFormat.group_playoff) {
       groups[0].rounds.reverse();
       const knockoutGroup = groups[0];
+      const fixtureGroups = [];
       const roundRobinGroups = (
         await this.prismaService.group_fixtures.findMany({
           where: {
@@ -3802,9 +3803,34 @@ export class TournamentService {
                 },
               },
             },
+            teams: {
+              include: {
+                user1: {
+                  select: {
+                    id: true,
+                    image: true,
+                    name: true,
+                  },
+                },
+                user2: {
+                  select: {
+                    id: true,
+                    image: true,
+                    name: true,
+                  },
+                },
+              },
+            },
           },
         })
       ).map((groupFixture) => {
+        const { id, title, numberOfProceeders, teams } = groupFixture;
+        fixtureGroups.push({
+          id,
+          title,
+          numberOfProceeders,
+          teams,
+        });
         const rounds = groupFixture.rounds.map((round) => {
           const matches = round.matches.map((match) => {
             const { team1, team2, ...others } = match;
@@ -3819,6 +3845,7 @@ export class TournamentService {
         format,
         knockoutGroup,
         roundRobinGroups,
+        groups: fixtureGroups,
       };
     }
   }
