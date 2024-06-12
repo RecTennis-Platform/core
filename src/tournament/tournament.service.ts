@@ -484,20 +484,23 @@ export class TournamentService {
     ]);
 
     // Modify the structure of the returned data
-    const modified_result = result.map(async (tournament) => {
-      const participantCount =
-        await this.prismaService.tournament_registrations.count({
-          where: {
-            status: 'approved',
-          },
-        });
-      delete tournament._count;
+    const modified_result = await Promise.all(
+      result.map(async (tournament) => {
+        const participantCount =
+          await this.prismaService.tournament_registrations.count({
+            where: {
+              status: 'approved',
+              tournamentId: tournament.id,
+            },
+          });
+        delete tournament._count;
 
-      return {
-        ...tournament,
-        participants: participantCount,
-      };
-    });
+        return {
+          ...tournament,
+          participants: participantCount,
+        };
+      }),
+    );
 
     return {
       data: modified_result,
