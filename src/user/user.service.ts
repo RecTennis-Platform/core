@@ -258,21 +258,23 @@ export class UserService {
     ]);
 
     // Map to get only tournament details
-    const userParticipatedTournaments = result.map((registration) => {
-      if (registration.status !== RegistrationStatus.rejected) {
-        return {
-          ...registration.tournament,
-          applicationStatus: registration.status,
-        };
-      } else {
-        if (registration.tournament.status === TournamentStatus.upcoming) {
+    const userParticipatedTournaments = result
+      .map((registration) => {
+        if (registration.status !== RegistrationStatus.rejected) {
           return {
             ...registration.tournament,
             applicationStatus: registration.status,
           };
+        } else {
+          if (registration.tournament.status === TournamentStatus.upcoming) {
+            return {
+              ...registration.tournament,
+              applicationStatus: registration.status,
+            };
+          }
         }
-      }
-    });
+      })
+      .filter(Boolean);
 
     // Get each tournament participants count
     for (const tournament of userParticipatedTournaments) {

@@ -484,8 +484,13 @@ export class TournamentService {
     ]);
 
     // Modify the structure of the returned data
-    const modified_result = result.map((tournament) => {
-      const participantCount = tournament._count.tournament_registrations;
+    const modified_result = result.map(async (tournament) => {
+      const participantCount =
+        await this.prismaService.tournament_registrations.count({
+          where: {
+            status: 'approved',
+          },
+        });
       delete tournament._count;
 
       return {
