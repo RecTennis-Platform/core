@@ -32,6 +32,8 @@ import {
   PageOptionsGroupMembershipDto,
 } from './dto/page-options-group.dto';
 import { PageOptionsParticipantsDto } from './dto/page-options-participants.dto';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class GroupService {
@@ -41,6 +43,7 @@ export class GroupService {
     private jwtService: JwtService,
     private membershipService: MembershipService,
     private readonly mongodbPrismaService: MongoDBPrismaService,
+    @InjectQueue('send-mail') private sendMailQueue: Queue,
   ) {}
 
   // Validation functions
@@ -487,13 +490,24 @@ export class GroupService {
 
     try {
       const token = await this.generateToken({
-        email: null,
+        email: dto.email,
         groupId: dto.groupId,
         sub: null,
       });
-      return {
-        link: `${process.env.INVITE_USER_TO_GROUP_LINK}?token=${token.token}`,
+
+      const link = `${process.env.INVITE_USER_TO_GROUP_LINK}?token=${token.token}`;
+      const templateData = {
+        host: `${dto.hostName}`,
+        joinLink: link,
       };
+      const data: SendMailTemplateDto = {
+        toAddresses: [dto.email],
+        ccAddresses: [dto.email],
+        bccAddresses: [dto.email],
+        template: 'invite_user',
+        templateData: JSON.stringify(templateData),
+      };
+      await this.sendMailQueue.add(data);
     } catch (error) {
       console.log('Error:', error.message);
       throw new BadRequestException({
@@ -552,6 +566,7 @@ export class GroupService {
         data: null,
       });
     }
+
     try {
       this.jwtService.verify(dto.token, {
         secret: process.env.JWT_INVITE_USER_TO_GROUP_SECRET,
@@ -572,6 +587,12 @@ export class GroupService {
       }
     }
     const decoded = await this.jwtService.decode(dto.token);
+
+    if (user.email != decoded.email) {
+      throw new ForbiddenException(
+        'User must login to system by using correct email',
+      );
+    }
 
     const memberShip = await this.prismaService.member_ships.findFirst({
       where: {

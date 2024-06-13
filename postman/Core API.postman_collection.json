@@ -1328,7 +1328,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsImVtYWlsIjoiaHFraGFpMTYzOUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjM4OTYzMiwiZXhwIjoxNzEyMzkxNDMyfQ.bskFqLb8jwyJ0-vyoTCS487U3C5EI9rLBJBPZqA5-Gw",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMmIyN2UzZC02YWU1LTQ2MzUtODZjYi1jN2MwOWM1NjFkMjkiLCJlbWFpbCI6IjlhMy4xMi5raGFpQGdtYWlsLmNvbSIsImlhdCI6MTcxODI4OTA1NywiZXhwIjoxNzE5NTg1MDU3fQ.LwpgGROPEeeYKgrLR99cXHUO2HszjS7fkQQNNM5LaCQ",
 											"type": "string"
 										}
 									]
@@ -1336,7 +1336,7 @@
 								"method": "POST",
 								"header": [],
 								"url": {
-									"raw": "{{CORE_URL}}/groups/user?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM",
+									"raw": "{{CORE_URL}}/groups/user?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjoiOWEzLjEyLmtoYWlAZ21haWwuY29tIiwiZ3JvdXBJZCI6MzgsImlhdCI6MTcxODI4ODk4MiwiZXhwIjoxNzE4ODkzNzgyfQ.pNnh6Uyx_ALWfI8fFB64FpkiyZkFwq-oo29KPIVDTtM",
 									"host": [
 										"{{CORE_URL}}"
 									],
@@ -1347,7 +1347,7 @@
 									"query": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjpudWxsLCJyb2xlIjpudWxsLCJncm91cElkIjoyLCJpYXQiOjE3MTIzOTAyMjYsImV4cCI6MTcxMjM5MDI4Nn0.FjSC6G3Kpspa7-xYDHIL-K61JGZsJUJoE2MCuEFGjdM"
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsImVtYWlsIjoiOWEzLjEyLmtoYWlAZ21haWwuY29tIiwiZ3JvdXBJZCI6MzgsImlhdCI6MTcxODI4ODk4MiwiZXhwIjoxNzE4ODkzNzgyfQ.pNnh6Uyx_ALWfI8fFB64FpkiyZkFwq-oo29KPIVDTtM"
 										}
 									]
 								}
@@ -1634,7 +1634,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiaHFraGFpMTYzN0BnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMjM5MjE1NSwiZXhwIjoxNzEyMzkzOTU1fQ.k8NUtWHJCt2T4CyWIDOhjYhEWt5wzhV1Q79Hw85Cne4",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNjI4YTE0Mi0zODZiLTRlZTYtODE5OC1kMjgyZDlmNDEwNTkiLCJlbWFpbCI6InRob25nQG1haWwuY29tIiwiaWF0IjoxNzE4Mjg4Mjk1LCJleHAiOjE3MTk1ODQyOTV9.GW2Pg5TmLZNTV9UItZQ_nra54jprIPh7Dk865hMnXQc",
 											"type": "string"
 										}
 									]
@@ -1643,7 +1643,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"groupId\": 2\n}",
+									"raw": "{\n    \"groupId\": 38,\n    \"email\": \"9a3.12.khai@gmail.com\",\n    \"hostName\": \"Thong\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -9682,7 +9682,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1OThlZGZmYy05OWRkLTQxNzYtYmVjOS04NmY4Yjk1ZTNhNDYiLCJlbWFpbCI6ImNoaWhpZW4yMDAyQGdtYWlsLmNvbSIsImlhdCI6MTcxNTA2NzE2NSwiZXhwIjoxNzE3NjU5MTY1fQ.y3lyiGj7KZZWM6vvdmlLQIqZ62yF5qbD6I4JAwO4miw",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNzYyYTQ1NC01M2RlLTRjMzItYTZjZC1iNjBlNzAzZjhmOTMiLCJlbWFpbCI6Im1pdGlkZXZ1c0BnbWFpbC5jb20iLCJpYXQiOjE3MTgxNjIyMzMsImV4cCI6MTcxOTQ1ODIzM30.roAlE23l7O4p9FhqvmCtPneWRLxrwETsbFMg9qIb8pw",
 											"type": "string"
 										}
 									]
