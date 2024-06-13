@@ -168,6 +168,15 @@ export class TournamentService {
         tournamentId: createRefereesTournamentDto.tournamentId,
       },
     });
+
+    await this.prismaService.users.update({
+      where: {
+        id: referee.id,
+      },
+      data: {
+        isReferee: true,
+      },
+    });
   }
 
   async listReferees(
@@ -1107,6 +1116,7 @@ export class TournamentService {
             gender: true,
             email: true,
             phoneNumber: true,
+            isReferee: true,
           },
         },
         message: true,
@@ -1126,6 +1136,7 @@ export class TournamentService {
             gender: true,
             email: true,
             phoneNumber: true,
+            isReferee: true,
           },
         },
         user2: {
@@ -1138,6 +1149,7 @@ export class TournamentService {
             gender: true,
             email: true,
             phoneNumber: true,
+            isReferee: true,
           },
         },
         message: true,
@@ -1794,6 +1806,7 @@ export class TournamentService {
             email: true,
             image: true,
             elo: true,
+            isReferee: true,
           },
         },
         message: true,
@@ -1810,6 +1823,7 @@ export class TournamentService {
             email: true,
             image: true,
             elo: true,
+            isReferee: true,
           },
         },
         user2: {
@@ -1819,6 +1833,7 @@ export class TournamentService {
             email: true,
             image: true,
             elo: true,
+            isReferee: true,
           },
         },
         message: true,
@@ -2762,6 +2777,7 @@ export class TournamentService {
             id: true,
             image: true,
             name: true,
+            isReferee: true,
           },
         },
         user2: {
@@ -2769,6 +2785,7 @@ export class TournamentService {
             id: true,
             image: true,
             name: true,
+            isReferee: true,
           },
         },
       },
@@ -2827,6 +2844,7 @@ export class TournamentService {
                 id: true,
                 image: true,
                 name: true,
+                isReferee: true,
               },
             },
             user2: {
@@ -2834,6 +2852,7 @@ export class TournamentService {
                 id: true,
                 image: true,
                 name: true,
+                isReferee: true,
               },
             },
             tournaments: true,
@@ -3009,6 +3028,7 @@ export class TournamentService {
                       id: true,
                       image: true,
                       name: true,
+                      isReferee: true,
                     },
                   },
                   user2: {
@@ -3016,6 +3036,7 @@ export class TournamentService {
                       id: true,
                       image: true,
                       name: true,
+                      isReferee: true,
                     },
                   },
                   tournaments: true,
@@ -3658,6 +3679,7 @@ export class TournamentService {
                               id: true,
                               image: true,
                               name: true,
+                              isReferee: true,
                             },
                           },
                           user2: {
@@ -3665,6 +3687,7 @@ export class TournamentService {
                               id: true,
                               image: true,
                               name: true,
+                              isReferee: true,
                             },
                           },
                         },
@@ -3676,6 +3699,7 @@ export class TournamentService {
                               id: true,
                               image: true,
                               name: true,
+                              isReferee: true,
                             },
                           },
                           user2: {
@@ -3683,6 +3707,7 @@ export class TournamentService {
                               id: true,
                               image: true,
                               name: true,
+                              isReferee: true,
                             },
                           },
                         },
@@ -3694,6 +3719,7 @@ export class TournamentService {
                           name: true,
                           dob: true,
                           phoneNumber: true,
+                          isReferee: true,
                         },
                       },
                     },
@@ -3769,6 +3795,7 @@ export class TournamentService {
                             id: true,
                             image: true,
                             name: true,
+                            isReferee: true,
                           },
                         },
                         user2: {
@@ -3776,6 +3803,7 @@ export class TournamentService {
                             id: true,
                             image: true,
                             name: true,
+                            isReferee: true,
                           },
                         },
                       },
@@ -3787,6 +3815,7 @@ export class TournamentService {
                             id: true,
                             image: true,
                             name: true,
+                            isReferee: true,
                           },
                         },
                         user2: {
@@ -3794,6 +3823,7 @@ export class TournamentService {
                             id: true,
                             image: true,
                             name: true,
+                            isReferee: true,
                           },
                         },
                       },
@@ -3805,6 +3835,7 @@ export class TournamentService {
                         name: true,
                         dob: true,
                         phoneNumber: true,
+                        isReferee: true,
                       },
                     },
                   },
@@ -3818,6 +3849,7 @@ export class TournamentService {
                     id: true,
                     image: true,
                     name: true,
+                    isReferee: true,
                   },
                 },
                 user2: {
@@ -3825,6 +3857,7 @@ export class TournamentService {
                     id: true,
                     image: true,
                     name: true,
+                    isReferee: true,
                   },
                 },
               },
@@ -3891,6 +3924,7 @@ export class TournamentService {
               id: true,
               image: true,
               name: true,
+              isReferee: true,
             },
           },
           user2: {
@@ -3898,6 +3932,7 @@ export class TournamentService {
               id: true,
               image: true,
               name: true,
+              isReferee: true,
             },
           },
         },

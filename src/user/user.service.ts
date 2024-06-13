@@ -46,6 +46,7 @@ export class UserService {
         role: true,
         elo: true,
         fcmToken: true,
+        isReferee: true,
       },
     });
 
@@ -109,6 +110,7 @@ export class UserService {
         name: true,
         image: true,
         role: true,
+        isReferee: true,
       },
     });
 
@@ -485,6 +487,7 @@ export class UserService {
                 id: true,
                 name: true,
                 image: true,
+                isReferee: true,
               },
             },
             user2: {
@@ -492,6 +495,7 @@ export class UserService {
                 id: true,
                 name: true,
                 image: true,
+                isReferee: true,
               },
             },
           },
@@ -505,6 +509,7 @@ export class UserService {
                 id: true,
                 name: true,
                 image: true,
+                isReferee: true,
               },
             },
             user2: {
@@ -512,6 +517,7 @@ export class UserService {
                 id: true,
                 name: true,
                 image: true,
+                isReferee: true,
               },
             },
           },

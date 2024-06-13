@@ -146,6 +146,7 @@ model users {
   phoneNumber                  String?                          @map("phone_number")
   elo                          Int?
   fcmToken                     String?                          @map("fcm_token")
+  isReferee                    Boolean                          @default(false) @map("is_referee")
   groupTournamentRegistrations group_tournament_registrations[]
   matches                      matches[]
   memberShips                  member_ships[]
