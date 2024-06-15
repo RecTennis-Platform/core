@@ -3050,9 +3050,11 @@ export class TournamentService {
             1,
             teams.length,
           );
+          let k = 1;
           for (let i = 0; i < tables.table1.length; i++) {
             const matches = [];
             for (let j = 0; j < tables.table1[i].length; j++) {
+              if (tables.table1[i][j] === tables.table2[i][j]) continue;
               const team1 = {
                 user1: teams[tables.table1[i][j] - 1].user1,
                 user2: teams[tables.table1[i][j] - 1].user2,
@@ -3067,7 +3069,7 @@ export class TournamentService {
               const match = {
                 id: randomUUID(),
                 nextMatchId: null,
-                title: `Match ${j + 1}`,
+                title: `Match ${k++}`,
                 matchStartDate: null,
                 duration: dto.matchDuration,
                 status: MatchStatus.scheduled,
