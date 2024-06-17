@@ -2489,6 +2489,34 @@ export class TournamentService {
         message: true,
         status: true,
         seed: true,
+        user1: {
+          select: {
+            id: true,
+            email: true,
+            image: true,
+            name: true,
+            role: true,
+            gender: true,
+            dob: true,
+            phoneNumber: true,
+            isReferee: true,
+            elo: true,
+          },
+        },
+        user2: {
+          select: {
+            id: true,
+            email: true,
+            image: true,
+            name: true,
+            role: true,
+            gender: true,
+            dob: true,
+            phoneNumber: true,
+            isReferee: true,
+            elo: true,
+          },
+        },
       },
     };
 
