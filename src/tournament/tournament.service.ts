@@ -41,6 +41,7 @@ import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/
 import { TournamentRole } from './tournament.enum';
 import { FixtureService } from 'src/fixture/fixture.service';
 import { SelectSeedDto } from './dto/select-seed.dto';
+import { dot } from 'node:test/reporters';
 
 @Injectable()
 export class TournamentService {
@@ -2481,7 +2482,7 @@ export class TournamentService {
       ],
       where: {
         userId2: userId,
-        status: RegistrationStatus.inviting,
+        status: pageOptions.status,
       },
       select: {
         userId1: true,
