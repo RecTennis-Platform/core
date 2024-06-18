@@ -1927,7 +1927,7 @@ export class TournamentService {
       await this.prismaService.tournament_registrations.findFirst({
         where: {
           tournamentId: tournamentId,
-          userId1: userId,
+          OR: [{ userId1: userId }, { userId2: userId }],
           NOT: {
             status: RegistrationStatus.canceled,
           },
@@ -1978,18 +1978,18 @@ export class TournamentService {
       };
     } else {
       // Check if the invitation is accepted
-      if (
-        tournament_registration.status !== RegistrationStatus.pending &&
-        tournament_registration.status !== RegistrationStatus.inviting
-      ) {
-        return {
-          code: CustomResponseStatusCodes.TOURNAMENT_SUBMITTED_REGISTRATION_INVALID,
-          message: CustomResponseMessages.getMessage(
-            CustomResponseStatusCodes.TOURNAMENT_SUBMITTED_REGISTRATION_INVALID,
-          ),
-          data: null,
-        };
-      }
+      // if (
+      //   tournament_registration.status !== RegistrationStatus.pending &&
+      //   tournament_registration.status !== RegistrationStatus.inviting
+      // ) {
+      //   return {
+      //     code: CustomResponseStatusCodes.TOURNAMENT_SUBMITTED_REGISTRATION_INVALID,
+      //     message: CustomResponseMessages.getMessage(
+      //       CustomResponseStatusCodes.TOURNAMENT_SUBMITTED_REGISTRATION_INVALID,
+      //     ),
+      //     data: null,
+      //   };
+      // }
 
       // Get user2 info
       const user2 = await this.prismaService.users.findUnique({
@@ -2255,6 +2255,7 @@ export class TournamentService {
       }
       user2 = user2Res;
       tournament_registration_status = 'inviting';
+      appliedDate = new Date();
     }
 
     let userId2 = null;
