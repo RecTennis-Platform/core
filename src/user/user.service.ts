@@ -569,6 +569,8 @@ export class UserService {
         teamWinnerId: true,
         matchStartDate: true,
         matchEndDate: true,
+        team1MatchScore: true,
+        team2MatchScore: true,
       },
     };
 
@@ -632,24 +634,24 @@ export class UserService {
 
         // matchFinalScore (Max 3 sets, win 2 sets -> win match)
         // Team 1 win sets
-        const team1WinSets = await this.matchService.getWinSetsOfTeam(
-          match.id,
-          match.teamId1,
-        );
+        // const team1WinSets = await this.matchService.getWinSetsOfTeam(
+        //   match.id,
+        //   match.teamId1,
+        // );
 
         // console.log('team1WinSets:', team1WinSets);
 
         // Team 2 win sets
-        const team2WinSets = await this.matchService.getWinSetsOfTeam(
-          match.id,
-          match.teamId2,
-        );
+        // const team2WinSets = await this.matchService.getWinSetsOfTeam(
+        //   match.id,
+        //   match.teamId2,
+        // );
 
         // console.log('team2WinSets:', team2WinSets);
 
         const matchFinalScore = {
-          team1: team1WinSets.length,
-          team2: team2WinSets.length,
+          team1: match.team1MatchScore,
+          team2: match.team2MatchScore,
           teamWinnerId: match.teamWinnerId,
         };
 
