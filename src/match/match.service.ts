@@ -622,14 +622,14 @@ export class MatchService {
             if (dto.teamWin === 1) {
               updateMatchData = {
                 teamWinnerId: scoreData['teamWinId'],
-                status: MatchStatus.done,
+                status: MatchStatus.score_done,
                 team1MatchScore: teamWinMatchScore,
                 team2MatchScore: teamLoseMatchScore,
               };
             } else {
               updateMatchData = {
                 teamWinnerId: scoreData['teamWinId'],
-                status: MatchStatus.done,
+                status: MatchStatus.score_done,
                 team1MatchScore: teamLoseMatchScore,
                 team2MatchScore: teamWinMatchScore,
               };
