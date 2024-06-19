@@ -406,6 +406,8 @@ export class MatchService {
         // Win based on a two-point lead
         teamWinScore = 5; // Win
         isGameEnd = true;
+
+        // TODO: Noti: Game end
       } else if (teamWinScore === 4 && teamLoseScore === 4) {
         // Deuce
         teamWinScore = 3; // 40
@@ -523,6 +525,8 @@ export class MatchService {
               team2SetScore: teamWinSetScore,
             };
           }
+
+          // TODO: Noti: Set end
         } else if (
           teamWinSetScore >= 6 &&
           teamWinSetScore === teamLoseSetScore
@@ -630,6 +634,8 @@ export class MatchService {
                 team2MatchScore: teamWinMatchScore,
               };
             }
+
+            // TODO: Noti: Match end
           } else {
             // Normal match score
             if (dto.teamWin === 1) {
