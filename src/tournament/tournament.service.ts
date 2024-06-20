@@ -266,15 +266,36 @@ export class TournamentService {
     ]);
 
     // Modify the structure of the returned data
-    const modified_result = result.map((tournament) => {
-      const participantCount = tournament._count.tournament_registrations;
-      delete tournament._count;
+    const modified_result = await Promise.all(
+      result.map(async (tournament) => {
+        const participantCountUser1 =
+          await this.prismaService.tournament_registrations.count({
+            where: {
+              status: 'approved',
+              tournamentId: tournament.id,
+            },
+          });
 
-      return {
-        ...tournament,
-        participants: participantCount,
-      };
-    });
+        const participantCountUser2 =
+          await this.prismaService.tournament_registrations.count({
+            where: {
+              status: 'approved',
+              tournamentId: tournament.id,
+              NOT: {
+                userId2: null,
+              },
+            },
+          });
+
+        const participantCount = participantCountUser1 + participantCountUser2;
+        delete tournament._count;
+
+        return {
+          ...tournament,
+          participants: participantCount,
+        };
+      }),
+    );
 
     return {
       data: modified_result,
@@ -373,13 +394,26 @@ export class TournamentService {
     });
 
     //count number of participants
-    const numberOfParticipants =
+    const participantCountUser1 =
       await this.prismaService.tournament_registrations.count({
         where: {
-          tournamentId: tournamentId,
-          status: RegistrationStatus.approved,
+          status: 'approved',
+          tournamentId: tournament.id,
         },
       });
+
+    const participantCountUser2 =
+      await this.prismaService.tournament_registrations.count({
+        where: {
+          status: 'approved',
+          tournamentId: tournament.id,
+          NOT: {
+            userId2: null,
+          },
+        },
+      });
+
+    const participantCount = participantCountUser1 + participantCountUser2;
 
     // Build response data
     delete tournament.purchasedPackageId;
@@ -393,7 +427,7 @@ export class TournamentService {
         name: purchasedPackage.package.name,
         services: parsedServices,
       },
-      participants: numberOfParticipants,
+      participants: participantCount,
       tournamentRoles,
     };
 
@@ -496,13 +530,26 @@ export class TournamentService {
     // Modify the structure of the returned data
     const modified_result = await Promise.all(
       result.map(async (tournament) => {
-        const participantCount =
+        const participantCountUser1 =
           await this.prismaService.tournament_registrations.count({
             where: {
               status: 'approved',
               tournamentId: tournament.id,
             },
           });
+
+        const participantCountUser2 =
+          await this.prismaService.tournament_registrations.count({
+            where: {
+              status: 'approved',
+              tournamentId: tournament.id,
+              NOT: {
+                userId2: null,
+              },
+            },
+          });
+
+        const participantCount = participantCountUser1 + participantCountUser2;
         delete tournament._count;
 
         return {
@@ -1935,6 +1982,29 @@ export class TournamentService {
         orderBy: {
           createdAt: 'desc', // Order by created_at descending (latest first)
         },
+        select: {
+          user1: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              email: true,
+              gender: true,
+            },
+          },
+          user2: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              email: true,
+              gender: true,
+            },
+          },
+          message: true,
+          status: true,
+          appliedDate: true,
+        },
       });
 
     if (!tournament_registration) {
@@ -1948,30 +2018,24 @@ export class TournamentService {
     }
 
     // Get user1 info
-    const user1 = await this.prismaService.users.findUnique({
-      where: {
-        id: userId,
-      },
-    });
+    // const user1 = await this.prismaService.users.findUnique({
+    //   where: {
+    //     id: userId,
+    //   },
+    // });
 
-    if (!user1) {
-      throw new NotFoundException({
-        message: 'User1 not found',
-        data: null,
-      });
-    }
+    // if (!user1) {
+    //   throw new NotFoundException({
+    //     message: 'User1 not found',
+    //     data: null,
+    //   });
+    // }
 
     let response_data = {};
     if (tournament.participantType === ParticipantType.single) {
       // Build response data
       response_data = {
-        user1: {
-          id: user1.id,
-          name: user1.name,
-          image: user1.image,
-          email: user1.email,
-          gender: user1.gender,
-        },
+        user1: tournament_registration.user1,
         message: tournament_registration.message,
         status: tournament_registration.status,
         appliedDate: tournament_registration.appliedDate,
@@ -1992,35 +2056,23 @@ export class TournamentService {
       // }
 
       // Get user2 info
-      const user2 = await this.prismaService.users.findUnique({
-        where: {
-          id: tournament_registration.userId2,
-        },
-      });
+      // const user2 = await this.prismaService.users.findUnique({
+      //   where: {
+      //     id: tournament_registration.userId2,
+      //   },
+      // });
 
-      if (!user2) {
-        throw new NotFoundException({
-          message: 'User2 not found',
-          data: null,
-        });
-      }
+      // if (!user2) {
+      //   throw new NotFoundException({
+      //     message: 'User2 not found',
+      //     data: null,
+      //   });
+      // }
 
       // Build response data
       response_data = {
-        user1: {
-          id: user1.id,
-          name: user1.name,
-          image: user1.image,
-          email: user1.email,
-          gender: user1.gender,
-        },
-        user2: {
-          id: user2.id,
-          name: user2.name,
-          image: user2.image,
-          email: user2.email,
-          gender: user2.gender,
-        },
+        user1: tournament_registration.user1,
+        user2: tournament_registration.user2,
         message: tournament_registration.message,
         status: tournament_registration.status,
         appliedDate: tournament_registration.appliedDate,
