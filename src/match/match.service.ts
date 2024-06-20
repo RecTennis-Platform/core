@@ -1,6 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { MatchStatus, ScoreType, SetStatus } from '@prisma/client';
 import { Order } from 'constants/order';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateScoreDto } from './dto';
+import { reverseScoreMap, scoreMap } from './constanst';
 
 @Injectable()
 export class MatchService {
@@ -102,6 +109,8 @@ export class MatchService {
         teamWinnerId: true,
         matchStartDate: true,
         matchEndDate: true,
+        team1MatchScore: true,
+        team2MatchScore: true,
       },
     };
 
@@ -144,25 +153,25 @@ export class MatchService {
     );
 
     // Add matchFinalScore (Max 3 sets, win 2 sets -> win match)
-    // Team 1 win sets
-    const team1WinSets = await this.getWinSetsOfTeam(
-      matchDetails.id,
-      matchDetails.teamId1,
-    );
+    // // Team 1 win sets
+    // const team1WinSets = await this.getWinSetsOfTeam(
+    //   matchDetails.id,
+    //   matchDetails.teamId1,
+    // );
 
-    // console.log('team1WinSets:', team1WinSets);
+    // // console.log('team1WinSets:', team1WinSets);
 
-    // Team 2 win sets
-    const team2WinSets = await this.getWinSetsOfTeam(
-      matchDetails.id,
-      matchDetails.teamId2,
-    );
+    // // Team 2 win sets
+    // const team2WinSets = await this.getWinSetsOfTeam(
+    //   matchDetails.id,
+    //   matchDetails.teamId2,
+    // );
 
-    // console.log('team2WinSets:', team2WinSets);
+    // // console.log('team2WinSets:', team2WinSets);
 
     const matchFinalScore = {
-      team1: team1WinSets.length,
-      team2: team2WinSets.length,
+      team1: matchDetails.team1MatchScore,
+      team2: matchDetails.team2MatchScore,
       teamWinnerId: matchDetails.teamWinnerId,
     };
 
@@ -177,18 +186,497 @@ export class MatchService {
     return matchDetails;
   }
 
-  async startMatch(refereeId: string, id: string) {
-    // Validate referee if is assigned to this match
-    // Validate match status if it is not "walk_over"
-    // Create new set
-    // Create new game
-    // Creat init score (0 - 0)
+  async startMatch(matchId: string, refereeId: string) {
+    // Validate if referee is assigned to this match
+    const assignedMatch = await this.prismaService.matches.findUnique({
+      where: {
+        id: matchId,
+        refereeId: refereeId,
+      },
+    });
+
+    if (!assignedMatch) {
+      throw new BadRequestException('Referee is not assigned to this match');
+    }
+
+    // Check match status
+    if (assignedMatch.status !== MatchStatus.scheduled) {
+      throw new BadRequestException(
+        `Match status is '${assignedMatch.status}'`,
+      );
+    }
+
+    try {
+      // Create new set
+      const newSet = await this.prismaService.sets.create({
+        data: {
+          matchId: matchId,
+          status: SetStatus.on_going,
+        },
+      });
+
+      // Create new game
+      const newGame = await this.prismaService.games.create({
+        data: {
+          setId: newSet.id,
+        },
+      });
+
+      // Creat init score (0 - 0)
+      await this.prismaService.scores.create({
+        data: {
+          gameId: newGame.id,
+        },
+      });
+
+      return await this.getMatchDetails(matchId);
+    } catch (err) {
+      throw new InternalServerErrorException({
+        message: `Error: ${err.message}`,
+      });
+    }
   }
 
-  async endMatch(refereeId: string, id: string) {
-    // Validate referee if is assigned to this match
-    // Validate match status if it is "walk_over"
-    // Update match status to "done"
+  async startSet(matchId: string, refereeId: string) {
+    // Validate if referee is assigned to this match
+    const assignedMatch = await this.prismaService.matches.findUnique({
+      where: {
+        id: matchId,
+        refereeId: refereeId,
+      },
+    });
+
+    if (!assignedMatch) {
+      throw new BadRequestException('Referee is not assigned to this match');
+    }
+
+    // Check match status (== 'walk_over')
+    if (assignedMatch.status !== MatchStatus.walk_over) {
+      throw new BadRequestException(
+        `Match must be started and in progress - 'walk_over'. Match status is '${assignedMatch.status}'`,
+      );
+    }
+
+    // Get current set (current set's status == 'not_started', teamWinId = null)
+    const currentSet = await this.prismaService.sets.findFirst({
+      where: {
+        matchId: matchId,
+        status: SetStatus.not_started,
+      },
+    });
+
+    if (!currentSet) {
+      throw new BadRequestException('Set not found');
+    }
+
+    try {
+      // Update set status (not_started -> on_going)
+      await this.prismaService.sets.update({
+        where: {
+          id: currentSet.id,
+        },
+        data: {
+          status: SetStatus.on_going,
+          setStartTime: new Date(),
+        },
+      });
+
+      // Create new game
+      const newGame = await this.prismaService.games.create({
+        data: {
+          setId: currentSet.id,
+        },
+      });
+
+      // Creat init score (0 - 0)
+      await this.prismaService.scores.create({
+        data: {
+          gameId: newGame.id,
+        },
+      });
+
+      return await this.getMatchDetails(matchId);
+    } catch (err) {
+      throw new InternalServerErrorException({
+        message: `Error: ${err.message}`,
+      });
+    }
+  }
+
+  async updateScore(matchId: string, refereeId: string, dto: UpdateScoreDto) {
+    // Validate if referee is assigned to this match
+    const assignedMatch = await this.prismaService.matches.findUnique({
+      where: {
+        id: matchId,
+        refereeId: refereeId,
+      },
+    });
+
+    if (!assignedMatch) {
+      throw new BadRequestException('Referee is not assigned to this match');
+    }
+
+    // Check match status (== 'walk_over')
+    if (assignedMatch.status !== MatchStatus.walk_over) {
+      throw new BadRequestException(
+        `Match must be in progress - 'walk_over'. Match status is '${assignedMatch.status}'`,
+      );
+    }
+
+    // Get current active set
+    const activeSet = await this.prismaService.sets.findFirst({
+      where: {
+        matchId: matchId,
+        status: SetStatus.on_going,
+      },
+    });
+
+    // No active set (set.status != 'on_going')
+    if (!activeSet) {
+      throw new BadRequestException(`No active set for match ${matchId}`);
+    }
+
+    // Get current active game
+    const activeGame = await this.prismaService.games.findFirst({
+      where: {
+        setId: activeSet.id,
+      },
+      orderBy: {
+        id: Order.DESC,
+      },
+    });
+
+    if (!activeGame) {
+      throw new BadRequestException(`No active game for set ${activeSet.id}`);
+    }
+
+    // Get current active score
+    const activeScore = await this.prismaService.scores.findFirst({
+      where: {
+        gameId: activeGame.id,
+      },
+      orderBy: {
+        id: Order.DESC,
+      },
+    });
+
+    if (!activeScore) {
+      throw new BadRequestException(`No score for game ${activeGame.id}`);
+    }
+
+    // Check valid score type (!== 'init')
+    if (dto.type === ScoreType.init) {
+      throw new BadRequestException(`Invalid score type: '${dto.type}'`);
+    }
+
+    // Check valid teamWin
+    if (dto.teamWin in [1, 2] === false) {
+      throw new BadRequestException(
+        `Invalid teamWin value: '${dto.teamWin}'. Only 1 or 2`,
+      );
+    }
+
+    let isGameEnd = false;
+
+    // Get current score
+    let teamWinScore = 0;
+    let teamLoseScore = 0;
+    if (dto.teamWin === 1) {
+      teamWinScore = reverseScoreMap[activeScore.team1Score] + 1;
+      teamLoseScore = reverseScoreMap[activeScore.team2Score];
+    } else {
+      teamWinScore = reverseScoreMap[activeScore.team2Score] + 1;
+      teamLoseScore = reverseScoreMap[activeScore.team1Score];
+    }
+
+    // I. Update score
+    let scoreData = {};
+    if (!activeGame.isTieBreak) {
+      // I.1. Update normal game score
+      // Normal game score definition
+      // 0: 0
+      // 1: 15
+      // 2: 30
+      // 3: 40
+      // 4: A (Advantage)
+      // 5: Game (Win)
+
+      // Update score by rules
+      if (teamWinScore >= 4 && teamWinScore >= teamLoseScore + 2) {
+        // Win based on a two-point lead
+        teamWinScore = 5; // Win
+        isGameEnd = true;
+
+        // TODO: Noti: Game end
+      } else if (teamWinScore === 4 && teamLoseScore === 4) {
+        // Deuce
+        teamWinScore = 3; // 40
+        teamLoseScore = 3; // 40
+      } else {
+        // Normal score
+        // Do nothing
+      }
+
+      // Build score data
+      if (dto.teamWin === 1) {
+        scoreData = {
+          teamWinId: assignedMatch.teamId1,
+          team1Score: scoreMap[teamWinScore],
+          team2Score: scoreMap[teamLoseScore],
+        };
+      } else {
+        scoreData = {
+          teamWinId: assignedMatch.teamId2,
+          team1Score: scoreMap[teamLoseScore],
+          team2Score: scoreMap[teamWinScore],
+        };
+      }
+
+      console.log('scoreData:', scoreData);
+    } else {
+      // I.2. Update tie break game score
+      // Tie break game score definition
+      // 0: 0
+      // 1: 1
+      // 2: 2
+      // ...
+
+      // Update score by rules
+      if (teamWinScore >= 7 && teamWinScore >= teamLoseScore + 2) {
+        // Win based on a two-point lead
+        isGameEnd = true;
+      } else {
+        // Normal score
+        // Do nothing
+      }
+
+      // Build score data
+      if (dto.teamWin === 1) {
+        scoreData = {
+          teamWinId: assignedMatch.teamId1,
+          team1Score: `${teamWinScore}`,
+          team2Score: `${teamLoseScore}`,
+        };
+      } else {
+        scoreData = {
+          teamWinId: assignedMatch.teamId2,
+          team1Score: `${teamLoseScore}`,
+          team2Score: `${teamWinScore}`,
+        };
+      }
+
+      console.log('scoreData:', scoreData);
+    }
+
+    try {
+      // Add score record
+      await this.prismaService.scores.create({
+        data: {
+          gameId: activeGame.id,
+          type: dto.type,
+          time: dto.time,
+          ...scoreData,
+        },
+      });
+
+      if (isGameEnd) {
+        // Update current game:
+        // - teamWinId
+        await this.prismaService.games.update({
+          where: {
+            id: activeGame.id,
+          },
+          data: {
+            teamWinId: scoreData['teamWinId'],
+          },
+        });
+
+        // II. Update set
+        let isSetEnd = false;
+
+        // Calculate set score (amount of win games)
+        let teamWinSetScore = 0;
+        let teamLoseSetScore = 0;
+        if (dto.teamWin === 1) {
+          teamWinSetScore = activeSet.team1SetScore + 1;
+          teamLoseSetScore = activeSet.team2SetScore;
+        } else {
+          teamWinSetScore = activeSet.team2SetScore + 1;
+          teamLoseSetScore = activeSet.team1SetScore;
+        }
+
+        // Check set score (amount of win games) by rules
+        let updateSetData = {};
+        if (teamWinSetScore >= 6 && teamWinSetScore >= teamLoseSetScore + 2) {
+          // Win based on a two-game lead
+          isSetEnd = true;
+          if (dto.teamWin === 1) {
+            updateSetData = {
+              teamWinId: scoreData['teamWinId'],
+              status: SetStatus.ended,
+              team1SetScore: teamWinSetScore,
+              team2SetScore: teamLoseSetScore,
+            };
+          } else {
+            updateSetData = {
+              teamWinId: scoreData['teamWinId'],
+              status: SetStatus.ended,
+              team1SetScore: teamLoseSetScore,
+              team2SetScore: teamWinSetScore,
+            };
+          }
+
+          // TODO: Noti: Set end
+        } else if (
+          teamWinSetScore >= 6 &&
+          teamWinSetScore === teamLoseSetScore
+        ) {
+          // Tie break
+          updateSetData = {
+            team1SetScore: teamWinSetScore,
+            team2SetScore: teamLoseSetScore,
+            isTieBreak: true,
+          };
+
+          // Tie break logic
+          // Update set (isTieBreak = true)
+          await this.prismaService.sets.update({
+            where: {
+              id: activeSet.id,
+            },
+            data: {
+              isTieBreak: true,
+            },
+          });
+
+          // Create new tie break game
+          await this.prismaService.games.create({
+            data: {
+              setId: activeSet.id,
+              isTieBreak: true,
+            },
+          });
+
+          // Create init tie break score (0 - 0)
+          await this.prismaService.scores.create({
+            data: {
+              gameId: activeGame.id,
+            },
+          });
+        } else {
+          // Normal set score
+          if (dto.teamWin === 1) {
+            updateSetData = {
+              team1SetScore: teamWinSetScore,
+              team2SetScore: teamLoseSetScore,
+            };
+          } else {
+            updateSetData = {
+              team1SetScore: teamLoseSetScore,
+              team2SetScore: teamWinSetScore,
+            };
+          }
+        }
+
+        // Update set
+        await this.prismaService.sets.update({
+          where: {
+            id: activeSet.id,
+          },
+          data: updateSetData,
+        });
+
+        if (isSetEnd) {
+          // Update current set:
+          // - teamWinId
+          // - status
+          await this.prismaService.sets.update({
+            where: {
+              id: activeSet.id,
+            },
+            data: {
+              teamWinId: updateSetData['teamWinId'],
+              status: SetStatus.ended,
+            },
+          });
+
+          // III. Update match
+          let isMatchEnd = false;
+
+          // Calculate match score (amount of win sets)
+          let teamWinMatchScore = 0;
+          let teamLoseMatchScore = 0;
+          if (dto.teamWin === 1) {
+            teamWinMatchScore = assignedMatch.team1MatchScore + 1;
+            teamLoseMatchScore = assignedMatch.team2MatchScore;
+          } else {
+            teamWinMatchScore = assignedMatch.team2MatchScore + 1;
+            teamLoseMatchScore = assignedMatch.team1MatchScore;
+          }
+
+          // Check match score (amount of win sets) by rules
+          let updateMatchData = {};
+          if (teamWinMatchScore >= 2) {
+            // Win based on a two-set lead
+            isMatchEnd = true;
+            if (dto.teamWin === 1) {
+              updateMatchData = {
+                teamWinnerId: scoreData['teamWinId'],
+                status: MatchStatus.score_done,
+                team1MatchScore: teamWinMatchScore,
+                team2MatchScore: teamLoseMatchScore,
+              };
+            } else {
+              updateMatchData = {
+                teamWinnerId: scoreData['teamWinId'],
+                status: MatchStatus.score_done,
+                team1MatchScore: teamLoseMatchScore,
+                team2MatchScore: teamWinMatchScore,
+              };
+            }
+
+            // TODO: Noti: Match end
+          } else {
+            // Normal match score
+            if (dto.teamWin === 1) {
+              updateMatchData = {
+                team1MatchScore: teamWinMatchScore,
+                team2MatchScore: teamLoseMatchScore,
+              };
+            } else {
+              updateMatchData = {
+                team1MatchScore: teamLoseMatchScore,
+                team2MatchScore: teamWinMatchScore,
+              };
+            }
+          }
+
+          // Update match
+          await this.prismaService.matches.update({
+            where: {
+              id: matchId,
+            },
+            data: updateMatchData,
+          });
+
+          if (!isMatchEnd) {
+            // Create new set
+            await this.prismaService.sets.create({
+              data: {
+                matchId: matchId,
+                // status: SetStatus.not_started, // default status
+              },
+            });
+          }
+        }
+      }
+
+      return await this.getMatchDetails(matchId);
+    } catch (err) {
+      throw new InternalServerErrorException({
+        message: `Error: ${err.message}`,
+      });
+    }
   }
 
   // Utils
@@ -219,14 +707,5 @@ export class MatchService {
     });
 
     return tieBreakScore;
-  }
-
-  async getWinSetsOfTeam(matchId: string, teamId: string) {
-    return await this.prismaService.sets.findMany({
-      where: {
-        matchId: matchId,
-        teamWinId: teamId,
-      },
-    });
   }
 }

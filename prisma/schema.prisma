@@ -336,6 +336,8 @@ model matches {
   nextMatchId         String?                @map("next_match_id")
   title               String?
   refereeId           String?                @map("referee_id") @db.Uuid
+  team1MatchScore     Int                    @default(0) @map("team_1_match_score")
+  team2MatchScore     Int                    @default(0) @map("team_2_match_score")
   groupFixture1       group_fixtures?        @relation("groupFixture1", fields: [groupFixtureTeamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match1")
   groupFixture2       group_fixtures?        @relation("groupFixture2", fields: [groupFixtureTeamId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match2")
   team1               teams?                 @relation("team1", fields: [teamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team1")
@@ -381,9 +383,9 @@ model games {
 
 model scores {
   id         Int       @id @default(autoincrement())
-  type       ScoreType @default(ace)
-  team1Score Int       @default(0) @map("team_1_score")
-  team2Score Int       @default(0) @map("team_2_score")
+  type       ScoreType @default(init)
+  team1Score String    @default("0") @map("team_1_score")
+  team2Score String    @default("0") @map("team_2_score")
   time       String?
   createdAt  DateTime  @default(now()) @map("created_at")
   updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at")
