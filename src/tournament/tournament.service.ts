@@ -2821,7 +2821,11 @@ export class TournamentService {
       },
     });
 
-    if (teams.length < dto.numberOfGroups * 2) {
+    if (
+      teams.length < dto.numberOfGroups * 2 ||
+      (teams.length * 1.0) / dto.numberOfGroups < 3 ||
+      teams.length % dto.numberOfGroups !== 0
+    ) {
       throw new BadRequestException({
         code: 400,
         message: 'Invalid number of groups',
