@@ -164,6 +164,7 @@ model tournaments {
   purchasedPackageId       String                     @map("purchased_package_id")
   name                     String
   maxParticipants          Int                        @map("max_participants")
+  level          Int?                        @map("level") @default(1)
   gender                   Gender?
   format                   TournamentFormat
   participantType          ParticipantType            @map("participant_type")

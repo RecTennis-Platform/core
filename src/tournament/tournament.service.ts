@@ -1727,6 +1727,7 @@ export class TournamentService {
               ),
             });
           }
+          let allTournamentElo = 0;
           const teams = await Promise.all(
             applicants.map(async (applicant) => {
               const { tournamentId, userId1, userId2, name } = applicant;
@@ -1747,6 +1748,7 @@ export class TournamentService {
               }
 
               const totalElo = (user1?.elo ?? 0) + (user2?.elo ?? 0);
+              allTournamentElo += totalElo;
               return {
                 name,
                 userId1,
@@ -1757,6 +1759,16 @@ export class TournamentService {
               };
             }),
           );
+
+          const level = mapEloToLevel((allTournamentElo * 1.0) / teams.length);
+          await tx.tournaments.update({
+            where: {
+              id: tournamentId,
+            },
+            data: {
+              level: level,
+            },
+          });
           return await tx.teams.createMany({
             data: teams,
           });
@@ -2817,16 +2829,27 @@ export class TournamentService {
 
   // Utils
   async getTournamentParticipantsCount(tournamentId: number): Promise<number> {
-    return await this.prismaService.tournament_registrations.count({
-      where: {
-        tournamentId: tournamentId,
-        NOT: {
-          status: {
-            in: [RegistrationStatus.canceled, RegistrationStatus.rejected],
+    const participantCountUser1 =
+      await this.prismaService.tournament_registrations.count({
+        where: {
+          status: 'approved',
+          tournamentId: tournamentId,
+        },
+      });
+
+    const participantCountUser2 =
+      await this.prismaService.tournament_registrations.count({
+        where: {
+          status: 'approved',
+          tournamentId: tournamentId,
+          NOT: {
+            userId2: null,
           },
         },
-      },
-    });
+      });
+
+    const participantCount = participantCountUser1 + participantCountUser2;
+    return participantCount;
   }
 
   //
@@ -4046,4 +4069,31 @@ function mergeArrays(arrays) {
     }
   }
   return mergedArray;
+}
+
+function mapEloToLevel(averageElo: number): number | undefined {
+  // Sử dụng Map để lưu trữ bảng ánh xạ average elo và level
+  const eloLevelMap = new Map<number, number>([
+    [200, 1],
+    [400, 2],
+    [600, 3],
+    [800, 4],
+    [1000, 5],
+    [1200, 6],
+    [1400, 7],
+    [1600, 8],
+    [1800, 9],
+    [2000, 10],
+  ]);
+
+  // Tìm level tương ứng với averageElo
+  for (const [elo, level] of eloLevelMap) {
+    if (averageElo <= elo) {
+      return level - 1;
+    }
+  }
+
+  // Trường hợp averageElo lớn hơn 2000 (nếu có)
+  // Bạn có thể xử lý tùy vào yêu cầu cụ thể, ví dụ trả về level 10 hoặc undefined
+  return 10;
 }

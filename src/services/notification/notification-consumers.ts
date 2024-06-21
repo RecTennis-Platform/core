@@ -21,18 +21,20 @@ export class NotificationConsumer {
 
       if (!user) {
         console.log(`User ${userId} not found`);
+        continue;
       }
       if (!user.fcmToken) {
         console.log(`User ${userId} does not have fcm token`);
+        continue;
       }
       const token = user.fcmToken;
       const data = {
-        params: JSON.stringify({ matchId: 1 }),
+        params: JSON.stringify({ matchId: job.data.matchId }),
         type: 'MATCH_UPDATE',
       };
       const notification = {
-        title: 'Test Notification',
-        body: 'This is a test message',
+        title: 'Match Score Update',
+        body: "The match you're following has an update! Check the latest score now",
       };
       await this.fcmNotificationService.sendingNotificationOneUser(
         token,

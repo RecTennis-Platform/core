@@ -8,10 +8,14 @@ import { Order } from 'constants/order';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateScoreDto } from './dto';
 import { reverseScoreMap, scoreMap } from './constanst';
+import { NotificationProducer } from 'src/services/notification/notification-producer';
 
 @Injectable()
 export class MatchService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly notificationProducer: NotificationProducer,
+  ) {}
 
   // Matches
   async getMatchDetails(matchId: string) {
@@ -309,6 +313,10 @@ export class MatchService {
       where: {
         id: matchId,
         refereeId: refereeId,
+      },
+      include: {
+        team1: true,
+        team2: true,
       },
     });
 
@@ -616,6 +624,8 @@ export class MatchService {
 
           // Check match score (amount of win sets) by rules
           let updateMatchData = {};
+          let updateNextMatchData = {};
+          let [winnerElo, loserElo] = [0, 0];
           if (teamWinMatchScore >= 2) {
             // Win based on a two-set lead
             isMatchEnd = true;
@@ -635,6 +645,156 @@ export class MatchService {
               };
             }
 
+            if (assignedMatch.nextMatchId) {
+              const nextMatch = await this.prismaService.matches.findUnique({
+                where: {
+                  id: assignedMatch.nextMatchId,
+                },
+              });
+              if (nextMatch.teamId1 === null) {
+                updateNextMatchData = {
+                  teamId1: scoreData['teamWinId'],
+                };
+              } else {
+                updateNextMatchData = {
+                  teamId2: scoreData['teamWinId'],
+                };
+              }
+              await this.prismaService.matches.update({
+                where: {
+                  id: assignedMatch.nextMatchId,
+                },
+                data: updateNextMatchData,
+              });
+            } else {
+              await this.prismaService.teams.update({
+                where: {
+                  id: scoreData['teamWinId'],
+                },
+                data: {
+                  point: {
+                    increment: 1,
+                  },
+                },
+              });
+            }
+
+            //update elo
+            const tournament = await this.prismaService.tournaments.findUnique({
+              where: {
+                id: assignedMatch.team1.tournamentId,
+              },
+              select: {
+                level: true,
+              },
+            });
+            if (dto.teamWin === 1) {
+              [winnerElo, loserElo] = this.calculateEloNew(
+                assignedMatch.team1.totalElo,
+                assignedMatch.team2.totalElo,
+                tournament.level,
+                10,
+                5,
+              );
+              await this.prismaService.users.update({
+                where: {
+                  id: assignedMatch.team1.userId1,
+                },
+                data: {
+                  elo: {
+                    increment: winnerElo,
+                  },
+                },
+              });
+              if (assignedMatch.team1.userId2) {
+                await this.prismaService.users.update({
+                  where: {
+                    id: assignedMatch.team1.userId2,
+                  },
+                  data: {
+                    elo: {
+                      increment: winnerElo,
+                    },
+                  },
+                });
+              }
+
+              await this.prismaService.users.update({
+                where: {
+                  id: assignedMatch.team2.userId1,
+                },
+                data: {
+                  elo: {
+                    increment: loserElo,
+                  },
+                },
+              });
+              if (assignedMatch.team2.userId2) {
+                await this.prismaService.users.update({
+                  where: {
+                    id: assignedMatch.team2.userId2,
+                  },
+                  data: {
+                    elo: {
+                      increment: loserElo,
+                    },
+                  },
+                });
+              }
+            } else {
+              [winnerElo, loserElo] = this.calculateEloNew(
+                assignedMatch.team2.totalElo,
+                assignedMatch.team1.totalElo,
+                tournament.level,
+                10,
+                5,
+              );
+              await this.prismaService.users.update({
+                where: {
+                  id: assignedMatch.team2.userId1,
+                },
+                data: {
+                  elo: {
+                    increment: winnerElo,
+                  },
+                },
+              });
+              if (assignedMatch.team2.userId2) {
+                await this.prismaService.users.update({
+                  where: {
+                    id: assignedMatch.team2.userId2,
+                  },
+                  data: {
+                    elo: {
+                      increment: winnerElo,
+                    },
+                  },
+                });
+              }
+
+              await this.prismaService.users.update({
+                where: {
+                  id: assignedMatch.team1.userId1,
+                },
+                data: {
+                  elo: {
+                    increment: loserElo,
+                  },
+                },
+              });
+              if (assignedMatch.team1.userId2) {
+                await this.prismaService.users.update({
+                  where: {
+                    id: assignedMatch.team1.userId2,
+                  },
+                  data: {
+                    elo: {
+                      increment: loserElo,
+                    },
+                  },
+                });
+              }
+            }
             // TODO: Noti: Match end
           } else {
             // Normal match score
@@ -668,6 +828,24 @@ export class MatchService {
               },
             });
           }
+          //Send notification
+          const followUsers = (
+            await this.prismaService.users_follow_matches.findMany({
+              where: {
+                matchId: matchId,
+              },
+              select: {
+                userId: true,
+              },
+            })
+          ).map((user) => {
+            return user.userId;
+          });
+          const notificationData = {
+            userIds: followUsers,
+            matchId: matchId,
+          };
+          await this.notificationProducer.add(notificationData);
         }
       }
 
@@ -707,5 +885,33 @@ export class MatchService {
     });
 
     return tieBreakScore;
+  }
+
+  calculateEloNew(
+    eloA: number,
+    eloB: number,
+    D: number,
+    m: number,
+    n: number,
+  ): [number, number] {
+    const eloAvg = (eloA + eloB) / 2;
+    const eloDiff = Math.abs(eloA - eloB);
+    const expTerm = Math.exp(-eloDiff / eloAvg);
+    const k = eloAvg / 60;
+
+    const eloA_new =
+      (k *
+        (1 + D / 10 - expTerm) *
+        (1 + D / 10 + (eloAvg - eloA) / eloAvg) *
+        (m + n)) /
+      n;
+    const eloB_new =
+      (k *
+        expTerm *
+        (1 + D / 10 - (eloAvg - eloB) / eloAvg) *
+        (2 * m - n + 1)) /
+      n;
+
+    return [eloA_new, eloB_new];
   }
 }
