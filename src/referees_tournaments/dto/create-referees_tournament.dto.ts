@@ -10,3 +10,14 @@ export class CreateRefereesTournamentDto {
   @IsNotEmpty()
   readonly tournamentId: number;
 }
+
+export class CreateRefereesGroupTournamentDto {
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsInt()
+  @IsNotEmpty()
+  readonly groupTournamentId: number;
+}
