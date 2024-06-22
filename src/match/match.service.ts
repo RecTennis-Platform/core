@@ -233,6 +233,16 @@ export class MatchService {
         },
       });
 
+      // Update match status (scheduled -> walk_over)
+      await this.prismaService.matches.update({
+        where: {
+          id: matchId,
+        },
+        data: {
+          status: MatchStatus.walk_over,
+        },
+      });
+
       return await this.getMatchDetails(matchId);
     } catch (err) {
       throw new InternalServerErrorException({
@@ -378,7 +388,7 @@ export class MatchService {
     }
 
     // Check valid teamWin
-    if (dto.teamWin in [1, 2] === false) {
+    if (![1, 2].includes(dto.teamWin)) {
       throw new BadRequestException(
         `Invalid teamWin value: '${dto.teamWin}'. Only 1 or 2`,
       );
