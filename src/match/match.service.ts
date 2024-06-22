@@ -690,36 +690,27 @@ export class MatchService {
             }
 
             //update elo
-            const tournament = await this.prismaService.tournaments.findUnique({
-              where: {
-                id: assignedMatch.team1.tournamentId,
-              },
-              select: {
-                level: true,
-              },
-            });
-            if (dto.teamWin === 1) {
-              [winnerElo, loserElo] = this.calculateEloNew(
-                assignedMatch.team1.totalElo,
-                assignedMatch.team2.totalElo,
-                tournament.level,
-                10,
-                5,
-              );
-              await this.prismaService.users.update({
-                where: {
-                  id: assignedMatch.team1.userId1,
-                },
-                data: {
-                  elo: {
-                    increment: winnerElo,
+            if (assignedMatch.team1.tournamentId) {
+              const tournament =
+                await this.prismaService.tournaments.findUnique({
+                  where: {
+                    id: assignedMatch.team1.tournamentId,
                   },
-                },
-              });
-              if (assignedMatch.team1.userId2) {
+                  select: {
+                    level: true,
+                  },
+                });
+              if (dto.teamWin === 1) {
+                [winnerElo, loserElo] = this.calculateEloNew(
+                  assignedMatch.team1.totalElo,
+                  assignedMatch.team2.totalElo,
+                  tournament.level,
+                  10,
+                  5,
+                );
                 await this.prismaService.users.update({
                   where: {
-                    id: assignedMatch.team1.userId2,
+                    id: assignedMatch.team1.userId1,
                   },
                   data: {
                     elo: {
@@ -727,22 +718,22 @@ export class MatchService {
                     },
                   },
                 });
-              }
+                if (assignedMatch.team1.userId2) {
+                  await this.prismaService.users.update({
+                    where: {
+                      id: assignedMatch.team1.userId2,
+                    },
+                    data: {
+                      elo: {
+                        increment: winnerElo,
+                      },
+                    },
+                  });
+                }
 
-              await this.prismaService.users.update({
-                where: {
-                  id: assignedMatch.team2.userId1,
-                },
-                data: {
-                  elo: {
-                    increment: loserElo,
-                  },
-                },
-              });
-              if (assignedMatch.team2.userId2) {
                 await this.prismaService.users.update({
                   where: {
-                    id: assignedMatch.team2.userId2,
+                    id: assignedMatch.team2.userId1,
                   },
                   data: {
                     elo: {
@@ -750,29 +741,29 @@ export class MatchService {
                     },
                   },
                 });
-              }
-            } else {
-              [winnerElo, loserElo] = this.calculateEloNew(
-                assignedMatch.team2.totalElo,
-                assignedMatch.team1.totalElo,
-                tournament.level,
-                10,
-                5,
-              );
-              await this.prismaService.users.update({
-                where: {
-                  id: assignedMatch.team2.userId1,
-                },
-                data: {
-                  elo: {
-                    increment: winnerElo,
-                  },
-                },
-              });
-              if (assignedMatch.team2.userId2) {
+                if (assignedMatch.team2.userId2) {
+                  await this.prismaService.users.update({
+                    where: {
+                      id: assignedMatch.team2.userId2,
+                    },
+                    data: {
+                      elo: {
+                        increment: loserElo,
+                      },
+                    },
+                  });
+                }
+              } else {
+                [winnerElo, loserElo] = this.calculateEloNew(
+                  assignedMatch.team2.totalElo,
+                  assignedMatch.team1.totalElo,
+                  tournament.level,
+                  10,
+                  5,
+                );
                 await this.prismaService.users.update({
                   where: {
-                    id: assignedMatch.team2.userId2,
+                    id: assignedMatch.team2.userId1,
                   },
                   data: {
                     elo: {
@@ -780,22 +771,22 @@ export class MatchService {
                     },
                   },
                 });
-              }
+                if (assignedMatch.team2.userId2) {
+                  await this.prismaService.users.update({
+                    where: {
+                      id: assignedMatch.team2.userId2,
+                    },
+                    data: {
+                      elo: {
+                        increment: winnerElo,
+                      },
+                    },
+                  });
+                }
 
-              await this.prismaService.users.update({
-                where: {
-                  id: assignedMatch.team1.userId1,
-                },
-                data: {
-                  elo: {
-                    increment: loserElo,
-                  },
-                },
-              });
-              if (assignedMatch.team1.userId2) {
                 await this.prismaService.users.update({
                   where: {
-                    id: assignedMatch.team1.userId2,
+                    id: assignedMatch.team1.userId1,
                   },
                   data: {
                     elo: {
@@ -803,8 +794,21 @@ export class MatchService {
                     },
                   },
                 });
+                if (assignedMatch.team1.userId2) {
+                  await this.prismaService.users.update({
+                    where: {
+                      id: assignedMatch.team1.userId2,
+                    },
+                    data: {
+                      elo: {
+                        increment: loserElo,
+                      },
+                    },
+                  });
+                }
               }
             }
+
             // TODO: Noti: Match end
           } else {
             // Normal match score
