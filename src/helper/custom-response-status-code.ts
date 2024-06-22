@@ -16,6 +16,7 @@ export enum CustomResponseStatusCodes {
   TOURNAMENT_UNPUBLISHED_FAILED = 1014,
 
   FIXTURE_NOT_FOUND = 1015,
+  TOURNAMENT_INVALID_FORMAT = 1016,
 
   // 2xxx - Purchased package
   PURCHASED_PACKAGE_NOT_FOUND = 2001,

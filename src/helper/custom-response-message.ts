@@ -17,6 +17,7 @@ export class CustomResponseMessages {
     [1014, 'Failed to unpublish tournament'],
 
     [1015, 'Fixture not found'],
+    [1016, 'Invalid tournament format '],
 
     // 2xxx - Purchased package
     [2001, 'Purchased package not found'],

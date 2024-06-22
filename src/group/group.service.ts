@@ -8,7 +8,20 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
-import { GroupStatus, GroupTournamentPhase, MemberRole } from '@prisma/client';
+import {
+  GroupStatus,
+  MemberRole,
+  ParticipantType,
+  GroupTournamentPhase,
+  RegistrationStatus,
+  GroupTournamentStatus,
+  GroupTournamentFormat,
+  TournamentFormat,
+  Prisma,
+  MatchStatus,
+  FixtureStatus,
+  TournamentPhase,
+} from '@prisma/client';
 import { ITokenPayload } from 'src/auth_utils/interfaces';
 import { MembershipService } from 'src/membership/membership.service';
 import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
@@ -34,6 +47,26 @@ import {
 import { PageOptionsParticipantsDto } from './dto/page-options-participants.dto';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
+import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-code';
+import { CustomResponseMessages } from 'src/helper/custom-response-message';
+import { TournamentRole } from 'src/tournament/tournament.enum';
+import {
+  CreateFixtureDto,
+  GenerateFixtureDto,
+} from 'src/fixture/dto/create-fixture.dto';
+import { FormatTournamentService } from 'src/services/format_tournament/format_tournament.service';
+import { randomUUID } from 'crypto';
+import { FixtureService } from 'src/fixture/fixture.service';
+import { RefereesTournamentsService } from 'src/referees_tournaments/referees_tournaments.service';
+import {
+  PageOptionsRefereesGroupTournamentsDto,
+  PageOptionsRefereesTournamentsDto,
+} from 'src/referees_tournaments/dto/page-options-referees-tournaments.dto';
+import {
+  CreateRefereesGroupTournamentDto,
+  CreateRefereesTournamentDto,
+} from 'src/referees_tournaments/dto/create-referees_tournament.dto';
+import { PageOptionsTournamentRegistrationDto } from 'src/tournament/dto';
 
 @Injectable()
 export class GroupService {
@@ -43,6 +76,9 @@ export class GroupService {
     private jwtService: JwtService,
     private membershipService: MembershipService,
     private readonly mongodbPrismaService: MongoDBPrismaService,
+    private readonly formatTournamentService: FormatTournamentService,
+    private readonly fixtureService: FixtureService,
+    private readonly refereesTournamentsService: RefereesTournamentsService,
     @InjectQueue('send-mail') private sendMailQueue: Queue,
   ) {}
 
@@ -86,9 +122,11 @@ export class GroupService {
       });
     }
 
-    await this.checkPurchasePackage(group.purchasedPackageId);
+    const purchasedPackage = await this.checkPurchasePackage(
+      group.purchasedPackageId,
+    );
 
-    return group;
+    return { ...group, purchasedPackage: purchasedPackage };
   }
 
   private async checkMember(
@@ -1406,5 +1444,1748 @@ export class GroupService {
         data: null,
       });
     }
+  }
+
+  async getTournamentsList(pageOptions: PageOptionsGroupTournamentDto) {
+    // Build page options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {},
+    };
+
+    if (pageOptions.gender) {
+      conditions.where['gender'] = pageOptions.gender;
+    }
+
+    if (pageOptions.format) {
+      conditions.where['format'] = pageOptions.format;
+    }
+
+    if (pageOptions.participantType) {
+      conditions.where['participantType'] = pageOptions.participantType;
+      if (pageOptions.participantType === ParticipantType.mixed_doubles) {
+        conditions.where['gender'] = null;
+      }
+    }
+
+    if (pageOptions.status) {
+      conditions.where['status'] = pageOptions.status;
+    }
+
+    if (pageOptions.phase) {
+      if (pageOptions.phase !== GroupTournamentPhase.new) {
+        conditions.where['phase'] = pageOptions.phase;
+      } else {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+          ),
+          data: null,
+        });
+      }
+    } else {
+      conditions.where['NOT'] = {
+        phase: GroupTournamentPhase.new,
+      };
+    }
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get all tournaments
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.group_tournaments.findMany({
+        ...conditions,
+        ...pageOption,
+        include: {
+          _count: {
+            select: {
+              group_tournament_registrations: true,
+            },
+          },
+        },
+      }),
+      this.prismaService.group_tournaments.count(conditions),
+    ]);
+
+    // Modify the structure of the returned data
+    const modified_result = await Promise.all(
+      result.map(async (tournament) => {
+        const participantCountUser1 =
+          await this.prismaService.group_tournament_registrations.count({
+            where: {
+              groupTournamentId: tournament.id,
+            },
+          });
+
+        const participantCount = participantCountUser1;
+        delete tournament._count;
+
+        return {
+          ...tournament,
+          participants: participantCount,
+        };
+      }),
+    );
+
+    return {
+      data: modified_result,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
+
+  // For normal usage
+  async getTournamentDetails(
+    userId: string | undefined,
+    tournamentId: number,
+    groupId: number,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const group = await this.checkValidGroup(groupId);
+    const tournamentRoles = [];
+    if (userId) {
+      const user = await this.prismaService.users.findFirst({
+        where: {
+          id: userId,
+        },
+        include: {
+          referees_group_tournaments: true,
+        },
+      });
+      const participant =
+        await this.prismaService.group_tournament_registrations.findFirst({
+          where: {
+            OR: [
+              {
+                userId: userId,
+              },
+            ],
+          },
+        });
+      const member = await this.checkMember(userId, groupId);
+      // Check if the user is the creator of the tournament
+      if (member.role === MemberRole.group_admin) {
+        tournamentRoles.push(TournamentRole.CREATOR);
+      } else if (user.referees_group_tournaments.length > 0) {
+        // Check if the user is the referee of the tournament
+        const referees = user.referees_group_tournaments.filter((r) => {
+          return r.groupTournamentId === tournamentId;
+        });
+        if (referees.length > 0) {
+          tournamentRoles.push(TournamentRole.REFEREE);
+        }
+      } else if (participant) {
+        tournamentRoles.push(TournamentRole.PARTICIPANT);
+      }
+      if (tournamentRoles.length === 0) {
+        tournamentRoles.push(TournamentRole.VIEWER);
+      }
+    } else {
+      tournamentRoles.push(TournamentRole.VIEWER);
+    }
+
+    // Parse the config field for each service in the services array
+    const parsedServices = group.purchasedPackage.package.services.map(
+      (service) => {
+        const config = JSON.parse(service.config);
+        return {
+          ...service,
+          config: config,
+        };
+      },
+    );
+
+    //count number of participants
+    const participantCountUser1 =
+      await this.prismaService.group_tournament_registrations.count({
+        where: {
+          groupTournamentId: tournament.id,
+        },
+      });
+
+    const participantCount = participantCountUser1;
+
+    // Build response data
+    delete tournament.createdAt;
+    delete tournament.updatedAt;
+
+    const response_data = {
+      ...tournament,
+      purchasedPackage: {
+        id: group.purchasedPackage.id,
+        name: group.purchasedPackage.package.name,
+        services: parsedServices,
+      },
+      participants: participantCount,
+      tournamentRoles,
+    };
+
+    return {
+      message: 'Get tournament details successfully',
+      data: response_data,
+    };
+  }
+
+  async getMyTournaments(
+    userId: string,
+    pageOptions: PageOptionsGroupTournamentDto,
+  ) {
+    // Get user's purchased packages
+    const purchasedPackages =
+      await this.mongodbPrismaService.purchasedPackage.findMany({
+        where: {
+          userId: userId,
+          endDate: {
+            gt: new Date(), // Not expired purchased packages
+          },
+        },
+      });
+
+    // Get purchased packages that have the "Tournament" service
+    const filteredPurchasedPackages = purchasedPackages.filter(
+      (purchasedPackage) =>
+        purchasedPackage.package.services.some(
+          (service) => service.name.toLowerCase().includes('group') === true,
+        ),
+    );
+
+    // Get purchased packages id
+    const purchasedPackageIds = filteredPurchasedPackages.map(
+      (purchasedPackage) => purchasedPackage.id,
+    );
+
+    const groups = await this.prismaService.groups.findMany({
+      where: {
+        purchasedPackageId: {
+          in: purchasedPackageIds,
+        },
+      },
+    });
+
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        groupId: {
+          in: groups.map((group) => group.id),
+        },
+      },
+    };
+
+    if (pageOptions.gender) {
+      conditions.where['gender'] = pageOptions.gender;
+    }
+
+    if (pageOptions.format) {
+      conditions.where['format'] = pageOptions.format;
+    }
+
+    if (pageOptions.participantType) {
+      conditions.where['participantType'] = pageOptions.participantType;
+      if (pageOptions.participantType === ParticipantType.mixed_doubles) {
+        conditions.where['gender'] = null;
+      }
+    }
+
+    if (pageOptions.status) {
+      conditions.where['status'] = pageOptions.status;
+    }
+
+    if (pageOptions.phase) {
+      conditions.where['phase'] = pageOptions.phase;
+    }
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get tournaments that are created by the user
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.group_tournaments.findMany({
+        ...conditions,
+        ...pageOption,
+        include: {
+          _count: {
+            select: {
+              group_tournament_registrations: true,
+            },
+          },
+        },
+      }),
+      this.prismaService.group_tournaments.count(conditions),
+    ]);
+
+    // Modify the structure of the returned data
+    const modified_result = await Promise.all(
+      result.map(async (tournament) => {
+        const participantCountUser1 =
+          await this.prismaService.group_tournament_registrations.count({
+            where: {
+              groupTournamentId: tournament.id,
+            },
+          });
+
+        const participantCount = participantCountUser1;
+        delete tournament._count;
+
+        return {
+          ...tournament,
+          participants: participantCount,
+        };
+      }),
+    );
+
+    return {
+      data: modified_result,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
+
+  // async getUnregisteredTournaments(
+  //   userId: string,
+  //   pageOptions: PageOptionsGroupTournamentDto,
+  //   groupId: number
+  // ) {
+  //   //// Get tournament registrations that the user has registered
+  //   const userTournamentRegistrations =
+  //     await this.prismaService.group_tournament_registrations.findMany({
+  //       where: {
+  //         OR: [
+  //           {
+  //             userId: userId,
+  //           },
+  //         ],
+  //       },
+  //       select: {
+  //         groupTournamentId: true,
+  //       },
+  //     });
+
+  //   // Map to get only tournamentId as an array
+  //   const userRegisteredTournamentIds = userTournamentRegistrations.map(
+  //     (registration) => registration.groupTournamentId,
+  //   );
+
+  //   //// Get this user's created tournaments
+  //   // Get user's purchased packages
+  //   const purchasedPackages =
+  //     await this.mongodbPrismaService.purchasedPackage.findMany({
+  //       where: {
+  //         userId: userId,
+  //         // endDate: {
+  //         //   gt: new Date(), // Not expired purchased packages
+  //         // },
+  //       },
+  //     });
+
+  //   // Get purchased packages that have the "Tournament" service
+  //   const filteredPurchasedPackages = purchasedPackages.filter(
+  //     (purchasedPackage) =>
+  //       purchasedPackage.package.services.some(
+  //         (service) =>
+  //           service.name.toLowerCase().includes('tournament') === true,
+  //       ),
+  //   );
+
+  //   // Get purchased packages id
+  //   const purchasedPackageIds = filteredPurchasedPackages.map(
+  //     (purchasedPackage) => purchasedPackage.id,
+  //   );
+
+  //   // Build pagination options
+  //   const conditions = {
+  //     orderBy: [
+  //       {
+  //         createdAt: pageOptions.order,
+  //       },
+  //     ],
+  //     where: {
+  //       NOT: {
+  //         OR: [
+  //           { id: { in: userRegisteredTournamentIds } },
+  //           { purchasedPackageId: { in: purchasedPackageIds } },
+  //         ],
+  //       },
+  //       status: GroupTournamentStatus.upcoming,
+  //       phase: GroupTournamentPhase.published,
+  //       registrationDueDate: {
+  //         gt: new Date(),
+  //       },
+  //     },
+  //   };
+
+  //   const pageOption =
+  //     pageOptions.page && pageOptions.take
+  //       ? {
+  //           skip: pageOptions.skip,
+  //           take: pageOptions.take,
+  //         }
+  //       : undefined;
+
+  //   // Get user's tournament registrations (participated)
+  //   const [result, totalCount] = await Promise.all([
+  //     this.prismaService.group_tournaments.findMany({
+  //       ...conditions,
+  //       ...pageOption,
+  //     }),
+  //     this.prismaService.group_tournaments.count(conditions),
+  //   ]);
+
+  //   // Get each tournament participants count
+  //   for (const tournament of result) {
+  //     tournament['participants'] = await this.getTournamentParticipantsCount(
+  //       tournament.id,
+  //     );
+  //   }
+
+  //   return {
+  //     data: result,
+  //     totalPages: Math.ceil(totalCount / pageOptions.take),
+  //     totalCount,
+  //   };
+  // }
+
+  async publishTournament(
+    userId: string,
+    tournamentId: number,
+    groupId: number,
+    unpublish: boolean = false,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check expiration date of the purchased package
+    if (new Date(group.purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    if (group.purchasedPackage.userId !== userId) {
+      if (unpublish) {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_UNPUBLISHED_UNAUTHORIZED,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_UNPUBLISHED_UNAUTHORIZED,
+          ),
+          data: null,
+        });
+      } else {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_UNAUTHORIZED,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_UNAUTHORIZED,
+          ),
+          data: null,
+        });
+      }
+    }
+
+    // Update tournament status
+    try {
+      await this.prismaService.group_tournaments.update({
+        where: {
+          id: tournamentId,
+        },
+        data: {
+          phase: unpublish
+            ? GroupTournamentPhase.new
+            : GroupTournamentPhase.published,
+        },
+      });
+
+      return {};
+    } catch (error) {
+      console.log('Error:', error.message);
+      if (unpublish) {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_UNPUBLISHED_FAILED,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_UNPUBLISHED_FAILED,
+          ),
+          data: null,
+        });
+      } else {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_FAILED,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_PUBLISHED_FAILED,
+          ),
+          data: null,
+        });
+      }
+    }
+  }
+
+  async generateFixture(id: number, dto: GenerateFixtureDto) {
+    const tournament = await this.prismaService.group_tournaments.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    const format = tournament?.format;
+    try {
+      if (
+        format === GroupTournamentFormat.round_robin ||
+        format === GroupTournamentFormat.knockout
+      ) {
+        const teams = await this.prismaService.teams.findMany({
+          where: {
+            groupTournamentId: id,
+          },
+          orderBy: [
+            { seed: Prisma.SortOrder.asc },
+            { totalElo: Prisma.SortOrder.desc },
+          ],
+          include: {
+            user1: {
+              select: {
+                id: true,
+                image: true,
+                name: true,
+                isReferee: true,
+              },
+            },
+            user2: {
+              select: {
+                id: true,
+                image: true,
+                name: true,
+                isReferee: true,
+              },
+            },
+            groupTournament: true,
+          },
+        });
+        const rounds = [];
+        if (format === GroupTournamentFormat.round_robin) {
+          const tables = this.formatTournamentService.generateTables(
+            format,
+            1,
+            teams.length,
+          );
+          let k = 1;
+          for (let i = 0; i < tables.table1.length; i++) {
+            const matches = [];
+            for (let j = 0; j < tables.table1[i].length; j++) {
+              if (tables.table1[i][j] === tables.table2[i][j]) continue;
+
+              const team1 = {
+                user1: teams[tables.table1[i][j] - 1].user1,
+                user2: teams[tables.table1[i][j] - 1].user2,
+                id: teams[tables.table1[i][j] - 1].id,
+              };
+
+              const team2 = {
+                user1: teams[tables.table2[i][j] - 1].user1,
+                user2: teams[tables.table2[i][j] - 1].user2,
+                id: teams[tables.table2[i][j] - 1].id,
+              };
+              const match = {
+                id: randomUUID(),
+                nextMatchId: null,
+                title: `Match ${k++}`,
+                matchStartDate: null,
+                duration: dto.matchDuration,
+                status: MatchStatus.scheduled,
+                teams: { team1, team2 },
+                refereeId: null,
+                venue: dto.venue,
+              };
+              matches.push(match);
+            }
+            const round = {
+              title: `Round ${i + 1}`,
+              matches: matches,
+              id: randomUUID(),
+            };
+            rounds.push(round);
+          }
+          const group = {
+            id: randomUUID(),
+            title: 'Round Robin Group',
+            isFinal: true,
+            rounds: rounds,
+          };
+          return {
+            id: randomUUID(),
+            roundRobinGroups: [group],
+            status: 'new',
+            participantType: 'single',
+            format: 'round_robin',
+          };
+        } else if (format === GroupTournamentFormat.knockout) {
+          const tables = this.formatTournamentService.generateTables(
+            format,
+            1,
+            teams.length,
+          );
+
+          for (let i = 0; i < tables.table1.length; i++) {
+            const rawMatches = [];
+            let status = MatchStatus.scheduled.toString();
+            for (let j = 0; j < tables.table1[i].length; j++) {
+              let id = randomUUID();
+              let nextMatchId = randomUUID();
+              if (i === 0) {
+                if (j % 2 !== 0) {
+                  nextMatchId = rawMatches[j - 1].nextMatchId;
+                }
+              } else if (i === tables.table1.length - 1) {
+                id = rounds[i - 1].matches[j * 2].nextMatchId;
+                nextMatchId = null;
+              } else {
+                if (j % 2 !== 0) {
+                  nextMatchId = rawMatches[j - 1].nextMatchId;
+                }
+                id = rounds[i - 1].matches[j * 2].nextMatchId;
+              }
+
+              let team1 = null,
+                team2 = null;
+              if (tables.table1[i][j] !== 0 && tables.table1[i][j] !== -1) {
+                team1 = {
+                  user1: teams[tables.table1[i][j] - 1].user1,
+                  user2: teams[tables.table1[i][j] - 1].user2,
+                  id: teams[tables.table1[i][j] - 1].id,
+                };
+              } else {
+                status = MatchStatus.skipped.toString();
+              }
+
+              if (tables.table2[i][j] !== 0 && tables.table2[i][j] !== -1) {
+                team2 = {
+                  user1: teams[tables.table2[i][j] - 1].user1,
+                  user2: teams[tables.table2[i][j] - 1].user2,
+                  id: teams[tables.table2[i][j] - 1].id,
+                };
+                status = MatchStatus.scheduled.toString();
+              } else {
+                status = MatchStatus.skipped.toString();
+              }
+
+              if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
+                status = MatchStatus.no_show.toString();
+              }
+              const match = {
+                id: id,
+                nextMatchId: nextMatchId,
+                title: `Match ${j + 1}`,
+                matchStartDate: null,
+                duration: dto.matchDuration,
+                status: status,
+                teams: { team1, team2 },
+                refereeId: null,
+                venue: dto.venue,
+              };
+              rawMatches.push(match);
+            }
+            const round = {
+              title: `Round ${i + 1}`,
+              id: randomUUID(),
+              matches: rawMatches,
+            };
+            rounds.push(round);
+          }
+          const group = {
+            id: randomUUID(),
+            title: 'Knockout Group',
+            isFinal: true,
+            rounds: rounds,
+          };
+          return {
+            id: randomUUID(),
+            knockoutGroup: group,
+            status: 'new',
+            participantType: 'single',
+            format: 'knockout',
+          };
+        }
+      }
+      //get list of team order by rank
+
+      //generate matches
+      if (format === TournamentFormat.group_playoff) {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_INVALID_FORMAT,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_INVALID_FORMAT,
+          ),
+          data: null,
+        });
+      }
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async createFixture(id: number, dto: CreateFixtureDto) {
+    const format = (
+      await this.prismaService.group_tournaments.findFirst({
+        where: {
+          id: id,
+        },
+      })
+    ).format;
+
+    const numberOfParticipants = await this.prismaService.teams.count({
+      where: {
+        groupTournamentId: id,
+      },
+    });
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        id: dto.id,
+      },
+    });
+    const phase =
+      dto.status === FixtureStatus.published
+        ? TournamentPhase.generated_fixtures
+        : undefined;
+
+    if (fixture?.status === FixtureStatus.published) {
+      throw new BadRequestException({
+        message: 'Fixture is already published',
+      });
+    }
+    await this.prismaService.$transaction(
+      async (tx) => {
+        await this.fixtureService.removeByTournamentIdIdempontent(id);
+        if (dto.status === FixtureStatus.published) {
+          await tx.tournaments.update({
+            where: {
+              id: id,
+            },
+            data: {
+              phase: phase,
+            },
+          });
+        }
+        const fixture = await tx.fixtures.upsert({
+          where: {
+            id: dto.id,
+          },
+          update: {
+            numberOfParticipants: numberOfParticipants,
+            numberOfGroups: dto.roundRobinGroups?.length ?? 1,
+            fixtureStartDate: dto.fixtureStartDate,
+            fixtureEndDate: dto.fixtureEndDate,
+            matchesStartTime: dto.matchesStartTime,
+            matchesEndTime: dto.matchesEndTime,
+            matchDuration: dto.matchDuration,
+            breakDuration: dto.breakDuration,
+            status: dto.status,
+            venue: dto.venue,
+          },
+          create: {
+            id: dto.id,
+            groupTournamentId: id,
+            numberOfParticipants: numberOfParticipants,
+            numberOfGroups: dto.roundRobinGroups.length,
+            fixtureStartDate: dto.fixtureStartDate,
+            fixtureEndDate: dto.fixtureEndDate,
+            matchesStartTime: dto.matchesStartTime,
+            matchesEndTime: dto.matchesEndTime,
+            matchDuration: dto.matchDuration,
+            breakDuration: dto.breakDuration,
+            status: dto.status,
+            venue: dto.venue,
+          },
+        });
+
+        if (format === GroupTournamentFormat.round_robin) {
+          await Promise.all(
+            dto.roundRobinGroups.map(async (group) => {
+              await tx.group_fixtures.upsert({
+                where: {
+                  id: group.id,
+                },
+                update: {
+                  fixtureId: fixture.id,
+                  title: group.title,
+                  isFinal: true,
+                  numberOfProceeders: group.numberOfProceeders,
+                },
+                create: {
+                  id: group.id,
+                  fixtureId: fixture.id,
+                  title: group.title,
+                  isFinal: true,
+                  numberOfProceeders: group.numberOfProceeders,
+                },
+              });
+              await Promise.all(
+                group.rounds.map(async (round) => {
+                  await tx.rounds.upsert({
+                    where: {
+                      id: round.id,
+                    },
+                    update: {
+                      groupFixtureId: group.id,
+                      title: round.title,
+                      elo: 100,
+                    },
+                    create: {
+                      id: round.id,
+                      groupFixtureId: group.id,
+                      title: round.title,
+                      elo: 100,
+                    },
+                  });
+                  //apply elo
+                  await Promise.all(
+                    round.matches.map(async (match) => {
+                      await tx.matches.upsert({
+                        where: {
+                          id: match.id,
+                        },
+                        update: {
+                          roundId: round.id,
+                          title: match.title,
+                          status: match.status,
+                          rankGroupTeam1: match.rankGroupTeam1,
+                          rankGroupTeam2: match.rankGroupTeam2,
+                          nextMatchId: match.nextMatchId,
+                          matchStartDate: match.matchStartDate,
+                          teamId1: match.teams.team1?.id,
+                          teamId2: match.teams.team2?.id,
+                          venue: match?.venue,
+                          duration: match.duration,
+                          breakDuration: dto.breakDuration,
+                          refereeId: match.refereeId,
+                          groupFixtureTeamId1: match.groupFixtureTeamId1,
+                          groupFixtureTeamId2: match.groupFixtureTeamId2,
+                        },
+
+                        create: {
+                          id: match.id,
+                          roundId: round.id,
+                          title: match.title,
+                          status: match.status,
+                          rankGroupTeam1: match.rankGroupTeam1,
+                          rankGroupTeam2: match.rankGroupTeam2,
+                          nextMatchId: match.nextMatchId,
+                          matchStartDate: match.matchStartDate,
+                          teamId1: match.teams.team1?.id,
+                          teamId2: match.teams.team2?.id,
+                          venue: match.venue,
+                          duration: match.duration,
+                          breakDuration: dto.breakDuration,
+                          refereeId: match.refereeId,
+                          groupFixtureTeamId1: match.groupFixtureTeamId1,
+                          groupFixtureTeamId2: match.groupFixtureTeamId2,
+                        },
+                      });
+                    }),
+                  );
+                }),
+              );
+            }),
+          );
+        } else if (format === GroupTournamentFormat.knockout) {
+          await tx.group_fixtures.upsert({
+            where: {
+              id: dto.knockoutGroup.id,
+            },
+            update: {
+              fixtureId: fixture.id,
+              title: dto.knockoutGroup.title,
+              isFinal: true,
+              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+            },
+            create: {
+              id: dto.knockoutGroup.id,
+              fixtureId: fixture.id,
+              title: dto.knockoutGroup.title,
+              isFinal: true,
+              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+            },
+          });
+          await Promise.all(
+            dto.knockoutGroup.rounds.reverse().map(async (round) => {
+              await tx.rounds.upsert({
+                where: {
+                  id: round.id,
+                },
+                update: {
+                  groupFixtureId: dto.knockoutGroup.id,
+                  title: round.title,
+                  elo: 100,
+                },
+                create: {
+                  id: round.id,
+                  groupFixtureId: dto.knockoutGroup.id,
+                  title: round.title,
+                  elo: 100,
+                },
+              });
+              //apply elo
+              await Promise.all(
+                round.matches.map(async (match) => {
+                  await tx.matches.upsert({
+                    where: {
+                      id: match.id,
+                    },
+                    update: {
+                      roundId: round.id,
+                      title: match.title,
+                      status: match.status,
+                      rankGroupTeam1: match.rankGroupTeam1,
+                      rankGroupTeam2: match.rankGroupTeam2,
+                      nextMatchId: match.nextMatchId,
+                      matchStartDate: match.matchStartDate,
+                      teamId1: match.teams.team1?.id,
+                      teamId2: match.teams.team2?.id,
+                      venue: match.venue,
+                      duration: match.duration,
+                      breakDuration: dto.breakDuration,
+                      refereeId: match.refereeId,
+                      groupFixtureTeamId1: match.groupFixtureTeamId1,
+                      groupFixtureTeamId2: match.groupFixtureTeamId2,
+                    },
+
+                    create: {
+                      id: match.id,
+                      roundId: round.id,
+                      title: match.title,
+                      status: match.status,
+                      rankGroupTeam1: match.rankGroupTeam1,
+                      rankGroupTeam2: match.rankGroupTeam2,
+                      nextMatchId: match.nextMatchId,
+                      matchStartDate: match.matchStartDate,
+                      teamId1: match.teams.team1?.id,
+                      teamId2: match.teams.team2?.id,
+                      venue: match.venue,
+                      duration: match.duration,
+                      breakDuration: dto.breakDuration,
+                      refereeId: match.refereeId,
+                      groupFixtureTeamId1: match.groupFixtureTeamId1,
+                      groupFixtureTeamId2: match.groupFixtureTeamId2,
+                    },
+                  });
+                }),
+              );
+            }),
+          );
+        } else if (format === TournamentFormat.group_playoff) {
+          throw new BadRequestException({
+            code: CustomResponseStatusCodes.TOURNAMENT_INVALID_FORMAT,
+            message: CustomResponseMessages.getMessage(
+              CustomResponseStatusCodes.TOURNAMENT_INVALID_FORMAT,
+            ),
+            data: null,
+          });
+        }
+      },
+      {
+        maxWait: 10000, // default: 2000
+        timeout: 10000, // default: 5000
+      },
+    );
+
+    //return response
+    const { groupFixtures, ...others } =
+      await this.prismaService.fixtures.findFirst({
+        where: {
+          id: dto.id,
+        },
+        include: {
+          groupFixtures: {
+            where: {
+              isFinal: true,
+            },
+            include: {
+              rounds: {
+                include: {
+                  matches: {
+                    include: {
+                      groupFixture1: true,
+                      groupFixture2: true,
+                      team1: {
+                        include: {
+                          user1: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                              isReferee: true,
+                            },
+                          },
+                          user2: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                              isReferee: true,
+                            },
+                          },
+                        },
+                      },
+                      team2: {
+                        include: {
+                          user1: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                              isReferee: true,
+                            },
+                          },
+                          user2: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                              isReferee: true,
+                            },
+                          },
+                        },
+                      },
+                      referee: {
+                        select: {
+                          id: true,
+                          image: true,
+                          name: true,
+                          dob: true,
+                          phoneNumber: true,
+                          isReferee: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+    const groups = groupFixtures.map((groupFixture) => {
+      const rounds = groupFixture.rounds.map((round) => {
+        const matches = round.matches.map((match) => {
+          const { team1, team2, groupFixture1, groupFixture2, ...others } =
+            match;
+          let team1R = null,
+            team2R = null;
+          if (
+            team1 === null &&
+            !match.rankGroupTeam1 != null &&
+            groupFixture1 != null
+          ) {
+            team1R = {
+              user1: null,
+              user2: null,
+              name: `Winner ${match.rankGroupTeam1} of ${groupFixture1.title}`,
+            };
+          }
+          if (
+            team2 === null &&
+            match.rankGroupTeam2 != null &&
+            groupFixture2 != null
+          ) {
+            team2R = {
+              user1: null,
+              user2: null,
+              name: `Winner ${match.rankGroupTeam2} of ${groupFixture2.title}`,
+            };
+          }
+          return {
+            ...others,
+            teams: { team1: team1 || team1R, team2: team2 || team2R },
+          };
+        });
+        return { ...round, matches: matches };
+      });
+      return { ...groupFixture, rounds: rounds };
+    });
+    if (format === GroupTournamentFormat.round_robin) {
+      return { ...others, roundRobinGroups: groups, format };
+    } else if (format === GroupTournamentFormat.knockout) {
+      groups[0].rounds.reverse();
+      return { ...others, knockoutGroup: groups[0], format };
+    } else if (format === TournamentFormat.group_playoff) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.TOURNAMENT_INVALID_FORMAT,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_INVALID_FORMAT,
+        ),
+        data: null,
+      });
+    }
+  }
+
+  async getAllTeams(
+    tournamentId: number,
+    pageOptions: PageOptionsGroupTournamentDto,
+  ) {
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        groupTournamentId: tournamentId,
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.teams.findMany({
+        ...conditions,
+        ...pageOption,
+        include: {
+          user1: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+              isReferee: true,
+            },
+          },
+          user2: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+              isReferee: true,
+            },
+          },
+        },
+      }),
+      this.prismaService.teams.count({ ...conditions }),
+    ]);
+
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
+
+  async finalizeApplicantList(
+    tournamentId: number,
+    userId: string,
+    groupId: number,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    const group = await this.checkValidGroup(groupId);
+
+    // Check expiration date of the purchased package
+    if (new Date(group.purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        code: CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the tournament status is already finalized_applicants
+    if (tournament.phase === GroupTournamentPhase.finalized_applicants) {
+      return {
+        code: CustomResponseStatusCodes.TOURNAMENT_APPLICANT_LIST_ALREADY_FINALIZED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_APPLICANT_LIST_ALREADY_FINALIZED,
+        ),
+        data: null,
+      };
+    }
+
+    // Update tournament
+    // phase -> finalized_applicants
+    // status -> on_going
+    try {
+      return await this.prismaService.$transaction(
+        async (tx) => {
+          await tx.group_tournaments.update({
+            where: {
+              id: tournamentId,
+            },
+            data: {
+              phase: GroupTournamentPhase.finalized_applicants,
+              status: GroupTournamentStatus.on_going,
+            },
+          });
+          const applicants = await tx.group_tournament_registrations.findMany({
+            where: {
+              groupTournamentId: tournamentId,
+            },
+          });
+          if (applicants.length < 5) {
+            throw new BadRequestException({
+              code: CustomResponseStatusCodes.TOURNAMENT_INVALID_NUMBER_APPLICANT,
+              message: CustomResponseMessages.getMessage(
+                CustomResponseStatusCodes.TOURNAMENT_INVALID_NUMBER_APPLICANT,
+              ),
+            });
+          }
+          const teams = await Promise.all(
+            applicants.map(async (applicant) => {
+              const { groupTournamentId, userId } = applicant;
+
+              const user = await tx.users.findFirst({
+                where: {
+                  id: userId,
+                },
+              });
+
+              const totalElo = user?.elo ?? 0;
+              return {
+                name: user.name,
+                userId1: userId,
+                totalElo,
+                groupTournamentId,
+              };
+            }),
+          );
+          return await tx.teams.createMany({
+            data: teams,
+          });
+        },
+        {
+          maxWait: 10000, // default: 2000
+          timeout: 10000, // default: 5000
+        },
+      );
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw error;
+    }
+  }
+
+  async getTournamentParticipants(
+    tournamentId: number,
+    pageOptions: PageOptionsTournamentRegistrationDto,
+    groupId: number,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    const group = await this.checkValidGroup(groupId);
+
+    // Check expiration date of the purchased package
+    if (new Date(group.purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the tournament status is finalized_applicants
+    if (tournament.phase === TournamentPhase.new) {
+      return {
+        code: CustomResponseStatusCodes.TOURNAMENT_APPLICANT_LIST_NOT_FINALIZED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_APPLICANT_LIST_NOT_FINALIZED,
+        ),
+        data: null,
+      };
+    }
+
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        tournamentId: tournamentId,
+        status: RegistrationStatus.approved, // Only approved participants
+      },
+    };
+
+    conditions['select'] = {
+      user1: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          elo: true,
+          isReferee: true,
+        },
+      },
+      message: true,
+      status: true,
+      appliedDate: true,
+      seed: true,
+    };
+
+    // if (tournament.participantType === ParticipantType.single) {
+    //   conditions['select'] = {
+    //     user1: {
+    //       select: {
+    //         id: true,
+    //         name: true,
+    //         email: true,
+    //         image: true,
+    //         elo: true,
+    //         isReferee: true,
+    //       },
+    //     },
+    //     message: true,
+    //     status: true,
+    //     appliedDate: true,
+    //     seed: true,
+    //   };
+    // } else {
+    //   conditions['select'] = {
+    //     user1: {
+    //       select: {
+    //         id: true,
+    //         name: true,
+    //         email: true,
+    //         image: true,
+    //         elo: true,
+    //         isReferee: true,
+    //       },
+    //     },
+    //     user2: {
+    //       select: {
+    //         id: true,
+    //         name: true,
+    //         email: true,
+    //         image: true,
+    //         elo: true,
+    //         isReferee: true,
+    //       },
+    //     },
+    //     message: true,
+    //     status: true,
+    //     appliedDate: true,
+    //     seed: true,
+    //   };
+    // }
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get finalized applicants
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.tournament_registrations.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.tournament_registrations.count({
+        where: {
+          ...conditions.where,
+        },
+      }),
+    ]);
+
+    return {
+      data: result,
+      participantType: 'single',
+      maxParticipants: group.maxMembers,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
+
+  // async updateTournamentInfo(
+  //   userId: string,
+  //   tournamentId: number,
+  //   updateDto: UpdateGroupTournamentDto,
+  // ) {
+  //   // Get tournament info
+  //   const tournament = await this.prismaService.group_tournaments.findUnique({
+  //     where: {
+  //       id: tournamentId,
+  //     },
+  //   });
+
+  //   if (!tournament) {
+  //     throw new NotFoundException({
+  //       code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+  //       message: CustomResponseMessages.getMessage(
+  //         CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+  //       ),
+  //       data: null,
+  //     });
+  //   }
+
+  //   // Get purchased package info
+
+  //   // Check if the user is the owner of this tournament
+  //   if (purchasedPackage.userId !== userId) {
+  //     throw new UnauthorizedException({
+  //       code: CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+  //       message: CustomResponseMessages.getMessage(
+  //         CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+  //       ),
+  //       data: null,
+  //     });
+  //   }
+
+  //   // Update some fields based on the phase
+  //   if (tournament.phase === GroupTournamentPhase.new) {
+  //     // new
+  //     // Validate update data (participantType and gender)
+  //     if (updateDto.participantType) {
+  //       if (
+  //         updateDto.participantType === ParticipantType.single ||
+  //         updateDto.participantType === ParticipantType.doubles
+  //       ) {
+  //         if (!updateDto.gender) {
+  //           throw new BadRequestException({
+  //             code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+  //             message: `Missing 'gender' field for 'participantType': '${updateDto.participantType}'`,
+  //           });
+  //         }
+  //       } else {
+  //         updateDto.gender = null;
+  //       }
+  //     } else {
+  //       delete updateDto['gender'];
+  //     }
+  //   } else if (tournament.phase === GroupTournamentPhase.published) {
+  //     // published
+  //     if (updateDto.format || updateDto.participantType || updateDto.gender) {
+  //       throw new BadRequestException({
+  //         code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+  //         message: `The tournament phase is ${tournament.phase}. Invalid update data`,
+  //       });
+  //     }
+  //   } else {
+  //     // finalized_applicants -> completed
+  //     if (
+  //       updateDto.startDate ||
+  //       updateDto.endDate ||
+  //       updateDto.registrationDueDate ||
+  //       updateDto.format ||
+  //       updateDto.maxParticipants ||
+  //       updateDto.gender ||
+  //       updateDto.participantType ||
+  //       updateDto.playersBornAfterDate
+  //     ) {
+  //       throw new BadRequestException({
+  //         code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+  //         message: `The tournament phase is ${tournament.phase}. Invalid update data`,
+  //       });
+  //     }
+  //   }
+
+  //   // Update tournament info
+  //   try {
+  //     const updatedTournament =
+  //       await this.prismaService.group_tournaments.update({
+  //         where: {
+  //           id: tournamentId,
+  //         },
+  //         data: {
+  //           ...updateDto,
+  //         },
+  //       });
+
+  //     return updatedTournament;
+  //   } catch (err) {
+  //     console.log('Error:', err.message);
+  //     throw new InternalServerErrorException({
+  //       code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+  //       message: CustomResponseMessages.getMessage(
+  //         CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+  //       ),
+  //       data: null,
+  //     });
+  //   }
+  // }
+  // Utils
+  async getTournamentParticipantsCount(tournamentId: number): Promise<number> {
+    const participantCountUser1 =
+      await this.prismaService.group_tournament_registrations.count({
+        where: {
+          groupTournamentId: tournamentId,
+        },
+      });
+
+    const participantCount = participantCountUser1;
+    return participantCount;
+  }
+
+  //Referee
+  async addReferee(
+    userId: string,
+    createRefereesTournamentDto: CreateRefereesGroupTournamentDto,
+    groupId: number,
+  ) {
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: createRefereesTournamentDto.groupTournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    if (tournament.phase != GroupTournamentPhase.finalized_applicants) {
+      throw new BadRequestException({
+        code: 400,
+        message: 'Tournament phase must be finalized_applicants',
+      });
+    }
+
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if the user is the creator of the tournament
+    const isCreator = group.purchasedPackage.userId === userId;
+    if (!isCreator) {
+      throw new ForbiddenException({
+        message: 'You are not a creator of this group',
+        data: null,
+      });
+    }
+    //Check if referee exist
+    const referee = await this.prismaService.users.findFirst({
+      where: {
+        email: createRefereesTournamentDto.email,
+      },
+    });
+    if (!referee) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.USER_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.USER_NOT_FOUND,
+        ),
+      });
+    }
+    //Check if referee is creator
+    if (referee.id === userId) {
+      throw new BadRequestException({
+        code: 400,
+        message: 'Referee must not be creator of tournament',
+      });
+    }
+
+    //Check if referee is participant
+
+    const participant = await this.prismaService.teams.findFirst({
+      where: {
+        OR: [
+          {
+            userId1: referee.id,
+          },
+          {
+            userId2: referee.id,
+          },
+        ],
+        groupTournamentId: createRefereesTournamentDto.groupTournamentId,
+      },
+    });
+
+    if (participant) {
+      throw new BadRequestException({
+        code: 400,
+        message: 'Referee must not be participant of tournament',
+      });
+    }
+    const refereeTournament =
+      await this.prismaService.referees_group_tournaments.findFirst({
+        where: {
+          refereeId: referee.id,
+          groupTournamentId: createRefereesTournamentDto.groupTournamentId,
+        },
+      });
+    if (refereeTournament) {
+      throw new BadRequestException({
+        code: 400,
+        message: "Referee's already in tournament",
+      });
+    }
+    await this.prismaService.referees_group_tournaments.create({
+      data: {
+        refereeId: referee.id,
+        groupTournamentId: createRefereesTournamentDto.groupTournamentId,
+      },
+    });
+
+    await this.prismaService.users.update({
+      where: {
+        id: referee.id,
+      },
+      data: {
+        isReferee: true,
+      },
+    });
+  }
+
+  async listReferees(
+    pageOptionsRefereesTournamentsDto: PageOptionsRefereesGroupTournamentsDto,
+    tournamentId: number,
+  ) {
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptionsRefereesTournamentsDto.order,
+        },
+      ],
+      where: {
+        groupTournamentId: tournamentId,
+      },
+    };
+
+    const pageOption =
+      pageOptionsRefereesTournamentsDto.page &&
+      pageOptionsRefereesTournamentsDto.take
+        ? {
+            skip: pageOptionsRefereesTournamentsDto.skip,
+            take: pageOptionsRefereesTournamentsDto.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.referees_group_tournaments.findMany({
+        ...conditions,
+        ...pageOption,
+        include: {
+          referee: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+              gender: true,
+              dob: true,
+              phoneNumber: true,
+              elo: true,
+              email: true,
+            },
+          },
+        },
+      }),
+      this.prismaService.referees_group_tournaments.count({ ...conditions }),
+    ]);
+    const mapData = result.map((result) => {
+      return result.referee;
+    });
+
+    return {
+      data: mapData,
+      totalPages: Math.ceil(
+        totalCount / pageOptionsRefereesTournamentsDto.take,
+      ),
+      totalCount,
+    };
   }
 }

@@ -41,7 +41,6 @@ import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/
 import { TournamentRole } from './tournament.enum';
 import { FixtureService } from 'src/fixture/fixture.service';
 import { SelectSeedDto } from './dto/select-seed.dto';
-import { dot } from 'node:test/reporters';
 
 @Injectable()
 export class TournamentService {
@@ -2027,6 +2026,14 @@ export class TournamentService {
         ),
         data: null,
       };
+    }
+
+    if (
+      tournament_registration.user2 &&
+      tournament_registration.status === RegistrationStatus.inviting &&
+      userId === tournament_registration.user2.id
+    ) {
+      return;
     }
 
     // Get user1 info
