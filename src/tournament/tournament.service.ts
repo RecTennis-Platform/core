@@ -1718,7 +1718,10 @@ export class TournamentService {
               status: RegistrationStatus.approved,
             },
           });
-          if (applicants.length < 5) {
+          if (
+            applicants.length < 5 ||
+            applicants.length > tournament.maxParticipants
+          ) {
             throw new BadRequestException({
               code: CustomResponseStatusCodes.TOURNAMENT_INVALID_NUMBER_APPLICANT,
               message: CustomResponseMessages.getMessage(
