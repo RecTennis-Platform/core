@@ -17,6 +17,7 @@ import {
 } from './dto';
 import {
   FixtureStatus,
+  FundStatus,
   MatchStatus,
   ParticipantType,
   Prisma,
@@ -41,6 +42,13 @@ import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/
 import { TournamentRole } from './tournament.enum';
 import { FixtureService } from 'src/fixture/fixture.service';
 import { SelectSeedDto } from './dto/select-seed.dto';
+import { CreatePaymentInfoDto } from './dto/create-payment-info.dto';
+import {
+  CreateTournamentFundDto,
+  UpdateTournamentFundByCreatorDto,
+  UpdateTournamentFundDto,
+} from './dto/create-fund.dto';
+import { PageOptionsTournamentFundDto } from './dto/page-options-tournament-fund.dto';
 
 @Injectable()
 export class TournamentService {
@@ -2911,7 +2919,7 @@ export class TournamentService {
       teams.length < dto.numberOfGroups * 2 ||
       (teams.length * 1.0) / dto.numberOfGroups < 3 ||
       teams.length % dto.numberOfGroups !== 0 ||
-      teams.length < 2
+      dto.numberOfGroups < 2
     ) {
       throw new BadRequestException({
         code: 400,
@@ -4065,6 +4073,526 @@ export class TournamentService {
         },
       }),
       this.prismaService.teams.count({ ...conditions }),
+    ]);
+
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
+  //User
+
+  async getTournamentPaymentInfo(tournamentId: number) {
+    const tournamentPaymentInfo =
+      await this.prismaService.tournament_payment_info.findFirst({
+        where: {
+          tournamentId: tournamentId,
+        },
+      });
+    const { payment, groupId, groupTournamentId, ...others } =
+      tournamentPaymentInfo;
+    return {
+      ...others,
+      payment: JSON.parse(payment),
+    };
+  }
+
+  async updateFundByUser(tournamentId: number, dto: UpdateTournamentFundDto) {
+    const fund = await this.prismaService.fund.findFirst({
+      where: {
+        tournamentId: tournamentId,
+        userId: dto.userId,
+      },
+    });
+    if (!fund) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_FUND_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_FUND_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+    return await this.prismaService.fund.update({
+      where: {
+        id: fund.id,
+        tournamentId: tournamentId,
+        userId: dto.userId,
+      },
+      data: {
+        status: FundStatus.pending,
+        message: dto.message,
+      },
+    });
+  }
+
+  async getUserFund(tournamentId: number, userId: string) {
+    const fund = await this.prismaService.fund.findFirst({
+      where: {
+        tournamentId: tournamentId,
+        userId: userId,
+      },
+      select: {
+        id: true,
+        tournamentId: true,
+        userId: true,
+        status: true,
+        reminderDate: true,
+        dueDate: true,
+        message: true,
+        errorMessage: true,
+      },
+    });
+    if (!fund) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_FUND_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_FUND_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+    return fund;
+  }
+
+  async getNoti(tournamentId: number, userId: string) {
+    const fund = await this.prismaService.fund.findFirst({
+      where: {
+        tournamentId: tournamentId,
+        userId: userId,
+        reminderDate: {
+          lte: new Date(),
+        },
+        OR: [{ status: FundStatus.wait }, { status: FundStatus.failed }],
+      },
+      select: {
+        id: true,
+        tournamentId: true,
+        userId: true,
+        status: true,
+        reminderDate: true,
+        dueDate: true,
+        message: true,
+        errorMessage: true,
+      },
+    });
+    let payment = null;
+    if (fund) {
+      const paymentMessage =
+        fund.status === FundStatus.wait
+          ? 'Reminder: Please settle the tournament participation fee'
+          : fund.errorMessage;
+      payment = {
+        fund: fund,
+        message: paymentMessage,
+      };
+    }
+
+    return {
+      user: {
+        payment: payment,
+      },
+    };
+  }
+
+  //Creator
+
+  async createTournamentPaymentInfo(
+    tournamentId: number,
+    userId: string,
+    dto: CreatePaymentInfoDto,
+  ) {
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    const isCreator = purchasedPackage.userId === userId;
+    if (!isCreator) {
+      throw new ForbiddenException({
+        message: 'You are not a creator of this group',
+        data: null,
+      });
+    }
+    const paymentInfo =
+      await this.prismaService.tournament_payment_info.findFirst({
+        where: {
+          tournamentId: tournamentId,
+        },
+      });
+    if (paymentInfo) {
+      throw new BadRequestException({
+        code: 7003,
+        message: 'Tournament already has payment info',
+        data: null,
+      });
+    }
+    const payment = JSON.stringify(dto.payment);
+    return await this.prismaService.tournament_payment_info.create({
+      data: {
+        unit: dto.unit,
+        image: dto.image,
+        amount: dto.amount,
+        payment: payment,
+        tournamentId: tournamentId,
+      },
+    });
+  }
+
+  async sendFund2User(
+    tournamentId: number,
+    userId: string,
+    dto: CreateTournamentFundDto,
+  ) {
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    const isCreator = purchasedPackage.userId === userId;
+    if (!isCreator) {
+      throw new ForbiddenException({
+        message: 'You are not a creator of this group',
+        data: null,
+      });
+    }
+    const previousFunds = await this.prismaService.fund.findMany({
+      where: {
+        tournamentId: tournamentId,
+      },
+    });
+    const participants =
+      await this.prismaService.tournament_registrations.findMany({
+        where: {
+          status: 'approved',
+          tournamentId: tournament.id,
+        },
+      });
+    if (previousFunds.length === 0) {
+      const funds = [];
+      for (const participant of participants) {
+        const user1Fund = {
+          userId: participant.userId1,
+          tournamentId: tournamentId,
+          reminderDate: dto.reminderDate,
+          dueDate: dto.dueDate,
+          status: FundStatus.wait,
+        };
+        funds.push(user1Fund);
+        if (participant.userId2) {
+          const user2Fund = {
+            userId: participant.userId2,
+            tournamentId: tournamentId,
+            reminderDate: dto.reminderDate,
+            dueDate: dto.dueDate,
+            status: FundStatus.wait,
+          };
+          funds.push(user2Fund);
+        }
+      }
+      return await this.prismaService.fund.createMany({
+        data: funds,
+      });
+    }
+
+    const previousFailureFunds = await this.prismaService.fund.findMany({
+      where: {
+        tournamentId: tournamentId,
+        OR: [{ status: FundStatus.failed }, { status: FundStatus.wait }],
+      },
+    });
+    if (previousFailureFunds.length > 0) {
+      const funds = previousFailureFunds.map((participant) => {
+        return {
+          userId: participant.userId,
+          tournamentId: tournamentId,
+          reminderDate: dto.reminderDate,
+          dueDate: dto.dueDate,
+          status: FundStatus.wait,
+          id: participant.id,
+        };
+      });
+      await Promise.all([
+        funds.forEach(async (fund) => {
+          await this.prismaService.fund.update({
+            where: {
+              id: fund.id,
+            },
+            data: fund,
+          });
+        }),
+      ]);
+    }
+
+    // const previousFundIds = previousFailureFunds.map((value) => {
+    //   return value.userId;
+    // });
+
+    // const participants =
+    //   await this.prismaService.tournament_registrations.findMany({
+    //     where: {
+    //       status: 'approved',
+    //       tournamentId: tournament.id,
+    //     },
+    //   });
+    // if (participants.length > 0) {
+    //   const newParticipants = participants.filter((participant) => {
+    //     return (
+    //       !previousFundIds.includes(participant.userId1) &&
+    //       !previousFundIds.includes(participant.userId2)
+    //     );
+    //   });
+
+    //   const funds = [];
+    //   for (const participant of newParticipants) {
+    //     const user1Fund = {
+    //       userId: participant.userId1,
+    //       tournamentId: tournamentId,
+    //       reminderDate: dto.reminderDate,
+    //       dueDate: dto.dueDate,
+    //       status: FundStatus.wait,
+    //     };
+    //     funds.push(user1Fund);
+    //     if (participant.userId2) {
+    //       const user2Fund = {
+    //         userId: participant.userId2,
+    //         tournamentId: tournamentId,
+    //         reminderDate: dto.reminderDate,
+    //         dueDate: dto.dueDate,
+    //         status: FundStatus.wait,
+    //       };
+    //       funds.push(user2Fund);
+    //     }
+    //   }
+    //   return await this.prismaService.fund.createMany({
+    //     data: funds,
+    //   });
+    //}
+  }
+
+  async updateFundByCreator(
+    tournamentId: number,
+    userId: string,
+    dto: UpdateTournamentFundByCreatorDto,
+  ) {
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    const isCreator = purchasedPackage.userId === userId;
+    if (!isCreator) {
+      throw new ForbiddenException({
+        message: 'You are not a creator of this group',
+        data: null,
+      });
+    }
+
+    const fund = await this.prismaService.fund.findFirst({
+      where: {
+        tournamentId: tournamentId,
+        userId: dto.userId,
+      },
+    });
+    if (!fund) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_FUND_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_FUND_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+    return await this.prismaService.fund.update({
+      where: {
+        id: fund.id,
+        tournamentId: tournamentId,
+        userId: dto.userId,
+      },
+      data: {
+        status: dto.status,
+        errorMessage: dto.errorMessage,
+      },
+    });
+  }
+
+  async getAllUserFunds(
+    pageOptions: PageOptionsTournamentFundDto,
+    tournamentId: number,
+    userId: string,
+  ) {
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    const isCreator = purchasedPackage.userId === userId;
+    if (!isCreator) {
+      throw new ForbiddenException({
+        message: 'You are not a creator of this group',
+        data: null,
+      });
+    }
+    // Build page options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {},
+    };
+
+    if (pageOptions.status) {
+      conditions.where['status'] = pageOptions.status;
+    }
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get all funds
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.fund.findMany({
+        ...conditions,
+        ...pageOption,
+        select: {
+          id: true,
+          tournamentId: true,
+          userId: true,
+          status: true,
+          reminderDate: true,
+          dueDate: true,
+          message: true,
+          errorMessage: true,
+        },
+      }),
+      this.prismaService.fund.count(conditions),
     ]);
 
     return {

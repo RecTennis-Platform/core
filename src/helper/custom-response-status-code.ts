@@ -47,4 +47,7 @@ export enum CustomResponseStatusCodes {
 
   // 6xxx - User
   USER_NOT_FOUND = 6001,
+
+  //7xxx - Fund
+  TOURNAMENT_FUND_NOT_FOUND = 7001,
 }

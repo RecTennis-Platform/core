@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -32,6 +33,15 @@ import { AddRefereesTournamentDto } from './dto/create-referees_tournament.dto';
 import { PageOptionsRefereesTournamentsDto } from 'src/referees_tournaments/dto/page-options-referees-tournaments.dto';
 import { FcmNotificationService } from 'src/services/notification/fcm-notification';
 import { SelectSeedDto } from './dto/select-seed.dto';
+import {
+  CreateTournamentFundDto,
+  UpdateTournamentFundByCreatorDto,
+  UpdateTournamentFundDto,
+} from './dto/create-fund.dto';
+import { CreatePaymentInfoDto } from './dto/create-payment-info.dto';
+import { PageOptionsTournamentFundDto } from './dto/page-options-tournament-fund.dto';
+import { CreateFixturePublishDto } from 'src/fixture/dto/create-fixture-save-publish.dto';
+import { FixtureStatus } from '@prisma/client';
 
 @Controller('tournaments')
 export class TournamentController {
@@ -351,12 +361,32 @@ export class TournamentController {
     }
   }
 
-  @Post('/:id/fixtures/save')
+  @Post('/:id/fixtures/save-draft')
   async saveFixture(
     @Param('id') tournamentId: number,
     @Body() dto: CreateFixtureDto,
   ) {
     try {
+      dto.status = FixtureStatus.draft;
+      return this.tournamentService.createFixture(tournamentId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('/:id/fixtures/save-publish')
+  async saveFixturePublish(
+    @Param('id') tournamentId: number,
+    @Body() dto: CreateFixturePublishDto,
+  ) {
+    try {
+      dto.status = FixtureStatus.published;
       return this.tournamentService.createFixture(tournamentId, dto);
     } catch (error) {
       throw new HttpException(
@@ -421,23 +451,161 @@ export class TournamentController {
     }
   }
 
-  @Get('/:id/notification')
-  async sendNotification(@Param('id') tournamentId: number) {
+  @UseGuards(JwtGuard)
+  @Get('/:tournamentId/payment-info')
+  async getTournamentPaymentInfo(
+    @Param('tournamentId') tournamentId: number,
+    //@GetUser('sub') userId: string,
+  ) {
     try {
-      const token =
-        'eFz6vcB-Rf2Q7H2DwApe2S:APA91bEIRuHIqnkPR-lBOuDSHXuw-ApLn1D67xI04IE6beaoKjvDajNPXkEmNLwbNv2fmR_mMz3jYRurmuTKccUwNJR5LBuvzZtSCx03-m_HpTGI-pMmXUV4rYjukMNoj8C8g09HYkyG';
-      const data = {
-        age: '21',
-        name: 'Khai',
-      };
-      const notification = {
-        title: 'Hello',
-        body: 'Xin chao',
-      };
-      return this.fcmNotificationService.sendingNotificationOneUser(
-        token,
-        data,
-        notification,
+      return this.tournamentService.getTournamentPaymentInfo(tournamentId);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('/:tournamentId/noti')
+  async getNoti(
+    @Param('tournamentId') tournamentId: number,
+    @GetUser('sub') userId: string,
+  ) {
+    try {
+      return this.tournamentService.getNoti(tournamentId, userId);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('/:tournamentId/fund')
+  async updateFundByUser(
+    @Param('tournamentId') tournamentId: number,
+    @GetUser('sub') userId: string,
+    @Body() dto: UpdateTournamentFundDto,
+  ) {
+    try {
+      dto.userId = userId;
+      return this.tournamentService.updateFundByUser(tournamentId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('/:tournamentId/fund')
+  async getFundByUser(
+    @Param('tournamentId') tournamentId: number,
+    @GetUser('sub') userId: string,
+  ) {
+    try {
+      return this.tournamentService.getUserFund(tournamentId, userId);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  //Creator
+  @UseGuards(JwtGuard)
+  @Post('/:tournamentId/payment-info')
+  async createTournamentPaymentInfo(
+    @Param('tournamentId') tournamentId: number,
+    @GetUser('sub') userId: string,
+    @Body() dto: CreatePaymentInfoDto,
+  ) {
+    try {
+      return this.tournamentService.createTournamentPaymentInfo(
+        tournamentId,
+        userId,
+        dto,
+      );
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('/:tournamentId/fund/users')
+  async getListOfUserFund(
+    @Param('tournamentId') tournamentId: number,
+    @GetUser('sub') userId: string,
+    @Query() dto: PageOptionsTournamentFundDto,
+  ) {
+    try {
+      return this.tournamentService.getAllUserFunds(dto, tournamentId, userId);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('/:tournamentId/fund/users')
+  async sendRefundToUser(
+    @Param('tournamentId') tournamentId: number,
+    @GetUser('sub') userId: string,
+    @Body() dto: CreateTournamentFundDto,
+  ) {
+    try {
+      return this.tournamentService.sendFund2User(tournamentId, userId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch('/:tournamentId/fund/users')
+  async updateFundByCreator(
+    @Param('tournamentId') tournamentId: number,
+    @GetUser('sub') userId: string,
+    @Body() dto: UpdateTournamentFundByCreatorDto,
+  ) {
+    try {
+      return this.tournamentService.updateFundByCreator(
+        tournamentId,
+        userId,
+        dto,
       );
     } catch (error) {
       throw new HttpException(

@@ -48,6 +48,8 @@ export class CustomResponseMessages {
 
     // 6000 - User
     [6001, 'User not found'],
+
+    [7001, 'Tournament fund not found'],
   ]);
 
   private static readonly UNKNOWN_ERROR = 'Unknown error';
