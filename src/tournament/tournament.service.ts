@@ -360,6 +360,7 @@ export class TournamentService {
                 userId2: userId,
               },
             ],
+            tournamentId: tournamentId,
           },
         });
       // Check if the user is the creator of the tournament
@@ -2909,7 +2910,8 @@ export class TournamentService {
     if (
       teams.length < dto.numberOfGroups * 2 ||
       (teams.length * 1.0) / dto.numberOfGroups < 3 ||
-      teams.length % dto.numberOfGroups !== 0
+      teams.length % dto.numberOfGroups !== 0 ||
+      teams.length < 2
     ) {
       throw new BadRequestException({
         code: 400,
@@ -3001,11 +3003,12 @@ export class TournamentService {
                 user2: teams[tables.table2[i][j] - 1].user2,
                 id: teams[tables.table2[i][j] - 1].id,
               };
+              const today = new Date();
               const match = {
                 id: randomUUID(),
                 nextMatchId: null,
                 title: `Match ${k++}`,
-                matchStartDate: null,
+                matchStartDate: new Date(today.setDate(today.getDate() + 3)),
                 duration: dto.matchDuration,
                 status: MatchStatus.scheduled,
                 teams: { team1, team2 },
@@ -3087,11 +3090,12 @@ export class TournamentService {
               if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
                 status = MatchStatus.no_show.toString();
               }
+              const today = new Date();
               const match = {
                 id: id,
                 nextMatchId: nextMatchId,
                 title: `Match ${j + 1}`,
-                matchStartDate: null,
+                matchStartDate: new Date(today.setDate(today.getDate() + 3)),
                 duration: dto.matchDuration,
                 status: status,
                 teams: { team1, team2 },
@@ -3185,11 +3189,12 @@ export class TournamentService {
                 user2: teams[tables.table2[i][j] - 1].user2,
                 id: teams[tables.table2[i][j] - 1].id,
               };
+              const today = new Date();
               const match = {
                 id: randomUUID(),
                 nextMatchId: null,
                 title: `Match ${k++}`,
-                matchStartDate: null,
+                matchStartDate: new Date(today.setDate(today.getDate() + 3)),
                 duration: dto.matchDuration,
                 status: MatchStatus.scheduled,
                 teams: { team1, team2 },
@@ -3285,11 +3290,12 @@ export class TournamentService {
             if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
               status = MatchStatus.no_show.toString();
             }
+            const today = new Date();
             const match = {
               id: id,
               nextMatchId: nextMatchId,
               title: `Match ${j + 1}`,
-              matchStartDate: null,
+              matchStartDate: new Date(today.setDate(today.getDate() + 3)),
               duration: dto.matchDuration,
               status: status,
               teams: { team1, team2 },

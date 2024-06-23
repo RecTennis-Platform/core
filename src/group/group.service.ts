@@ -1657,6 +1657,7 @@ export class GroupService {
   async getMyTournaments(
     userId: string,
     pageOptions: PageOptionsGroupTournamentDto,
+    groupId: number,
   ) {
     // Get user's purchased packages
     const purchasedPackages =
@@ -1698,9 +1699,7 @@ export class GroupService {
         },
       ],
       where: {
-        groupId: {
-          in: groups.map((group) => group.id),
-        },
+        groupId: groupId,
       },
     };
 
@@ -1778,109 +1777,89 @@ export class GroupService {
     };
   }
 
-  // async getUnregisteredTournaments(
-  //   userId: string,
-  //   pageOptions: PageOptionsGroupTournamentDto,
-  //   groupId: number
-  // ) {
-  //   //// Get tournament registrations that the user has registered
-  //   const userTournamentRegistrations =
-  //     await this.prismaService.group_tournament_registrations.findMany({
-  //       where: {
-  //         OR: [
-  //           {
-  //             userId: userId,
-  //           },
-  //         ],
-  //       },
-  //       select: {
-  //         groupTournamentId: true,
-  //       },
-  //     });
+  async getUnregisteredTournaments(
+    userId: string,
+    pageOptions: PageOptionsGroupTournamentDto,
+    groupId: number,
+  ) {
+    //// Get tournament registrations that the user has registered
+    const groupTournaments =
+      await this.prismaService.group_tournaments.findMany({
+        where: {
+          groupId: groupId,
+        },
+      });
+    const groupTournamentsId = groupTournaments.map((value) => {
+      return value.id;
+    });
+    const userTournamentRegistrations =
+      await this.prismaService.group_tournament_registrations.findMany({
+        where: {
+          OR: [
+            {
+              userId: userId,
+            },
+          ],
+          groupTournamentId: { in: groupTournamentsId },
+        },
+        select: {
+          groupTournamentId: true,
+        },
+      });
 
-  //   // Map to get only tournamentId as an array
-  //   const userRegisteredTournamentIds = userTournamentRegistrations.map(
-  //     (registration) => registration.groupTournamentId,
-  //   );
+    // Map to get only tournamentId as an array
+    const userRegisteredTournamentIds = userTournamentRegistrations.map(
+      (registration) => registration.groupTournamentId,
+    );
 
-  //   //// Get this user's created tournaments
-  //   // Get user's purchased packages
-  //   const purchasedPackages =
-  //     await this.mongodbPrismaService.purchasedPackage.findMany({
-  //       where: {
-  //         userId: userId,
-  //         // endDate: {
-  //         //   gt: new Date(), // Not expired purchased packages
-  //         // },
-  //       },
-  //     });
+    //// Get this user's created tournaments
+    // Get user's purchased package
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        NOT: {
+          OR: [{ id: { in: userRegisteredTournamentIds } }],
+        },
+        status: GroupTournamentStatus.upcoming,
+        phase: GroupTournamentPhase.published,
+      },
+    };
 
-  //   // Get purchased packages that have the "Tournament" service
-  //   const filteredPurchasedPackages = purchasedPackages.filter(
-  //     (purchasedPackage) =>
-  //       purchasedPackage.package.services.some(
-  //         (service) =>
-  //           service.name.toLowerCase().includes('tournament') === true,
-  //       ),
-  //   );
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
 
-  //   // Get purchased packages id
-  //   const purchasedPackageIds = filteredPurchasedPackages.map(
-  //     (purchasedPackage) => purchasedPackage.id,
-  //   );
+    // Get user's tournament registrations (participated)
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.group_tournaments.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.group_tournaments.count(conditions),
+    ]);
 
-  //   // Build pagination options
-  //   const conditions = {
-  //     orderBy: [
-  //       {
-  //         createdAt: pageOptions.order,
-  //       },
-  //     ],
-  //     where: {
-  //       NOT: {
-  //         OR: [
-  //           { id: { in: userRegisteredTournamentIds } },
-  //           { purchasedPackageId: { in: purchasedPackageIds } },
-  //         ],
-  //       },
-  //       status: GroupTournamentStatus.upcoming,
-  //       phase: GroupTournamentPhase.published,
-  //       registrationDueDate: {
-  //         gt: new Date(),
-  //       },
-  //     },
-  //   };
+    // Get each tournament participants count
+    for (const tournament of result) {
+      tournament['participants'] = await this.getTournamentParticipantsCount(
+        tournament.id,
+      );
+    }
 
-  //   const pageOption =
-  //     pageOptions.page && pageOptions.take
-  //       ? {
-  //           skip: pageOptions.skip,
-  //           take: pageOptions.take,
-  //         }
-  //       : undefined;
-
-  //   // Get user's tournament registrations (participated)
-  //   const [result, totalCount] = await Promise.all([
-  //     this.prismaService.group_tournaments.findMany({
-  //       ...conditions,
-  //       ...pageOption,
-  //     }),
-  //     this.prismaService.group_tournaments.count(conditions),
-  //   ]);
-
-  //   // Get each tournament participants count
-  //   for (const tournament of result) {
-  //     tournament['participants'] = await this.getTournamentParticipantsCount(
-  //       tournament.id,
-  //     );
-  //   }
-
-  //   return {
-  //     data: result,
-  //     totalPages: Math.ceil(totalCount / pageOptions.take),
-  //     totalCount,
-  //   };
-  // }
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
 
   async publishTournament(
     userId: string,

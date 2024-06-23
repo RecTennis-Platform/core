@@ -90,6 +90,21 @@ export class UserController {
     );
   }
 
+  // Get my participated tournaments
+  @UseGuards(JwtGuard)
+  @Get('groups/:groupId/tournaments')
+  async getMyParticipatedGroupTournaments(
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsUserParticipatedTournamentsDto,
+    @Param('groupId') groupId: number,
+  ) {
+    return await this.userService.getMyParticipatedGroupTournaments(
+      userId,
+      pageOptions,
+      groupId,
+    );
+  }
+
   @UseGuards(JwtGuard)
   @Post('matches/:matchId/follow')
   async followMatch(

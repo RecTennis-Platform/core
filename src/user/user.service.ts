@@ -293,6 +293,88 @@ export class UserService {
     };
   }
 
+  async getMyParticipatedGroupTournaments(
+    userId: string,
+    pageOptions: PageOptionsUserParticipatedTournamentsDto,
+    groupId: number,
+  ) {
+    // Build pagination options
+
+    const tournaments = await this.prismaService.group_tournaments.findMany({
+      where: {
+        groupId: groupId,
+      },
+    });
+
+    const tournamentIds = tournaments.map((tournament) => {
+      return tournament.id;
+    });
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        userId: userId,
+        groupTournamentId: { in: tournamentIds },
+      },
+      select: {
+        groupTournament: true,
+      },
+    };
+
+    // Check if status is provided
+    if (pageOptions.status) {
+      conditions.where['groupTournament'] = {
+        status: {
+          equals: pageOptions.status,
+        },
+      };
+    }
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get user's tournament registrations
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.group_tournament_registrations.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.group_tournament_registrations.count({
+        where: conditions.where,
+      }),
+    ]);
+
+    // Map to get only tournament details
+    const userParticipatedTournaments = result
+      .map((registration) => {
+        return {
+          ...registration.groupTournament,
+        };
+      })
+      .filter(Boolean);
+
+    // Get each tournament participants count
+    for (const tournament of userParticipatedTournaments) {
+      tournament['participants'] = await this.getTournamentParticipantsCount(
+        tournament.id,
+      );
+    }
+
+    return {
+      data: userParticipatedTournaments,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
+
   async getUserParticipatedTournaments(
     userId: string,
     pageOptions: PageOptionsUserParticipatedTournamentsDto,
@@ -675,5 +757,17 @@ export class UserService {
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
+  }
+  // Utils
+  async getTournamentParticipantsCount(tournamentId: number): Promise<number> {
+    const participantCountUser1 =
+      await this.prismaService.group_tournament_registrations.count({
+        where: {
+          groupTournamentId: tournamentId,
+        },
+      });
+
+    const participantCount = participantCountUser1;
+    return participantCount;
   }
 }

@@ -285,24 +285,30 @@ export class GroupController {
   }
 
   @UseGuards(JwtGuard)
-  @Get('tournaments/me')
+  @Get(':groupId/tournaments/me')
   // Get my created tournaments
   async getMyCreatedTournaments(
     @GetUser('sub') userId: string,
     @Query() pageOptions: PageOptionsGroupTournamentDto,
+    @Param('groupId') groupId: number,
   ) {
-    return this.groupService.getMyTournaments(userId, pageOptions);
+    return this.groupService.getMyTournaments(userId, pageOptions, groupId);
   }
 
-  // @UseGuards(JwtGuard)
-  // @Get('unregistered')
-  // // Get tournaments that user has not registered (Allow user to participate)
-  // async getUnregisteredTournaments(
-  //   @GetUser('sub') userId: string,
-  //   @Query() pageOptions: PageOptionsTournamentDto,
-  // ) {
-  //   return this.groupService.getUnregisteredTournaments(userId, pageOptions);
-  // }
+  @UseGuards(JwtGuard)
+  @Get(':groupId/tournaments/unregistered')
+  // Get tournaments that user has not registered (Allow user to participate)
+  async getUnregisteredTournaments(
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsGroupTournamentDto,
+    @Param('groupId') groupId: number,
+  ) {
+    return this.groupService.getUnregisteredTournaments(
+      userId,
+      pageOptions,
+      groupId,
+    );
+  }
 
   @UseGuards(JwtGuard)
   @Post(':groupId/tournaments/:tournamentId/referees')
