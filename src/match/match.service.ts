@@ -240,6 +240,7 @@ export class MatchService {
         },
         data: {
           status: MatchStatus.walk_over,
+          matchStartDate: new Date(),
         },
       });
 
@@ -346,6 +347,10 @@ export class MatchService {
       where: {
         matchId: matchId,
         status: SetStatus.on_going,
+        teamWinId: null,
+      },
+      orderBy: {
+        id: Order.DESC,
       },
     });
 
@@ -358,6 +363,7 @@ export class MatchService {
     const activeGame = await this.prismaService.games.findFirst({
       where: {
         setId: activeSet.id,
+        teamWinId: null,
       },
       orderBy: {
         id: Order.DESC,
@@ -450,7 +456,7 @@ export class MatchService {
         };
       }
 
-      console.log('scoreData:', scoreData);
+      // console.log('scoreData:', scoreData);
     } else {
       // I.2. Update tie break game score
       // Tie break game score definition
@@ -483,7 +489,7 @@ export class MatchService {
         };
       }
 
-      console.log('scoreData:', scoreData);
+      // console.log('scoreData:', scoreData);
     }
 
     try {
@@ -497,6 +503,7 @@ export class MatchService {
         },
       });
 
+      console.log('isGameEnd:', isGameEnd);
       if (isGameEnd) {
         // Update current game:
         // - teamWinId
@@ -604,6 +611,7 @@ export class MatchService {
           data: updateSetData,
         });
 
+        console.log('isSetEnd:', isSetEnd);
         if (isSetEnd) {
           // Update current set:
           // - teamWinId
@@ -637,12 +645,14 @@ export class MatchService {
           let updateNextMatchData = {};
           let [winnerElo, loserElo] = [0, 0];
           if (teamWinMatchScore >= 2) {
+            console.log('win match, 2 sets lead');
             // Win based on a two-set lead
             isMatchEnd = true;
             if (dto.teamWin === 1) {
               updateMatchData = {
                 teamWinnerId: scoreData['teamWinId'],
                 status: MatchStatus.score_done,
+                matchEndDate: new Date(),
                 team1MatchScore: teamWinMatchScore,
                 team2MatchScore: teamLoseMatchScore,
               };
@@ -650,6 +660,7 @@ export class MatchService {
               updateMatchData = {
                 teamWinnerId: scoreData['teamWinId'],
                 status: MatchStatus.score_done,
+                matchEndDate: new Date(),
                 team1MatchScore: teamLoseMatchScore,
                 team2MatchScore: teamWinMatchScore,
               };
@@ -689,7 +700,7 @@ export class MatchService {
               });
             }
 
-            //update elo
+            // update elo
             if (assignedMatch.team1.tournamentId) {
               const tournament =
                 await this.prismaService.tournaments.findUnique({
@@ -708,6 +719,7 @@ export class MatchService {
                   10,
                   5,
                 );
+
                 await this.prismaService.users.update({
                   where: {
                     id: assignedMatch.team1.userId1,
@@ -833,7 +845,10 @@ export class MatchService {
             data: updateMatchData,
           });
 
+          console.log('isMatchEnd:', isMatchEnd);
+          console.log('matchId:', matchId);
           if (!isMatchEnd) {
+            console.log('match not end, create new set');
             // Create new set
             await this.prismaService.sets.create({
               data: {
@@ -842,7 +857,8 @@ export class MatchService {
               },
             });
           }
-          //Send notification
+
+          // Send notification
           const followUsers = (
             await this.prismaService.users_follow_matches.findMany({
               where: {
@@ -860,11 +876,28 @@ export class MatchService {
             matchId: matchId,
           };
           await this.notificationProducer.add(notificationData);
+        } else {
+          console.log('create new game, set not end');
+          // Set not end -> New game
+          // Create new game
+          const newGame = await this.prismaService.games.create({
+            data: {
+              setId: activeSet.id,
+            },
+          });
+
+          // Creat init score (0 - 0)
+          await this.prismaService.scores.create({
+            data: {
+              gameId: newGame.id,
+            },
+          });
         }
       }
 
       return await this.getMatchDetails(matchId);
     } catch (err) {
+      console.log('err', err);
       throw new InternalServerErrorException({
         message: `Error: ${err.message}`,
       });
@@ -908,6 +941,14 @@ export class MatchService {
     m: number,
     n: number,
   ): [number, number] {
+    if (eloA === 0) {
+      eloA = 200;
+    }
+
+    if (eloB === 0) {
+      eloB = 200;
+    }
+
     const eloAvg = (eloA + eloB) / 2;
     const eloDiff = Math.abs(eloA - eloB);
     const expTerm = Math.exp(-eloDiff / eloAvg);

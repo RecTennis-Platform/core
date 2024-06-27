@@ -55,9 +55,9 @@ model groups {
   image                   String?
   purchasedPackageId      String                    @map("purchased_package_id")
   maxMembers              Int                       @map("max_member")
+  fund                    fund[]
   group_tournaments       group_tournaments[]
   member_ships            member_ships[]
-  fund                    fund[]
   tournament_payment_info tournament_payment_info[]
 }
 
@@ -149,6 +149,7 @@ model users {
   elo                          Int?
   fcmToken                     String?                          @map("fcm_token")
   isReferee                    Boolean                          @default(false) @map("is_referee")
+  fund                         fund[]
   groupTournamentRegistrations group_tournament_registrations[]
   matches                      matches[]
   memberShips                  member_ships[]
@@ -160,7 +161,6 @@ model users {
   tournamentRegistration1      tournament_registrations[]       @relation("user1")
   tournamentRegistration2      tournament_registrations[]       @relation("user2")
   followMatches                users_follow_matches[]
-  fund                         fund[]
 }
 
 model tournaments {
@@ -187,12 +187,12 @@ model tournaments {
   image                      String?
   level                      Int?                         @default(1) @map("level")
   fixtures                   fixtures[]
+  fund                       fund[]
   referees_group_tournaments referees_group_tournaments[]
   referees_tournaments       referees_tournaments[]
   teams                      teams[]
-  tournament_registrations   tournament_registrations[]
-  fund                       fund[]
   tournament_payment_info    tournament_payment_info[]
+  tournament_registrations   tournament_registrations[]
 }
 
 model tournament_registrations {
@@ -249,10 +249,10 @@ model group_tournaments {
   createdAt                      DateTime                         @default(now()) @map("created_at")
   updatedAt                      DateTime                         @updatedAt @map("updated_at")
   fixtures                       fixtures[]
+  fund                           fund[]
   group_tournament_registrations group_tournament_registrations[]
   group                          groups                           @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournaments_groups")
   teams                          teams[]
-  fund                           fund[]
   tournament_payment_info        tournament_payment_info[]
 }
 
@@ -440,16 +440,16 @@ model fund {
   userId            String             @map("user_id") @db.Uuid
   createdAt         DateTime           @default(now()) @map("created_at")
   updatedAt         DateTime           @updatedAt @map("updated_at")
-  tournament        tournaments?       @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fund_tournaments")
-  group             groups?            @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fund_group_tournaments")
-  user              users              @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_matches_users")
   status            FundStatus         @default(wait)
   reminderDate      DateTime           @default(now()) @map("reminder_date")
   dueDate           DateTime           @default(now()) @map("due_date")
   message           String?            @map("message")
   errorMessage      String?            @map("error_message")
-  groupTournament   group_tournaments? @relation(fields: [groupTournamentId], references: [id])
   groupTournamentId Int?               @map("group_tournament_id")
+  group             groups?            @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fund_group_tournaments")
+  tournament        tournaments?       @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fund_tournaments")
+  user              users              @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_matches_users")
+  groupTournament   group_tournaments? @relation(fields: [groupTournamentId], references: [id])
 }
 
 model tournament_payment_info {
@@ -460,10 +460,10 @@ model tournament_payment_info {
   payment           String             @map("payment")
   tournamentId      Int?               @map("tournament_id")
   groupId           Int?               @map("group_id")
-  tournament        tournaments?       @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_payment_info_tournaments")
-  group             groups?            @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_payment_info_group_tournaments")
-  groupTournament   group_tournaments? @relation(fields: [groupTournamentId], references: [id])
   groupTournamentId Int?               @map("group_tournament_id")
+  group             groups?            @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_payment_info_group_tournaments")
+  tournament        tournaments?       @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_payment_info_tournaments")
+  groupTournament   group_tournaments? @relation(fields: [groupTournamentId], references: [id])
 }
 
 enum AffiliateStatus {
