@@ -402,6 +402,15 @@ export class MatchService {
 
     let isGameEnd = false;
 
+    // Calculate score time (Current time - matchStartDate)
+
+    const scoreTime = this.calculateTimeDifference(
+      assignedMatch.matchStartDate,
+      new Date(),
+    );
+
+    console.log('scoreTime:', scoreTime);
+
     // Get current score
     let teamWinScore = 0;
     let teamLoseScore = 0;
@@ -498,7 +507,7 @@ export class MatchService {
         data: {
           gameId: activeGame.id,
           type: dto.type,
-          time: dto.time,
+          time: scoreTime,
           ...scoreData,
         },
       });
@@ -905,6 +914,25 @@ export class MatchService {
   }
 
   // Utils
+  calculateTimeDifference(dateA: Date, dateB: Date): string {
+    // Get the time values from the Date objects
+    const timestampA = dateA.getTime();
+    const timestampB = dateB.getTime();
+
+    // Calculate the difference in milliseconds
+    const diffMs = Math.abs(timestampB - timestampA);
+
+    // Convert the difference to hours, minutes, and seconds
+    const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    const diffSecs = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+    // Format the result as HH:mm:ss
+    const result = `${String(diffHrs).padStart(2, '0')}:${String(diffMins).padStart(2, '0')}:${String(diffSecs).padStart(2, '0')}`;
+
+    return result;
+  }
+
   async getTieBreakScore(setId: number) {
     // Get tie break game
     const tieBreakGame = await this.prismaService.games.findFirst({
