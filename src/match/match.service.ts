@@ -405,7 +405,7 @@ export class MatchService {
     // Calculate score time (Current time - matchStartDate)
 
     const scoreTime = this.calculateTimeDifference(
-      assignedMatch.matchStartDate,
+      activeGame.gameStartTime,
       new Date(),
     );
 
