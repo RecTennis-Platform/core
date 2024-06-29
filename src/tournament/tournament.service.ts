@@ -49,6 +49,7 @@ import {
   UpdateTournamentFundDto,
 } from './dto/create-fund.dto';
 import { PageOptionsTournamentFundDto } from './dto/page-options-tournament-fund.dto';
+import { UpdatePaymentInfoDto } from './dto/update-payment-info.dto';
 
 @Injectable()
 export class TournamentService {
@@ -4090,6 +4091,9 @@ export class TournamentService {
           tournamentId: tournamentId,
         },
       });
+    if (!tournamentPaymentInfo) {
+      return {};
+    }
     const { payment, groupId, groupTournamentId, ...others } =
       tournamentPaymentInfo;
     return {
@@ -4259,15 +4263,85 @@ export class TournamentService {
       });
     }
     const payment = JSON.stringify(dto.payment);
-    return await this.prismaService.tournament_payment_info.create({
+
+    await this.prismaService.tournament_payment_info.create({
       data: {
         unit: dto.unit,
         image: dto.image,
         amount: dto.amount,
         payment: payment,
         tournamentId: tournamentId,
+        reminderDate: dto.reminderDate,
+        dueDate: dto.dueDate,
       },
     });
+    const previousFunds = await this.prismaService.fund.findMany({
+      where: {
+        tournamentId: tournamentId,
+      },
+    });
+    const participants =
+      await this.prismaService.tournament_registrations.findMany({
+        where: {
+          status: 'approved',
+          tournamentId: tournament.id,
+        },
+      });
+    if (previousFunds.length === 0) {
+      const funds = [];
+      for (const participant of participants) {
+        const user1Fund = {
+          userId: participant.userId1,
+          tournamentId: tournamentId,
+          reminderDate: dto.reminderDate,
+          dueDate: dto.dueDate,
+          status: FundStatus.wait,
+        };
+        funds.push(user1Fund);
+        if (participant.userId2) {
+          const user2Fund = {
+            userId: participant.userId2,
+            tournamentId: tournamentId,
+            reminderDate: dto.reminderDate,
+            dueDate: dto.dueDate,
+            status: FundStatus.wait,
+          };
+          funds.push(user2Fund);
+        }
+      }
+      return await this.prismaService.fund.createMany({
+        data: funds,
+      });
+    }
+
+    // const previousFailureFunds = await this.prismaService.fund.findMany({
+    //   where: {
+    //     tournamentId: tournamentId,
+    //     OR: [{ status: FundStatus.failed }, { status: FundStatus.wait }],
+    //   },
+    // });
+    // if (previousFailureFunds.length > 0) {
+    //   const funds = previousFailureFunds.map((participant) => {
+    //     return {
+    //       userId: participant.userId,
+    //       tournamentId: tournamentId,
+    //       reminderDate: dto.reminderDate,
+    //       dueDate: dto.dueDate,
+    //       status: FundStatus.wait,
+    //       id: participant.id,
+    //     };
+    //   });
+    //   await Promise.all([
+    //     funds.forEach(async (fund) => {
+    //       await this.prismaService.fund.update({
+    //         where: {
+    //           id: fund.id,
+    //         },
+    //         data: fund,
+    //       });
+    //     }),
+    //   ]);
+    // }
   }
 
   async sendFund2User(
@@ -4384,6 +4458,145 @@ export class TournamentService {
         }),
       ]);
     }
+
+    // const previousFundIds = previousFailureFunds.map((value) => {
+    //   return value.userId;
+    // });
+
+    // const participants =
+    //   await this.prismaService.tournament_registrations.findMany({
+    //     where: {
+    //       status: 'approved',
+    //       tournamentId: tournament.id,
+    //     },
+    //   });
+    // if (participants.length > 0) {
+    //   const newParticipants = participants.filter((participant) => {
+    //     return (
+    //       !previousFundIds.includes(participant.userId1) &&
+    //       !previousFundIds.includes(participant.userId2)
+    //     );
+    //   });
+
+    //   const funds = [];
+    //   for (const participant of newParticipants) {
+    //     const user1Fund = {
+    //       userId: participant.userId1,
+    //       tournamentId: tournamentId,
+    //       reminderDate: dto.reminderDate,
+    //       dueDate: dto.dueDate,
+    //       status: FundStatus.wait,
+    //     };
+    //     funds.push(user1Fund);
+    //     if (participant.userId2) {
+    //       const user2Fund = {
+    //         userId: participant.userId2,
+    //         tournamentId: tournamentId,
+    //         reminderDate: dto.reminderDate,
+    //         dueDate: dto.dueDate,
+    //         status: FundStatus.wait,
+    //       };
+    //       funds.push(user2Fund);
+    //     }
+    //   }
+    //   return await this.prismaService.fund.createMany({
+    //     data: funds,
+    //   });
+    //}
+  }
+
+  async updatePaymentInfo(
+    tournamentId: number,
+    userId: string,
+    dto: UpdatePaymentInfoDto,
+  ) {
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    const isCreator = purchasedPackage.userId === userId;
+    if (!isCreator) {
+      throw new ForbiddenException({
+        message: 'You are not a creator of this group',
+        data: null,
+      });
+    }
+
+    if (dto.dueDate || dto.reminderDate) {
+      const previousFailureFunds = await this.prismaService.fund.findMany({
+        where: {
+          tournamentId: tournamentId,
+          OR: [{ status: FundStatus.failed }, { status: FundStatus.wait }],
+        },
+      });
+      if (previousFailureFunds.length > 0) {
+        const funds = previousFailureFunds.map((participant) => {
+          return {
+            userId: participant.userId,
+            tournamentId: tournamentId,
+            reminderDate: dto.reminderDate,
+            dueDate: dto.dueDate,
+            status: FundStatus.wait,
+            id: participant.id,
+          };
+        });
+        await Promise.all([
+          funds.forEach(async (fund) => {
+            await this.prismaService.fund.update({
+              where: {
+                id: fund.id,
+              },
+              data: fund,
+            });
+          }),
+        ]);
+      }
+    }
+
+    return await this.prismaService.tournament_payment_info.updateMany({
+      where: {
+        tournamentId: tournamentId,
+      },
+      data: {
+        reminderDate: dto.reminderDate,
+        dueDate: dto.dueDate,
+        unit: dto.unit,
+        image: dto.image,
+        amount: dto.amount,
+        payment: JSON.stringify(dto.payment),
+      },
+    });
 
     // const previousFundIds = previousFailureFunds.map((value) => {
     //   return value.userId;

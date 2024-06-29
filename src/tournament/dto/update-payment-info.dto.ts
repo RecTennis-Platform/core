@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsDate,
   IsNumber,
   IsOptional,
   IsString,
@@ -52,4 +53,14 @@ export class UpdatePaymentInfoDto {
   @ValidateNested({ each: true })
   @Type(() => Payment)
   payment: Payment;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  reminderDate: Date;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  dueDate: Date;
 }

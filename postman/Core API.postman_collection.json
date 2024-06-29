@@ -12103,7 +12103,7 @@
 											"bearer": [
 												{
 													"key": "token",
-													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE4MDMzMDIzLCJleHAiOjE3MTkzMjkwMjN9.AwMAosbq7IaCrW7tM9CD-ooyW3bGMb37D6AkzOqbT_4",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
 													"type": "string"
 												}
 											]
@@ -12112,7 +12112,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"image\": \"qr.png\",\r\n  \"amount\": 100000,\r\n  \"unit\": \"VND\",\r\n  \"payment\": {\r\n        \"method\": \"bank\",\r\n        \"bank\": {\r\n            \"name\": \"Vietcombank\",\r\n            \"branch\": \"Hanoi\",\r\n            \"account\": \"123456789\",\r\n            \"owner\": \"NGUYEN QUOC HUY\"\r\n        }\r\n    }\r\n}",
+											"raw": "{\r\n  \"image\": \"qr.png\",\r\n  \"amount\": 100000,\r\n  \"unit\": \"VND\",\r\n  \"payment\": {\r\n        \"method\": \"bank\",\r\n        \"bank\": {\r\n            \"name\": \"Vietcombank\",\r\n            \"branch\": \"Hanoi\",\r\n            \"account\": \"123456789\",\r\n            \"owner\": \"NGUYEN QUOC HUY\"\r\n        }\r\n    },\r\n  \"reminderDate\": \"2024-06-23 14:54:42.468\", // ngày nhắc thanh toán\r\n  \"dueDate\": \"2024-06-30 14:54:42.468\" // ngày đến hạn thanh toán\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -12199,6 +12199,44 @@
 											"body": "{\n    \"id\": \"babfc904-f140-468d-9ebd-c37523cb3e81\",\n    \"image\": \"qr.png\",\n    \"amount\": 100000,\n    \"unit\": \"VND\",\n    \"payment\": \"{\\\"method\\\":\\\"bank\\\",\\\"bank\\\":{\\\"name\\\":\\\"Vietcombank\\\",\\\"branch\\\":\\\"Hanoi\\\",\\\"account\\\":\\\"123456789\\\",\\\"owner\\\":\\\"NGUYEN QUOC HUY\\\"}}\",\n    \"tournamentId\": 34,\n    \"groupId\": null,\n    \"group_tournamentsId\": null\n}"
 										}
 									]
+								},
+								{
+									"name": "Update payment info",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"image\": \"qr.png\",\r\n  \"amount\": 3300000,\r\n  \"unit\": \"VND\",\r\n  \"reminderDate\": \"2024-06-30 14:54:42.468\", // ngày nhắc thanh toán\r\n  \"dueDate\": \"2024-06-30 14:54:42.468\" // ngày đến hạn thanh toán\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{CORE_URL}}/tournaments/34/payment-info",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"tournaments",
+												"34",
+												"payment-info"
+											]
+										}
+									},
+									"response": []
 								},
 								{
 									"name": "Send request to user",
@@ -12414,7 +12452,7 @@
 											"bearer": [
 												{
 													"key": "token",
-													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE4MDMzMDIzLCJleHAiOjE3MTkzMjkwMjN9.AwMAosbq7IaCrW7tM9CD-ooyW3bGMb37D6AkzOqbT_4",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
 													"type": "string"
 												}
 											]
