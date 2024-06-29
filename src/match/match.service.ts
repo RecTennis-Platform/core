@@ -411,16 +411,37 @@ export class MatchService {
 
     console.log('scoreTime:', scoreTime);
 
+    console.log('activeScore.team1Score', activeScore.team1Score);
+    console.log('activeScore.team2Score', activeScore.team2Score);
+
+    console.log('activeScore.team1Score', typeof activeScore.team1Score);
+    console.log('activeScore.team2Score', typeof activeScore.team2Score);
+
     // Get current score
     let teamWinScore = 0;
     let teamLoseScore = 0;
     if (dto.teamWin === 1) {
-      teamWinScore = reverseScoreMap[activeScore.team1Score] + 1;
-      teamLoseScore = reverseScoreMap[activeScore.team2Score];
+      if (activeGame.isTieBreak) {
+        // Tie break game score
+        teamWinScore = parseInt(activeScore.team1Score) + 1;
+        teamLoseScore = parseInt(activeScore.team2Score);
+      } else {
+        // Normal game score
+        teamWinScore = reverseScoreMap[activeScore.team1Score] + 1;
+        teamLoseScore = reverseScoreMap[activeScore.team2Score];
+      }
     } else {
-      teamWinScore = reverseScoreMap[activeScore.team2Score] + 1;
-      teamLoseScore = reverseScoreMap[activeScore.team1Score];
+      if (activeGame.isTieBreak) {
+        teamWinScore = parseInt(activeScore.team2Score) + 1;
+        teamLoseScore = parseInt(activeScore.team1Score);
+      } else {
+        teamWinScore = reverseScoreMap[activeScore.team2Score] + 1;
+        teamLoseScore = reverseScoreMap[activeScore.team1Score];
+      }
     }
+
+    console.log('teamWinScore:', teamWinScore);
+    console.log('teamLoseScore:', teamLoseScore);
 
     // I. Update score
     let scoreData = {};
@@ -474,9 +495,17 @@ export class MatchService {
       // 2: 2
       // ...
 
-      // Update score by rules
-      if (teamWinScore >= 7 && teamWinScore >= teamLoseScore + 2) {
-        // Win based on a two-point lead
+      // if (teamWinScore >= 7 && teamWinScore >= teamLoseScore + 2) {
+      //   // Win based on a two-point lead
+      //   isGameEnd = true;
+      // } else {
+      //   // Normal score
+      //   // Do nothing
+      // }
+
+      // Update score by rules (First to 7 points -> win)
+      if (teamWinScore >= 7) {
+        // Win
         isGameEnd = true;
       } else {
         // Normal score
@@ -527,6 +556,7 @@ export class MatchService {
 
         // II. Update set
         let isSetEnd = false;
+        let initedTieBreakGame = false;
 
         // Calculate set score (amount of win games)
         let teamWinSetScore = 0;
@@ -538,6 +568,13 @@ export class MatchService {
           teamWinSetScore = activeSet.team2SetScore + 1;
           teamLoseSetScore = activeSet.team1SetScore;
         }
+
+        console.log('teamWinSetScore:', teamWinSetScore);
+        console.log('teamLoseSetScore:', teamLoseSetScore);
+        console.log(
+          'teamWinSetScore >= 6 && teamWinSetScore === teamLoseSetScore',
+          teamWinSetScore >= 6 && teamWinSetScore === teamLoseSetScore,
+        );
 
         // Check set score (amount of win games) by rules
         let updateSetData = {};
@@ -561,10 +598,31 @@ export class MatchService {
           }
 
           // TODO: Noti: Set end
+        } else if (teamWinSetScore == 7) {
+          // Tie break win -> Set end
+          isSetEnd = true;
+          if (dto.teamWin === 1) {
+            updateSetData = {
+              teamWinId: scoreData['teamWinId'],
+              status: SetStatus.ended,
+              team1SetScore: teamWinSetScore,
+              team2SetScore: teamLoseSetScore,
+            };
+          } else {
+            updateSetData = {
+              teamWinId: scoreData['teamWinId'],
+              status: SetStatus.ended,
+              team1SetScore: teamLoseSetScore,
+              team2SetScore: teamWinSetScore,
+            };
+          }
         } else if (
           teamWinSetScore >= 6 &&
           teamWinSetScore === teamLoseSetScore
         ) {
+          console.log('tie break');
+          initedTieBreakGame = true;
+
           // Tie break
           updateSetData = {
             team1SetScore: teamWinSetScore,
@@ -584,7 +642,7 @@ export class MatchService {
           });
 
           // Create new tie break game
-          await this.prismaService.games.create({
+          const newTieBreak = await this.prismaService.games.create({
             data: {
               setId: activeSet.id,
               isTieBreak: true,
@@ -594,7 +652,7 @@ export class MatchService {
           // Create init tie break score (0 - 0)
           await this.prismaService.scores.create({
             data: {
-              gameId: activeGame.id,
+              gameId: newTieBreak.id,
             },
           });
         } else {
@@ -886,21 +944,23 @@ export class MatchService {
           };
           await this.notificationProducer.add(notificationData);
         } else {
-          console.log('create new game, set not end');
-          // Set not end -> New game
-          // Create new game
-          const newGame = await this.prismaService.games.create({
-            data: {
-              setId: activeSet.id,
-            },
-          });
+          if (!initedTieBreakGame) {
+            console.log('create new game, set not end');
+            // Set not end -> New game
+            // Create new game
+            const newGame = await this.prismaService.games.create({
+              data: {
+                setId: activeSet.id,
+              },
+            });
 
-          // Creat init score (0 - 0)
-          await this.prismaService.scores.create({
-            data: {
-              gameId: newGame.id,
-            },
-          });
+            // Creat init score (0 - 0)
+            await this.prismaService.scores.create({
+              data: {
+                gameId: newGame.id,
+              },
+            });
+          }
         }
       }
 

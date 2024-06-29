@@ -8,6 +8,7 @@ export const scoreMap = {
 };
 
 export const reverseScoreMap = {
+  // Normal score
   '0': 0,
   '15': 1,
   '30': 2,
