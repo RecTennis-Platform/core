@@ -130,7 +130,7 @@ export class GroupFixture {
   @IsString()
   title: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   numberOfProceeders = 1;
 
@@ -204,4 +204,15 @@ export class CreateFixturePublishDto {
   @ArrayMinSize(1)
   @Type(() => Group)
   groups: Group[];
+}
+
+export class CreateFixturePublishKnockoutDto {
+  @IsNotEmpty()
+  @IsString()
+  id: string;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => GroupFixture)
+  knockoutGroup: GroupFixture;
 }
