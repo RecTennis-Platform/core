@@ -68,6 +68,13 @@ export class TournamentController {
     return this.tournamentService.getTournamentDetails(userId, tournamentId);
   }
 
+  @Get(':tournamentId/standings')
+  // Get tournament standing info
+  async getTournamentStanding(@Param('tournamentId') tournamentId: number) {
+    console.log('tournamentId:', tournamentId);
+    return await this.tournamentService.getTournamentStanding(tournamentId);
+  }
+
   @UseGuards(JwtGuard)
   @Get('me')
   // Get my created tournaments
