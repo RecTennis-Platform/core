@@ -4092,7 +4092,7 @@ export class TournamentService {
         },
       });
     if (!tournamentPaymentInfo) {
-      return {};
+      return null;
     }
     const { payment, groupId, groupTournamentId, ...others } =
       tournamentPaymentInfo;
