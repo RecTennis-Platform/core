@@ -1,5 +1,5 @@
 import { ScoreType } from '@prisma/client';
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class UpdateScoreDto {
   @IsNotEmpty()
@@ -9,8 +9,4 @@ export class UpdateScoreDto {
   @IsNotEmpty()
   @IsEnum(ScoreType)
   type: ScoreType;
-
-  @IsNotEmpty()
-  @IsString()
-  time: string;
 }

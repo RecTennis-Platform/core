@@ -1,13 +1,13 @@
 {
 	"info": {
-		"_postman_id": "bfb67786-2b4f-4c7f-ac45-3c0d6f625b64",
+		"_postman_id": "fb5171a6-e0a3-4375-9b01-8f967d8516f5",
 		"name": "Referee's apis",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "24188163"
 	},
 	"item": [
 		{
-			"name": "Fetch referee's matches Copy",
+			"name": "Fetch referee's matches",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -193,7 +193,7 @@
 			]
 		},
 		{
-			"name": "Get match details Copy",
+			"name": "Get match details",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -324,7 +324,7 @@
 			]
 		},
 		{
-			"name": "Start match Copy",
+			"name": "Start match",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -411,7 +411,37 @@
 			]
 		},
 		{
-			"name": "Update score Copy",
+			"name": "Start set",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1OThlZGZmYy05OWRkLTQxNzYtYmVjOS04NmY4Yjk1ZTNhNDYiLCJlbWFpbCI6ImNoaWhpZW4yMDAyQGdtYWlsLmNvbSIsImlhdCI6MTcxODcwMjAzNCwiZXhwIjoxNzE5OTk4MDM0fQ.KxdBa3IrldBfGaoGM9s6Ft99p5FSqg2j9n6UPzgLcRw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{CORE_URL}}/matches/4f988cc0-26ba-4da1-b54a-b0e7cd0c1ea0/sets/start",
+					"host": [
+						"{{CORE_URL}}"
+					],
+					"path": [
+						"matches",
+						"4f988cc0-26ba-4da1-b54a-b0e7cd0c1ea0",
+						"sets",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update score",
 			"request": {
 				"auth": {
 					"type": "bearer",
