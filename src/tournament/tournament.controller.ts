@@ -25,6 +25,7 @@ import { GetUser } from 'src/auth_utils/decorators';
 import {
   CreateFixtureDto,
   GenerateFixtureDto,
+  GenerateFixtureKnockoutDto,
 } from 'src/fixture/dto/create-fixture.dto';
 import { CreateFixtureGroupPlayoffDto } from 'src/fixture/dto/create-fixture-groupplayoff.dto';
 import { FixtureService } from 'src/fixture/fixture.service';
@@ -40,7 +41,10 @@ import {
 } from './dto/create-fund.dto';
 import { CreatePaymentInfoDto } from './dto/create-payment-info.dto';
 import { PageOptionsTournamentFundDto } from './dto/page-options-tournament-fund.dto';
-import { CreateFixturePublishDto } from 'src/fixture/dto/create-fixture-save-publish.dto';
+import {
+  CreateFixturePublishDto,
+  CreateFixturePublishKnockoutDto,
+} from 'src/fixture/dto/create-fixture-save-publish.dto';
 import { FixtureStatus } from '@prisma/client';
 import { UpdatePaymentInfoDto } from './dto/update-payment-info.dto';
 
@@ -351,6 +355,42 @@ export class TournamentController {
   ) {
     try {
       return this.tournamentService.generateFixtureGroup(tournamentId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('/:id/knockout-fixtures/generate')
+  async generateKnockoutFixture(
+    @Param('id') tournamentId: number,
+    @Body() dto: GenerateFixtureKnockoutDto,
+  ) {
+    try {
+      return this.tournamentService.generateFixtureKnockout(tournamentId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('/:id/knockout-fixtures/save')
+  async saveKnockoutFixture(
+    @Param('id') tournamentId: number,
+    @Body() dto: CreateFixturePublishKnockoutDto,
+  ) {
+    try {
+      return this.tournamentService.createFixtureKnockout(tournamentId, dto);
     } catch (error) {
       throw new HttpException(
         {
