@@ -67,6 +67,7 @@ import {
   CreateRefereesTournamentDto,
 } from 'src/referees_tournaments/dto/create-referees_tournament.dto';
 import { PageOptionsTournamentRegistrationDto } from 'src/tournament/dto';
+import { group } from 'console';
 
 @Injectable()
 export class GroupService {
@@ -999,7 +1000,7 @@ export class GroupService {
     groupId: number,
     dto: CreateGroupTournamentDto,
   ) {
-    await this.checkValidGroup(groupId);
+    const group = await this.checkValidGroup(groupId);
 
     await this.checkMember(userId, groupId, true);
 
@@ -1010,6 +1011,7 @@ export class GroupService {
           ...dto,
           startDate: new Date(dto.startDate),
           endDate: new Date(dto.endDate),
+          maxParticipants: group.maxMembers,
         },
       });
 
