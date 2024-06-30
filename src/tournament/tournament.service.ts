@@ -4803,13 +4803,34 @@ export class TournamentService {
           dueDate: true,
           message: true,
           errorMessage: true,
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
         },
       }),
       this.prismaService.fund.count(conditions),
     ]);
 
+    const r = result.map((fund) => {
+      const { user, ...others } = fund;
+      if (fund.message === null) {
+        others.message = '';
+      }
+      if (fund.errorMessage === null) {
+        others.errorMessage = '';
+      }
+      return {
+        name: user.name,
+        image: user.image,
+        ...others,
+      };
+    });
+
     return {
-      data: result,
+      data: r,
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
