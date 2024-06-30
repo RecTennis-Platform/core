@@ -2926,6 +2926,372 @@
 							]
 						},
 						{
+							"name": "Referee",
+							"item": [
+								{
+									"name": "Remove referee",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees/836e63a3-3867-475a-b7fa-6ccf568c6459",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"groups",
+												"39",
+												"tournaments",
+												"4",
+												"referees",
+												"836e63a3-3867-475a-b7fa-6ccf568c6459"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "remove referee",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees/836e63a3-3867-475a-b7fa-6ccf568c6459",
+													"host": [
+														"{{CORE_URL}}"
+													],
+													"path": [
+														"groups",
+														"39",
+														"tournaments",
+														"4",
+														"referees",
+														"836e63a3-3867-475a-b7fa-6ccf568c6459"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "54"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"36-fXLtIKgpO6zUg5XHJ/y6MdU0jqk\""
+												},
+												{
+													"key": "Date",
+													"value": "Sun, 30 Jun 2024 11:03:34 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Referee removed successfully\",\n    \"data\": null\n}"
+										}
+									]
+								},
+								{
+									"name": "Add Referee",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"userIds\": [\"0a8c5a69-5647-4614-81dd-2901c30bc84d\",  \"836e63a3-3867-475a-b7fa-6ccf568c6459\"]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"groups",
+												"39",
+												"tournaments",
+												"4",
+												"referees"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Add Referee",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"userIds\": [\"836e63a3-3867-475a-b7fa-6ccf568c6459\"]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
+													"host": [
+														"{{CORE_URL}}"
+													],
+													"path": [
+														"groups",
+														"39",
+														"tournaments",
+														"4",
+														"referees"
+													]
+												}
+											},
+											"status": "Created",
+											"code": 201,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "506"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"1fa-8NTtMyH2TW4U1ryNhkJgQvxFwEs\""
+												},
+												{
+													"key": "Date",
+													"value": "Sun, 30 Jun 2024 11:04:24 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"data\": [\n        {\n            \"id\": \"836e63a3-3867-475a-b7fa-6ccf568c6459\",\n            \"image\": null,\n            \"name\": \"Thong Nguyen\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"Tn@m.com\"\n        },\n        {\n            \"id\": \"0a8c5a69-5647-4614-81dd-2901c30bc84d\",\n            \"image\": null,\n            \"name\": \"T3@m.com\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"T3@m.com\"\n        },\n        {\n            \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n            \"image\": null,\n            \"name\": \"Thong\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"thong@mail.com\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 3\n}"
+										},
+										{
+											"name": "Already have referee role",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"userIds\": [\"836e63a3-3867-475a-b7fa-6ccf568c6459\"]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
+													"host": [
+														"{{CORE_URL}}"
+													],
+													"path": [
+														"groups",
+														"39",
+														"tournaments",
+														"4",
+														"referees"
+													]
+												}
+											},
+											"status": "Bad Request",
+											"code": 400,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "62"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"3e-U8qM99IaPLuwFXf8JcOwsnoGFX4\""
+												},
+												{
+													"key": "Date",
+													"value": "Sun, 30 Jun 2024 11:08:04 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Some users already have referee role\",\n    \"data\": null\n}"
+										}
+									]
+								},
+								{
+									"name": "Get all referees of tournament",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1OThlZGZmYy05OWRkLTQxNzYtYmVjOS04NmY4Yjk1ZTNhNDYiLCJlbWFpbCI6ImNoaWhpZW4yMDAyQGdtYWlsLmNvbSIsImlhdCI6MTcxNTA2NzE2NSwiZXhwIjoxNzE3NjU5MTY1fQ.y3lyiGj7KZZWM6vvdmlLQIqZ62yF5qbD6I4JAwO4miw",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"groups",
+												"39",
+												"tournaments",
+												"4",
+												"referees"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Get all referees of tournament",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
+													"host": [
+														"{{CORE_URL}}"
+													],
+													"path": [
+														"groups",
+														"39",
+														"tournaments",
+														"4",
+														"referees"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "506"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"1fa-8NTtMyH2TW4U1ryNhkJgQvxFwEs\""
+												},
+												{
+													"key": "Date",
+													"value": "Sun, 30 Jun 2024 11:05:42 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"data\": [\n        {\n            \"id\": \"836e63a3-3867-475a-b7fa-6ccf568c6459\",\n            \"image\": null,\n            \"name\": \"Thong Nguyen\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"Tn@m.com\"\n        },\n        {\n            \"id\": \"0a8c5a69-5647-4614-81dd-2901c30bc84d\",\n            \"image\": null,\n            \"name\": \"T3@m.com\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"T3@m.com\"\n        },\n        {\n            \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n            \"image\": null,\n            \"name\": \"Thong\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"thong@mail.com\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 3\n}"
+										}
+									]
+								}
+							]
+						},
+						{
 							"name": "Create",
 							"request": {
 								"method": "POST",
@@ -4954,77 +5320,6 @@
 										"39",
 										"tournaments",
 										"me"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get all referees of tournament",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1OThlZGZmYy05OWRkLTQxNzYtYmVjOS04NmY4Yjk1ZTNhNDYiLCJlbWFpbCI6ImNoaWhpZW4yMDAyQGdtYWlsLmNvbSIsImlhdCI6MTcxNTA2NzE2NSwiZXhwIjoxNzE3NjU5MTY1fQ.y3lyiGj7KZZWM6vvdmlLQIqZ62yF5qbD6I4JAwO4miw",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"39",
-										"tournaments",
-										"4",
-										"referees"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Add Referee",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE4MDMzMDIzLCJleHAiOjE3MTkzMjkwMjN9.AwMAosbq7IaCrW7tM9CD-ooyW3bGMb37D6AkzOqbT_4",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"email\": \"thong@mail.com\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"39",
-										"tournaments",
-										"4",
-										"referees"
 									]
 								}
 							},

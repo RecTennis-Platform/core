@@ -286,6 +286,22 @@ export class GroupController {
   }
 
   @UseGuards(JwtGuard)
+  @Delete(':groupId/tournaments/:tournamentId/referees/:userId')
+  async removeGroupTournamentReferee(
+    @GetUser('sub') userId: string,
+    @Param('groupId', ParseIntPipe) groupId: number,
+    @Param('tournamentId', ParseIntPipe) tournamentId: number,
+    @Param('userId') refereeId: string,
+  ) {
+    return await this.groupService.removeGroupTournamentReferee(
+      userId,
+      groupId,
+      tournamentId,
+      refereeId,
+    );
+  }
+
+  @UseGuards(JwtGuard)
   @Get(':groupId/tournaments/me')
   // Get my created tournaments
   async getMyCreatedTournaments(
@@ -316,15 +332,11 @@ export class GroupController {
   // Add referees
   async addReferee(
     @GetUser('sub') userId: string,
-    @Body() dto: AddRefereesTournamentDto,
+    @Body() dto: AddParticipantsDto,
     @Param('tournamentId') tournamentId: number,
     @Param('groupId') groupId: number,
   ) {
-    const params: CreateRefereesGroupTournamentDto = {
-      email: dto.email,
-      groupTournamentId: tournamentId,
-    };
-    return this.groupService.addReferee(userId, params, groupId);
+    return this.groupService.addReferee(userId, dto, groupId, tournamentId);
   }
 
   @Get(':groupId/tournaments/:tournamentId/referees')
