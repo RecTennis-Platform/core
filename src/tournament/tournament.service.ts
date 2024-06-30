@@ -4787,6 +4787,7 @@ export class TournamentService {
     if (pageOptions.status) {
       conditions.where['status'] = pageOptions.status;
     }
+    conditions.where['tournamentId'] = tournamentId;
 
     const pageOption =
       pageOptions.page && pageOptions.take
