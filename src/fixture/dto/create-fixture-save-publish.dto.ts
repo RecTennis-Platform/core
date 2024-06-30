@@ -195,7 +195,7 @@ export class CreateFixturePublishDto {
   @Type(() => GroupFixture)
   knockoutGroup: GroupFixture;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(FixtureStatus)
   status: FixtureStatus;
 

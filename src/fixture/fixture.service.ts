@@ -103,6 +103,35 @@ export class FixtureService {
     }
   }
 
+  async removeByGroupTournamentIdIdempontent(tournamentId: number) {
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        groupTournamentId: tournamentId,
+      },
+      select: {
+        groupFixtures: true,
+      },
+    });
+    if (fixture) {
+      for (const groupFixture of fixture.groupFixtures) {
+        await this.prismaService.teams.updateMany({
+          where: {
+            groupFixtureId: groupFixture.id,
+          },
+          data: {
+            groupFixtureId: null,
+          },
+        });
+      }
+
+      await this.prismaService.fixtures.deleteMany({
+        where: {
+          groupTournamentId: tournamentId,
+        },
+      });
+    }
+  }
+
   async getByTournamentId(tournamentId: number, userId: string) {
     const tournament = await this.prismaService.tournaments.findUnique({
       where: {
