@@ -739,13 +739,22 @@ export class MatchService {
                   id: assignedMatch.nextMatchId,
                 },
               });
+              let matchStatus = undefined;
+              if (
+                nextMatch.status === MatchStatus.no_show &&
+                (nextMatch.teamId1 || nextMatch.teamId2)
+              ) {
+                matchStatus = MatchStatus.scheduled;
+              }
               if (nextMatch.teamId1 === null) {
                 updateNextMatchData = {
                   teamId1: scoreData['teamWinId'],
+                  status: matchStatus,
                 };
               } else {
                 updateNextMatchData = {
                   teamId2: scoreData['teamWinId'],
+                  status: matchStatus,
                 };
               }
               await this.prismaService.matches.update({
