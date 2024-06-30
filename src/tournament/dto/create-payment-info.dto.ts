@@ -16,10 +16,6 @@ export class Bank {
 
   @IsNotEmpty()
   @IsString()
-  branch: string;
-
-  @IsNotEmpty()
-  @IsString()
   account: string;
 
   @IsNotEmpty()

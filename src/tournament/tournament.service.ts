@@ -4264,17 +4264,18 @@ export class TournamentService {
     }
     const payment = JSON.stringify(dto.payment);
 
-    await this.prismaService.tournament_payment_info.create({
-      data: {
-        unit: dto.unit,
-        image: dto.image,
-        amount: dto.amount,
-        payment: payment,
-        tournamentId: tournamentId,
-        reminderDate: dto.reminderDate,
-        dueDate: dto.dueDate,
-      },
-    });
+    const tournamentPaymentInfo =
+      await this.prismaService.tournament_payment_info.create({
+        data: {
+          unit: dto.unit,
+          image: dto.image,
+          amount: dto.amount,
+          payment: payment,
+          tournamentId: tournamentId,
+          reminderDate: dto.reminderDate,
+          dueDate: dto.dueDate,
+        },
+      });
     const previousFunds = await this.prismaService.fund.findMany({
       where: {
         tournamentId: tournamentId,
@@ -4309,9 +4310,15 @@ export class TournamentService {
           funds.push(user2Fund);
         }
       }
-      return await this.prismaService.fund.createMany({
+      await this.prismaService.fund.createMany({
         data: funds,
       });
+      const { payment, groupId, groupTournamentId, ...others } =
+        tournamentPaymentInfo;
+      return {
+        ...others,
+        payment: JSON.parse(payment),
+      };
     }
 
     // const previousFailureFunds = await this.prismaService.fund.findMany({
