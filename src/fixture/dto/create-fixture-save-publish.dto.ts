@@ -58,7 +58,7 @@ export class Match {
   @IsString()
   nextMatchId?: string = null;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   refereeId: string = null;
 
@@ -66,7 +66,7 @@ export class Match {
   @IsString()
   title: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
   @Type(() => Date)
   matchStartDate: Date;
