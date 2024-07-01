@@ -1,5 +1,7 @@
+import { PartialType } from '@nestjs/mapped-types';
 import { Type } from 'class-transformer';
 import {
+  IsDate,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -11,10 +13,6 @@ export class Bank {
   @IsNotEmpty()
   @IsString()
   name: string;
-
-  @IsNotEmpty()
-  @IsString()
-  branch: string;
 
   @IsNotEmpty()
   @IsString()
@@ -53,4 +51,14 @@ export class CreatePaymentInfoDto {
   @ValidateNested({ each: true })
   @Type(() => Payment)
   payment: Payment;
+
+  @IsNotEmpty()
+  @IsDate()
+  @Type(() => Date)
+  reminderDate: Date;
+
+  @IsNotEmpty()
+  @IsDate()
+  @Type(() => Date)
+  dueDate: Date;
 }

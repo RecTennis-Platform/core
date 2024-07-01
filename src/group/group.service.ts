@@ -67,6 +67,8 @@ import {
   CreateRefereesTournamentDto,
 } from 'src/referees_tournaments/dto/create-referees_tournament.dto';
 import { PageOptionsTournamentRegistrationDto } from 'src/tournament/dto';
+import { group } from 'console';
+import { dot } from 'node:test/reporters';
 
 @Injectable()
 export class GroupService {
@@ -999,7 +1001,7 @@ export class GroupService {
     groupId: number,
     dto: CreateGroupTournamentDto,
   ) {
-    await this.checkValidGroup(groupId);
+    const group = await this.checkValidGroup(groupId);
 
     await this.checkMember(userId, groupId, true);
 
@@ -1010,6 +1012,7 @@ export class GroupService {
           ...dto,
           startDate: new Date(dto.startDate),
           endDate: new Date(dto.endDate),
+          maxParticipants: group.maxMembers,
         },
       });
 
@@ -1048,6 +1051,7 @@ export class GroupService {
       result = await this.prismaService.group_tournaments.findMany({
         where: {
           groupId,
+          status: dto.status,
         },
         ...conditions,
       });
@@ -1058,12 +1062,32 @@ export class GroupService {
           NOT: {
             phase: GroupTournamentPhase.new,
           },
+          status: dto.status,
         },
         ...conditions,
       });
     }
+    // Modify the structure of the returned data
+    const modified_result = await Promise.all(
+      result.map(async (tournament) => {
+        const participantCountUser1 =
+          await this.prismaService.group_tournament_registrations.count({
+            where: {
+              groupTournamentId: tournament.id,
+            },
+          });
 
-    return result;
+        const participantCount = participantCountUser1;
+        delete tournament._count;
+
+        return {
+          ...tournament,
+          participants: participantCount,
+        };
+      }),
+    );
+
+    return modified_result;
   }
 
   async getGroupTournamentGeneralInfo(
@@ -1272,12 +1296,22 @@ export class GroupService {
         },
       });
 
+    const referees =
+      await this.prismaService.referees_group_tournaments.findMany({
+        where: {
+          groupTournamentId: tournamentId,
+        },
+      });
+    const refereeIds = referees.map((referee) => referee.refereeId);
+    const participantIds = participants.map(
+      (participant) => participant.userId,
+    );
     const nonParticipants = await this.prismaService.member_ships.findMany({
       where: {
         groupId,
         NOT: {
           userId: {
-            in: participants.map((participant) => participant.userId),
+            in: refereeIds.concat(participantIds),
           },
         },
       },
@@ -1441,6 +1475,67 @@ export class GroupService {
       console.log('Error:', error.message);
       throw new InternalServerErrorException({
         message: 'Failed to remove the participant',
+        data: null,
+      });
+    }
+  }
+
+  async removeGroupTournamentReferee(
+    userId: string,
+    groupId: number,
+    tournamentId: number,
+    refereeId: string,
+  ) {
+    await this.checkValidGroup(groupId);
+
+    await this.checkMember(userId, groupId, true);
+
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        message: 'Tournament not found, cannot remove participant',
+        data: null,
+      });
+    }
+
+    const referee =
+      await this.prismaService.referees_group_tournaments.findFirst({
+        where: {
+          refereeId: refereeId,
+          groupTournamentId: tournamentId,
+        },
+      });
+
+    if (!referee) {
+      throw new NotFoundException({
+        message: 'Participant not found',
+        data: null,
+      });
+    }
+
+    try {
+      await this.prismaService.referees_group_tournaments.delete({
+        where: {
+          groupTournamentId_refereeId: {
+            groupTournamentId: tournamentId,
+            refereeId: refereeId,
+          },
+        },
+      });
+
+      return {
+        message: 'Referee removed successfully',
+        data: null,
+      };
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new InternalServerErrorException({
+        message: 'Failed to remove the referee',
         data: null,
       });
     }
@@ -1843,6 +1938,9 @@ export class GroupService {
       this.prismaService.group_tournaments.findMany({
         ...conditions,
         ...pageOption,
+        where: {
+          groupId: groupId,
+        },
       }),
       this.prismaService.group_tournaments.count(conditions),
     ]);
@@ -2188,7 +2286,7 @@ export class GroupService {
     }
     await this.prismaService.$transaction(
       async (tx) => {
-        await this.fixtureService.removeByTournamentIdIdempontent(id);
+        await this.fixtureService.removeByGroupTournamentIdIdempontent(id);
         if (dto.status === FixtureStatus.published) {
           await tx.tournaments.update({
             where: {
@@ -2726,6 +2824,362 @@ export class GroupService {
     }
   }
 
+  async getByGroupTournamentId(
+    tournamentId: number,
+    userId: string,
+    groupId: number,
+  ) {
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    const group = await this.checkValidGroup(groupId);
+
+    // Check expiration date of the purchased package
+    if (new Date(group.purchasedPackage.endDate) < new Date()) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_IS_EXPIRED,
+        ),
+        data: null,
+      });
+    }
+
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        groupTournamentId: tournamentId,
+      },
+      include: {
+        groupFixtures: {
+          where: {
+            isFinal: true,
+          },
+          include: {
+            rounds: {
+              include: {
+                matches: {
+                  include: {
+                    groupFixture1: true,
+                    groupFixture2: true,
+                    team1: {
+                      include: {
+                        user1: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                        user2: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                      },
+                    },
+                    team2: {
+                      include: {
+                        user1: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                        user2: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                      },
+                    },
+                    referee: {
+                      select: {
+                        id: true,
+                        image: true,
+                        name: true,
+                        dob: true,
+                        phoneNumber: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        tournament: true,
+      },
+    });
+
+    // Check if the user is the creator of the tournament
+    const isCreator = group.purchasedPackage.userId === userId;
+    if (isCreator) {
+      if (tournament.phase === TournamentPhase.new) {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+          message: CustomResponseMessages.getMessage(
+            CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+          ),
+          data: null,
+        });
+      }
+      if (!fixture) {
+        return {
+          status: 'new',
+        };
+      }
+    } else if (
+      tournament.phase === TournamentPhase.new ||
+      tournament.phase === TournamentPhase.finalized_applicants
+    ) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_INVALID_PHASE,
+        ),
+        data: null,
+      });
+    }
+    if (!fixture) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.FIXTURE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.FIXTURE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+    const { groupFixtures, ...others } = fixture;
+    const followMatches = (
+      await this.prismaService.users_follow_matches.findMany({
+        where: {
+          userId: userId,
+        },
+        select: {
+          matchId: true,
+        },
+      })
+    ).map((followMatch) => followMatch.matchId);
+    const groups = groupFixtures.map((groupFixture) => {
+      const rounds = groupFixture.rounds.map((round) => {
+        const matches = round.matches.map((match) => {
+          const { team1, team2, groupFixture1, groupFixture2, ...others } =
+            match;
+          let team1R = null,
+            team2R = null;
+          if (
+            team1 === null &&
+            !match.rankGroupTeam1 != null &&
+            groupFixture1 != null
+          ) {
+            team1R = {
+              user1: null,
+              user2: null,
+              name: `Winner ${match.rankGroupTeam1} of ${groupFixture1.title}`,
+            };
+          }
+          if (
+            team2 === null &&
+            match.rankGroupTeam2 != null &&
+            groupFixture2 != null
+          ) {
+            team2R = {
+              user1: null,
+              user2: null,
+              name: `Winner ${match.rankGroupTeam2} of ${groupFixture2.title}`,
+            };
+          }
+          return {
+            ...others,
+            isFollowed: followMatches.includes(others.id),
+            teams: { team1: team1 || team1R, team2: team2 || team2R },
+          };
+        });
+        return { ...round, matches: matches };
+      });
+      return { ...groupFixture, rounds: rounds };
+    });
+    if (tournament.format === TournamentFormat.round_robin) {
+      return {
+        ...others,
+        roundRobinGroups: groups,
+        format: tournament.format,
+        isFollowed: followMatches.includes(others.id),
+      };
+    } else if (tournament.format === TournamentFormat.knockout) {
+      groups[0].rounds.reverse();
+      return {
+        ...others,
+        knockoutGroup: groups[0],
+        format: tournament.format,
+        isFollowed: followMatches.includes(others.id),
+      };
+    } else if (tournament.format === TournamentFormat.group_playoff) {
+      groups[0].rounds.reverse();
+      const knockoutGroup = groups[0];
+      const fixtureGroups = [];
+      const roundRobinGroups = (
+        await this.prismaService.group_fixtures.findMany({
+          where: {
+            isFinal: false,
+            fixtureId: others.id,
+          },
+          include: {
+            rounds: {
+              include: {
+                matches: {
+                  include: {
+                    team1: {
+                      include: {
+                        user1: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                        user2: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                      },
+                    },
+                    team2: {
+                      include: {
+                        user1: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                        user2: {
+                          select: {
+                            id: true,
+                            image: true,
+                            name: true,
+                          },
+                        },
+                      },
+                    },
+                    referee: {
+                      select: {
+                        id: true,
+                        image: true,
+                        name: true,
+                        dob: true,
+                        phoneNumber: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            teams: {
+              include: {
+                user1: {
+                  select: {
+                    id: true,
+                    image: true,
+                    name: true,
+                  },
+                },
+                user2: {
+                  select: {
+                    id: true,
+                    image: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        })
+      ).map((groupFixture) => {
+        const { id, title, numberOfProceeders, teams } = groupFixture;
+        fixtureGroups.push({
+          id,
+          title,
+          numberOfProceeders,
+          teams,
+        });
+        const rounds = groupFixture.rounds.map((round) => {
+          const matches = round.matches.map((match) => {
+            const { team1, team2, ...others } = match;
+            return {
+              ...others,
+              teams: { team1, team2 },
+              isFollowed: followMatches.includes(others.id),
+            };
+          });
+          return { ...round, matches: matches };
+        });
+        return { ...groupFixture, rounds: rounds };
+      });
+      return {
+        ...others,
+        format: tournament.format,
+        knockoutGroup,
+        roundRobinGroups,
+        groups: fixtureGroups,
+      };
+    }
+  }
+
+  async removeByGroupTournamentId(tournamentId: number) {
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        groupTournamentId: tournamentId,
+      },
+      select: {
+        groupFixtures: true,
+      },
+    });
+    if (!fixture) {
+      throw new NotFoundException({
+        message: 'Fixture not found',
+      });
+    }
+    for (const groupFixture of fixture.groupFixtures) {
+      await this.prismaService.teams.updateMany({
+        where: {
+          groupFixtureId: groupFixture.id,
+        },
+        data: {
+          groupFixtureId: null,
+        },
+      });
+    }
+
+    await this.prismaService.fixtures.deleteMany({
+      where: {
+        groupTournamentId: tournamentId,
+      },
+    });
+    return { message: 'success' };
+  }
+
   async getTournamentParticipants(
     tournamentId: number,
     pageOptions: PageOptionsTournamentRegistrationDto,
@@ -3000,12 +3454,13 @@ export class GroupService {
   //Referee
   async addReferee(
     userId: string,
-    createRefereesTournamentDto: CreateRefereesGroupTournamentDto,
+    createRefereesTournamentDto: AddParticipantsDto,
     groupId: number,
+    tournamentId: number,
   ) {
     const tournament = await this.prismaService.group_tournaments.findUnique({
       where: {
-        id: createRefereesTournamentDto.groupTournamentId,
+        id: tournamentId,
       },
     });
 
@@ -3036,78 +3491,79 @@ export class GroupService {
         data: null,
       });
     }
-    //Check if referee exist
-    const referee = await this.prismaService.users.findFirst({
+    const members = await this.prismaService.member_ships.findMany({
       where: {
-        email: createRefereesTournamentDto.email,
+        groupId,
+        userId: {
+          in: createRefereesTournamentDto.userIds,
+        },
       },
     });
-    if (!referee) {
+
+    if (members.length !== createRefereesTournamentDto.userIds.length) {
       throw new NotFoundException({
-        code: CustomResponseStatusCodes.USER_NOT_FOUND,
-        message: CustomResponseMessages.getMessage(
-          CustomResponseStatusCodes.USER_NOT_FOUND,
-        ),
-      });
-    }
-    //Check if referee is creator
-    if (referee.id === userId) {
-      throw new BadRequestException({
-        code: 400,
-        message: 'Referee must not be creator of tournament',
+        message: 'Some users are not members of this group',
+        data: null,
       });
     }
 
-    //Check if referee is participant
-
-    const participant = await this.prismaService.teams.findFirst({
-      where: {
-        OR: [
-          {
-            userId1: referee.id,
-          },
-          {
-            userId2: referee.id,
-          },
-        ],
-        groupTournamentId: createRefereesTournamentDto.groupTournamentId,
-      },
-    });
-
-    if (participant) {
-      throw new BadRequestException({
-        code: 400,
-        message: 'Referee must not be participant of tournament',
-      });
-    }
-    const refereeTournament =
-      await this.prismaService.referees_group_tournaments.findFirst({
+    const referees =
+      await this.prismaService.referees_group_tournaments.findMany({
         where: {
-          refereeId: referee.id,
-          groupTournamentId: createRefereesTournamentDto.groupTournamentId,
+          groupTournamentId: tournamentId,
+          refereeId: {
+            in: createRefereesTournamentDto.userIds,
+          },
         },
       });
-    if (refereeTournament) {
+
+    if (referees.length > 0) {
       throw new BadRequestException({
-        code: 400,
-        message: "Referee's already in tournament",
+        message: 'Some users already have referee role',
+        data: null,
       });
     }
-    await this.prismaService.referees_group_tournaments.create({
-      data: {
-        refereeId: referee.id,
-        groupTournamentId: createRefereesTournamentDto.groupTournamentId,
-      },
-    });
 
-    await this.prismaService.users.update({
-      where: {
-        id: referee.id,
-      },
-      data: {
-        isReferee: true,
-      },
-    });
+    // Check if the user ids are already participants of the tournament
+    const participants =
+      await this.prismaService.group_tournament_registrations.findMany({
+        where: {
+          groupTournamentId: tournamentId,
+          userId: {
+            in: createRefereesTournamentDto.userIds,
+          },
+        },
+      });
+
+    if (participants.length > 0) {
+      throw new ConflictException({
+        message: 'Some users are already participants of this tournament',
+        data: null,
+      });
+    }
+    for (const referee of createRefereesTournamentDto.userIds) {
+      await this.prismaService.referees_group_tournaments.create({
+        data: {
+          refereeId: referee,
+          groupTournamentId: tournamentId,
+        },
+      });
+
+      await this.prismaService.users.update({
+        where: {
+          id: referee,
+        },
+        data: {
+          isReferee: true,
+        },
+      });
+    }
+    const pageOptionsRefereesTournamentsDto: PageOptionsRefereesGroupTournamentsDto =
+      new PageOptionsRefereesGroupTournamentsDto();
+    return await this.listReferees(
+      pageOptionsRefereesTournamentsDto,
+      tournamentId,
+    );
   }
 
   async listReferees(

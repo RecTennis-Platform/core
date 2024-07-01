@@ -14,7 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UserRole } from '@prisma/client';
+import { FixtureStatus, UserRole } from '@prisma/client';
 import { GetUser, Roles } from 'src/auth_utils/decorators';
 import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import {
@@ -41,6 +41,7 @@ import {
   GenerateFixtureDto,
 } from 'src/fixture/dto/create-fixture.dto';
 import { FixtureService } from 'src/fixture/fixture.service';
+import { CreateFixturePublishDto } from 'src/fixture/dto/create-fixture-save-publish.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -285,6 +286,22 @@ export class GroupController {
   }
 
   @UseGuards(JwtGuard)
+  @Delete(':groupId/tournaments/:tournamentId/referees/:userId')
+  async removeGroupTournamentReferee(
+    @GetUser('sub') userId: string,
+    @Param('groupId', ParseIntPipe) groupId: number,
+    @Param('tournamentId', ParseIntPipe) tournamentId: number,
+    @Param('userId') refereeId: string,
+  ) {
+    return await this.groupService.removeGroupTournamentReferee(
+      userId,
+      groupId,
+      tournamentId,
+      refereeId,
+    );
+  }
+
+  @UseGuards(JwtGuard)
   @Get(':groupId/tournaments/me')
   // Get my created tournaments
   async getMyCreatedTournaments(
@@ -315,15 +332,11 @@ export class GroupController {
   // Add referees
   async addReferee(
     @GetUser('sub') userId: string,
-    @Body() dto: AddRefereesTournamentDto,
+    @Body() dto: AddParticipantsDto,
     @Param('tournamentId') tournamentId: number,
     @Param('groupId') groupId: number,
   ) {
-    const params: CreateRefereesGroupTournamentDto = {
-      email: dto.email,
-      groupTournamentId: tournamentId,
-    };
-    return this.groupService.addReferee(userId, params, groupId);
+    return this.groupService.addReferee(userId, dto, groupId, tournamentId);
   }
 
   @Get(':groupId/tournaments/:tournamentId/referees')
@@ -425,12 +438,32 @@ export class GroupController {
     }
   }
 
-  @Post(':groupId/tournaments/:id/fixtures/save')
-  async saveFixture(
+  @Post(':groupId/tournaments/:id/fixtures/save-draft')
+  async saveDraftFixture(
     @Param('id') tournamentId: number,
     @Body() dto: CreateFixtureDto,
   ) {
     try {
+      dto.status = FixtureStatus.draft;
+      return this.groupService.createFixture(tournamentId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post(':groupId/tournaments/:id/fixtures/save-publish')
+  async saveFixture(
+    @Param('id') tournamentId: number,
+    @Body() dto: CreateFixturePublishDto,
+  ) {
+    try {
+      dto.status = FixtureStatus.published;
       return this.groupService.createFixture(tournamentId, dto);
     } catch (error) {
       throw new HttpException(
@@ -446,11 +479,16 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Get(':groupId/tournaments/:id/fixtures')
   async getFixture(
+    @Param('groupId') groupId: number,
     @Param('id') tournamentId: number,
     @GetUser('sub') userId: string,
   ) {
     try {
-      return this.fixtureService.getByTournamentId(tournamentId, userId);
+      return this.groupService.getByGroupTournamentId(
+        tournamentId,
+        userId,
+        groupId,
+      );
     } catch (error) {
       throw new HttpException(
         {
@@ -483,7 +521,7 @@ export class GroupController {
   @Delete(':groupId/tournaments/:id/fixtures/reset')
   async deleteFixture(@Param('id') tournamentId: number) {
     try {
-      return this.fixtureService.removeByTournamentId(tournamentId);
+      return this.groupService.removeByGroupTournamentId(tournamentId);
     } catch (error) {
       throw new HttpException(
         {

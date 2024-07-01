@@ -58,7 +58,7 @@ export class Match {
   @IsString()
   nextMatchId?: string = null;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   refereeId: string = null;
 
@@ -66,7 +66,7 @@ export class Match {
   @IsString()
   title: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
   @Type(() => Date)
   matchStartDate: Date;
@@ -130,7 +130,7 @@ export class GroupFixture {
   @IsString()
   title: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   numberOfProceeders = 1;
 
@@ -195,7 +195,7 @@ export class CreateFixturePublishDto {
   @Type(() => GroupFixture)
   knockoutGroup: GroupFixture;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(FixtureStatus)
   status: FixtureStatus;
 
@@ -204,4 +204,15 @@ export class CreateFixturePublishDto {
   @ArrayMinSize(1)
   @Type(() => Group)
   groups: Group[];
+}
+
+export class CreateFixturePublishKnockoutDto {
+  @IsNotEmpty()
+  @IsString()
+  id: string;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => GroupFixture)
+  knockoutGroup: GroupFixture;
 }

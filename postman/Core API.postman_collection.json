@@ -2215,13 +2215,23 @@
 							"name": "Fixture",
 							"item": [
 								{
-									"name": "Save fixture (draft or publish)",
+									"name": "Save fixture (draft)",
 									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
+													"type": "string"
+												}
+											]
+										},
 										"method": "POST",
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"id\": \"31b47786-90ab-4ba4-8343-a2ce4b897ce2\",\r\n    \"fixtureStartDate\": \"2024-03-20T23:59:59\",\r\n    \"fixtureEndDate\": \"2024-03-20T23:59:59\",\r\n    \"matchesStartTime\": \"08:00:00\",\r\n    \"matchesEndTime\": \"20:00:00\",\r\n    \"matchDuration\": 30,\r\n    \"breakDuration\": 100,\r\n    \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\r\n    \"groups\": [\r\n    {\r\n        \"title\": \"Group A\",\r\n        \"id\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\r\n        \"numberOfProceeders\": 2,\r\n        \"teams\": [\"2f7ba0e0-ea7f-40ae-97a3-a9207faa092d\",\"941f8763-6a83-4d46-85da-627f1f38afc5\"]\r\n    },\r\n    {\r\n        \"title\": \"Group B\",\r\n        \"id\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\r\n        \"numberOfProceeders\": 2,\r\n        \"teams\": [\"470c21c6-e1fc-47b8-ad2b-64f6ba992bd5\", \"26993f41-1181-448e-a84b-49114e633fd8\"]\r\n    }\r\n],\r\n    \"roundRobinGroups\": [\r\n        {\r\n            \"title\": \"Group A\",\r\n            \"rounds\": [\r\n                {\r\n                    \"title\": \"Round 1\",\r\n                    \"matches\": [\r\n                        {\r\n                            \"id\": \"20d130b2-5ede-413a-b9ff-f5294fa36a63\",\r\n                            \"nextMatchId\": null,\r\n                            \"title\": \"Match 1\",\r\n                            \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\r\n                            \"duration\": 30,\r\n                            \"status\": \"scheduled\",\r\n                            \"teams\": {\r\n                                \"team1\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"Tri Do\"\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"2f7ba0e0-ea7f-40ae-97a3-a9207faa092d\"\r\n                                },\r\n                                \"team2\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"Hien\"\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"941f8763-6a83-4d46-85da-627f1f38afc5\"\r\n                                }\r\n                            },\r\n                            \"refereeId\": null,\r\n                            \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                        }\r\n                    ],\r\n                    \"id\": \"d5154730-9b57-4a7e-98bc-c1e0d7ccd8d6\"\r\n                }\r\n            ],\r\n            \"id\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\r\n            \"numberOfProceeders\": 2,\r\n            \"isFinal\": false\r\n        },\r\n        {\r\n            \"title\": \"Group B\",\r\n            \"rounds\": [\r\n                {\r\n                    \"title\": \"Round 1\",\r\n                    \"matches\": [\r\n                        {\r\n                            \"id\": \"ea6e1224-f2c1-4616-8315-0b71aa6f357f\",\r\n                            \"nextMatchId\": null,\r\n                            \"title\": \"Match 1\",\r\n                            \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\r\n                            \"duration\": 30,\r\n                            \"status\": \"scheduled\",\r\n                            \"teams\": {\r\n                                \"team1\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"Tri Do\"\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"470c21c6-e1fc-47b8-ad2b-64f6ba992bd5\"\r\n                                },\r\n                                \"team2\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"Hien\"\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"26993f41-1181-448e-a84b-49114e633fd8\"\r\n                                }\r\n                            },\r\n                            \"refereeId\": null,\r\n                            \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                        }\r\n                    ],\r\n                    \"id\": \"5046db31-6be5-4715-b2a8-e8734831fa40\"\r\n                }\r\n            ],\r\n            \"id\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\r\n            \"numberOfProceeders\": 2,\r\n            \"isFinal\": false\r\n        }\r\n    ],\r\n    \"knockoutGroup\": {\r\n        \"id\": \"e38fc471-4760-4d95-8640-a5e9bfdc2e77\",\r\n        \"title\": \"Knockout Group\",\r\n        \"isFinal\": true,\r\n        \"rounds\": [\r\n            {\r\n                \"title\": \"Round 1\",\r\n                \"id\": \"62b0e677-a91a-42ab-b7a6-24f5774dc793\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"f6f4505f-4a45-4aac-92e5-0e2d643e8e3a\",\r\n                        \"nextMatchId\": \"30367b6f-bb54-41f9-ad63-1d8784415999\",\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"scheduled\",\r\n                        \"teams\": {\r\n                            \"team1\": {\r\n                                \"user1\": null,\r\n                                \"user2\": null,\r\n                                \"name\": \"Winner 1 Of Group A\"\r\n                            },\r\n                            \"team2\": {\r\n                                \"user1\": null,\r\n                                \"user2\": null,\r\n                                \"name\": \"Winner 2 Of Group B\"\r\n                            }\r\n                        },\r\n                        \"groupFixtureTeamId1\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\r\n                        \"groupFixtureTeamId2\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\r\n                        \"rankGroupTeam1\": 1,\r\n                        \"rankGroupTeam2\": 2,\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"97ec3c06-aa0d-42be-8742-3402e7a88ed5\",\r\n                        \"nextMatchId\": \"30367b6f-bb54-41f9-ad63-1d8784415999\",\r\n                        \"title\": \"Match 2\",\r\n                        \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"scheduled\",\r\n                        \"teams\": {\r\n                            \"team1\": {\r\n                                \"user1\": null,\r\n                                \"user2\": null,\r\n                                \"name\": \"Winner 1 Of Group B\"\r\n                            },\r\n                            \"team2\": {\r\n                                \"user1\": null,\r\n                                \"user2\": null,\r\n                                \"name\": \"Winner 2 Of Group A\"\r\n                            }\r\n                        },\r\n                        \"groupFixtureTeamId1\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\r\n                        \"groupFixtureTeamId2\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\r\n                        \"rankGroupTeam1\": 1,\r\n                        \"rankGroupTeam2\": 2,\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"title\": \"Round 2\",\r\n                \"id\": \"fe3ee061-c1ec-4145-8fc0-7b8a82aaa2bc\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"30367b6f-bb54-41f9-ad63-1d8784415999\",\r\n                        \"nextMatchId\": null,\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"no_show\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"groupFixtureTeamId1\": null,\r\n                        \"groupFixtureTeamId2\": null,\r\n                        \"rankGroupTeam1\": null,\r\n                        \"rankGroupTeam2\": null,\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            }\r\n        ]\r\n    },\r\n    \"status\": \"draft\"\r\n}",
+											"raw": "{\r\n    \"id\": \"31b47786-90ab-4ba4-8343-a2ce4b897ce2\",\r\n    \"fixtureStartDate\": \"2024-03-20T23:59:59\",\r\n    \"fixtureEndDate\": \"2024-03-20T23:59:59\",\r\n    \"matchesStartTime\": \"08:00:00\",\r\n    \"matchesEndTime\": \"20:00:00\",\r\n    \"matchDuration\": 30,\r\n    \"breakDuration\": 100,\r\n    \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\r\n    \"knockoutGroup\": {\r\n        \"id\": \"8bcf03b8-27ee-4e0e-95be-45b34a99e7e0\",\r\n        \"title\": \"Knockout Group\",\r\n        \"isFinal\": true,\r\n        \"rounds\": [\r\n            {\r\n                \"title\": \"Round 1\",\r\n                \"id\": \"510ccf8d-d170-443e-91eb-cdacd5387940\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"fad29071-d928-43eb-95e2-f41a45fc2b6c\",\r\n                        \"nextMatchId\": \"8a592f70-c234-434b-a85e-8c9d58c4e3ab\",\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": null,\r\n                        \"duration\": 30,\r\n                        \"status\": \"scheduled\",\r\n                        \"teams\": {\r\n                            \"team1\": {\r\n                                \"user1\": {\r\n                                    \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\r\n                                    \"image\": \"https://lh3.googleusercontent.com/a/ACg8ocJ5fXYZ6d74iUT0d6j6RrWvdc0_bkSkXWqRMqDW4GeOJcwGfw4p=s96-c\",\r\n                                    \"name\": \"Tri Do\",\r\n                                    \"isReferee\": false\r\n                                },\r\n                                \"user2\": null,\r\n                                \"id\": \"aae3c068-dfef-4871-9a38-7ad45521ce07\"\r\n                            },\r\n                            \"team2\": {\r\n                                \"user1\": {\r\n                                    \"id\": \"0fbf1036-dd85-4e02-8e07-558a8d0d22f6\",\r\n                                    \"image\": null,\r\n                                    \"name\": \"shin\",\r\n                                    \"isReferee\": false\r\n                                },\r\n                                \"user2\": null,\r\n                                \"id\": \"d354f8f0-f282-452d-86d3-4eec17cd08a1\"\r\n                            }\r\n                        },\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"63b79b82-4e14-4c24-92a0-77f8c1202abb\",\r\n                        \"nextMatchId\": \"8a592f70-c234-434b-a85e-8c9d58c4e3ab\",\r\n                        \"title\": \"Match 2\",\r\n                        \"matchStartDate\": null,\r\n                        \"duration\": 30,\r\n                        \"status\": \"skipped\",\r\n                        \"teams\": {\r\n                            \"team1\": {\r\n                                \"user1\": {\r\n                                    \"id\": \"6e58e555-b452-4205-93c9-eb26adac7e98\",\r\n                                    \"image\": \"https://avatoon.net/wp-content/uploads/2021/12/Cartoon-Avatar-White-Background.png\",\r\n                                    \"name\": \"Huy Nguyen\",\r\n                                    \"isReferee\": false\r\n                                },\r\n                                \"user2\": null,\r\n                                \"id\": \"44036f31-4642-4183-966d-305d2941f9b2\"\r\n                            },\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"bca18b4b-e3c5-4d01-adff-a8d0ee63e218\",\r\n                        \"nextMatchId\": \"ed75a180-40f4-4e87-a7a6-40263ec0599d\",\r\n                        \"title\": \"Match 3\",\r\n                        \"matchStartDate\": null,\r\n                        \"duration\": 30,\r\n                        \"status\": \"scheduled\",\r\n                        \"teams\": {\r\n                            \"team1\": {\r\n                                \"user1\": {\r\n                                    \"id\": \"d762a454-53de-4c32-a6cd-b60e703f8f93\",\r\n                                    \"image\": \"https://lh3.googleusercontent.com/a/ACg8ocJ5fXYZ6d74iUT0d6j6RrWvdc0_bkSkXWqRMqDW4GeOJcwGfw4p=s96-c\",\r\n                                    \"name\": \"Trí Đỗ Minh\",\r\n                                    \"isReferee\": false\r\n                                },\r\n                                \"user2\": null,\r\n                                \"id\": \"cdbb5755-b7a2-4ca2-b821-7b94c48c7312\"\r\n                            },\r\n                            \"team2\": {\r\n                                \"user1\": {\r\n                                    \"id\": \"32b27e3d-6ae5-4635-86cb-c7c09c561d29\",\r\n                                    \"image\": null,\r\n                                    \"name\": \"Truong Chi Hien\",\r\n                                    \"isReferee\": false\r\n                                },\r\n                                \"user2\": null,\r\n                                \"id\": \"d7c18cf5-3ec5-4da8-8952-48b831e08f99\"\r\n                            }\r\n                        },\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"45671f35-c22f-491d-96ca-36018a71e386\",\r\n                        \"nextMatchId\": \"ed75a180-40f4-4e87-a7a6-40263ec0599d\",\r\n                        \"title\": \"Match 4\",\r\n                        \"matchStartDate\": null,\r\n                        \"duration\": 30,\r\n                        \"status\": \"skipped\",\r\n                        \"teams\": {\r\n                            \"team1\": {\r\n                                \"user1\": {\r\n                                    \"id\": \"d3dce5c7-6418-4697-8802-459e4a38d480\",\r\n                                    \"image\": null,\r\n                                    \"name\": \"Tri Do\",\r\n                                    \"isReferee\": false\r\n                                },\r\n                                \"user2\": null,\r\n                                \"id\": \"0f45aa03-656e-4343-a38d-b35a5aca321f\"\r\n                            },\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"title\": \"Round 2\",\r\n                \"id\": \"687f07ba-8f8b-4a82-b7ae-e1fb44788946\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"8a592f70-c234-434b-a85e-8c9d58c4e3ab\",\r\n                        \"nextMatchId\": \"46f39a6c-399b-4512-902f-21c5e2a5f128\",\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": null,\r\n                        \"duration\": 30,\r\n                        \"status\": \"no_show\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": {\r\n                                \"user1\": {\r\n                                    \"id\": \"6e58e555-b452-4205-93c9-eb26adac7e98\",\r\n                                    \"image\": \"https://avatoon.net/wp-content/uploads/2021/12/Cartoon-Avatar-White-Background.png\",\r\n                                    \"name\": \"Huy Nguyen\",\r\n                                    \"isReferee\": false\r\n                                },\r\n                                \"user2\": null,\r\n                                \"id\": \"44036f31-4642-4183-966d-305d2941f9b2\"\r\n                            }\r\n                        },\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"ed75a180-40f4-4e87-a7a6-40263ec0599d\",\r\n                        \"nextMatchId\": \"46f39a6c-399b-4512-902f-21c5e2a5f128\",\r\n                        \"title\": \"Match 2\",\r\n                        \"matchStartDate\": null,\r\n                        \"duration\": 30,\r\n                        \"status\": \"no_show\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": {\r\n                                \"user1\": {\r\n                                    \"id\": \"d3dce5c7-6418-4697-8802-459e4a38d480\",\r\n                                    \"image\": null,\r\n                                    \"name\": \"Tri Do\",\r\n                                    \"isReferee\": false\r\n                                },\r\n                                \"user2\": null,\r\n                                \"id\": \"0f45aa03-656e-4343-a38d-b35a5aca321f\"\r\n                            }\r\n                        },\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"title\": \"Round 3\",\r\n                \"id\": \"40120824-8131-4998-8c63-267edc0241fa\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"46f39a6c-399b-4512-902f-21c5e2a5f128\",\r\n                        \"nextMatchId\": null,\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": null,\r\n                        \"duration\": 30,\r\n                        \"status\": \"no_show\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            }\r\n        ]\r\n    },\r\n    \"status\": \"draft\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -2229,7 +2239,7 @@
 											}
 										},
 										"url": {
-											"raw": "{{CORE_URL}}/groups/39/tournaments/4/fixtures/save",
+											"raw": "{{CORE_URL}}/groups/39/tournaments/4/fixtures/save-draft",
 											"host": [
 												"{{CORE_URL}}"
 											],
@@ -2239,7 +2249,7 @@
 												"tournaments",
 												"4",
 												"fixtures",
-												"save"
+												"save-draft"
 											]
 										}
 									},
@@ -2377,73 +2387,6 @@
 											],
 											"cookie": [],
 											"body": "{\n    \"id\": \"31b47786-90ab-4ba4-8343-a2ce4b897ce2\",\n    \"tournamentId\": 10,\n    \"numberOfParticipants\": 8,\n    \"fixtureStartDate\": \"2024-03-20T16:59:59.000Z\",\n    \"fixtureEndDate\": \"2024-03-20T16:59:59.000Z\",\n    \"status\": \"draft\",\n    \"matchDuration\": 30,\n    \"breakDuration\": 100,\n    \"createdAt\": \"2024-05-14T16:00:39.734Z\",\n    \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n    \"numberOfGroups\": 0,\n    \"matchesEndTime\": \"20:00:00\",\n    \"matchesStartTime\": \"08:00:00\",\n    \"knockoutGroup\": {\n        \"id\": \"679f2526-094a-4723-83d0-c9378654a549\",\n        \"fixtureId\": \"31b47786-90ab-4ba4-8343-a2ce4b897ce2\",\n        \"groupWinnerId\": [],\n        \"isFinal\": true,\n        \"createdAt\": \"2024-05-14T15:58:21.374Z\",\n        \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n        \"numberOfProceeders\": 1,\n        \"status\": \"scheduled\",\n        \"title\": \"Knockout Group\",\n        \"rounds\": [\n            {\n                \"id\": \"25b4c523-ad2a-402f-95d8-e989219bceb3\",\n                \"groupFixtureId\": \"679f2526-094a-4723-83d0-c9378654a549\",\n                \"elo\": 100,\n                \"createdAt\": \"2024-05-14T15:58:21.374Z\",\n                \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n                \"title\": \"Round 3\",\n                \"matches\": [\n                    {\n                        \"id\": \"ab6906c6-f6aa-4eac-aa55-8c537a7953b2\",\n                        \"roundId\": \"25b4c523-ad2a-402f-95d8-e989219bceb3\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": null,\n                        \"teamId2\": null,\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": \"2024-04-27T03:23:15.529Z\",\n                        \"matchEndDate\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                        \"status\": \"no_show\",\n                        \"matchDuration\": 30,\n                        \"breakDuration\": 100,\n                        \"createdAt\": \"2024-05-14T15:58:21.374Z\",\n                        \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n                        \"nextMatchId\": null,\n                        \"title\": \"Match 1\",\n                        \"refereeId\": null,\n                        \"referee\": null,\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        }\n                    }\n                ]\n            },\n            {\n                \"id\": \"f8f0e9b6-f271-49fe-8c8e-44016641c48d\",\n                \"groupFixtureId\": \"679f2526-094a-4723-83d0-c9378654a549\",\n                \"elo\": 100,\n                \"createdAt\": \"2024-05-14T15:58:21.374Z\",\n                \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n                \"title\": \"Round 2\",\n                \"matches\": [\n                    {\n                        \"id\": \"858b834e-cce1-45b9-be82-2a1e44d7a763\",\n                        \"roundId\": \"f8f0e9b6-f271-49fe-8c8e-44016641c48d\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": null,\n                        \"teamId2\": null,\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": \"2024-04-27T03:23:15.529Z\",\n                        \"matchEndDate\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                        \"status\": \"no_show\",\n                        \"matchDuration\": 30,\n                        \"breakDuration\": 100,\n                        \"createdAt\": \"2024-05-14T15:58:21.374Z\",\n                        \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n                        \"nextMatchId\": \"ab6906c6-f6aa-4eac-aa55-8c537a7953b2\",\n                        \"title\": \"Match 1\",\n                        \"refereeId\": null,\n                        \"referee\": null,\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        }\n                    },\n                    {\n                        \"id\": \"667c80fd-83c8-4f89-a6ae-86b202410b01\",\n                        \"roundId\": \"f8f0e9b6-f271-49fe-8c8e-44016641c48d\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": null,\n                        \"teamId2\": null,\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": \"2024-04-27T03:23:15.529Z\",\n                        \"matchEndDate\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                        \"status\": \"no_show\",\n                        \"matchDuration\": 30,\n                        \"breakDuration\": 100,\n                        \"createdAt\": \"2024-05-14T15:58:21.374Z\",\n                        \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n                        \"nextMatchId\": \"ab6906c6-f6aa-4eac-aa55-8c537a7953b2\",\n                        \"title\": \"Match 2\",\n                        \"refereeId\": null,\n                        \"referee\": null,\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        }\n                    }\n                ]\n            },\n            {\n                \"id\": \"29c1db8c-bcc0-4e84-8c2c-1fc1ec3da15c\",\n                \"groupFixtureId\": \"679f2526-094a-4723-83d0-c9378654a549\",\n                \"elo\": 100,\n                \"createdAt\": \"2024-05-14T15:58:21.374Z\",\n                \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n                \"title\": \"Round 1\",\n                \"matches\": [\n                    {\n                        \"id\": \"95941afe-29f4-44db-97c0-e132bb0fd104\",\n                        \"roundId\": \"29c1db8c-bcc0-4e84-8c2c-1fc1ec3da15c\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": \"33360f12-345c-4064-ae05-7e577e9f2277\",\n                        \"teamId2\": \"b38079d9-e32b-413e-9536-2b8c38e577fb\",\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": \"2024-04-27T03:23:15.529Z\",\n                        \"matchEndDate\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                        \"status\": \"scheduled\",\n                        \"matchDuration\": 30,\n                        \"breakDuration\": 100,\n                        \"createdAt\": \"2024-05-14T15:58:21.374Z\",\n                        \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n                        \"nextMatchId\": \"858b834e-cce1-45b9-be82-2a1e44d7a763\",\n                        \"title\": \"Match 1\",\n                        \"refereeId\": null,\n                        \"referee\": null,\n                        \"teams\": {\n                            \"team1\": {\n                                \"id\": \"33360f12-345c-4064-ae05-7e577e9f2277\",\n                                \"name\": \"shin2\",\n                                \"userId1\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                                \"userId2\": null,\n                                \"totalElo\": 0,\n                                \"point\": 0,\n                                \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"tournamentId\": 10,\n                                \"user1\": {\n                                    \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                                    \"image\": null,\n                                    \"name\": \"shin2\"\n                                },\n                                \"user2\": null\n                            },\n                            \"team2\": {\n                                \"id\": \"b38079d9-e32b-413e-9536-2b8c38e577fb\",\n                                \"name\": \"shin9\",\n                                \"userId1\": \"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\n                                \"userId2\": null,\n                                \"totalElo\": 0,\n                                \"point\": 0,\n                                \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"tournamentId\": 10,\n                                \"user1\": {\n                                    \"id\": \"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\n                                    \"image\": null,\n                                    \"name\": \"shin9\"\n                                },\n                                \"user2\": null\n                            }\n                        }\n                    },\n                    {\n                        \"id\": \"8638ed6c-abbb-4f2d-aa00-45fbdb0c21b0\",\n                        \"roundId\": \"29c1db8c-bcc0-4e84-8c2c-1fc1ec3da15c\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": \"bde4b4f1-1890-456c-8714-09a219d755f7\",\n                        \"teamId2\": \"2a077306-2baa-4c4e-82d2-dbeacdba127a\",\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": \"2024-04-27T03:23:15.529Z\",\n                        \"matchEndDate\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                        \"status\": \"scheduled\",\n                        \"matchDuration\": 30,\n                        \"breakDuration\": 100,\n                        \"createdAt\": \"2024-05-14T15:58:21.374Z\",\n                        \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n                        \"nextMatchId\": \"858b834e-cce1-45b9-be82-2a1e44d7a763\",\n                        \"title\": \"Match 2\",\n                        \"refereeId\": null,\n                        \"referee\": null,\n                        \"teams\": {\n                            \"team1\": {\n                                \"id\": \"bde4b4f1-1890-456c-8714-09a219d755f7\",\n                                \"name\": \"shin4\",\n                                \"userId1\": \"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\n                                \"userId2\": null,\n                                \"totalElo\": 0,\n                                \"point\": 0,\n                                \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"tournamentId\": 10,\n                                \"user1\": {\n                                    \"id\": \"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\n                                    \"image\": null,\n                                    \"name\": \"shin4\"\n                                },\n                                \"user2\": null\n                            },\n                            \"team2\": {\n                                \"id\": \"2a077306-2baa-4c4e-82d2-dbeacdba127a\",\n                                \"name\": \"shin7\",\n                                \"userId1\": \"a2c86b51-0d35-4f7f-afed-3257305d01d7\",\n                                \"userId2\": null,\n                                \"totalElo\": 0,\n                                \"point\": 0,\n                                \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"tournamentId\": 10,\n                                \"user1\": {\n                                    \"id\": \"a2c86b51-0d35-4f7f-afed-3257305d01d7\",\n                                    \"image\": null,\n                                    \"name\": \"shin7\"\n                                },\n                                \"user2\": null\n                            }\n                        }\n                    },\n                    {\n                        \"id\": \"0aeab978-2686-44bb-8205-0245343b7a40\",\n                        \"roundId\": \"29c1db8c-bcc0-4e84-8c2c-1fc1ec3da15c\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": \"171fc61b-d95c-483b-9756-05140a08aded\",\n                        \"teamId2\": \"7288d7ad-4561-4d17-99b8-ff0b6ed4dfe8\",\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": \"2024-04-27T03:23:15.529Z\",\n                        \"matchEndDate\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                        \"status\": \"scheduled\",\n                        \"matchDuration\": 30,\n                        \"breakDuration\": 100,\n                        \"createdAt\": \"2024-05-14T15:58:21.374Z\",\n                        \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n                        \"nextMatchId\": \"667c80fd-83c8-4f89-a6ae-86b202410b01\",\n                        \"title\": \"Match 3\",\n                        \"refereeId\": null,\n                        \"referee\": null,\n                        \"teams\": {\n                            \"team1\": {\n                                \"id\": \"171fc61b-d95c-483b-9756-05140a08aded\",\n                                \"name\": \"shin3\",\n                                \"userId1\": \"60288e3c-165c-4918-bbe9-ff1b84992d72\",\n                                \"userId2\": null,\n                                \"totalElo\": 0,\n                                \"point\": 0,\n                                \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"tournamentId\": 10,\n                                \"user1\": {\n                                    \"id\": \"60288e3c-165c-4918-bbe9-ff1b84992d72\",\n                                    \"image\": null,\n                                    \"name\": \"shin3\"\n                                },\n                                \"user2\": null\n                            },\n                            \"team2\": {\n                                \"id\": \"7288d7ad-4561-4d17-99b8-ff0b6ed4dfe8\",\n                                \"name\": \"shin8\",\n                                \"userId1\": \"84f7b4ec-3c21-4183-8d68-1a123a0013fe\",\n                                \"userId2\": null,\n                                \"totalElo\": 0,\n                                \"point\": 0,\n                                \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"tournamentId\": 10,\n                                \"user1\": {\n                                    \"id\": \"84f7b4ec-3c21-4183-8d68-1a123a0013fe\",\n                                    \"image\": null,\n                                    \"name\": \"shin8\"\n                                },\n                                \"user2\": null\n                            }\n                        }\n                    },\n                    {\n                        \"id\": \"069c7e6c-c8c4-4618-93b7-178cd78171bf\",\n                        \"roundId\": \"29c1db8c-bcc0-4e84-8c2c-1fc1ec3da15c\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": \"40602efd-c624-46c8-a7d6-179ba2555d67\",\n                        \"teamId2\": \"d48562c3-e43e-44d2-9a3d-281257cf2777\",\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": \"2024-04-27T03:23:15.529Z\",\n                        \"matchEndDate\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                        \"status\": \"scheduled\",\n                        \"matchDuration\": 30,\n                        \"breakDuration\": 100,\n                        \"createdAt\": \"2024-05-14T15:58:21.374Z\",\n                        \"updatedAt\": \"2024-05-14T16:00:39.734Z\",\n                        \"nextMatchId\": \"667c80fd-83c8-4f89-a6ae-86b202410b01\",\n                        \"title\": \"Match 4\",\n                        \"refereeId\": null,\n                        \"referee\": null,\n                        \"teams\": {\n                            \"team1\": {\n                                \"id\": \"40602efd-c624-46c8-a7d6-179ba2555d67\",\n                                \"name\": \"shin5\",\n                                \"userId1\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\n                                \"userId2\": null,\n                                \"totalElo\": 0,\n                                \"point\": 0,\n                                \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"tournamentId\": 10,\n                                \"user1\": {\n                                    \"id\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\n                                    \"image\": null,\n                                    \"name\": \"shin5\"\n                                },\n                                \"user2\": null\n                            },\n                            \"team2\": {\n                                \"id\": \"d48562c3-e43e-44d2-9a3d-281257cf2777\",\n                                \"name\": \"shin6\",\n                                \"userId1\": \"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\n                                \"userId2\": null,\n                                \"totalElo\": 0,\n                                \"point\": 0,\n                                \"createdAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"updatedAt\": \"2024-05-13T15:23:58.556Z\",\n                                \"tournamentId\": 10,\n                                \"user1\": {\n                                    \"id\": \"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\n                                    \"image\": null,\n                                    \"name\": \"shin6\"\n                                },\n                                \"user2\": null\n                            }\n                        }\n                    }\n                ]\n            }\n        ]\n    }\n}"
-										},
-										{
-											"name": "Group Playoff",
-											"originalRequest": {
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\r\n    \"id\": \"31b47786-90ab-4ba4-8343-a2ce4b897ce2\",\r\n    \"fixtureStartDate\": \"2024-03-20T23:59:59\",\r\n    \"fixtureEndDate\": \"2024-03-20T23:59:59\",\r\n    \"matchesStartTime\": \"08:00:00\",\r\n    \"matchesEndTime\": \"20:00:00\",\r\n    \"matchDuration\": 30,\r\n    \"breakDuration\": 100,\r\n    \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\r\n    \"groups\": [\r\n    {\r\n        \"title\": \"Group A\",\r\n        \"id\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\r\n        \"numberOfProceeders\": 2,\r\n        \"teams\": [\"2f7ba0e0-ea7f-40ae-97a3-a9207faa092d\",\"941f8763-6a83-4d46-85da-627f1f38afc5\"]\r\n    },\r\n    {\r\n        \"title\": \"Group B\",\r\n        \"id\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\r\n        \"numberOfProceeders\": 2,\r\n        \"teams\": [\"470c21c6-e1fc-47b8-ad2b-64f6ba992bd5\", \"26993f41-1181-448e-a84b-49114e633fd8\"]\r\n    }\r\n],\r\n    \"roundRobinGroups\": [\r\n        {\r\n            \"title\": \"Group A\",\r\n            \"rounds\": [\r\n                {\r\n                    \"title\": \"Round 1\",\r\n                    \"matches\": [\r\n                        {\r\n                            \"id\": \"20d130b2-5ede-413a-b9ff-f5294fa36a63\",\r\n                            \"nextMatchId\": null,\r\n                            \"title\": \"Match 1\",\r\n                            \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\r\n                            \"duration\": 30,\r\n                            \"status\": \"scheduled\",\r\n                            \"teams\": {\r\n                                \"team1\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"Tri Do\"\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"2f7ba0e0-ea7f-40ae-97a3-a9207faa092d\"\r\n                                },\r\n                                \"team2\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"Hien\"\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"941f8763-6a83-4d46-85da-627f1f38afc5\"\r\n                                }\r\n                            },\r\n                            \"refereeId\": null,\r\n                            \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                        }\r\n                    ],\r\n                    \"id\": \"d5154730-9b57-4a7e-98bc-c1e0d7ccd8d6\"\r\n                }\r\n            ],\r\n            \"id\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\r\n            \"numberOfProceeders\": 2,\r\n            \"isFinal\": false\r\n        },\r\n        {\r\n            \"title\": \"Group B\",\r\n            \"rounds\": [\r\n                {\r\n                    \"title\": \"Round 1\",\r\n                    \"matches\": [\r\n                        {\r\n                            \"id\": \"ea6e1224-f2c1-4616-8315-0b71aa6f357f\",\r\n                            \"nextMatchId\": null,\r\n                            \"title\": \"Match 1\",\r\n                            \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\r\n                            \"duration\": 30,\r\n                            \"status\": \"scheduled\",\r\n                            \"teams\": {\r\n                                \"team1\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"Tri Do\"\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"470c21c6-e1fc-47b8-ad2b-64f6ba992bd5\"\r\n                                },\r\n                                \"team2\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"Hien\"\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"26993f41-1181-448e-a84b-49114e633fd8\"\r\n                                }\r\n                            },\r\n                            \"refereeId\": null,\r\n                            \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                        }\r\n                    ],\r\n                    \"id\": \"5046db31-6be5-4715-b2a8-e8734831fa40\"\r\n                }\r\n            ],\r\n            \"id\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\r\n            \"numberOfProceeders\": 2,\r\n            \"isFinal\": false\r\n        }\r\n    ],\r\n    \"knockoutGroup\": {\r\n        \"id\": \"e38fc471-4760-4d95-8640-a5e9bfdc2e77\",\r\n        \"title\": \"Knockout Group\",\r\n        \"isFinal\": true,\r\n        \"rounds\": [\r\n            {\r\n                \"title\": \"Round 1\",\r\n                \"id\": \"62b0e677-a91a-42ab-b7a6-24f5774dc793\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"f6f4505f-4a45-4aac-92e5-0e2d643e8e3a\",\r\n                        \"nextMatchId\": \"30367b6f-bb54-41f9-ad63-1d8784415999\",\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"scheduled\",\r\n                        \"teams\": {\r\n                            \"team1\": {\r\n                                \"user1\": null,\r\n                                \"user2\": null,\r\n                                \"name\": \"Winner 1 Of Group A\"\r\n                            },\r\n                            \"team2\": {\r\n                                \"user1\": null,\r\n                                \"user2\": null,\r\n                                \"name\": \"Winner 2 Of Group B\"\r\n                            }\r\n                        },\r\n                        \"groupFixtureTeamId1\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\r\n                        \"groupFixtureTeamId2\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\r\n                        \"rankGroupTeam1\": 1,\r\n                        \"rankGroupTeam2\": 2,\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"97ec3c06-aa0d-42be-8742-3402e7a88ed5\",\r\n                        \"nextMatchId\": \"30367b6f-bb54-41f9-ad63-1d8784415999\",\r\n                        \"title\": \"Match 2\",\r\n                        \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"scheduled\",\r\n                        \"teams\": {\r\n                            \"team1\": {\r\n                                \"user1\": null,\r\n                                \"user2\": null,\r\n                                \"name\": \"Winner 1 Of Group B\"\r\n                            },\r\n                            \"team2\": {\r\n                                \"user1\": null,\r\n                                \"user2\": null,\r\n                                \"name\": \"Winner 2 Of Group A\"\r\n                            }\r\n                        },\r\n                        \"groupFixtureTeamId1\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\r\n                        \"groupFixtureTeamId2\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\r\n                        \"rankGroupTeam1\": 1,\r\n                        \"rankGroupTeam2\": 2,\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"title\": \"Round 2\",\r\n                \"id\": \"fe3ee061-c1ec-4145-8fc0-7b8a82aaa2bc\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"30367b6f-bb54-41f9-ad63-1d8784415999\",\r\n                        \"nextMatchId\": null,\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"no_show\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"groupFixtureTeamId1\": null,\r\n                        \"groupFixtureTeamId2\": null,\r\n                        \"rankGroupTeam1\": null,\r\n                        \"rankGroupTeam2\": null,\r\n                        \"refereeId\": null,\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            }\r\n        ]\r\n    },\r\n    \"status\": \"draft\"\r\n}",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{CORE_URL}}/tournaments/3/fixtures/save",
-													"host": [
-														"{{CORE_URL}}"
-													],
-													"path": [
-														"tournaments",
-														"3",
-														"fixtures",
-														"save"
-													]
-												}
-											},
-											"status": "Created",
-											"code": 201,
-											"_postman_previewlanguage": "json",
-											"header": [
-												{
-													"key": "X-Powered-By",
-													"value": "Express"
-												},
-												{
-													"key": "Access-Control-Allow-Origin",
-													"value": "*"
-												},
-												{
-													"key": "Content-Type",
-													"value": "application/json; charset=utf-8"
-												},
-												{
-													"key": "Content-Length",
-													"value": "10878"
-												},
-												{
-													"key": "ETag",
-													"value": "W/\"2a7e-O8EY9D4uk1mtfRHyQgSu1BMeXJg\""
-												},
-												{
-													"key": "Date",
-													"value": "Mon, 10 Jun 2024 15:45:57 GMT"
-												},
-												{
-													"key": "Connection",
-													"value": "keep-alive"
-												},
-												{
-													"key": "Keep-Alive",
-													"value": "timeout=5"
-												}
-											],
-											"cookie": [],
-											"body": "{\n    \"id\": \"31b47786-90ab-4ba4-8343-a2ce4b897ce2\",\n    \"tournamentId\": 3,\n    \"numberOfParticipants\": 4,\n    \"fixtureStartDate\": \"2024-03-20T16:59:59.000Z\",\n    \"fixtureEndDate\": \"2024-03-20T16:59:59.000Z\",\n    \"status\": \"draft\",\n    \"matchDuration\": 30,\n    \"breakDuration\": 100,\n    \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n    \"numberOfGroups\": 2,\n    \"matchesEndTime\": \"20:00:00\",\n    \"matchesStartTime\": \"08:00:00\",\n    \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n    \"format\": \"group_playoff\",\n    \"knockoutGroup\": {\n        \"id\": \"e38fc471-4760-4d95-8640-a5e9bfdc2e77\",\n        \"fixtureId\": \"31b47786-90ab-4ba4-8343-a2ce4b897ce2\",\n        \"groupWinnerId\": [],\n        \"isFinal\": true,\n        \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n        \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n        \"numberOfProceeders\": 1,\n        \"status\": \"scheduled\",\n        \"title\": \"Knockout Group\",\n        \"rounds\": [\n            {\n                \"id\": \"62b0e677-a91a-42ab-b7a6-24f5774dc793\",\n                \"groupFixtureId\": \"e38fc471-4760-4d95-8640-a5e9bfdc2e77\",\n                \"elo\": 100,\n                \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n                \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                \"title\": \"Round 1\",\n                \"matches\": [\n                    {\n                        \"id\": \"f6f4505f-4a45-4aac-92e5-0e2d643e8e3a\",\n                        \"roundId\": \"62b0e677-a91a-42ab-b7a6-24f5774dc793\",\n                        \"groupFixtureTeamId1\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\n                        \"groupFixtureTeamId2\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\n                        \"rankGroupTeam1\": 1,\n                        \"rankGroupTeam2\": 2,\n                        \"teamId1\": null,\n                        \"teamId2\": null,\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\n                        \"matchEndDate\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                        \"status\": \"scheduled\",\n                        \"duration\": 30,\n                        \"breakDuration\": 100,\n                        \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n                        \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                        \"nextMatchId\": \"30367b6f-bb54-41f9-ad63-1d8784415999\",\n                        \"title\": \"Match 1\",\n                        \"refereeId\": null,\n                        \"referee\": null,\n                        \"teams\": {\n                            \"team1\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 1 of Group A\"\n                            },\n                            \"team2\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 2 of Group B\"\n                            }\n                        }\n                    },\n                    {\n                        \"id\": \"97ec3c06-aa0d-42be-8742-3402e7a88ed5\",\n                        \"roundId\": \"62b0e677-a91a-42ab-b7a6-24f5774dc793\",\n                        \"groupFixtureTeamId1\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\n                        \"groupFixtureTeamId2\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\n                        \"rankGroupTeam1\": 1,\n                        \"rankGroupTeam2\": 2,\n                        \"teamId1\": null,\n                        \"teamId2\": null,\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\n                        \"matchEndDate\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                        \"status\": \"scheduled\",\n                        \"duration\": 30,\n                        \"breakDuration\": 100,\n                        \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n                        \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                        \"nextMatchId\": \"30367b6f-bb54-41f9-ad63-1d8784415999\",\n                        \"title\": \"Match 2\",\n                        \"refereeId\": null,\n                        \"referee\": null,\n                        \"teams\": {\n                            \"team1\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 1 of Group B\"\n                            },\n                            \"team2\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 2 of Group A\"\n                            }\n                        }\n                    }\n                ]\n            },\n            {\n                \"id\": \"fe3ee061-c1ec-4145-8fc0-7b8a82aaa2bc\",\n                \"groupFixtureId\": \"e38fc471-4760-4d95-8640-a5e9bfdc2e77\",\n                \"elo\": 100,\n                \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n                \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                \"title\": \"Round 2\",\n                \"matches\": [\n                    {\n                        \"id\": \"30367b6f-bb54-41f9-ad63-1d8784415999\",\n                        \"roundId\": \"fe3ee061-c1ec-4145-8fc0-7b8a82aaa2bc\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": null,\n                        \"teamId2\": null,\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\n                        \"matchEndDate\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                        \"status\": \"no_show\",\n                        \"duration\": 30,\n                        \"breakDuration\": 100,\n                        \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n                        \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                        \"nextMatchId\": null,\n                        \"title\": \"Match 1\",\n                        \"refereeId\": null,\n                        \"referee\": null,\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        }\n                    }\n                ]\n            }\n        ]\n    },\n    \"roundRobinGroups\": [\n        {\n            \"id\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\n            \"fixtureId\": \"31b47786-90ab-4ba4-8343-a2ce4b897ce2\",\n            \"groupWinnerId\": [],\n            \"isFinal\": false,\n            \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n            \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n            \"numberOfProceeders\": 2,\n            \"status\": \"scheduled\",\n            \"title\": \"Group A\",\n            \"rounds\": [\n                {\n                    \"id\": \"d5154730-9b57-4a7e-98bc-c1e0d7ccd8d6\",\n                    \"groupFixtureId\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\n                    \"elo\": 100,\n                    \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"title\": \"Round 1\",\n                    \"matches\": [\n                        {\n                            \"id\": \"20d130b2-5ede-413a-b9ff-f5294fa36a63\",\n                            \"roundId\": \"d5154730-9b57-4a7e-98bc-c1e0d7ccd8d6\",\n                            \"groupFixtureTeamId1\": null,\n                            \"groupFixtureTeamId2\": null,\n                            \"rankGroupTeam1\": null,\n                            \"rankGroupTeam2\": null,\n                            \"teamId1\": \"2f7ba0e0-ea7f-40ae-97a3-a9207faa092d\",\n                            \"teamId2\": \"941f8763-6a83-4d46-85da-627f1f38afc5\",\n                            \"teamWinnerId\": null,\n                            \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\n                            \"matchEndDate\": null,\n                            \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                            \"status\": \"scheduled\",\n                            \"duration\": 30,\n                            \"breakDuration\": 100,\n                            \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n                            \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 1\",\n                            \"refereeId\": null,\n                            \"referee\": null,\n                            \"teams\": {\n                                \"team1\": {\n                                    \"id\": \"2f7ba0e0-ea7f-40ae-97a3-a9207faa092d\",\n                                    \"name\": \"Tri Do\",\n                                    \"userId1\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                                    \"userId2\": null,\n                                    \"totalElo\": 200,\n                                    \"point\": 0,\n                                    \"createdAt\": \"2024-05-08T13:08:52.618Z\",\n                                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                                    \"tournamentId\": 3,\n                                    \"groupFixtureId\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\n                                    \"seed\": 1,\n                                    \"user1\": {\n                                        \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                                        \"image\": null,\n                                        \"name\": \"Tri Do\"\n                                    },\n                                    \"user2\": null\n                                },\n                                \"team2\": {\n                                    \"id\": \"941f8763-6a83-4d46-85da-627f1f38afc5\",\n                                    \"name\": \"Chi Hien\",\n                                    \"userId1\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                                    \"userId2\": null,\n                                    \"totalElo\": 0,\n                                    \"point\": 0,\n                                    \"createdAt\": \"2024-05-08T13:08:52.618Z\",\n                                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                                    \"tournamentId\": 3,\n                                    \"groupFixtureId\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\n                                    \"seed\": null,\n                                    \"user1\": {\n                                        \"id\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                                        \"image\": null,\n                                        \"name\": \"Hien\"\n                                    },\n                                    \"user2\": null\n                                }\n                            }\n                        }\n                    ]\n                }\n            ],\n            \"teams\": [\n                {\n                    \"id\": \"941f8763-6a83-4d46-85da-627f1f38afc5\",\n                    \"name\": \"Chi Hien\",\n                    \"userId1\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                    \"userId2\": null,\n                    \"totalElo\": 0,\n                    \"point\": 0,\n                    \"createdAt\": \"2024-05-08T13:08:52.618Z\",\n                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"tournamentId\": 3,\n                    \"groupFixtureId\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\n                    \"seed\": null,\n                    \"user1\": {\n                        \"id\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                        \"image\": null,\n                        \"name\": \"Hien\"\n                    },\n                    \"user2\": null\n                },\n                {\n                    \"id\": \"2f7ba0e0-ea7f-40ae-97a3-a9207faa092d\",\n                    \"name\": \"Tri Do\",\n                    \"userId1\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                    \"userId2\": null,\n                    \"totalElo\": 200,\n                    \"point\": 0,\n                    \"createdAt\": \"2024-05-08T13:08:52.618Z\",\n                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"tournamentId\": 3,\n                    \"groupFixtureId\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\n                    \"seed\": 1,\n                    \"user1\": {\n                        \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                        \"image\": null,\n                        \"name\": \"Tri Do\"\n                    },\n                    \"user2\": null\n                }\n            ]\n        },\n        {\n            \"id\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\n            \"fixtureId\": \"31b47786-90ab-4ba4-8343-a2ce4b897ce2\",\n            \"groupWinnerId\": [],\n            \"isFinal\": false,\n            \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n            \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n            \"numberOfProceeders\": 2,\n            \"status\": \"scheduled\",\n            \"title\": \"Group B\",\n            \"rounds\": [\n                {\n                    \"id\": \"5046db31-6be5-4715-b2a8-e8734831fa40\",\n                    \"groupFixtureId\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\n                    \"elo\": 100,\n                    \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"title\": \"Round 1\",\n                    \"matches\": [\n                        {\n                            \"id\": \"ea6e1224-f2c1-4616-8315-0b71aa6f357f\",\n                            \"roundId\": \"5046db31-6be5-4715-b2a8-e8734831fa40\",\n                            \"groupFixtureTeamId1\": null,\n                            \"groupFixtureTeamId2\": null,\n                            \"rankGroupTeam1\": null,\n                            \"rankGroupTeam2\": null,\n                            \"teamId1\": \"470c21c6-e1fc-47b8-ad2b-64f6ba992bd5\",\n                            \"teamId2\": \"26993f41-1181-448e-a84b-49114e633fd8\",\n                            \"teamWinnerId\": null,\n                            \"matchStartDate\": \"2022-04-17T13:00:00.000Z\",\n                            \"matchEndDate\": null,\n                            \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                            \"status\": \"scheduled\",\n                            \"duration\": 30,\n                            \"breakDuration\": 100,\n                            \"createdAt\": \"2024-06-10T15:45:55.758Z\",\n                            \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 1\",\n                            \"refereeId\": null,\n                            \"referee\": null,\n                            \"teams\": {\n                                \"team1\": {\n                                    \"id\": \"470c21c6-e1fc-47b8-ad2b-64f6ba992bd5\",\n                                    \"name\": \"Tri Do\",\n                                    \"userId1\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                                    \"userId2\": null,\n                                    \"totalElo\": 200,\n                                    \"point\": 0,\n                                    \"createdAt\": \"2024-05-08T13:11:44.796Z\",\n                                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                                    \"tournamentId\": 3,\n                                    \"groupFixtureId\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\n                                    \"seed\": null,\n                                    \"user1\": {\n                                        \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                                        \"image\": null,\n                                        \"name\": \"Tri Do\"\n                                    },\n                                    \"user2\": null\n                                },\n                                \"team2\": {\n                                    \"id\": \"26993f41-1181-448e-a84b-49114e633fd8\",\n                                    \"name\": \"Chi Hien\",\n                                    \"userId1\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                                    \"userId2\": null,\n                                    \"totalElo\": 0,\n                                    \"point\": 0,\n                                    \"createdAt\": \"2024-05-08T13:11:44.796Z\",\n                                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                                    \"tournamentId\": 3,\n                                    \"groupFixtureId\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\n                                    \"seed\": null,\n                                    \"user1\": {\n                                        \"id\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                                        \"image\": null,\n                                        \"name\": \"Hien\"\n                                    },\n                                    \"user2\": null\n                                }\n                            }\n                        }\n                    ]\n                }\n            ],\n            \"teams\": [\n                {\n                    \"id\": \"26993f41-1181-448e-a84b-49114e633fd8\",\n                    \"name\": \"Chi Hien\",\n                    \"userId1\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                    \"userId2\": null,\n                    \"totalElo\": 0,\n                    \"point\": 0,\n                    \"createdAt\": \"2024-05-08T13:11:44.796Z\",\n                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"tournamentId\": 3,\n                    \"groupFixtureId\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\n                    \"seed\": null,\n                    \"user1\": {\n                        \"id\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                        \"image\": null,\n                        \"name\": \"Hien\"\n                    },\n                    \"user2\": null\n                },\n                {\n                    \"id\": \"470c21c6-e1fc-47b8-ad2b-64f6ba992bd5\",\n                    \"name\": \"Tri Do\",\n                    \"userId1\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                    \"userId2\": null,\n                    \"totalElo\": 200,\n                    \"point\": 0,\n                    \"createdAt\": \"2024-05-08T13:11:44.796Z\",\n                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"tournamentId\": 3,\n                    \"groupFixtureId\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\n                    \"seed\": null,\n                    \"user1\": {\n                        \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                        \"image\": null,\n                        \"name\": \"Tri Do\"\n                    },\n                    \"user2\": null\n                }\n            ]\n        }\n    ],\n    \"groups\": [\n        {\n            \"id\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\n            \"title\": \"Group A\",\n            \"numberOfProceeders\": 2,\n            \"teams\": [\n                {\n                    \"id\": \"941f8763-6a83-4d46-85da-627f1f38afc5\",\n                    \"name\": \"Chi Hien\",\n                    \"userId1\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                    \"userId2\": null,\n                    \"totalElo\": 0,\n                    \"point\": 0,\n                    \"createdAt\": \"2024-05-08T13:08:52.618Z\",\n                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"tournamentId\": 3,\n                    \"groupFixtureId\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\n                    \"seed\": null,\n                    \"user1\": {\n                        \"id\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                        \"image\": null,\n                        \"name\": \"Hien\"\n                    },\n                    \"user2\": null\n                },\n                {\n                    \"id\": \"2f7ba0e0-ea7f-40ae-97a3-a9207faa092d\",\n                    \"name\": \"Tri Do\",\n                    \"userId1\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                    \"userId2\": null,\n                    \"totalElo\": 200,\n                    \"point\": 0,\n                    \"createdAt\": \"2024-05-08T13:08:52.618Z\",\n                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"tournamentId\": 3,\n                    \"groupFixtureId\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\n                    \"seed\": 1,\n                    \"user1\": {\n                        \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                        \"image\": null,\n                        \"name\": \"Tri Do\"\n                    },\n                    \"user2\": null\n                }\n            ]\n        },\n        {\n            \"id\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\n            \"title\": \"Group B\",\n            \"numberOfProceeders\": 2,\n            \"teams\": [\n                {\n                    \"id\": \"26993f41-1181-448e-a84b-49114e633fd8\",\n                    \"name\": \"Chi Hien\",\n                    \"userId1\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                    \"userId2\": null,\n                    \"totalElo\": 0,\n                    \"point\": 0,\n                    \"createdAt\": \"2024-05-08T13:11:44.796Z\",\n                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"tournamentId\": 3,\n                    \"groupFixtureId\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\n                    \"seed\": null,\n                    \"user1\": {\n                        \"id\": \"598edffc-99dd-4176-bec9-86f8b95e3a46\",\n                        \"image\": null,\n                        \"name\": \"Hien\"\n                    },\n                    \"user2\": null\n                },\n                {\n                    \"id\": \"470c21c6-e1fc-47b8-ad2b-64f6ba992bd5\",\n                    \"name\": \"Tri Do\",\n                    \"userId1\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                    \"userId2\": null,\n                    \"totalElo\": 200,\n                    \"point\": 0,\n                    \"createdAt\": \"2024-05-08T13:11:44.796Z\",\n                    \"updatedAt\": \"2024-06-10T15:45:55.758Z\",\n                    \"tournamentId\": 3,\n                    \"groupFixtureId\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\n                    \"seed\": null,\n                    \"user1\": {\n                        \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                        \"image\": null,\n                        \"name\": \"Tri Do\"\n                    },\n                    \"user2\": null\n                }\n            ]\n        }\n    ]\n}"
 										}
 									]
 								},
@@ -2977,6 +2920,372 @@
 											],
 											"cookie": [],
 											"body": "{\n    \"message\": \"success\"\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Referee",
+							"item": [
+								{
+									"name": "Remove referee",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees/836e63a3-3867-475a-b7fa-6ccf568c6459",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"groups",
+												"39",
+												"tournaments",
+												"4",
+												"referees",
+												"836e63a3-3867-475a-b7fa-6ccf568c6459"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "remove referee",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees/836e63a3-3867-475a-b7fa-6ccf568c6459",
+													"host": [
+														"{{CORE_URL}}"
+													],
+													"path": [
+														"groups",
+														"39",
+														"tournaments",
+														"4",
+														"referees",
+														"836e63a3-3867-475a-b7fa-6ccf568c6459"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "54"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"36-fXLtIKgpO6zUg5XHJ/y6MdU0jqk\""
+												},
+												{
+													"key": "Date",
+													"value": "Sun, 30 Jun 2024 11:03:34 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Referee removed successfully\",\n    \"data\": null\n}"
+										}
+									]
+								},
+								{
+									"name": "Add Referee",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"userIds\": [\"0a8c5a69-5647-4614-81dd-2901c30bc84d\",  \"836e63a3-3867-475a-b7fa-6ccf568c6459\"]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"groups",
+												"39",
+												"tournaments",
+												"4",
+												"referees"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Add Referee",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"userIds\": [\"836e63a3-3867-475a-b7fa-6ccf568c6459\"]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
+													"host": [
+														"{{CORE_URL}}"
+													],
+													"path": [
+														"groups",
+														"39",
+														"tournaments",
+														"4",
+														"referees"
+													]
+												}
+											},
+											"status": "Created",
+											"code": 201,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "506"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"1fa-8NTtMyH2TW4U1ryNhkJgQvxFwEs\""
+												},
+												{
+													"key": "Date",
+													"value": "Sun, 30 Jun 2024 11:04:24 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"data\": [\n        {\n            \"id\": \"836e63a3-3867-475a-b7fa-6ccf568c6459\",\n            \"image\": null,\n            \"name\": \"Thong Nguyen\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"Tn@m.com\"\n        },\n        {\n            \"id\": \"0a8c5a69-5647-4614-81dd-2901c30bc84d\",\n            \"image\": null,\n            \"name\": \"T3@m.com\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"T3@m.com\"\n        },\n        {\n            \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n            \"image\": null,\n            \"name\": \"Thong\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"thong@mail.com\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 3\n}"
+										},
+										{
+											"name": "Already have referee role",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"userIds\": [\"836e63a3-3867-475a-b7fa-6ccf568c6459\"]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
+													"host": [
+														"{{CORE_URL}}"
+													],
+													"path": [
+														"groups",
+														"39",
+														"tournaments",
+														"4",
+														"referees"
+													]
+												}
+											},
+											"status": "Bad Request",
+											"code": 400,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "62"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"3e-U8qM99IaPLuwFXf8JcOwsnoGFX4\""
+												},
+												{
+													"key": "Date",
+													"value": "Sun, 30 Jun 2024 11:08:04 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Some users already have referee role\",\n    \"data\": null\n}"
+										}
+									]
+								},
+								{
+									"name": "Get all referees of tournament",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1OThlZGZmYy05OWRkLTQxNzYtYmVjOS04NmY4Yjk1ZTNhNDYiLCJlbWFpbCI6ImNoaWhpZW4yMDAyQGdtYWlsLmNvbSIsImlhdCI6MTcxNTA2NzE2NSwiZXhwIjoxNzE3NjU5MTY1fQ.y3lyiGj7KZZWM6vvdmlLQIqZ62yF5qbD6I4JAwO4miw",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"groups",
+												"39",
+												"tournaments",
+												"4",
+												"referees"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Get all referees of tournament",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
+													"host": [
+														"{{CORE_URL}}"
+													],
+													"path": [
+														"groups",
+														"39",
+														"tournaments",
+														"4",
+														"referees"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "506"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"1fa-8NTtMyH2TW4U1ryNhkJgQvxFwEs\""
+												},
+												{
+													"key": "Date",
+													"value": "Sun, 30 Jun 2024 11:05:42 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"data\": [\n        {\n            \"id\": \"836e63a3-3867-475a-b7fa-6ccf568c6459\",\n            \"image\": null,\n            \"name\": \"Thong Nguyen\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"Tn@m.com\"\n        },\n        {\n            \"id\": \"0a8c5a69-5647-4614-81dd-2901c30bc84d\",\n            \"image\": null,\n            \"name\": \"T3@m.com\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"T3@m.com\"\n        },\n        {\n            \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n            \"image\": null,\n            \"name\": \"Thong\",\n            \"gender\": \"male\",\n            \"dob\": null,\n            \"phoneNumber\": null,\n            \"elo\": null,\n            \"email\": \"thong@mail.com\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 3\n}"
 										}
 									]
 								}
@@ -4697,13 +5006,13 @@
 								"method": "POST",
 								"header": [],
 								"url": {
-									"raw": "{{CORE_URL}}/groups/39/tournaments/4/participants/finalize",
+									"raw": "{{CORE_URL}}/groups/36/tournaments/4/participants/finalize",
 									"host": [
 										"{{CORE_URL}}"
 									],
 									"path": [
 										"groups",
-										"39",
+										"36",
 										"tournaments",
 										"4",
 										"participants",
@@ -5011,77 +5320,6 @@
 										"39",
 										"tournaments",
 										"me"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get all referees of tournament",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1OThlZGZmYy05OWRkLTQxNzYtYmVjOS04NmY4Yjk1ZTNhNDYiLCJlbWFpbCI6ImNoaWhpZW4yMDAyQGdtYWlsLmNvbSIsImlhdCI6MTcxNTA2NzE2NSwiZXhwIjoxNzE3NjU5MTY1fQ.y3lyiGj7KZZWM6vvdmlLQIqZ62yF5qbD6I4JAwO4miw",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"39",
-										"tournaments",
-										"4",
-										"referees"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Add Referee",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE4MDMzMDIzLCJleHAiOjE3MTkzMjkwMjN9.AwMAosbq7IaCrW7tM9CD-ooyW3bGMb37D6AkzOqbT_4",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"email\": \"thong@mail.com\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{CORE_URL}}/groups/39/tournaments/4/referees",
-									"host": [
-										"{{CORE_URL}}"
-									],
-									"path": [
-										"groups",
-										"39",
-										"tournaments",
-										"4",
-										"referees"
 									]
 								}
 							},
@@ -12103,7 +12341,7 @@
 											"bearer": [
 												{
 													"key": "token",
-													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE4MDMzMDIzLCJleHAiOjE3MTkzMjkwMjN9.AwMAosbq7IaCrW7tM9CD-ooyW3bGMb37D6AkzOqbT_4",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
 													"type": "string"
 												}
 											]
@@ -12112,7 +12350,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"image\": \"qr.png\",\r\n  \"amount\": 100000,\r\n  \"unit\": \"VND\",\r\n  \"payment\": {\r\n        \"method\": \"bank\",\r\n        \"bank\": {\r\n            \"name\": \"Vietcombank\",\r\n            \"branch\": \"Hanoi\",\r\n            \"account\": \"123456789\",\r\n            \"owner\": \"NGUYEN QUOC HUY\"\r\n        }\r\n    }\r\n}",
+											"raw": "{\r\n  \"image\": \"qr.png\",\r\n  \"amount\": 100000,\r\n  \"unit\": \"VND\",\r\n  \"payment\": {\r\n        \"method\": \"bank\",\r\n        \"bank\": {\r\n            \"name\": \"Vietcombank\",\r\n            \"branch\": \"Hanoi\",\r\n            \"account\": \"123456789\",\r\n            \"owner\": \"NGUYEN QUOC HUY\"\r\n        }\r\n    },\r\n  \"reminderDate\": \"2024-06-23 14:54:42.468\", // ngày nhắc thanh toán\r\n  \"dueDate\": \"2024-06-30 14:54:42.468\" // ngày đến hạn thanh toán\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -12199,6 +12437,44 @@
 											"body": "{\n    \"id\": \"babfc904-f140-468d-9ebd-c37523cb3e81\",\n    \"image\": \"qr.png\",\n    \"amount\": 100000,\n    \"unit\": \"VND\",\n    \"payment\": \"{\\\"method\\\":\\\"bank\\\",\\\"bank\\\":{\\\"name\\\":\\\"Vietcombank\\\",\\\"branch\\\":\\\"Hanoi\\\",\\\"account\\\":\\\"123456789\\\",\\\"owner\\\":\\\"NGUYEN QUOC HUY\\\"}}\",\n    \"tournamentId\": 34,\n    \"groupId\": null,\n    \"group_tournamentsId\": null\n}"
 										}
 									]
+								},
+								{
+									"name": "Update payment info",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"image\": \"qr.png\",\r\n  \"amount\": 3300000,\r\n  \"unit\": \"VND\",\r\n  \"reminderDate\": \"2024-06-30 14:54:42.468\", // ngày nhắc thanh toán\r\n  \"dueDate\": \"2024-06-30 14:54:42.468\" // ngày đến hạn thanh toán\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{CORE_URL}}/tournaments/34/payment-info",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"tournaments",
+												"34",
+												"payment-info"
+											]
+										}
+									},
+									"response": []
 								},
 								{
 									"name": "Send request to user",
@@ -12414,7 +12690,7 @@
 											"bearer": [
 												{
 													"key": "token",
-													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE4MDMzMDIzLCJleHAiOjE3MTkzMjkwMjN9.AwMAosbq7IaCrW7tM9CD-ooyW3bGMb37D6AkzOqbT_4",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
 													"type": "string"
 												}
 											]
@@ -13720,6 +13996,200 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"id\": \"cdaa458b-d27a-40c6-82ca-227fcdc433fe\",\n    \"roundRobinGroups\": [\n        {\n            \"title\": \"Group A\",\n            \"rounds\": [\n                {\n                    \"title\": \"Round 1\",\n                    \"matches\": [\n                        {\n                            \"id\": \"34e54f3b-0e57-42c7-be7f-054abd43d468\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 1\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                                        \"image\": null,\n                                        \"name\": \"shin2\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"33360f12-345c-4064-ae05-7e577e9f2277\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"84f7b4ec-3c21-4183-8d68-1a123a0013fe\",\n                                        \"image\": null,\n                                        \"name\": \"shin8\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"7288d7ad-4561-4d17-99b8-ff0b6ed4dfe8\"\n                                }\n                            },\n                            \"refereeId\": null\n                        },\n                        {\n                            \"id\": \"e1301ae3-ac72-4a44-84f8-eda436126e53\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 2\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\n                                        \"image\": null,\n                                        \"name\": \"shin4\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"bde4b4f1-1890-456c-8714-09a219d755f7\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\n                                        \"image\": null,\n                                        \"name\": \"shin6\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"d48562c3-e43e-44d2-9a3d-281257cf2777\"\n                                }\n                            },\n                            \"refereeId\": null\n                        }\n                    ],\n                    \"id\": \"67579331-c4af-4718-8851-53070571db6b\"\n                },\n                {\n                    \"title\": \"Round 2\",\n                    \"matches\": [\n                        {\n                            \"id\": \"d7ee13e6-fe9d-4081-8eb5-d8b5580dcdc2\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 1\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\n                                        \"image\": null,\n                                        \"name\": \"shin6\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"d48562c3-e43e-44d2-9a3d-281257cf2777\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"84f7b4ec-3c21-4183-8d68-1a123a0013fe\",\n                                        \"image\": null,\n                                        \"name\": \"shin8\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"7288d7ad-4561-4d17-99b8-ff0b6ed4dfe8\"\n                                }\n                            },\n                            \"refereeId\": null\n                        },\n                        {\n                            \"id\": \"9d071846-7f37-479b-8234-2fa0965410dc\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 2\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                                        \"image\": null,\n                                        \"name\": \"shin2\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"33360f12-345c-4064-ae05-7e577e9f2277\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\n                                        \"image\": null,\n                                        \"name\": \"shin4\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"bde4b4f1-1890-456c-8714-09a219d755f7\"\n                                }\n                            },\n                            \"refereeId\": null\n                        }\n                    ],\n                    \"id\": \"64f6347f-fbfb-4a6c-90ea-3c6723cc7078\"\n                },\n                {\n                    \"title\": \"Round 3\",\n                    \"matches\": [\n                        {\n                            \"id\": \"0229f184-260e-4ee6-b749-b67ee95fbe95\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 1\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\n                                        \"image\": null,\n                                        \"name\": \"shin4\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"bde4b4f1-1890-456c-8714-09a219d755f7\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"84f7b4ec-3c21-4183-8d68-1a123a0013fe\",\n                                        \"image\": null,\n                                        \"name\": \"shin8\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"7288d7ad-4561-4d17-99b8-ff0b6ed4dfe8\"\n                                }\n                            },\n                            \"refereeId\": null\n                        },\n                        {\n                            \"id\": \"ff35a94b-24ef-4eac-84a0-5beb0db6fba3\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 2\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\n                                        \"image\": null,\n                                        \"name\": \"shin6\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"d48562c3-e43e-44d2-9a3d-281257cf2777\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                                        \"image\": null,\n                                        \"name\": \"shin2\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"33360f12-345c-4064-ae05-7e577e9f2277\"\n                                }\n                            },\n                            \"refereeId\": null\n                        }\n                    ],\n                    \"id\": \"ef3f5249-cac1-4bca-bf61-a399eb1cefd6\"\n                }\n            ],\n            \"id\": \"1c93bf8c-8326-4dec-93a7-996edb2b7eb0\",\n            \"numberOfProceeders\": 3,\n            \"isFinal\": false\n        },\n        {\n            \"title\": \"Group B\",\n            \"rounds\": [\n                {\n                    \"title\": \"Round 1\",\n                    \"matches\": [\n                        {\n                            \"id\": \"07e72947-6c23-4734-b63a-f62caf39be39\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 1\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"60288e3c-165c-4918-bbe9-ff1b84992d72\",\n                                        \"image\": null,\n                                        \"name\": \"shin3\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"171fc61b-d95c-483b-9756-05140a08aded\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\n                                        \"image\": null,\n                                        \"name\": \"shin9\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"b38079d9-e32b-413e-9536-2b8c38e577fb\"\n                                }\n                            },\n                            \"refereeId\": null\n                        },\n                        {\n                            \"id\": \"d8f68c3b-5b5f-4137-bab9-eb8211d7a2f9\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 2\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\n                                        \"image\": null,\n                                        \"name\": \"shin5\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"40602efd-c624-46c8-a7d6-179ba2555d67\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"a2c86b51-0d35-4f7f-afed-3257305d01d7\",\n                                        \"image\": null,\n                                        \"name\": \"shin7\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"2a077306-2baa-4c4e-82d2-dbeacdba127a\"\n                                }\n                            },\n                            \"refereeId\": null\n                        }\n                    ],\n                    \"id\": \"e0c1332c-6743-4fc4-b0ed-af37bd2b207d\"\n                },\n                {\n                    \"title\": \"Round 2\",\n                    \"matches\": [\n                        {\n                            \"id\": \"d491d433-8995-4ccf-a061-fb371f3255ac\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 1\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"a2c86b51-0d35-4f7f-afed-3257305d01d7\",\n                                        \"image\": null,\n                                        \"name\": \"shin7\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"2a077306-2baa-4c4e-82d2-dbeacdba127a\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\n                                        \"image\": null,\n                                        \"name\": \"shin9\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"b38079d9-e32b-413e-9536-2b8c38e577fb\"\n                                }\n                            },\n                            \"refereeId\": null\n                        },\n                        {\n                            \"id\": \"cc4c2c92-c7e4-42c0-a473-7d2bf20d908c\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 2\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"60288e3c-165c-4918-bbe9-ff1b84992d72\",\n                                        \"image\": null,\n                                        \"name\": \"shin3\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"171fc61b-d95c-483b-9756-05140a08aded\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\n                                        \"image\": null,\n                                        \"name\": \"shin5\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"40602efd-c624-46c8-a7d6-179ba2555d67\"\n                                }\n                            },\n                            \"refereeId\": null\n                        }\n                    ],\n                    \"id\": \"7bac5d4c-f99e-4b53-abf1-5e14b00a932e\"\n                },\n                {\n                    \"title\": \"Round 3\",\n                    \"matches\": [\n                        {\n                            \"id\": \"dae21858-0356-41f7-9ed8-f921e383ec0f\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 1\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\n                                        \"image\": null,\n                                        \"name\": \"shin5\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"40602efd-c624-46c8-a7d6-179ba2555d67\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\n                                        \"image\": null,\n                                        \"name\": \"shin9\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"b38079d9-e32b-413e-9536-2b8c38e577fb\"\n                                }\n                            },\n                            \"refereeId\": null\n                        },\n                        {\n                            \"id\": \"c601aa26-bb79-4045-b390-29669c6b1295\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 2\",\n                            \"matchStartDate\": null,\n                            \"duration\": 30,\n                            \"status\": \"scheduled\",\n                            \"teams\": {\n                                \"team1\": {\n                                    \"user1\": {\n                                        \"id\": \"a2c86b51-0d35-4f7f-afed-3257305d01d7\",\n                                        \"image\": null,\n                                        \"name\": \"shin7\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"2a077306-2baa-4c4e-82d2-dbeacdba127a\"\n                                },\n                                \"team2\": {\n                                    \"user1\": {\n                                        \"id\": \"60288e3c-165c-4918-bbe9-ff1b84992d72\",\n                                        \"image\": null,\n                                        \"name\": \"shin3\"\n                                    },\n                                    \"user2\": null,\n                                    \"id\": \"171fc61b-d95c-483b-9756-05140a08aded\"\n                                }\n                            },\n                            \"refereeId\": null\n                        }\n                    ],\n                    \"id\": \"839fe6b6-669a-46d3-97f2-d70675125654\"\n                }\n            ],\n            \"id\": \"7b633037-21e3-4f55-8be1-ff8690e6649c\",\n            \"numberOfProceeders\": 3,\n            \"isFinal\": false\n        }\n    ],\n    \"knockoutGroup\": {\n        \"id\": \"6c095916-5e52-4e58-9a6f-35f701a8ad14\",\n        \"title\": \"Knockout Group\",\n        \"isFinal\": true,\n        \"rounds\": [\n            {\n                \"title\": \"Round 1\",\n                \"id\": \"8814405e-a09d-4ed2-a48f-0b566a7a5bdd\",\n                \"matches\": [\n                    {\n                        \"id\": \"f91f3460-e2a7-41f8-9673-281e3eecee7f\",\n                        \"nextMatchId\": \"f1cac76a-65e7-4485-8e15-a12a08db3760\",\n                        \"title\": \"Match 1\",\n                        \"matchStartDate\": null,\n                        \"duration\": 30,\n                        \"status\": \"scheduled\",\n                        \"teams\": {\n                            \"team1\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 1 Of Group A\"\n                            },\n                            \"team2\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 3 Of Group B\"\n                            }\n                        },\n                        \"groupFixtureTeamId1\": \"1c93bf8c-8326-4dec-93a7-996edb2b7eb0\",\n                        \"groupFixtureTeamId2\": \"7b633037-21e3-4f55-8be1-ff8690e6649c\",\n                        \"rankGroupTeam1\": 1,\n                        \"rankGroupTeam2\": 3,\n                        \"refereeId\": null\n                    },\n                    {\n                        \"id\": \"15330254-dde6-4c34-b9e2-41c2ef39b437\",\n                        \"nextMatchId\": \"f1cac76a-65e7-4485-8e15-a12a08db3760\",\n                        \"title\": \"Match 2\",\n                        \"matchStartDate\": null,\n                        \"duration\": 30,\n                        \"status\": \"skipped\",\n                        \"teams\": {\n                            \"team1\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 2 Of Group A\"\n                            },\n                            \"team2\": null\n                        },\n                        \"groupFixtureTeamId1\": \"1c93bf8c-8326-4dec-93a7-996edb2b7eb0\",\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": 2,\n                        \"rankGroupTeam2\": null,\n                        \"refereeId\": null\n                    },\n                    {\n                        \"id\": \"a3055f8b-ba55-4b5c-8b01-027b149c60db\",\n                        \"nextMatchId\": \"0bc29c80-43c5-4bef-b8a0-9a9f5d5cb7e1\",\n                        \"title\": \"Match 3\",\n                        \"matchStartDate\": null,\n                        \"duration\": 30,\n                        \"status\": \"scheduled\",\n                        \"teams\": {\n                            \"team1\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 1 Of Group B\"\n                            },\n                            \"team2\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 3 Of Group A\"\n                            }\n                        },\n                        \"groupFixtureTeamId1\": \"7b633037-21e3-4f55-8be1-ff8690e6649c\",\n                        \"groupFixtureTeamId2\": \"1c93bf8c-8326-4dec-93a7-996edb2b7eb0\",\n                        \"rankGroupTeam1\": 1,\n                        \"rankGroupTeam2\": 3,\n                        \"refereeId\": null\n                    },\n                    {\n                        \"id\": \"986a935a-9d1e-446a-8448-ca67b960456c\",\n                        \"nextMatchId\": \"0bc29c80-43c5-4bef-b8a0-9a9f5d5cb7e1\",\n                        \"title\": \"Match 4\",\n                        \"matchStartDate\": null,\n                        \"duration\": 30,\n                        \"status\": \"skipped\",\n                        \"teams\": {\n                            \"team1\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 2 Of Group B\"\n                            },\n                            \"team2\": null\n                        },\n                        \"groupFixtureTeamId1\": \"7b633037-21e3-4f55-8be1-ff8690e6649c\",\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": 2,\n                        \"rankGroupTeam2\": null,\n                        \"refereeId\": null\n                    }\n                ]\n            },\n            {\n                \"title\": \"Round 2\",\n                \"id\": \"5b23e156-c3e7-421a-9065-047cd7adf1f8\",\n                \"matches\": [\n                    {\n                        \"id\": \"f1cac76a-65e7-4485-8e15-a12a08db3760\",\n                        \"nextMatchId\": \"d0a9c2bb-9075-487d-8996-31318cd7e5a2\",\n                        \"title\": \"Match 1\",\n                        \"matchStartDate\": null,\n                        \"duration\": 30,\n                        \"status\": \"no_show\",\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 2 Of Group A\"\n                            }\n                        },\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": \"1c93bf8c-8326-4dec-93a7-996edb2b7eb0\",\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": 2,\n                        \"refereeId\": null\n                    },\n                    {\n                        \"id\": \"0bc29c80-43c5-4bef-b8a0-9a9f5d5cb7e1\",\n                        \"nextMatchId\": \"d0a9c2bb-9075-487d-8996-31318cd7e5a2\",\n                        \"title\": \"Match 2\",\n                        \"matchStartDate\": null,\n                        \"duration\": 30,\n                        \"status\": \"no_show\",\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": {\n                                \"user1\": null,\n                                \"user2\": null,\n                                \"name\": \"Winner 2 Of Group B\"\n                            }\n                        },\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": \"7b633037-21e3-4f55-8be1-ff8690e6649c\",\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": 2,\n                        \"refereeId\": null\n                    }\n                ]\n            },\n            {\n                \"title\": \"Round 3\",\n                \"id\": \"8ae9564b-78d6-4566-8212-1c27f71a3ac7\",\n                \"matches\": [\n                    {\n                        \"id\": \"d0a9c2bb-9075-487d-8996-31318cd7e5a2\",\n                        \"nextMatchId\": null,\n                        \"title\": \"Match 1\",\n                        \"matchStartDate\": null,\n                        \"duration\": 30,\n                        \"status\": \"no_show\",\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        },\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"refereeId\": null\n                    }\n                ]\n            }\n        ]\n    },\n    \"status\": \"new\",\n    \"participantType\": \"single\",\n    \"format\": \"group_playoff\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Save knockout fixture",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"f4580c22-55c2-4bb8-ac5d-dcd8e2070fe5\",\r\n    \"knockoutGroup\": {\r\n        \"id\": \"64be2f8e-1985-4220-a62c-41dab0cb0bb4\",\r\n        \"title\": \"Knockout Group\",\r\n        \"isFinal\": true,\r\n        \"rounds\": [\r\n            {\r\n                \"title\": \"Round 1\",\r\n                \"id\": \"9dd0d9bc-3525-41fa-b1d4-161e477679db\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"aeed684d-db0c-48f0-b6c6-2a79557853c4\",\r\n                        \"nextMatchId\": \"38bc35b6-de70-41b6-bd42-3829cc58ad5e\",\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"scheduled\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"ee6b7dfb-6722-4d81-b5ce-a323f84cc00a\",\r\n                        \"nextMatchId\": \"38bc35b6-de70-41b6-bd42-3829cc58ad5e\",\r\n                        \"title\": \"Match 2\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"skipped\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"5b155d85-d2eb-467f-8dc4-b4050b35ed69\",\r\n                        \"nextMatchId\": \"aab1f032-5c59-4b8a-a2eb-cfcadc9e2fd2\",\r\n                        \"title\": \"Match 3\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"skipped\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"4807435c-830c-43ff-9a52-9a20bb80e4e2\",\r\n                        \"nextMatchId\": \"aab1f032-5c59-4b8a-a2eb-cfcadc9e2fd2\",\r\n                        \"title\": \"Match 4\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"skipped\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"title\": \"Round 2\",\r\n                \"id\": \"456302ee-22c1-46dd-928d-d9fb0bd87850\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"38bc35b6-de70-41b6-bd42-3829cc58ad5e\",\r\n                        \"nextMatchId\": \"527e0ef6-ae21-4b5f-b01a-afc7d3a59e04\",\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"no_show\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"aab1f032-5c59-4b8a-a2eb-cfcadc9e2fd2\",\r\n                        \"nextMatchId\": \"527e0ef6-ae21-4b5f-b01a-afc7d3a59e04\",\r\n                        \"title\": \"Match 2\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"scheduled\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"title\": \"Round 3\",\r\n                \"id\": \"cea6dac7-ab9c-4d7f-8aba-f259c19fd343\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"527e0ef6-ae21-4b5f-b01a-afc7d3a59e04\",\r\n                        \"nextMatchId\": null,\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"no_show\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            }\r\n        ]\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/tournaments/15/knockout-fixtures/save",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"tournaments",
+								"15",
+								"knockout-fixtures",
+								"save"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Save knockout fixture",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"f4580c22-55c2-4bb8-ac5d-dcd8e2070fe5\",\r\n    \"knockoutGroup\": {\r\n        \"id\": \"64be2f8e-1985-4220-a62c-41dab0cb0bb4\",\r\n        \"title\": \"Knockout Group\",\r\n        \"isFinal\": true,\r\n        \"rounds\": [\r\n            {\r\n                \"title\": \"Round 1\",\r\n                \"id\": \"9dd0d9bc-3525-41fa-b1d4-161e477679db\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"aeed684d-db0c-48f0-b6c6-2a79557853c4\",\r\n                        \"nextMatchId\": \"38bc35b6-de70-41b6-bd42-3829cc58ad5e\",\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"scheduled\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"ee6b7dfb-6722-4d81-b5ce-a323f84cc00a\",\r\n                        \"nextMatchId\": \"38bc35b6-de70-41b6-bd42-3829cc58ad5e\",\r\n                        \"title\": \"Match 2\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"skipped\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"5b155d85-d2eb-467f-8dc4-b4050b35ed69\",\r\n                        \"nextMatchId\": \"aab1f032-5c59-4b8a-a2eb-cfcadc9e2fd2\",\r\n                        \"title\": \"Match 3\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"skipped\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"4807435c-830c-43ff-9a52-9a20bb80e4e2\",\r\n                        \"nextMatchId\": \"aab1f032-5c59-4b8a-a2eb-cfcadc9e2fd2\",\r\n                        \"title\": \"Match 4\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"skipped\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"title\": \"Round 2\",\r\n                \"id\": \"456302ee-22c1-46dd-928d-d9fb0bd87850\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"38bc35b6-de70-41b6-bd42-3829cc58ad5e\",\r\n                        \"nextMatchId\": \"527e0ef6-ae21-4b5f-b01a-afc7d3a59e04\",\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"no_show\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    },\r\n                    {\r\n                        \"id\": \"aab1f032-5c59-4b8a-a2eb-cfcadc9e2fd2\",\r\n                        \"nextMatchId\": \"527e0ef6-ae21-4b5f-b01a-afc7d3a59e04\",\r\n                        \"title\": \"Match 2\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"scheduled\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"title\": \"Round 3\",\r\n                \"id\": \"cea6dac7-ab9c-4d7f-8aba-f259c19fd343\",\r\n                \"matches\": [\r\n                    {\r\n                        \"id\": \"527e0ef6-ae21-4b5f-b01a-afc7d3a59e04\",\r\n                        \"nextMatchId\": null,\r\n                        \"title\": \"Match 1\",\r\n                        \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\r\n                        \"duration\": 30,\r\n                        \"status\": \"no_show\",\r\n                        \"teams\": {\r\n                            \"team1\": null,\r\n                            \"team2\": null\r\n                        },\r\n                        \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\r\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\r\n                    }\r\n                ]\r\n            }\r\n        ]\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/tournaments/15/knockout-fixtures/save",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"tournaments",
+										"15",
+										"knockout-fixtures",
+										"save"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "6875"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1adb-NdrPaAp46WPEZpuS7m6kpzhvc1w\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 30 Jun 2024 08:29:02 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"64be2f8e-1985-4220-a62c-41dab0cb0bb4\",\n    \"fixtureId\": \"f4580c22-55c2-4bb8-ac5d-dcd8e2070fe5\",\n    \"groupWinnerId\": [],\n    \"isFinal\": true,\n    \"createdAt\": \"2024-06-30T08:28:59.391Z\",\n    \"updatedAt\": \"2024-06-30T08:28:59.391Z\",\n    \"numberOfProceeders\": 1,\n    \"status\": \"scheduled\",\n    \"title\": \"Knockout Group\",\n    \"rounds\": [\n        {\n            \"id\": \"9dd0d9bc-3525-41fa-b1d4-161e477679db\",\n            \"groupFixtureId\": \"64be2f8e-1985-4220-a62c-41dab0cb0bb4\",\n            \"elo\": 100,\n            \"createdAt\": \"2024-06-30T08:28:59.391Z\",\n            \"updatedAt\": \"2024-06-30T08:28:59.391Z\",\n            \"title\": \"Round 1\",\n            \"matches\": [\n                {\n                    \"id\": \"aeed684d-db0c-48f0-b6c6-2a79557853c4\",\n                    \"roundId\": \"9dd0d9bc-3525-41fa-b1d4-161e477679db\",\n                    \"groupFixtureTeamId1\": null,\n                    \"groupFixtureTeamId2\": null,\n                    \"rankGroupTeam1\": null,\n                    \"rankGroupTeam2\": null,\n                    \"teamId1\": null,\n                    \"teamId2\": null,\n                    \"teamWinnerId\": null,\n                    \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\n                    \"matchEndDate\": null,\n                    \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                    \"status\": \"scheduled\",\n                    \"duration\": 30,\n                    \"breakDuration\": 10,\n                    \"createdAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"updatedAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"nextMatchId\": \"38bc35b6-de70-41b6-bd42-3829cc58ad5e\",\n                    \"title\": \"Match 1\",\n                    \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                    \"team1MatchScore\": 0,\n                    \"team2MatchScore\": 0,\n                    \"referee\": {\n                        \"id\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                        \"image\": null,\n                        \"name\": \"MTri\",\n                        \"dob\": \"2002-10-23T19:18:06.000Z\",\n                        \"phoneNumber\": \"0344043493\",\n                        \"isReferee\": false\n                    },\n                    \"teams\": {\n                        \"team1\": null,\n                        \"team2\": null\n                    }\n                },\n                {\n                    \"id\": \"ee6b7dfb-6722-4d81-b5ce-a323f84cc00a\",\n                    \"roundId\": \"9dd0d9bc-3525-41fa-b1d4-161e477679db\",\n                    \"groupFixtureTeamId1\": null,\n                    \"groupFixtureTeamId2\": null,\n                    \"rankGroupTeam1\": null,\n                    \"rankGroupTeam2\": null,\n                    \"teamId1\": null,\n                    \"teamId2\": null,\n                    \"teamWinnerId\": null,\n                    \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\n                    \"matchEndDate\": null,\n                    \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                    \"status\": \"skipped\",\n                    \"duration\": 30,\n                    \"breakDuration\": 10,\n                    \"createdAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"updatedAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"nextMatchId\": \"38bc35b6-de70-41b6-bd42-3829cc58ad5e\",\n                    \"title\": \"Match 2\",\n                    \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                    \"team1MatchScore\": 0,\n                    \"team2MatchScore\": 0,\n                    \"referee\": {\n                        \"id\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                        \"image\": null,\n                        \"name\": \"MTri\",\n                        \"dob\": \"2002-10-23T19:18:06.000Z\",\n                        \"phoneNumber\": \"0344043493\",\n                        \"isReferee\": false\n                    },\n                    \"teams\": {\n                        \"team1\": null,\n                        \"team2\": null\n                    }\n                },\n                {\n                    \"id\": \"5b155d85-d2eb-467f-8dc4-b4050b35ed69\",\n                    \"roundId\": \"9dd0d9bc-3525-41fa-b1d4-161e477679db\",\n                    \"groupFixtureTeamId1\": null,\n                    \"groupFixtureTeamId2\": null,\n                    \"rankGroupTeam1\": null,\n                    \"rankGroupTeam2\": null,\n                    \"teamId1\": null,\n                    \"teamId2\": null,\n                    \"teamWinnerId\": null,\n                    \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\n                    \"matchEndDate\": null,\n                    \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                    \"status\": \"skipped\",\n                    \"duration\": 30,\n                    \"breakDuration\": 10,\n                    \"createdAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"updatedAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"nextMatchId\": \"aab1f032-5c59-4b8a-a2eb-cfcadc9e2fd2\",\n                    \"title\": \"Match 3\",\n                    \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                    \"team1MatchScore\": 0,\n                    \"team2MatchScore\": 0,\n                    \"referee\": {\n                        \"id\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                        \"image\": null,\n                        \"name\": \"MTri\",\n                        \"dob\": \"2002-10-23T19:18:06.000Z\",\n                        \"phoneNumber\": \"0344043493\",\n                        \"isReferee\": false\n                    },\n                    \"teams\": {\n                        \"team1\": null,\n                        \"team2\": null\n                    }\n                },\n                {\n                    \"id\": \"4807435c-830c-43ff-9a52-9a20bb80e4e2\",\n                    \"roundId\": \"9dd0d9bc-3525-41fa-b1d4-161e477679db\",\n                    \"groupFixtureTeamId1\": null,\n                    \"groupFixtureTeamId2\": null,\n                    \"rankGroupTeam1\": null,\n                    \"rankGroupTeam2\": null,\n                    \"teamId1\": null,\n                    \"teamId2\": null,\n                    \"teamWinnerId\": null,\n                    \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\n                    \"matchEndDate\": null,\n                    \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                    \"status\": \"skipped\",\n                    \"duration\": 30,\n                    \"breakDuration\": 10,\n                    \"createdAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"updatedAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"nextMatchId\": \"aab1f032-5c59-4b8a-a2eb-cfcadc9e2fd2\",\n                    \"title\": \"Match 4\",\n                    \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                    \"team1MatchScore\": 0,\n                    \"team2MatchScore\": 0,\n                    \"referee\": {\n                        \"id\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                        \"image\": null,\n                        \"name\": \"MTri\",\n                        \"dob\": \"2002-10-23T19:18:06.000Z\",\n                        \"phoneNumber\": \"0344043493\",\n                        \"isReferee\": false\n                    },\n                    \"teams\": {\n                        \"team1\": null,\n                        \"team2\": null\n                    }\n                }\n            ]\n        },\n        {\n            \"id\": \"456302ee-22c1-46dd-928d-d9fb0bd87850\",\n            \"groupFixtureId\": \"64be2f8e-1985-4220-a62c-41dab0cb0bb4\",\n            \"elo\": 100,\n            \"createdAt\": \"2024-06-30T08:28:59.391Z\",\n            \"updatedAt\": \"2024-06-30T08:28:59.391Z\",\n            \"title\": \"Round 2\",\n            \"matches\": [\n                {\n                    \"id\": \"38bc35b6-de70-41b6-bd42-3829cc58ad5e\",\n                    \"roundId\": \"456302ee-22c1-46dd-928d-d9fb0bd87850\",\n                    \"groupFixtureTeamId1\": null,\n                    \"groupFixtureTeamId2\": null,\n                    \"rankGroupTeam1\": null,\n                    \"rankGroupTeam2\": null,\n                    \"teamId1\": null,\n                    \"teamId2\": null,\n                    \"teamWinnerId\": null,\n                    \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\n                    \"matchEndDate\": null,\n                    \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                    \"status\": \"no_show\",\n                    \"duration\": 30,\n                    \"breakDuration\": 10,\n                    \"createdAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"updatedAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"nextMatchId\": \"527e0ef6-ae21-4b5f-b01a-afc7d3a59e04\",\n                    \"title\": \"Match 1\",\n                    \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                    \"team1MatchScore\": 0,\n                    \"team2MatchScore\": 0,\n                    \"referee\": {\n                        \"id\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                        \"image\": null,\n                        \"name\": \"MTri\",\n                        \"dob\": \"2002-10-23T19:18:06.000Z\",\n                        \"phoneNumber\": \"0344043493\",\n                        \"isReferee\": false\n                    },\n                    \"teams\": {\n                        \"team1\": null,\n                        \"team2\": null\n                    }\n                },\n                {\n                    \"id\": \"aab1f032-5c59-4b8a-a2eb-cfcadc9e2fd2\",\n                    \"roundId\": \"456302ee-22c1-46dd-928d-d9fb0bd87850\",\n                    \"groupFixtureTeamId1\": null,\n                    \"groupFixtureTeamId2\": null,\n                    \"rankGroupTeam1\": null,\n                    \"rankGroupTeam2\": null,\n                    \"teamId1\": null,\n                    \"teamId2\": null,\n                    \"teamWinnerId\": null,\n                    \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\n                    \"matchEndDate\": null,\n                    \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                    \"status\": \"scheduled\",\n                    \"duration\": 30,\n                    \"breakDuration\": 10,\n                    \"createdAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"updatedAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"nextMatchId\": \"527e0ef6-ae21-4b5f-b01a-afc7d3a59e04\",\n                    \"title\": \"Match 2\",\n                    \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                    \"team1MatchScore\": 0,\n                    \"team2MatchScore\": 0,\n                    \"referee\": {\n                        \"id\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                        \"image\": null,\n                        \"name\": \"MTri\",\n                        \"dob\": \"2002-10-23T19:18:06.000Z\",\n                        \"phoneNumber\": \"0344043493\",\n                        \"isReferee\": false\n                    },\n                    \"teams\": {\n                        \"team1\": null,\n                        \"team2\": null\n                    }\n                }\n            ]\n        },\n        {\n            \"id\": \"cea6dac7-ab9c-4d7f-8aba-f259c19fd343\",\n            \"groupFixtureId\": \"64be2f8e-1985-4220-a62c-41dab0cb0bb4\",\n            \"elo\": 100,\n            \"createdAt\": \"2024-06-30T08:28:59.391Z\",\n            \"updatedAt\": \"2024-06-30T08:28:59.391Z\",\n            \"title\": \"Round 3\",\n            \"matches\": [\n                {\n                    \"id\": \"527e0ef6-ae21-4b5f-b01a-afc7d3a59e04\",\n                    \"roundId\": \"cea6dac7-ab9c-4d7f-8aba-f259c19fd343\",\n                    \"groupFixtureTeamId1\": null,\n                    \"groupFixtureTeamId2\": null,\n                    \"rankGroupTeam1\": null,\n                    \"rankGroupTeam2\": null,\n                    \"teamId1\": null,\n                    \"teamId2\": null,\n                    \"teamWinnerId\": null,\n                    \"matchStartDate\": \"2024-07-03T07:55:01.638Z\",\n                    \"matchEndDate\": null,\n                    \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\n                    \"status\": \"no_show\",\n                    \"duration\": 30,\n                    \"breakDuration\": 10,\n                    \"createdAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"updatedAt\": \"2024-06-30T08:28:59.391Z\",\n                    \"nextMatchId\": null,\n                    \"title\": \"Match 1\",\n                    \"refereeId\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                    \"team1MatchScore\": 0,\n                    \"team2MatchScore\": 0,\n                    \"referee\": {\n                        \"id\": \"453f4d27-0778-4b3d-8dd5-321514c9cdbe\",\n                        \"image\": null,\n                        \"name\": \"MTri\",\n                        \"dob\": \"2002-10-23T19:18:06.000Z\",\n                        \"phoneNumber\": \"0344043493\",\n                        \"isReferee\": false\n                    },\n                    \"teams\": {\n                        \"team1\": null,\n                        \"team2\": null\n                    }\n                }\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Generate knockout fixture",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"numberOfProceeders\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/tournaments/3/knockout-fixtures/generate",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"tournaments",
+								"3",
+								"knockout-fixtures",
+								"generate"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Generate knockout fixture",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"numberOfProceeders\": 5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/tournaments/15/knockout-fixtures/generate",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"tournaments",
+										"15",
+										"knockout-fixtures",
+										"generate"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2470"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"9a6-Q09ZWPVt0hfuzbc8M5iYSJbwgDw\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 30 Jun 2024 08:30:36 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"f4580c22-55c2-4bb8-ac5d-dcd8e2070fe5\",\n    \"knockoutGroup\": {\n        \"id\": \"63a7f543-f517-4ca3-ade1-413003fb47b4\",\n        \"title\": \"Knockout Group\",\n        \"isFinal\": true,\n        \"rounds\": [\n            {\n                \"title\": \"Round 1\",\n                \"id\": \"1ae71960-d005-49a5-be44-1f2a61ee55f9\",\n                \"matches\": [\n                    {\n                        \"id\": \"519702d9-2840-430d-9a1a-d5a209013e8f\",\n                        \"nextMatchId\": \"502f0315-b48c-406c-95d4-cdfff2a57aef\",\n                        \"title\": \"Match 1\",\n                        \"matchStartDate\": \"2024-07-03T08:30:36.376Z\",\n                        \"duration\": 30,\n                        \"status\": \"scheduled\",\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        },\n                        \"refereeId\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\n                    },\n                    {\n                        \"id\": \"476d0652-5d99-41b0-b3ea-9f54a6e02eb5\",\n                        \"nextMatchId\": \"502f0315-b48c-406c-95d4-cdfff2a57aef\",\n                        \"title\": \"Match 2\",\n                        \"matchStartDate\": \"2024-07-03T08:30:36.376Z\",\n                        \"duration\": 30,\n                        \"status\": \"skipped\",\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        },\n                        \"refereeId\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\n                    },\n                    {\n                        \"id\": \"332edc58-98f7-4749-93f6-5e84c462b148\",\n                        \"nextMatchId\": \"251db5b8-b7a0-4b05-9486-a846dc48c78c\",\n                        \"title\": \"Match 3\",\n                        \"matchStartDate\": \"2024-07-03T08:30:36.376Z\",\n                        \"duration\": 30,\n                        \"status\": \"skipped\",\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        },\n                        \"refereeId\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\n                    },\n                    {\n                        \"id\": \"c896431f-b3bd-48c6-b124-3cac87a16069\",\n                        \"nextMatchId\": \"251db5b8-b7a0-4b05-9486-a846dc48c78c\",\n                        \"title\": \"Match 4\",\n                        \"matchStartDate\": \"2024-07-03T08:30:36.376Z\",\n                        \"duration\": 30,\n                        \"status\": \"skipped\",\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        },\n                        \"refereeId\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\n                    }\n                ]\n            },\n            {\n                \"title\": \"Round 2\",\n                \"id\": \"cbc58ea8-83b6-45a6-8f07-d2ed06de9c94\",\n                \"matches\": [\n                    {\n                        \"id\": \"502f0315-b48c-406c-95d4-cdfff2a57aef\",\n                        \"nextMatchId\": \"1c21df35-32d8-4aa8-b939-21a90e66e554\",\n                        \"title\": \"Match 1\",\n                        \"matchStartDate\": \"2024-07-03T08:30:36.376Z\",\n                        \"duration\": 30,\n                        \"status\": \"no_show\",\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        },\n                        \"refereeId\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\n                    },\n                    {\n                        \"id\": \"251db5b8-b7a0-4b05-9486-a846dc48c78c\",\n                        \"nextMatchId\": \"1c21df35-32d8-4aa8-b939-21a90e66e554\",\n                        \"title\": \"Match 2\",\n                        \"matchStartDate\": \"2024-07-03T08:30:36.376Z\",\n                        \"duration\": 30,\n                        \"status\": \"scheduled\",\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        },\n                        \"refereeId\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\n                    }\n                ]\n            },\n            {\n                \"title\": \"Round 3\",\n                \"id\": \"a7a8cf1a-369a-43dd-9821-39f55cfb4927\",\n                \"matches\": [\n                    {\n                        \"id\": \"1c21df35-32d8-4aa8-b939-21a90e66e554\",\n                        \"nextMatchId\": null,\n                        \"title\": \"Match 1\",\n                        \"matchStartDate\": \"2024-07-03T08:30:36.376Z\",\n                        \"duration\": 30,\n                        \"status\": \"no_show\",\n                        \"teams\": {\n                            \"team1\": null,\n                            \"team2\": null\n                        },\n                        \"refereeId\": null,\n                        \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\"\n                    }\n                ]\n            }\n        ]\n    }\n}"
 						}
 					]
 				},

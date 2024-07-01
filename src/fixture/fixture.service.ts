@@ -103,6 +103,73 @@ export class FixtureService {
     }
   }
 
+  async removeByGroupTournamentIdIdempontent(tournamentId: number) {
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        groupTournamentId: tournamentId,
+      },
+      select: {
+        groupFixtures: true,
+      },
+    });
+    if (fixture) {
+      for (const groupFixture of fixture.groupFixtures) {
+        await this.prismaService.teams.updateMany({
+          where: {
+            groupFixtureId: groupFixture.id,
+          },
+          data: {
+            groupFixtureId: null,
+          },
+        });
+      }
+
+      await this.prismaService.fixtures.deleteMany({
+        where: {
+          groupTournamentId: tournamentId,
+        },
+      });
+    }
+  }
+
+  async removeKnockoutGroupFixtureByTournamentIdIdempontent(
+    tournamentId: number,
+  ) {
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        tournamentId: tournamentId,
+      },
+      select: {
+        groupFixtures: {
+          where: {
+            isFinal: true,
+          },
+        },
+        id: true,
+      },
+    });
+    if (fixture) {
+      for (const groupFixture of fixture.groupFixtures) {
+        await this.prismaService.teams.updateMany({
+          where: {
+            groupFixtureId: groupFixture.id,
+          },
+          data: {
+            groupFixtureId: null,
+          },
+        });
+      }
+      if (fixture.groupFixtures.length > 0) {
+        await this.prismaService.group_fixtures.deleteMany({
+          where: {
+            fixtureId: fixture.id,
+            isFinal: true,
+          },
+        });
+      }
+    }
+  }
+
   async getByTournamentId(tournamentId: number, userId: string) {
     const tournament = await this.prismaService.tournaments.findUnique({
       where: {
@@ -255,45 +322,49 @@ export class FixtureService {
         },
       })
     ).map((followMatch) => followMatch.matchId);
-    const groups = groupFixtures.map((groupFixture) => {
-      const rounds = groupFixture.rounds.map((round) => {
-        const matches = round.matches.map((match) => {
-          const { team1, team2, groupFixture1, groupFixture2, ...others } =
-            match;
-          let team1R = null,
-            team2R = null;
-          if (
-            team1 === null &&
-            !match.rankGroupTeam1 != null &&
-            groupFixture1 != null
-          ) {
-            team1R = {
-              user1: null,
-              user2: null,
-              name: `Winner ${match.rankGroupTeam1} of ${groupFixture1.title}`,
+    let groups = null;
+    if (groupFixtures.length > 0) {
+      groups = groupFixtures.map((groupFixture) => {
+        const rounds = groupFixture.rounds.map((round) => {
+          const matches = round.matches.map((match) => {
+            const { team1, team2, groupFixture1, groupFixture2, ...others } =
+              match;
+            let team1R = null,
+              team2R = null;
+            if (
+              team1 === null &&
+              !match.rankGroupTeam1 != null &&
+              groupFixture1 != null
+            ) {
+              team1R = {
+                user1: null,
+                user2: null,
+                name: `Winner ${match.rankGroupTeam1} of ${groupFixture1.title}`,
+              };
+            }
+            if (
+              team2 === null &&
+              match.rankGroupTeam2 != null &&
+              groupFixture2 != null
+            ) {
+              team2R = {
+                user1: null,
+                user2: null,
+                name: `Winner ${match.rankGroupTeam2} of ${groupFixture2.title}`,
+              };
+            }
+            return {
+              ...others,
+              isFollowed: followMatches.includes(others.id),
+              teams: { team1: team1 || team1R, team2: team2 || team2R },
             };
-          }
-          if (
-            team2 === null &&
-            match.rankGroupTeam2 != null &&
-            groupFixture2 != null
-          ) {
-            team2R = {
-              user1: null,
-              user2: null,
-              name: `Winner ${match.rankGroupTeam2} of ${groupFixture2.title}`,
-            };
-          }
-          return {
-            ...others,
-            isFollowed: followMatches.includes(others.id),
-            teams: { team1: team1 || team1R, team2: team2 || team2R },
-          };
+          });
+          return { ...round, matches: matches };
         });
-        return { ...round, matches: matches };
+        return { ...groupFixture, rounds: rounds };
       });
-      return { ...groupFixture, rounds: rounds };
-    });
+    }
+
     if (tournament.format === TournamentFormat.round_robin) {
       return {
         ...others,
@@ -310,8 +381,12 @@ export class FixtureService {
         isFollowed: followMatches.includes(others.id),
       };
     } else if (tournament.format === TournamentFormat.group_playoff) {
-      groups[0].rounds.reverse();
-      const knockoutGroup = groups[0];
+      let knockoutGroup = null;
+      if (groups) {
+        groups[0].rounds.reverse();
+        knockoutGroup = groups[0];
+      }
+
       const fixtureGroups = [];
       const roundRobinGroups = (
         await this.prismaService.group_fixtures.findMany({

@@ -31,6 +31,7 @@ import { FormatTournamentService } from 'src/services/format_tournament/format_t
 import {
   CreateFixtureDto,
   GenerateFixtureDto,
+  GenerateFixtureKnockoutDto,
 } from 'src/fixture/dto/create-fixture.dto';
 import { randomUUID } from 'crypto';
 import { CreateFixtureGroupPlayoffDto } from 'src/fixture/dto/create-fixture-groupplayoff.dto';
@@ -49,7 +50,8 @@ import {
   UpdateTournamentFundDto,
 } from './dto/create-fund.dto';
 import { PageOptionsTournamentFundDto } from './dto/page-options-tournament-fund.dto';
-import { KafkaJSOffsetOutOfRange } from '@nestjs/microservices/external/kafka.interface';
+import { UpdatePaymentInfoDto } from './dto/update-payment-info.dto';
+import { CreateFixturePublishKnockoutDto } from 'src/fixture/dto/create-fixture-save-publish.dto';
 
 @Injectable()
 export class TournamentService {
@@ -3720,13 +3722,342 @@ export class TournamentService {
         return {
           id: randomUUID(),
           roundRobinGroups: groups,
-          knockoutGroup,
+          knockoutGroup: null,
           status: 'new',
           participantType: tournament.participantType,
           format: 'group_playoff',
         };
       }
     } catch (error) {}
+  }
+
+  async generateFixtureKnockout(id: number, dto: GenerateFixtureKnockoutDto) {
+    const tournament = await this.prismaService.tournaments.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        tournamentId: id,
+      },
+    });
+    try {
+      const rounds = [];
+
+      const tables = this.formatTournamentService.generateTables(
+        'knockout',
+        1,
+        dto.numberOfProceeders,
+      );
+
+      for (let i = 0; i < tables.table1.length; i++) {
+        const rawMatches = [];
+        let status = MatchStatus.scheduled.toString();
+        for (let j = 0; j < tables.table1[i].length; j++) {
+          let id = randomUUID();
+          let nextMatchId = randomUUID();
+          if (i === 0) {
+            if (j % 2 !== 0) {
+              nextMatchId = rawMatches[j - 1].nextMatchId;
+            }
+          } else if (i === tables.table1.length - 1) {
+            id = rounds[i - 1].matches[j * 2].nextMatchId;
+            nextMatchId = null;
+          } else {
+            if (j % 2 !== 0) {
+              nextMatchId = rawMatches[j - 1].nextMatchId;
+            }
+            id = rounds[i - 1].matches[j * 2].nextMatchId;
+          }
+
+          let team1 = null,
+            team2 = null;
+          if (tables.table1[i][j] !== 0 && tables.table1[i][j] !== -1) {
+            team1 = null;
+          } else {
+            status = MatchStatus.skipped.toString();
+          }
+
+          if (tables.table2[i][j] !== 0 && tables.table2[i][j] !== -1) {
+            team2 = null;
+            status = MatchStatus.scheduled.toString();
+          } else {
+            status = MatchStatus.skipped.toString();
+          }
+
+          if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
+            status = MatchStatus.no_show.toString();
+          }
+          const today = new Date();
+          const match = {
+            id: id,
+            nextMatchId: nextMatchId,
+            title: `Match ${j + 1}`,
+            matchStartDate: new Date(today.setDate(today.getDate() + 3)),
+            duration: fixture.matchDuration,
+            status: status,
+            teams: { team1, team2 },
+            refereeId: null,
+            venue: fixture.venue,
+          };
+          rawMatches.push(match);
+        }
+        const round = {
+          title: `Round ${i + 1}`,
+          id: randomUUID(),
+          matches: rawMatches,
+        };
+        rounds.push(round);
+      }
+      const group = {
+        id: randomUUID(),
+        title: 'Knockout Group',
+        isFinal: true,
+        rounds: rounds,
+      };
+      return {
+        id: fixture.id,
+        knockoutGroup: group,
+      };
+    } catch (error) {}
+  }
+
+  async createFixtureKnockout(
+    id: number,
+    dto: CreateFixturePublishKnockoutDto,
+  ) {
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        id: dto.id,
+      },
+    });
+
+    await this.prismaService.$transaction(
+      async (tx) => {
+        await this.fixtureService.removeKnockoutGroupFixtureByTournamentIdIdempontent(
+          id,
+        );
+
+        const groupFixture = await tx.group_fixtures.upsert({
+          where: {
+            id: dto.knockoutGroup.id,
+          },
+          update: {
+            fixtureId: fixture.id,
+            title: dto.knockoutGroup.title,
+            isFinal: true,
+            numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+          },
+          create: {
+            id: dto.knockoutGroup.id,
+            fixtureId: fixture.id,
+            title: dto.knockoutGroup.title,
+            isFinal: true,
+            numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+          },
+        });
+        await Promise.all(
+          dto.knockoutGroup.rounds.reverse().map(async (round) => {
+            await tx.rounds.upsert({
+              where: {
+                id: round.id,
+              },
+              update: {
+                groupFixtureId: dto.knockoutGroup.id,
+                title: round.title,
+                elo: 100,
+              },
+              create: {
+                id: round.id,
+                groupFixtureId: dto.knockoutGroup.id,
+                title: round.title,
+                elo: 100,
+              },
+            });
+            //apply elo
+            await Promise.all(
+              round.matches.map(async (match) => {
+                await tx.matches.upsert({
+                  where: {
+                    id: match.id,
+                  },
+                  update: {
+                    roundId: round.id,
+                    title: match.title,
+                    status: match.status,
+                    rankGroupTeam1: match.rankGroupTeam1,
+                    rankGroupTeam2: match.rankGroupTeam2,
+                    nextMatchId: match.nextMatchId,
+                    matchStartDate: match.matchStartDate,
+                    teamId1: match.teams.team1?.id,
+                    teamId2: match.teams.team2?.id,
+                    venue: match.venue,
+                    duration: match.duration,
+                    breakDuration: fixture.breakDuration,
+                    refereeId: match.refereeId,
+                    groupFixtureTeamId1: match.groupFixtureTeamId1,
+                    groupFixtureTeamId2: match.groupFixtureTeamId2,
+                  },
+
+                  create: {
+                    id: match.id,
+                    roundId: round.id,
+                    title: match.title,
+                    status: match.status,
+                    rankGroupTeam1: match.rankGroupTeam1,
+                    rankGroupTeam2: match.rankGroupTeam2,
+                    nextMatchId: match.nextMatchId,
+                    matchStartDate: match.matchStartDate,
+                    teamId1: match.teams.team1?.id,
+                    teamId2: match.teams.team2?.id,
+                    venue: match.venue,
+                    duration: match.duration,
+                    breakDuration: fixture.breakDuration,
+                    refereeId: match.refereeId,
+                    groupFixtureTeamId1: match.groupFixtureTeamId1,
+                    groupFixtureTeamId2: match.groupFixtureTeamId2,
+                  },
+                });
+              }),
+            );
+          }),
+        );
+        //update teams
+        await tx.teams.updateMany({
+          where: {
+            tournamentId: id,
+          },
+          data: {
+            groupFixtureId: groupFixture.id,
+          },
+        });
+      },
+      {
+        maxWait: 10000, // default: 2000
+        timeout: 10000, // default: 5000
+      },
+    );
+
+    //return response
+    const { groupFixtures, ...others } =
+      await this.prismaService.fixtures.findFirst({
+        where: {
+          id: dto.id,
+        },
+        include: {
+          groupFixtures: {
+            where: {
+              isFinal: true,
+            },
+            include: {
+              rounds: {
+                include: {
+                  matches: {
+                    include: {
+                      groupFixture1: true,
+                      groupFixture2: true,
+                      team1: {
+                        include: {
+                          user1: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                              isReferee: true,
+                            },
+                          },
+                          user2: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                              isReferee: true,
+                            },
+                          },
+                        },
+                      },
+                      team2: {
+                        include: {
+                          user1: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                              isReferee: true,
+                            },
+                          },
+                          user2: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                              isReferee: true,
+                            },
+                          },
+                        },
+                      },
+                      referee: {
+                        select: {
+                          id: true,
+                          image: true,
+                          name: true,
+                          dob: true,
+                          phoneNumber: true,
+                          isReferee: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+    let groups = null;
+    if (groupFixtures.length > 0) {
+      groups = groupFixtures.map((groupFixture) => {
+        const rounds = groupFixture.rounds.map((round) => {
+          const matches = round.matches.map((match) => {
+            const { team1, team2, groupFixture1, groupFixture2, ...others } =
+              match;
+            let team1R = null,
+              team2R = null;
+            if (
+              team1 === null &&
+              !match.rankGroupTeam1 != null &&
+              groupFixture1 != null
+            ) {
+              team1R = {
+                user1: null,
+                user2: null,
+                name: `Winner ${match.rankGroupTeam1} of ${groupFixture1.title}`,
+              };
+            }
+            if (
+              team2 === null &&
+              match.rankGroupTeam2 != null &&
+              groupFixture2 != null
+            ) {
+              team2R = {
+                user1: null,
+                user2: null,
+                name: `Winner ${match.rankGroupTeam2} of ${groupFixture2.title}`,
+              };
+            }
+            return {
+              ...others,
+              teams: { team1: team1 || team1R, team2: team2 || team2R },
+            };
+          });
+          return { ...round, matches: matches };
+        });
+        return { ...groupFixture, rounds: rounds };
+      });
+    }
+    groups[0].rounds.reverse();
+    return groups[0];
   }
 
   async createFixture(id: number, dto: CreateFixtureDto) {
@@ -3804,9 +4135,10 @@ export class TournamentService {
         });
 
         if (format === TournamentFormat.round_robin) {
+          let groupFixtureId = null;
           await Promise.all(
             dto.roundRobinGroups.map(async (group) => {
-              await tx.group_fixtures.upsert({
+              const groupFixture = await tx.group_fixtures.upsert({
                 where: {
                   id: group.id,
                 },
@@ -3824,6 +4156,7 @@ export class TournamentService {
                   numberOfProceeders: group.numberOfProceeders,
                 },
               });
+              groupFixtureId = groupFixture.id;
               await Promise.all(
                 group.rounds.map(async (round) => {
                   await tx.rounds.upsert({
@@ -3892,8 +4225,17 @@ export class TournamentService {
               );
             }),
           );
+          //update teams
+          await tx.teams.updateMany({
+            where: {
+              tournamentId: id,
+            },
+            data: {
+              groupFixtureId: groupFixtureId,
+            },
+          });
         } else if (format === TournamentFormat.knockout) {
-          await tx.group_fixtures.upsert({
+          const groupFixture = await tx.group_fixtures.upsert({
             where: {
               id: dto.knockoutGroup.id,
             },
@@ -3977,6 +4319,15 @@ export class TournamentService {
               );
             }),
           );
+          //update teams
+          await tx.teams.updateMany({
+            where: {
+              tournamentId: id,
+            },
+            data: {
+              groupFixtureId: groupFixture.id,
+            },
+          });
         } else if (format === TournamentFormat.group_playoff) {
           await Promise.all(
             dto.roundRobinGroups.map(async (group) => {
@@ -4252,52 +4603,60 @@ export class TournamentService {
           },
         },
       });
-    const groups = groupFixtures.map((groupFixture) => {
-      const rounds = groupFixture.rounds.map((round) => {
-        const matches = round.matches.map((match) => {
-          const { team1, team2, groupFixture1, groupFixture2, ...others } =
-            match;
-          let team1R = null,
-            team2R = null;
-          if (
-            team1 === null &&
-            !match.rankGroupTeam1 != null &&
-            groupFixture1 != null
-          ) {
-            team1R = {
-              user1: null,
-              user2: null,
-              name: `Winner ${match.rankGroupTeam1} of ${groupFixture1.title}`,
+    let groups = null;
+    if (groupFixtures.length > 0) {
+      groups = groupFixtures.map((groupFixture) => {
+        const rounds = groupFixture.rounds.map((round) => {
+          const matches = round.matches.map((match) => {
+            const { team1, team2, groupFixture1, groupFixture2, ...others } =
+              match;
+            let team1R = null,
+              team2R = null;
+            if (
+              team1 === null &&
+              !match.rankGroupTeam1 != null &&
+              groupFixture1 != null
+            ) {
+              team1R = {
+                user1: null,
+                user2: null,
+                name: `Winner ${match.rankGroupTeam1} of ${groupFixture1.title}`,
+              };
+            }
+            if (
+              team2 === null &&
+              match.rankGroupTeam2 != null &&
+              groupFixture2 != null
+            ) {
+              team2R = {
+                user1: null,
+                user2: null,
+                name: `Winner ${match.rankGroupTeam2} of ${groupFixture2.title}`,
+              };
+            }
+            return {
+              ...others,
+              teams: { team1: team1 || team1R, team2: team2 || team2R },
             };
-          }
-          if (
-            team2 === null &&
-            match.rankGroupTeam2 != null &&
-            groupFixture2 != null
-          ) {
-            team2R = {
-              user1: null,
-              user2: null,
-              name: `Winner ${match.rankGroupTeam2} of ${groupFixture2.title}`,
-            };
-          }
-          return {
-            ...others,
-            teams: { team1: team1 || team1R, team2: team2 || team2R },
-          };
+          });
+          return { ...round, matches: matches };
         });
-        return { ...round, matches: matches };
+        return { ...groupFixture, rounds: rounds };
       });
-      return { ...groupFixture, rounds: rounds };
-    });
+    }
+
     if (format === TournamentFormat.round_robin) {
       return { ...others, roundRobinGroups: groups, format };
     } else if (format === TournamentFormat.knockout) {
       groups[0].rounds.reverse();
       return { ...others, knockoutGroup: groups[0], format };
     } else if (format === TournamentFormat.group_playoff) {
-      groups[0].rounds.reverse();
-      const knockoutGroup = groups[0];
+      let knockoutGroup = null;
+      if (groups) {
+        groups[0].rounds.reverse();
+        knockoutGroup = groups[0];
+      }
+
       const fixtureGroups = [];
       const roundRobinGroups = (
         await this.prismaService.group_fixtures.findMany({
@@ -4477,6 +4836,9 @@ export class TournamentService {
           tournamentId: tournamentId,
         },
       });
+    if (!tournamentPaymentInfo) {
+      return null;
+    }
     const { payment, groupId, groupTournamentId, ...others } =
       tournamentPaymentInfo;
     return {
@@ -4646,15 +5008,92 @@ export class TournamentService {
       });
     }
     const payment = JSON.stringify(dto.payment);
-    return await this.prismaService.tournament_payment_info.create({
-      data: {
-        unit: dto.unit,
-        image: dto.image,
-        amount: dto.amount,
-        payment: payment,
+
+    const tournamentPaymentInfo =
+      await this.prismaService.tournament_payment_info.create({
+        data: {
+          unit: dto.unit,
+          image: dto.image,
+          amount: dto.amount,
+          payment: payment,
+          tournamentId: tournamentId,
+          reminderDate: dto.reminderDate,
+          dueDate: dto.dueDate,
+        },
+      });
+    const previousFunds = await this.prismaService.fund.findMany({
+      where: {
         tournamentId: tournamentId,
       },
     });
+    const participants =
+      await this.prismaService.tournament_registrations.findMany({
+        where: {
+          status: 'approved',
+          tournamentId: tournament.id,
+        },
+      });
+    if (previousFunds.length === 0) {
+      const funds = [];
+      for (const participant of participants) {
+        const user1Fund = {
+          userId: participant.userId1,
+          tournamentId: tournamentId,
+          reminderDate: dto.reminderDate,
+          dueDate: dto.dueDate,
+          status: FundStatus.wait,
+        };
+        funds.push(user1Fund);
+        if (participant.userId2) {
+          const user2Fund = {
+            userId: participant.userId2,
+            tournamentId: tournamentId,
+            reminderDate: dto.reminderDate,
+            dueDate: dto.dueDate,
+            status: FundStatus.wait,
+          };
+          funds.push(user2Fund);
+        }
+      }
+      await this.prismaService.fund.createMany({
+        data: funds,
+      });
+      const { payment, groupId, groupTournamentId, ...others } =
+        tournamentPaymentInfo;
+      return {
+        ...others,
+        payment: JSON.parse(payment),
+      };
+    }
+
+    // const previousFailureFunds = await this.prismaService.fund.findMany({
+    //   where: {
+    //     tournamentId: tournamentId,
+    //     OR: [{ status: FundStatus.failed }, { status: FundStatus.wait }],
+    //   },
+    // });
+    // if (previousFailureFunds.length > 0) {
+    //   const funds = previousFailureFunds.map((participant) => {
+    //     return {
+    //       userId: participant.userId,
+    //       tournamentId: tournamentId,
+    //       reminderDate: dto.reminderDate,
+    //       dueDate: dto.dueDate,
+    //       status: FundStatus.wait,
+    //       id: participant.id,
+    //     };
+    //   });
+    //   await Promise.all([
+    //     funds.forEach(async (fund) => {
+    //       await this.prismaService.fund.update({
+    //         where: {
+    //           id: fund.id,
+    //         },
+    //         data: fund,
+    //       });
+    //     }),
+    //   ]);
+    // }
   }
 
   async sendFund2User(
@@ -4771,6 +5210,145 @@ export class TournamentService {
         }),
       ]);
     }
+
+    // const previousFundIds = previousFailureFunds.map((value) => {
+    //   return value.userId;
+    // });
+
+    // const participants =
+    //   await this.prismaService.tournament_registrations.findMany({
+    //     where: {
+    //       status: 'approved',
+    //       tournamentId: tournament.id,
+    //     },
+    //   });
+    // if (participants.length > 0) {
+    //   const newParticipants = participants.filter((participant) => {
+    //     return (
+    //       !previousFundIds.includes(participant.userId1) &&
+    //       !previousFundIds.includes(participant.userId2)
+    //     );
+    //   });
+
+    //   const funds = [];
+    //   for (const participant of newParticipants) {
+    //     const user1Fund = {
+    //       userId: participant.userId1,
+    //       tournamentId: tournamentId,
+    //       reminderDate: dto.reminderDate,
+    //       dueDate: dto.dueDate,
+    //       status: FundStatus.wait,
+    //     };
+    //     funds.push(user1Fund);
+    //     if (participant.userId2) {
+    //       const user2Fund = {
+    //         userId: participant.userId2,
+    //         tournamentId: tournamentId,
+    //         reminderDate: dto.reminderDate,
+    //         dueDate: dto.dueDate,
+    //         status: FundStatus.wait,
+    //       };
+    //       funds.push(user2Fund);
+    //     }
+    //   }
+    //   return await this.prismaService.fund.createMany({
+    //     data: funds,
+    //   });
+    //}
+  }
+
+  async updatePaymentInfo(
+    tournamentId: number,
+    userId: string,
+    dto: UpdatePaymentInfoDto,
+  ) {
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    const isCreator = purchasedPackage.userId === userId;
+    if (!isCreator) {
+      throw new ForbiddenException({
+        message: 'You are not a creator of this group',
+        data: null,
+      });
+    }
+
+    if (dto.dueDate || dto.reminderDate) {
+      const previousFailureFunds = await this.prismaService.fund.findMany({
+        where: {
+          tournamentId: tournamentId,
+          OR: [{ status: FundStatus.failed }, { status: FundStatus.wait }],
+        },
+      });
+      if (previousFailureFunds.length > 0) {
+        const funds = previousFailureFunds.map((participant) => {
+          return {
+            userId: participant.userId,
+            tournamentId: tournamentId,
+            reminderDate: dto.reminderDate,
+            dueDate: dto.dueDate,
+            status: FundStatus.wait,
+            id: participant.id,
+          };
+        });
+        await Promise.all([
+          funds.forEach(async (fund) => {
+            await this.prismaService.fund.update({
+              where: {
+                id: fund.id,
+              },
+              data: fund,
+            });
+          }),
+        ]);
+      }
+    }
+
+    return await this.prismaService.tournament_payment_info.updateMany({
+      where: {
+        tournamentId: tournamentId,
+      },
+      data: {
+        reminderDate: dto.reminderDate,
+        dueDate: dto.dueDate,
+        unit: dto.unit,
+        image: dto.image,
+        amount: dto.amount,
+        payment: JSON.stringify(dto.payment),
+      },
+    });
 
     // const previousFundIds = previousFailureFunds.map((value) => {
     //   return value.userId;
@@ -4954,6 +5532,7 @@ export class TournamentService {
     if (pageOptions.status) {
       conditions.where['status'] = pageOptions.status;
     }
+    conditions.where['tournamentId'] = tournamentId;
 
     const pageOption =
       pageOptions.page && pageOptions.take
@@ -4977,13 +5556,34 @@ export class TournamentService {
           dueDate: true,
           message: true,
           errorMessage: true,
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
         },
       }),
       this.prismaService.fund.count(conditions),
     ]);
 
+    const r = result.map((fund) => {
+      const { user, ...others } = fund;
+      if (fund.message === null) {
+        others.message = '';
+      }
+      if (fund.errorMessage === null) {
+        others.errorMessage = '';
+      }
+      return {
+        name: user.name,
+        image: user.image,
+        ...others,
+      };
+    });
+
     return {
-      data: result,
+      data: r,
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
