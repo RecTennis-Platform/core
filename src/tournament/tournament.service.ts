@@ -492,10 +492,10 @@ export class TournamentService {
         },
       });
 
-      console.log('teams:', teams);
-
       if (teams.length === 0) {
-        throw new BadRequestException('No teams found');
+        throw new BadRequestException(
+          `Teams of tournament ${tournamentId} not found`,
+        );
       }
 
       // Calculate score
@@ -532,7 +532,6 @@ export class TournamentService {
               },
             },
           });
-          console.log('fixture:', fixture);
 
           // Init score data
           let matches = 0;
@@ -638,17 +637,29 @@ export class TournamentService {
                   title: true,
                   matches: true,
                 },
-                include: {
-                  matches: true,
-                },
               },
             },
           },
         },
       });
 
+      if (!fixture) {
+        throw new BadRequestException(
+          `Fixture of tournament ${tournamentId} not found`,
+        );
+      }
+
+      // Knockout -> 1 tournament - 1 fixture - 1 group_fixture - n rounds - n matches - ...
+      if (!fixture.groupFixtures) {
+        throw new BadRequestException(
+          `Group fixtures of fixture ${fixture.id} not found`,
+        );
+      }
+
       // Assign standing data
-      standing_data.standings = fixture.groupFixtures[0].rounds;
+      standing_data.standings = {
+        rounds: fixture.groupFixtures[0].rounds,
+      };
     } else {
       //// group_playoff
       const calculate_standing = {
@@ -670,17 +681,10 @@ export class TournamentService {
             select: {
               id: true,
               title: true,
-              teams: true,
-            },
-            include: {
               teams: {
                 select: {
                   id: true,
                   name: true,
-                  user1: true,
-                  user2: true,
-                },
-                include: {
                   user1: {
                     select: {
                       id: true,
@@ -738,7 +742,6 @@ export class TournamentService {
                   },
                 },
               });
-              console.log('fixture:', fixture);
 
               // Init score data
               let matches = 0;
@@ -793,9 +796,42 @@ export class TournamentService {
         }),
       );
 
+      groupStage.map((groupFixture) => {
+        // Sort standing data
+        groupFixture.teams = groupFixture.teams.sort((a, b) => {
+          // Sort by match points (descending)
+          if (a['score'].matchPoints !== b['score'].matchPoints) {
+            return b['score'].matchPoints - a['score'].matchPoints;
+          }
+          // Sort by sets won (descending)
+          if (a['score'].won !== b['score'].won) {
+            return b['score'].won - a['score'].won;
+          }
+          // Sort by sets lost (ascending)
+          if (a['score'].lost !== b['score'].lost) {
+            return a['score'].lost - b['score'].lost;
+          }
+          // Sort by matches won (descending)
+          if (a['score'].totalMatches !== b['score'].totalMatches) {
+            return b['score'].totalMatches - a['score'].totalMatches;
+          }
+          // Sort by matches played (ascending)
+          return a['score'].played - b['score'].played;
+        });
+
+        // Assign ranks
+        groupFixture.teams = groupFixture.teams.map((team, index) => ({
+          ...team,
+          score: {
+            ...team['score'],
+            rank: index + 1, // Rank starts at 1
+          },
+        }));
+      });
+
       // Assign groupStage data
       calculate_standing.groupStage = groupStage;
-
+      ///////////////////////////////////////////////////
       //// knockoutStage
       // Get fixture data (isFinal = true)
       const knockoutStageFixture = await this.prismaService.fixtures.findFirst({
@@ -809,9 +845,6 @@ export class TournamentService {
             },
             include: {
               rounds: {
-                include: {
-                  matches: true,
-                },
                 select: {
                   id: true,
                   title: true,
@@ -823,9 +856,22 @@ export class TournamentService {
         },
       });
 
+      if (!knockoutStageFixture) {
+        throw new BadRequestException(
+          `Knockout Stage - Fixture of tournament ${tournamentId} not found`,
+        );
+      }
+
+      if (!knockoutStageFixture.groupFixtures) {
+        throw new BadRequestException(
+          `Knockout Stage - Group fixtures of fixture ${knockoutStageFixture.id} not found`,
+        );
+      }
+
       // Assign knockoutStage data
-      calculate_standing.knockoutStage =
-        knockoutStageFixture.groupFixtures[0].rounds;
+      calculate_standing.knockoutStage = {
+        rounds: knockoutStageFixture.groupFixtures[0].rounds,
+      };
 
       // Assign standing data
       standing_data.standings = calculate_standing;
