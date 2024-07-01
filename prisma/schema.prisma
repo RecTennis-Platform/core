@@ -237,7 +237,6 @@ model referees_group_tournaments {
 model group_tournaments {
   id                             Int                              @id @default(autoincrement())
   groupId                        Int                              @map("group_id")
-  maxParticipants                Int                              @map("max_participants")  @default(50)
   name                           String
   description                    String
   image                          String
@@ -249,6 +248,7 @@ model group_tournaments {
   address                        String
   createdAt                      DateTime                         @default(now()) @map("created_at")
   updatedAt                      DateTime                         @updatedAt @map("updated_at")
+  maxParticipants                Int                              @default(50) @map("max_participants")
   fixtures                       fixtures[]
   fund                           fund[]
   group_tournament_registrations group_tournament_registrations[]

@@ -1,0 +1,258 @@
+{
+	"info": {
+		"_postman_id": "90827623-4984-490f-85ca-0741c685a988",
+		"name": "Standing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24188163"
+	},
+	"item": [
+		{
+			"name": "Get open tournament standing info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{CORE_URL}}/tournaments/242/standings",
+					"host": [
+						"{{CORE_URL}}"
+					],
+					"path": [
+						"tournaments",
+						"242",
+						"standings"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get standing info",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/tournaments/29/standings",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"tournaments",
+								"29",
+								"standings"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "4193"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1061-pvZO/m+IXobUJPVPvIptnrrctm0\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 01 Jul 2024 11:11:43 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"format\": \"group_playoff\",\n    \"standings\": {\n        \"groupStage\": [\n            {\n                \"id\": \"b023ed4a-7a33-41da-b260-aea8e72a838b\",\n                \"title\": \"Group A\",\n                \"teams\": [\n                    {\n                        \"id\": \"2feedc03-c910-4a7f-9bfd-ddfbd7def14b\",\n                        \"name\": \"shin8\",\n                        \"user1\": {\n                            \"id\": \"84f7b4ec-3c21-4183-8d68-1a123a0013fe\",\n                            \"image\": null,\n                            \"name\": \"shin8\"\n                        },\n                        \"user2\": null,\n                        \"score\": {\n                            \"totalMatches\": 0,\n                            \"played\": 0,\n                            \"won\": 0,\n                            \"lost\": 0,\n                            \"matchPoints\": 0,\n                            \"rank\": 1\n                        }\n                    },\n                    {\n                        \"id\": \"32503ebc-cbe7-4b4b-89e4-f6869b577500\",\n                        \"name\": \"shin6\",\n                        \"user1\": {\n                            \"id\": \"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\n                            \"image\": null,\n                            \"name\": \"shin6\"\n                        },\n                        \"user2\": null,\n                        \"score\": {\n                            \"totalMatches\": 0,\n                            \"played\": 0,\n                            \"won\": 0,\n                            \"lost\": 0,\n                            \"matchPoints\": 0,\n                            \"rank\": 2\n                        }\n                    },\n                    {\n                        \"id\": \"943ac771-e113-4347-9d41-4a051e9811f0\",\n                        \"name\": \"shin4\",\n                        \"user1\": {\n                            \"id\": \"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\n                            \"image\": null,\n                            \"name\": \"shin4\"\n                        },\n                        \"user2\": null,\n                        \"score\": {\n                            \"totalMatches\": 0,\n                            \"played\": 0,\n                            \"won\": 0,\n                            \"lost\": 0,\n                            \"matchPoints\": 0,\n                            \"rank\": 3\n                        }\n                    },\n                    {\n                        \"id\": \"bd883094-57c0-4a9a-9d6d-c12b90a6cd8f\",\n                        \"name\": \"shin2\",\n                        \"user1\": {\n                            \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                            \"image\": null,\n                            \"name\": \"shin2\"\n                        },\n                        \"user2\": null,\n                        \"score\": {\n                            \"totalMatches\": 0,\n                            \"played\": 0,\n                            \"won\": 0,\n                            \"lost\": 0,\n                            \"matchPoints\": 0,\n                            \"rank\": 4\n                        }\n                    }\n                ]\n            },\n            {\n                \"id\": \"a397bf7b-1836-4415-bd65-1e658af0065a\",\n                \"title\": \"Group B\",\n                \"teams\": [\n                    {\n                        \"id\": \"12c4c2bf-e9b4-4a76-be45-d22f161dd33a\",\n                        \"name\": \"shin7\",\n                        \"user1\": {\n                            \"id\": \"a2c86b51-0d35-4f7f-afed-3257305d01d7\",\n                            \"image\": null,\n                            \"name\": \"shin7\"\n                        },\n                        \"user2\": null,\n                        \"score\": {\n                            \"totalMatches\": 0,\n                            \"played\": 0,\n                            \"won\": 0,\n                            \"lost\": 0,\n                            \"matchPoints\": 0,\n                            \"rank\": 1\n                        }\n                    },\n                    {\n                        \"id\": \"eafd83a9-1a8e-4c7d-8225-687cc4ce4ccb\",\n                        \"name\": \"shin5\",\n                        \"user1\": {\n                            \"id\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\n                            \"image\": null,\n                            \"name\": \"shin5\"\n                        },\n                        \"user2\": null,\n                        \"score\": {\n                            \"totalMatches\": 0,\n                            \"played\": 0,\n                            \"won\": 0,\n                            \"lost\": 0,\n                            \"matchPoints\": 0,\n                            \"rank\": 2\n                        }\n                    },\n                    {\n                        \"id\": \"49b0cc06-17b9-4cde-a49c-c7becc2936cb\",\n                        \"name\": \"shin3\",\n                        \"user1\": {\n                            \"id\": \"60288e3c-165c-4918-bbe9-ff1b84992d72\",\n                            \"image\": null,\n                            \"name\": \"shin3\"\n                        },\n                        \"user2\": null,\n                        \"score\": {\n                            \"totalMatches\": 0,\n                            \"played\": 0,\n                            \"won\": 0,\n                            \"lost\": 0,\n                            \"matchPoints\": 0,\n                            \"rank\": 3\n                        }\n                    },\n                    {\n                        \"id\": \"7740488e-6e52-45a0-ab09-c5897ed43a35\",\n                        \"name\": \"shin9\",\n                        \"user1\": {\n                            \"id\": \"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\n                            \"image\": null,\n                            \"name\": \"shin9\"\n                        },\n                        \"user2\": null,\n                        \"score\": {\n                            \"totalMatches\": 0,\n                            \"played\": 0,\n                            \"won\": 0,\n                            \"lost\": 0,\n                            \"matchPoints\": 0,\n                            \"rank\": 4\n                        }\n                    }\n                ]\n            }\n        ],\n        \"knockoutStage\": {\n            \"rounds\": [\n                {\n                    \"id\": \"1f564f14-6596-4a89-a278-236b97c86993\",\n                    \"title\": \"Round 2\",\n                    \"matches\": [\n                        {\n                            \"id\": \"3520cb12-236d-4937-80fd-8025dcb00ff9\",\n                            \"roundId\": \"1f564f14-6596-4a89-a278-236b97c86993\",\n                            \"groupFixtureTeamId1\": null,\n                            \"groupFixtureTeamId2\": null,\n                            \"rankGroupTeam1\": null,\n                            \"rankGroupTeam2\": null,\n                            \"teamId1\": null,\n                            \"teamId2\": null,\n                            \"teamWinnerId\": null,\n                            \"matchStartDate\": \"2024-06-29T14:38:38.125Z\",\n                            \"matchEndDate\": null,\n                            \"venue\": \"Here let me give ya an address ok\",\n                            \"status\": \"no_show\",\n                            \"duration\": 30,\n                            \"breakDuration\": 10,\n                            \"createdAt\": \"2024-06-26T14:38:45.119Z\",\n                            \"updatedAt\": \"2024-06-26T14:38:45.119Z\",\n                            \"nextMatchId\": null,\n                            \"title\": \"Match 1\",\n                            \"refereeId\": null,\n                            \"team1MatchScore\": 0,\n                            \"team2MatchScore\": 0\n                        }\n                    ]\n                },\n                {\n                    \"id\": \"392cc29f-2048-4aa5-abe3-90d949805141\",\n                    \"title\": \"Round 1\",\n                    \"matches\": [\n                        {\n                            \"id\": \"30dec39c-0593-4091-9030-c0243102ea2a\",\n                            \"roundId\": \"392cc29f-2048-4aa5-abe3-90d949805141\",\n                            \"groupFixtureTeamId1\": \"b023ed4a-7a33-41da-b260-aea8e72a838b\",\n                            \"groupFixtureTeamId2\": \"a397bf7b-1836-4415-bd65-1e658af0065a\",\n                            \"rankGroupTeam1\": 1,\n                            \"rankGroupTeam2\": 2,\n                            \"teamId1\": null,\n                            \"teamId2\": null,\n                            \"teamWinnerId\": null,\n                            \"matchStartDate\": \"2024-06-29T14:38:38.125Z\",\n                            \"matchEndDate\": null,\n                            \"venue\": \"Here let me give ya an address ok\",\n                            \"status\": \"scheduled\",\n                            \"duration\": 30,\n                            \"breakDuration\": 10,\n                            \"createdAt\": \"2024-06-26T14:38:45.119Z\",\n                            \"updatedAt\": \"2024-06-26T14:38:45.119Z\",\n                            \"nextMatchId\": \"3520cb12-236d-4937-80fd-8025dcb00ff9\",\n                            \"title\": \"Match 1\",\n                            \"refereeId\": null,\n                            \"team1MatchScore\": 0,\n                            \"team2MatchScore\": 0\n                        },\n                        {\n                            \"id\": \"3b3ad7e1-e2bf-4753-b2a0-93f2ee652ba0\",\n                            \"roundId\": \"392cc29f-2048-4aa5-abe3-90d949805141\",\n                            \"groupFixtureTeamId1\": \"a397bf7b-1836-4415-bd65-1e658af0065a\",\n                            \"groupFixtureTeamId2\": \"b023ed4a-7a33-41da-b260-aea8e72a838b\",\n                            \"rankGroupTeam1\": 1,\n                            \"rankGroupTeam2\": 2,\n                            \"teamId1\": null,\n                            \"teamId2\": null,\n                            \"teamWinnerId\": null,\n                            \"matchStartDate\": \"2024-06-29T14:38:38.125Z\",\n                            \"matchEndDate\": null,\n                            \"venue\": \"Here let me give ya an address ok\",\n                            \"status\": \"scheduled\",\n                            \"duration\": 30,\n                            \"breakDuration\": 10,\n                            \"createdAt\": \"2024-06-26T14:38:45.119Z\",\n                            \"updatedAt\": \"2024-06-26T14:38:45.119Z\",\n                            \"nextMatchId\": \"3520cb12-236d-4937-80fd-8025dcb00ff9\",\n                            \"title\": \"Match 2\",\n                            \"refereeId\": null,\n                            \"team1MatchScore\": 0,\n                            \"team2MatchScore\": 0\n                        }\n                    ]\n                }\n            ]\n        }\n    }\n}"
+				},
+				{
+					"name": "Get standing info",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/tournaments/28/standings",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"tournaments",
+								"28",
+								"standings"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "4573"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"11dd-s7ekpRJwb6X65P/D3zUIfEV2dxI\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 01 Jul 2024 11:12:53 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"format\": \"knockout\",\n    \"standings\": {\n        \"rounds\": [\n            {\n                \"id\": \"794c4e6f-c20c-47be-bff1-026c16b776c1\",\n                \"title\": \"Round 3\",\n                \"matches\": [\n                    {\n                        \"id\": \"86db39bc-3131-4223-90ea-7766cbd8768e\",\n                        \"roundId\": \"794c4e6f-c20c-47be-bff1-026c16b776c1\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": null,\n                        \"teamId2\": null,\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": null,\n                        \"matchEndDate\": null,\n                        \"venue\": \"ádfasdfHo chi minh city \",\n                        \"status\": \"no_show\",\n                        \"duration\": 30,\n                        \"breakDuration\": 10,\n                        \"createdAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"updatedAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"nextMatchId\": null,\n                        \"title\": \"Match 1\",\n                        \"refereeId\": null,\n                        \"team1MatchScore\": 0,\n                        \"team2MatchScore\": 0\n                    }\n                ]\n            },\n            {\n                \"id\": \"aacb6c2e-55c5-41da-93c6-4aa56929438c\",\n                \"title\": \"Round 2\",\n                \"matches\": [\n                    {\n                        \"id\": \"e3663919-18dc-4dd3-a662-bc4f66ab05d1\",\n                        \"roundId\": \"aacb6c2e-55c5-41da-93c6-4aa56929438c\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": null,\n                        \"teamId2\": null,\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": null,\n                        \"matchEndDate\": null,\n                        \"venue\": \"ádfasdfHo chi minh city \",\n                        \"status\": \"no_show\",\n                        \"duration\": 30,\n                        \"breakDuration\": 10,\n                        \"createdAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"updatedAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"nextMatchId\": \"86db39bc-3131-4223-90ea-7766cbd8768e\",\n                        \"title\": \"Match 1\",\n                        \"refereeId\": null,\n                        \"team1MatchScore\": 0,\n                        \"team2MatchScore\": 0\n                    },\n                    {\n                        \"id\": \"a972bb1b-027c-4cfb-8c71-2431bc2fd593\",\n                        \"roundId\": \"aacb6c2e-55c5-41da-93c6-4aa56929438c\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": null,\n                        \"teamId2\": null,\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": null,\n                        \"matchEndDate\": null,\n                        \"venue\": \"ádfasdfHo chi minh city \",\n                        \"status\": \"no_show\",\n                        \"duration\": 30,\n                        \"breakDuration\": 10,\n                        \"createdAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"updatedAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"nextMatchId\": \"86db39bc-3131-4223-90ea-7766cbd8768e\",\n                        \"title\": \"Match 2\",\n                        \"refereeId\": null,\n                        \"team1MatchScore\": 0,\n                        \"team2MatchScore\": 0\n                    }\n                ]\n            },\n            {\n                \"id\": \"0b7b30f4-9b1a-48b9-b451-861d465196ba\",\n                \"title\": \"Round 1\",\n                \"matches\": [\n                    {\n                        \"id\": \"cb660f40-cc10-4070-ba51-683de729d61c\",\n                        \"roundId\": \"0b7b30f4-9b1a-48b9-b451-861d465196ba\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": \"8db272a6-3d7a-496d-91a7-268c90c6dd49\",\n                        \"teamId2\": \"5d1cfb1d-3fbd-41b2-87ac-0ea607d6a2c4\",\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": null,\n                        \"matchEndDate\": null,\n                        \"venue\": \"ádfasdfHo chi minh city \",\n                        \"status\": \"scheduled\",\n                        \"duration\": 30,\n                        \"breakDuration\": 10,\n                        \"createdAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"updatedAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"nextMatchId\": \"e3663919-18dc-4dd3-a662-bc4f66ab05d1\",\n                        \"title\": \"Match 1\",\n                        \"refereeId\": null,\n                        \"team1MatchScore\": 0,\n                        \"team2MatchScore\": 0\n                    },\n                    {\n                        \"id\": \"36dc39d0-1bae-4bb8-a2b3-99a0df6ca544\",\n                        \"roundId\": \"0b7b30f4-9b1a-48b9-b451-861d465196ba\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": \"e5693538-0fdf-48e5-89c3-725082fcbac5\",\n                        \"teamId2\": \"50c9901f-78fb-4c96-a3e6-14000e1b70d3\",\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": null,\n                        \"matchEndDate\": null,\n                        \"venue\": \"ádfasdfHo chi minh city \",\n                        \"status\": \"scheduled\",\n                        \"duration\": 30,\n                        \"breakDuration\": 10,\n                        \"createdAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"updatedAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"nextMatchId\": \"e3663919-18dc-4dd3-a662-bc4f66ab05d1\",\n                        \"title\": \"Match 2\",\n                        \"refereeId\": null,\n                        \"team1MatchScore\": 0,\n                        \"team2MatchScore\": 0\n                    },\n                    {\n                        \"id\": \"9d8cb4fa-b0c6-4690-9d84-f706795d6bca\",\n                        \"roundId\": \"0b7b30f4-9b1a-48b9-b451-861d465196ba\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": \"6801e6e3-4f16-4434-8472-8cd8d8d16d9a\",\n                        \"teamId2\": \"9f93e3e3-96be-4739-ae2e-eeaa3f519474\",\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": null,\n                        \"matchEndDate\": null,\n                        \"venue\": \"ádfasdfHo chi minh city \",\n                        \"status\": \"scheduled\",\n                        \"duration\": 30,\n                        \"breakDuration\": 10,\n                        \"createdAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"updatedAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"nextMatchId\": \"a972bb1b-027c-4cfb-8c71-2431bc2fd593\",\n                        \"title\": \"Match 3\",\n                        \"refereeId\": null,\n                        \"team1MatchScore\": 0,\n                        \"team2MatchScore\": 0\n                    },\n                    {\n                        \"id\": \"1f0ce2a9-2614-40cb-a461-742467ae59bc\",\n                        \"roundId\": \"0b7b30f4-9b1a-48b9-b451-861d465196ba\",\n                        \"groupFixtureTeamId1\": null,\n                        \"groupFixtureTeamId2\": null,\n                        \"rankGroupTeam1\": null,\n                        \"rankGroupTeam2\": null,\n                        \"teamId1\": \"89dc1986-235e-42c3-93d0-7a03ff63d4ee\",\n                        \"teamId2\": \"2ba2d226-62fa-46a8-bb20-377303f4ed47\",\n                        \"teamWinnerId\": null,\n                        \"matchStartDate\": null,\n                        \"matchEndDate\": null,\n                        \"venue\": \"ádfasdfHo chi minh city \",\n                        \"status\": \"scheduled\",\n                        \"duration\": 30,\n                        \"breakDuration\": 10,\n                        \"createdAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"updatedAt\": \"2024-06-13T02:34:22.180Z\",\n                        \"nextMatchId\": \"a972bb1b-027c-4cfb-8c71-2431bc2fd593\",\n                        \"title\": \"Match 4\",\n                        \"refereeId\": null,\n                        \"team1MatchScore\": 0,\n                        \"team2MatchScore\": 0\n                    }\n                ]\n            }\n        ]\n    }\n}"
+				},
+				{
+					"name": "Get standing info",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/tournaments/24/standings",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"tournaments",
+								"24",
+								"standings"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "922"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"39a-X/qL3GZic052Sf5BLicBN/PqFYc\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 01 Jul 2024 11:13:04 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"format\": \"round_robin\",\n    \"standings\": [\n        {\n            \"id\": \"30acd187-34ca-48f7-9bf1-17e180e976ee\",\n            \"user1\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"image\": null,\n                \"name\": \"shin2\"\n            },\n            \"user2\": null,\n            \"score\": {\n                \"totalMatches\": 0,\n                \"played\": 0,\n                \"won\": 0,\n                \"lost\": 0,\n                \"matchPoints\": 0,\n                \"rank\": 1\n            }\n        },\n        {\n            \"id\": \"809ee900-e4de-4fa9-b0c3-e0ac3f3ddc7e\",\n            \"user1\": {\n                \"id\": \"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\n                \"image\": null,\n                \"name\": \"shin6\"\n            },\n            \"user2\": null,\n            \"score\": {\n                \"totalMatches\": 0,\n                \"played\": 0,\n                \"won\": 0,\n                \"lost\": 0,\n                \"matchPoints\": 0,\n                \"rank\": 2\n            }\n        },\n        {\n            \"id\": \"257af132-9125-4250-b87b-8450d7da7926\",\n            \"user1\": {\n                \"id\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\n                \"image\": null,\n                \"name\": \"shin5\"\n            },\n            \"user2\": null,\n            \"score\": {\n                \"totalMatches\": 0,\n                \"played\": 0,\n                \"won\": 0,\n                \"lost\": 0,\n                \"matchPoints\": 0,\n                \"rank\": 3\n            }\n        },\n        {\n            \"id\": \"1820149c-bb70-4cbe-877f-6da227177f5b\",\n            \"user1\": {\n                \"id\": \"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\n                \"image\": null,\n                \"name\": \"shin4\"\n            },\n            \"user2\": null,\n            \"score\": {\n                \"totalMatches\": 0,\n                \"played\": 0,\n                \"won\": 0,\n                \"lost\": 0,\n                \"matchPoints\": 0,\n                \"rank\": 4\n            }\n        }\n    ]\n}"
+				},
+				{
+					"name": "Get standing info",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/tournaments/242/standings",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"tournaments",
+								"242",
+								"standings"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "73"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"49-StOjc5kJQ57qGhKz47YmRWR2lmM\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 01 Jul 2024 11:13:13 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Tournament not found\",\n    \"error\": \"Bad Request\",\n    \"statusCode\": 400\n}"
+				}
+			]
+		}
+	]
+}
