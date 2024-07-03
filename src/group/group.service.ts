@@ -1162,23 +1162,6 @@ export class GroupService {
       });
     }
 
-    if (member.role === MemberRole.member) {
-      const isParticipant =
-        await this.prismaService.group_tournament_registrations.findFirst({
-          where: {
-            userId,
-            groupTournamentId: tournamentId,
-          },
-        });
-
-      if (!isParticipant) {
-        throw new ForbiddenException({
-          message: 'You are not a participant of this tournament',
-          data: null,
-        });
-      }
-    }
-
     const conditions = {
       orderBy: [
         {
@@ -2288,7 +2271,7 @@ export class GroupService {
       async (tx) => {
         await this.fixtureService.removeByGroupTournamentIdIdempontent(id);
         if (dto.status === FixtureStatus.published) {
-          await tx.tournaments.update({
+          await tx.group_tournaments.update({
             where: {
               id: id,
             },

@@ -164,35 +164,34 @@ model users {
 }
 
 model tournaments {
-  id                         Int                          @id @default(autoincrement())
-  purchasedPackageId         String                       @map("purchased_package_id")
-  name                       String
-  maxParticipants            Int                          @map("max_participants")
-  gender                     Gender?
-  format                     TournamentFormat
-  participantType            ParticipantType              @map("participant_type")
-  description                String?
-  playersBornAfterDate       DateTime                     @map("players_born_after_date")
-  registrationDueDate        DateTime                     @map("registration_due_date")
-  startDate                  DateTime                     @map("start_date")
-  endDate                    DateTime                     @map("end_date")
-  status                     TournamentStatus             @default(upcoming)
-  address                    String
-  contactPersonName          String                       @map("contact_person_name")
-  contactNumber              String                       @map("contact_number")
-  contactEmail               String                       @map("contact_email")
-  createdAt                  DateTime                     @default(now()) @map("created_at")
-  updatedAt                  DateTime                     @updatedAt @map("updated_at")
-  phase                      TournamentPhase              @default(new)
-  image                      String?
-  level                      Int?                         @default(1) @map("level")
-  fixtures                   fixtures[]
-  fund                       fund[]
-  referees_group_tournaments referees_group_tournaments[]
-  referees_tournaments       referees_tournaments[]
-  teams                      teams[]
-  tournament_payment_info    tournament_payment_info[]
-  tournament_registrations   tournament_registrations[]
+  id                       Int                        @id @default(autoincrement())
+  purchasedPackageId       String                     @map("purchased_package_id")
+  name                     String
+  maxParticipants          Int                        @map("max_participants")
+  gender                   Gender?
+  format                   TournamentFormat
+  participantType          ParticipantType            @map("participant_type")
+  description              String?
+  playersBornAfterDate     DateTime                   @map("players_born_after_date")
+  registrationDueDate      DateTime                   @map("registration_due_date")
+  startDate                DateTime                   @map("start_date")
+  endDate                  DateTime                   @map("end_date")
+  status                   TournamentStatus           @default(upcoming)
+  address                  String
+  contactPersonName        String                     @map("contact_person_name")
+  contactNumber            String                     @map("contact_number")
+  contactEmail             String                     @map("contact_email")
+  createdAt                DateTime                   @default(now()) @map("created_at")
+  updatedAt                DateTime                   @updatedAt @map("updated_at")
+  phase                    TournamentPhase            @default(new)
+  image                    String?
+  level                    Int?                       @default(1) @map("level")
+  fixtures                 fixtures[]
+  fund                     fund[]
+  referees_tournaments     referees_tournaments[]
+  teams                    teams[]
+  tournament_payment_info  tournament_payment_info[]
+  tournament_registrations tournament_registrations[]
 }
 
 model tournament_registrations {
@@ -224,12 +223,12 @@ model referees_tournaments {
 }
 
 model referees_group_tournaments {
-  groupTournamentId Int         @map("group_tournament_id")
-  refereeId         String      @map("referee_id") @db.Uuid
-  createdAt         DateTime    @default(now()) @map("created_at")
-  updatedAt         DateTime    @updatedAt @map("updated_at")
-  tournament        tournaments @relation(fields: [groupTournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_referees_tournaments_group_tournaments")
-  referee           users       @relation(fields: [refereeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_referees_tournaments_users")
+  groupTournamentId Int               @map("group_tournament_id")
+  refereeId         String            @map("referee_id") @db.Uuid
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  tournament        group_tournaments @relation(fields: [groupTournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_referees_tournaments_group_tournaments")
+  referee           users             @relation(fields: [refereeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_referees_tournaments_users")
 
   @@id([groupTournamentId, refereeId])
 }
@@ -237,7 +236,7 @@ model referees_group_tournaments {
 model group_tournaments {
   id                             Int                              @id @default(autoincrement())
   groupId                        Int                              @map("group_id")
-  maxParticipants                Int                              @map("max_participants")  @default(50)
+  maxParticipants                Int                              @default(50) @map("max_participants")
   name                           String
   description                    String
   image                          String
@@ -255,6 +254,7 @@ model group_tournaments {
   group                          groups                           @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournaments_groups")
   teams                          teams[]
   tournament_payment_info        tournament_payment_info[]
+  referees_group_tournaments     referees_group_tournaments[]
 }
 
 model group_tournament_registrations {
