@@ -2313,9 +2313,10 @@ export class GroupService {
         });
 
         if (format === GroupTournamentFormat.round_robin) {
+          let groupFixtureId = null;
           await Promise.all(
             dto.roundRobinGroups.map(async (group) => {
-              await tx.group_fixtures.upsert({
+              const groupFixture = await tx.group_fixtures.upsert({
                 where: {
                   id: group.id,
                 },
@@ -2333,6 +2334,7 @@ export class GroupService {
                   numberOfProceeders: group.numberOfProceeders,
                 },
               });
+              groupFixtureId = groupFixture.id;
               await Promise.all(
                 group.rounds.map(async (round) => {
                   await tx.rounds.upsert({
@@ -2401,8 +2403,18 @@ export class GroupService {
               );
             }),
           );
+          //update teams
+          await tx.teams.updateMany({
+            where: {
+              groupTournamentId: id,
+            },
+            data: {
+              groupFixtureId: groupFixtureId,
+            },
+          });
         } else if (format === GroupTournamentFormat.knockout) {
-          await tx.group_fixtures.upsert({
+          let groupFixtureId = null;
+          const groupFixture = await tx.group_fixtures.upsert({
             where: {
               id: dto.knockoutGroup.id,
             },
@@ -2420,6 +2432,7 @@ export class GroupService {
               numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
             },
           });
+          groupFixtureId = groupFixture.id;
           await Promise.all(
             dto.knockoutGroup.rounds.reverse().map(async (round) => {
               await tx.rounds.upsert({
@@ -2486,6 +2499,15 @@ export class GroupService {
               );
             }),
           );
+          //update teams
+          await tx.teams.updateMany({
+            where: {
+              groupTournamentId: id,
+            },
+            data: {
+              groupFixtureId: groupFixtureId,
+            },
+          });
         } else if (format === TournamentFormat.group_playoff) {
           throw new BadRequestException({
             code: CustomResponseStatusCodes.TOURNAMENT_INVALID_FORMAT,

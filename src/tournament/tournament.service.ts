@@ -448,6 +448,438 @@ export class TournamentService {
     };
   }
 
+  async getTournamentStanding(tournamentId: number) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new BadRequestException('Tournament not found');
+    }
+
+    // Init standing data
+    const standing_data = {
+      format: tournament.format,
+      standings: null,
+    };
+
+    // Check tournament format
+    if (tournament.format === TournamentFormat.round_robin) {
+      // round-robin
+      // Get tournament teams
+      const teams = await this.prismaService.teams.findMany({
+        where: {
+          tournamentId: tournamentId,
+        },
+        include: {
+          user1: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+            },
+          },
+          user2: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      if (teams.length === 0) {
+        throw new BadRequestException(
+          `Teams of tournament ${tournamentId} not found`,
+        );
+      }
+
+      // Calculate score
+      let calculate_standing = await Promise.all(
+        teams.map(async (team) => {
+          // Get matches info from fixtures
+          const fixture = await this.prismaService.fixtures.findFirst({
+            where: {
+              tournamentId: tournamentId,
+            },
+            include: {
+              groupFixtures: {
+                where: {
+                  isFinal: true, // round_robin / knockout
+                },
+                include: {
+                  rounds: {
+                    include: {
+                      matches: {
+                        where: {
+                          OR: [
+                            {
+                              teamId1: team.id,
+                            },
+                            {
+                              teamId2: team.id,
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          });
+
+          // Init score data
+          let matches = 0;
+          let playedMatches = 0;
+          let wonMatches = 0;
+          let lostMatches = 0;
+
+          if (fixture && fixture.groupFixtures) {
+            fixture.groupFixtures.forEach((groupFixture) => {
+              groupFixture.rounds.forEach((round) => {
+                // Total matches
+                matches += round.matches.length;
+
+                // Played matches (match.status == 'score_done')
+                // Won matches (teamWinnerId == team.id)
+                // Lost matches (teamWinnerId != team.id)
+                round.matches.forEach((match) => {
+                  if (match.status === MatchStatus.score_done) {
+                    playedMatches += 1;
+                    if (match.teamWinnerId === team.id) {
+                      wonMatches += 1;
+                    } else {
+                      lostMatches += 1;
+                    }
+                  }
+                });
+              });
+            });
+          }
+
+          //// Match point (matchPoint = (3 * won) + play - won - lose)
+          const matchPoints =
+            3 * wonMatches + playedMatches - wonMatches - lostMatches;
+
+          return {
+            id: team.id,
+            user1: team.user1,
+            user2: team.user2,
+            score: {
+              totalMatches: matches,
+              played: playedMatches,
+              won: wonMatches,
+              lost: lostMatches,
+              matchPoints: matchPoints,
+            },
+          };
+        }),
+      );
+
+      // Sort standing data
+      calculate_standing = calculate_standing.sort((a, b) => {
+        // Sort by match points (descending)
+        if (a.score.matchPoints !== b.score.matchPoints) {
+          return b.score.matchPoints - a.score.matchPoints;
+        }
+
+        // Sort by sets won (descending)
+        if (a.score.won !== b.score.won) {
+          return b.score.won - a.score.won;
+        }
+
+        // Sort by sets lost (ascending)
+        if (a.score.lost !== b.score.lost) {
+          return a.score.lost - b.score.lost;
+        }
+
+        // Sort by matches won (descending)
+        if (a.score.totalMatches !== b.score.totalMatches) {
+          return b.score.totalMatches - a.score.totalMatches;
+        }
+
+        // Sort by matches played (ascending)
+        return a.score.played - b.score.played;
+      });
+
+      // Assign ranks
+      calculate_standing = calculate_standing.map((team, index) => ({
+        ...team,
+        score: {
+          ...team.score,
+          rank: index + 1, // Rank starts at 1
+        },
+      }));
+
+      // Assign standing data
+      standing_data.standings = calculate_standing;
+    } else if (tournament.format === TournamentFormat.knockout) {
+      // knockout
+      // Get tournament rounds
+      const fixture = await this.prismaService.fixtures.findFirst({
+        where: {
+          tournamentId: tournamentId,
+        },
+        include: {
+          groupFixtures: {
+            where: {
+              isFinal: true, // round_robin / knockout
+            },
+            include: {
+              rounds: {
+                select: {
+                  id: true,
+                  title: true,
+                  matches: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!fixture) {
+        throw new BadRequestException(
+          `Fixture of tournament ${tournamentId} not found`,
+        );
+      }
+
+      // Knockout -> 1 tournament - 1 fixture - 1 group_fixture - n rounds - n matches - ...
+      if (!fixture.groupFixtures) {
+        throw new BadRequestException(
+          `Group fixtures of fixture ${fixture.id} not found`,
+        );
+      }
+
+      // Assign standing data
+      standing_data.standings = {
+        rounds: fixture.groupFixtures[0].rounds,
+      };
+    } else {
+      //// group_playoff
+      const calculate_standing = {
+        groupStage: null,
+        knockoutStage: null,
+      };
+
+      //// groupStage
+      // Get fixture data (isFinal = false)
+      const groupStageFixture = await this.prismaService.fixtures.findFirst({
+        where: {
+          tournamentId: tournamentId,
+        },
+        include: {
+          groupFixtures: {
+            where: {
+              isFinal: false, // group_playoff - groupStage
+            },
+            select: {
+              id: true,
+              title: true,
+              teams: {
+                select: {
+                  id: true,
+                  name: true,
+                  user1: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                    },
+                  },
+                  user2: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // Calculate score
+      const groupStage = await Promise.all(
+        groupStageFixture.groupFixtures.map(async (groupFixture) => {
+          const groupFixtureTeams = await Promise.all(
+            groupFixture.teams.map(async (team) => {
+              // Get matches info from fixtures
+              const fixture = await this.prismaService.fixtures.findFirst({
+                where: {
+                  tournamentId: tournamentId,
+                },
+                include: {
+                  groupFixtures: {
+                    where: {
+                      isFinal: true, // round_robin / knockout
+                    },
+                    include: {
+                      rounds: {
+                        include: {
+                          matches: {
+                            where: {
+                              OR: [
+                                {
+                                  teamId1: team.id,
+                                },
+                                {
+                                  teamId2: team.id,
+                                },
+                              ],
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              });
+
+              // Init score data
+              let matches = 0;
+              let playedMatches = 0;
+              let wonMatches = 0;
+              let lostMatches = 0;
+
+              if (fixture && fixture.groupFixtures) {
+                fixture.groupFixtures.forEach((groupFixture) => {
+                  groupFixture.rounds.forEach((round) => {
+                    // Total matches
+                    matches += round.matches.length;
+
+                    // Played matches (match.status == 'score_done')
+                    // Won matches (teamWinnerId == team.id)
+                    // Lost matches (teamWinnerId != team.id)
+                    round.matches.forEach((match) => {
+                      if (match.status === MatchStatus.score_done) {
+                        playedMatches += 1;
+                        if (match.teamWinnerId === team.id) {
+                          wonMatches += 1;
+                        } else {
+                          lostMatches += 1;
+                        }
+                      }
+                    });
+                  });
+                });
+              }
+
+              //// Match point (matchPoint = (3 * won) + play - won - lose)
+              const matchPoints =
+                3 * wonMatches + playedMatches - wonMatches - lostMatches;
+
+              return {
+                ...team,
+                score: {
+                  totalMatches: matches,
+                  played: playedMatches,
+                  won: wonMatches,
+                  lost: lostMatches,
+                  matchPoints: matchPoints,
+                },
+              };
+            }),
+          );
+
+          // Update group fixture teams
+          groupFixture.teams = groupFixtureTeams;
+
+          return groupFixture;
+        }),
+      );
+
+      groupStage.map((groupFixture) => {
+        // Sort standing data
+        groupFixture.teams = groupFixture.teams.sort((a, b) => {
+          // Sort by match points (descending)
+          if (a['score'].matchPoints !== b['score'].matchPoints) {
+            return b['score'].matchPoints - a['score'].matchPoints;
+          }
+          // Sort by sets won (descending)
+          if (a['score'].won !== b['score'].won) {
+            return b['score'].won - a['score'].won;
+          }
+          // Sort by sets lost (ascending)
+          if (a['score'].lost !== b['score'].lost) {
+            return a['score'].lost - b['score'].lost;
+          }
+          // Sort by matches won (descending)
+          if (a['score'].totalMatches !== b['score'].totalMatches) {
+            return b['score'].totalMatches - a['score'].totalMatches;
+          }
+          // Sort by matches played (ascending)
+          return a['score'].played - b['score'].played;
+        });
+
+        // Assign ranks
+        groupFixture.teams = groupFixture.teams.map((team, index) => ({
+          ...team,
+          score: {
+            ...team['score'],
+            rank: index + 1, // Rank starts at 1
+          },
+        }));
+      });
+
+      // Assign groupStage data
+      calculate_standing.groupStage = groupStage;
+      ///////////////////////////////////////////////////
+      //// knockoutStage
+      // Get fixture data (isFinal = true)
+      const knockoutStageFixture = await this.prismaService.fixtures.findFirst({
+        where: {
+          tournamentId: tournamentId,
+        },
+        include: {
+          groupFixtures: {
+            where: {
+              isFinal: true, // group_playoff - knockoutStage
+            },
+            include: {
+              rounds: {
+                select: {
+                  id: true,
+                  title: true,
+                  matches: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!knockoutStageFixture) {
+        throw new BadRequestException(
+          `Knockout Stage - Fixture of tournament ${tournamentId} not found`,
+        );
+      }
+
+      if (!knockoutStageFixture.groupFixtures) {
+        throw new BadRequestException(
+          `Knockout Stage - Group fixtures of fixture ${knockoutStageFixture.id} not found`,
+        );
+      }
+
+      // Assign knockoutStage data
+      calculate_standing.knockoutStage = {
+        rounds: knockoutStageFixture.groupFixtures[0].rounds,
+      };
+
+      // Assign standing data
+      standing_data.standings = calculate_standing;
+    }
+
+    return standing_data;
+  }
+
   async getMyTournaments(
     userId: string,
     pageOptions: PageOptionsTournamentDto,

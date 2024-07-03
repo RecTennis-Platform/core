@@ -236,7 +236,6 @@ model referees_group_tournaments {
 model group_tournaments {
   id                             Int                              @id @default(autoincrement())
   groupId                        Int                              @map("group_id")
-  maxParticipants                Int                              @default(50) @map("max_participants")
   name                           String
   description                    String
   image                          String
@@ -248,13 +247,14 @@ model group_tournaments {
   address                        String
   createdAt                      DateTime                         @default(now()) @map("created_at")
   updatedAt                      DateTime                         @updatedAt @map("updated_at")
+  maxParticipants                Int                              @default(50) @map("max_participants")
   fixtures                       fixtures[]
   fund                           fund[]
   group_tournament_registrations group_tournament_registrations[]
   group                          groups                           @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_tournaments_groups")
+  referees_group_tournaments     referees_group_tournaments[]
   teams                          teams[]
   tournament_payment_info        tournament_payment_info[]
-  referees_group_tournaments     referees_group_tournaments[]
 }
 
 model group_tournament_registrations {
