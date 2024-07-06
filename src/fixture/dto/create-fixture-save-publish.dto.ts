@@ -58,7 +58,7 @@ export class Match {
   @IsString()
   nextMatchId?: string = null;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   refereeId: string = null;
 

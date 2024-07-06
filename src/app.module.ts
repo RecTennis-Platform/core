@@ -17,6 +17,8 @@ import { ConfigModule } from '@nestjs/config';
 import { FileModule } from './file/file.module';
 import { RefereesTournamentsModule } from './referees_tournaments/referees_tournaments.module';
 import { MatchModule } from './match/match.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { NewsCrawlerService } from './services/jobs/news-crawler';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { MatchModule } from './match/match.module';
     FileModule,
     RefereesTournamentsModule,
     MatchModule,
+    ScheduleModule.forRoot(),
   ],
+  providers: [NewsCrawlerService],
 })
 export class AppModule {}
