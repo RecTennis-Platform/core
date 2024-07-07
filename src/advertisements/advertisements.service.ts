@@ -85,6 +85,10 @@ export class AdvertisementsService {
     const count = await this.prismaService.advertisements.count({
       where: {
         purchasedPackageId: dto.purchasedPackageId,
+        OR: [
+          { status: AdvertisementStatus.approved },
+          { status: AdvertisementStatus.pending },
+        ],
       },
     });
     if (count >= maxAds) {

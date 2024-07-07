@@ -127,7 +127,7 @@ export class AdvertisementsController {
 
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.admin)
-  @Patch(':id/me')
+  @Patch(':id/admin')
   async updateByAdmin(
     @Param('id') id: string,
     @Body() updateAdvertisementDto: UpdateAdvertisementDto,

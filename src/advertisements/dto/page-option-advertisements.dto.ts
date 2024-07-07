@@ -12,14 +12,14 @@ export class PageOptionsAdvertisementDto {
   @IsInt()
   @Min(1)
   @IsOptional()
-  page?: number;
+  page?: number = 1;
 
   @Type(() => Number)
   @IsInt()
   @Min(1)
   @Max(50)
   @IsOptional()
-  take?: number;
+  take?: number = 10;
 
   @IsEnum(AdvertisementStatus)
   @IsOptional()
