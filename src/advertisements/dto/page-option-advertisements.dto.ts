@@ -1,8 +1,9 @@
+import { AdvertisementStatus } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
-import { Order } from '../../../constants/order';
+import { Order } from 'constants/order';
 
-export class PageOptionsPostDto {
+export class PageOptionsAdvertisementDto {
   @IsEnum(Order)
   @IsOptional()
   order?: Order = Order.DESC;
@@ -11,14 +12,18 @@ export class PageOptionsPostDto {
   @IsInt()
   @Min(1)
   @IsOptional()
-  page?: number = 1;
+  page?: number;
 
   @Type(() => Number)
   @IsInt()
   @Min(1)
   @Max(50)
   @IsOptional()
-  take?: number = 10;
+  take?: number;
+
+  @IsEnum(AdvertisementStatus)
+  @IsOptional()
+  status?: AdvertisementStatus;
 
   get skip(): number {
     return (this.page - 1) * this.take;

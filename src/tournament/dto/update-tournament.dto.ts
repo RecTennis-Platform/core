@@ -1,4 +1,9 @@
-import { Gender, ParticipantType, TournamentFormat } from '@prisma/client';
+import {
+  Gender,
+  GroupTournamentFormat,
+  ParticipantType,
+  TournamentFormat,
+} from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsDate,
@@ -79,4 +84,43 @@ export class UpdateTournamentDto {
   @IsDate()
   @Type(() => Date)
   playersBornAfterDate?: Date;
+}
+
+export class UpdateGroupTournamentDto {
+  @IsOptional()
+  @IsString()
+  @MinLength(3, { message: 'Name is too short' })
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  image?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(20, { message: 'Description is too short' })
+  description?: string;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  startDate?: Date;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  endDate?: Date;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(20, { message: 'Address is too short' })
+  address?: string;
+
+  @IsOptional()
+  @IsEnum(GroupTournamentFormat)
+  format?: GroupTournamentFormat;
+
+  @IsOptional()
+  @IsNumber()
+  maxParticipants?: number;
 }

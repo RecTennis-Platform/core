@@ -19,6 +19,7 @@ import { RefereesTournamentsModule } from './referees_tournaments/referees_tourn
 import { MatchModule } from './match/match.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NewsCrawlerService } from './services/jobs/news-crawler';
+import { AdvertisementsModule } from './advertisements/advertisements.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { NewsCrawlerService } from './services/jobs/news-crawler';
     RefereesTournamentsModule,
     MatchModule,
     ScheduleModule.forRoot(),
+    AdvertisementsModule,
   ],
   providers: [NewsCrawlerService],
 })

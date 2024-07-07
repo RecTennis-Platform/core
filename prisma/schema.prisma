@@ -71,6 +71,18 @@ model posts {
   updatedAt DateTime @updatedAt @map("updated_at")
 }
 
+model advertisements {
+  id                 String              @id @default(uuid())
+  userId             String              @map("user_id") @db.Uuid
+  image              String?
+  content            String
+  status             AdvertisementStatus @default(pending)
+  purchasedPackageId String              @map("purchased_package_id")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  user               users               @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_adv_users")
+}
+
 model packages {
   id              Int                 @id @default(autoincrement())
   name            String
@@ -161,6 +173,7 @@ model users {
   tournamentRegistration1      tournament_registrations[]       @relation("user1")
   tournamentRegistration2      tournament_registrations[]       @relation("user2")
   followMatches                users_follow_matches[]
+  advertisements               advertisements[]
 }
 
 model tournaments {
@@ -579,6 +592,12 @@ enum TournamentPhase {
 enum RegistrationStatus {
   inviting
   canceled
+  pending
+  approved
+  rejected
+}
+
+enum AdvertisementStatus {
   pending
   approved
   rejected
