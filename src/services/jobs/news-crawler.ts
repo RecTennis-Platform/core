@@ -8,7 +8,7 @@ const googleNewsScraper = require('google-news-scraper');
 export class NewsCrawlerService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_2_HOURS)
   async handleCron() {
     const articles = await googleNewsScraper({
       searchTerm: 'tennis',
@@ -18,7 +18,7 @@ export class NewsCrawlerService {
         gl: 'US',
         ceid: 'US:en',
       },
-      timeframe: '1h',
+      timeframe: '2h',
     });
     const news = (
       await Promise.all(

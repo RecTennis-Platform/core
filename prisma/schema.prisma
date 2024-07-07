@@ -161,6 +161,7 @@ model users {
   elo                          Int?
   fcmToken                     String?                          @map("fcm_token")
   isReferee                    Boolean                          @default(false) @map("is_referee")
+  advertisements               advertisements[]
   fund                         fund[]
   groupTournamentRegistrations group_tournament_registrations[]
   matches                      matches[]
@@ -173,7 +174,6 @@ model users {
   tournamentRegistration1      tournament_registrations[]       @relation("user1")
   tournamentRegistration2      tournament_registrations[]       @relation("user2")
   followMatches                users_follow_matches[]
-  advertisements               advertisements[]
 }
 
 model tournaments {
