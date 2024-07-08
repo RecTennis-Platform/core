@@ -769,6 +769,18 @@ export class GroupService {
       this.prismaService.posts.findMany({
         ...conditions,
         ...pageOption,
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              image: true,
+              name: true,
+              role: true,
+              phoneNumber: true,
+            },
+          },
+        },
       }),
       this.prismaService.posts.count({
         where: {
@@ -805,6 +817,18 @@ export class GroupService {
       where: {
         id: postId,
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            image: true,
+            name: true,
+            role: true,
+            phoneNumber: true,
+          },
+        },
+      },
     });
 
     if (!post) {
@@ -832,6 +856,18 @@ export class GroupService {
           groupId,
           content: dto.content,
           image: dto.image,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              image: true,
+              name: true,
+              role: true,
+              phoneNumber: true,
+            },
+          },
         },
       });
     } catch (error) {
@@ -878,6 +914,18 @@ export class GroupService {
       data: {
         content: dto.content,
         image: dto.image,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            image: true,
+            name: true,
+            role: true,
+            phoneNumber: true,
+          },
+        },
       },
     });
   }

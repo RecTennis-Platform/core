@@ -69,6 +69,7 @@ model posts {
   content   String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  user      users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_post_users")
 }
 
 model advertisements {
@@ -174,6 +175,7 @@ model users {
   tournamentRegistration1      tournament_registrations[]       @relation("user1")
   tournamentRegistration2      tournament_registrations[]       @relation("user2")
   followMatches                users_follow_matches[]
+  posts                        posts[]
 }
 
 model tournaments {
