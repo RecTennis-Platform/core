@@ -457,7 +457,24 @@ export class TournamentService {
     });
 
     if (!tournament) {
-      throw new BadRequestException('Tournament not found');
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check tournament status
+    if (
+      tournament.phase === TournamentPhase.new ||
+      tournament.phase === TournamentPhase.published ||
+      tournament.phase === TournamentPhase.finalized_applicants
+    ) {
+      throw new BadRequestException(
+        `Invalid tournament's phase: ${tournament.phase}`,
+      );
     }
 
     // Init standing data
@@ -539,7 +556,7 @@ export class TournamentService {
           let wonMatches = 0;
           let lostMatches = 0;
 
-          if (fixture && fixture.groupFixtures) {
+          if (fixture && fixture.groupFixtures.length > 0) {
             fixture.groupFixtures.forEach((groupFixture) => {
               groupFixture.rounds.forEach((round) => {
                 // Total matches
@@ -635,7 +652,48 @@ export class TournamentService {
                 select: {
                   id: true,
                   title: true,
-                  matches: true,
+                  matches: {
+                    include: {
+                      groupFixture1: true,
+                      groupFixture2: true,
+                      team1: {
+                        include: {
+                          user1: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                          user2: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                        },
+                      },
+                      team2: {
+                        include: {
+                          user1: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                          user2: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -650,15 +708,56 @@ export class TournamentService {
       }
 
       // Knockout -> 1 tournament - 1 fixture - 1 group_fixture - n rounds - n matches - ...
-      if (!fixture.groupFixtures) {
+      if (fixture.groupFixtures.length === 0) {
         throw new BadRequestException(
           `Group fixtures of fixture ${fixture.id} not found`,
         );
       }
 
+      // Put team_1 & team_2 to teams
+      let groups = null;
+      groups = fixture.groupFixtures.map((groupFixture) => {
+        const rounds = groupFixture.rounds.map((round) => {
+          const matches = round.matches.map((match) => {
+            const { team1, team2, groupFixture1, groupFixture2, ...others } =
+              match;
+            let team1R = null,
+              team2R = null;
+            if (
+              team1 === null &&
+              !match.rankGroupTeam1 != null &&
+              groupFixture1 != null
+            ) {
+              team1R = {
+                user1: null,
+                user2: null,
+                name: `Winner ${match.rankGroupTeam1} of ${groupFixture1.title}`,
+              };
+            }
+            if (
+              team2 === null &&
+              match.rankGroupTeam2 != null &&
+              groupFixture2 != null
+            ) {
+              team2R = {
+                user1: null,
+                user2: null,
+                name: `Winner ${match.rankGroupTeam2} of ${groupFixture2.title}`,
+              };
+            }
+            return {
+              ...others,
+              teams: { team1: team1 || team1R, team2: team2 || team2R },
+            };
+          });
+          return { ...round, matches: matches };
+        });
+        return { ...groupFixture, rounds: rounds };
+      });
+
       // Assign standing data
       standing_data.standings = {
-        rounds: fixture.groupFixtures[0].rounds,
+        rounds: groups[0].rounds,
       };
     } else {
       //// group_playoff
@@ -719,7 +818,7 @@ export class TournamentService {
                 include: {
                   groupFixtures: {
                     where: {
-                      isFinal: true, // round_robin / knockout
+                      id: groupFixture.id,
                     },
                     include: {
                       rounds: {
@@ -749,7 +848,7 @@ export class TournamentService {
               let wonMatches = 0;
               let lostMatches = 0;
 
-              if (fixture && fixture.groupFixtures) {
+              if (fixture && fixture.groupFixtures.length > 0) {
                 fixture.groupFixtures.forEach((groupFixture) => {
                   groupFixture.rounds.forEach((round) => {
                     // Total matches
@@ -848,7 +947,48 @@ export class TournamentService {
                 select: {
                   id: true,
                   title: true,
-                  matches: true,
+                  matches: {
+                    include: {
+                      groupFixture1: true,
+                      groupFixture2: true,
+                      team1: {
+                        include: {
+                          user1: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                          user2: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                        },
+                      },
+                      team2: {
+                        include: {
+                          user1: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                          user2: {
+                            select: {
+                              id: true,
+                              image: true,
+                              name: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -862,15 +1002,56 @@ export class TournamentService {
         );
       }
 
-      if (!knockoutStageFixture.groupFixtures) {
+      if (knockoutStageFixture.groupFixtures.length === 0) {
         throw new BadRequestException(
           `Knockout Stage - Group fixtures of fixture ${knockoutStageFixture.id} not found`,
         );
       }
 
+      // Put team_1 & team_2 to teams
+      let groups = null;
+      groups = knockoutStageFixture.groupFixtures.map((groupFixture) => {
+        const rounds = groupFixture.rounds.map((round) => {
+          const matches = round.matches.map((match) => {
+            const { team1, team2, groupFixture1, groupFixture2, ...others } =
+              match;
+            let team1R = null,
+              team2R = null;
+            if (
+              team1 === null &&
+              !match.rankGroupTeam1 != null &&
+              groupFixture1 != null
+            ) {
+              team1R = {
+                user1: null,
+                user2: null,
+                name: `Winner ${match.rankGroupTeam1} of ${groupFixture1.title}`,
+              };
+            }
+            if (
+              team2 === null &&
+              match.rankGroupTeam2 != null &&
+              groupFixture2 != null
+            ) {
+              team2R = {
+                user1: null,
+                user2: null,
+                name: `Winner ${match.rankGroupTeam2} of ${groupFixture2.title}`,
+              };
+            }
+            return {
+              ...others,
+              teams: { team1: team1 || team1R, team2: team2 || team2R },
+            };
+          });
+          return { ...round, matches: matches };
+        });
+        return { ...groupFixture, rounds: rounds };
+      });
+
       // Assign knockoutStage data
       calculate_standing.knockoutStage = {
-        rounds: knockoutStageFixture.groupFixtures[0].rounds,
+        rounds: groups[0].rounds,
       };
 
       // Assign standing data
@@ -4465,90 +4646,90 @@ export class TournamentService {
           );
 
           //knockout
-          await tx.group_fixtures.upsert({
-            where: {
-              id: dto.knockoutGroup.id,
-            },
-            update: {
-              fixtureId: fixture.id,
-              title: dto.knockoutGroup.title,
-              isFinal: true,
-              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
-            },
-            create: {
-              id: dto.knockoutGroup.id,
-              fixtureId: fixture.id,
-              title: dto.knockoutGroup.title,
-              isFinal: true,
-              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
-            },
-          });
-          await Promise.all(
-            dto.knockoutGroup.rounds.reverse().map(async (round) => {
-              await tx.rounds.upsert({
-                where: {
-                  id: round.id,
-                },
-                update: {
-                  groupFixtureId: dto.knockoutGroup.id,
-                  title: round.title,
-                  elo: 100,
-                },
-                create: {
-                  id: round.id,
-                  groupFixtureId: dto.knockoutGroup.id,
-                  title: round.title,
-                  elo: 100,
-                },
-              });
-              //apply elo
-              await Promise.all(
-                round.matches.map(async (match) => {
-                  await tx.matches.upsert({
-                    where: {
-                      id: match.id,
-                    },
-                    update: {
-                      roundId: round.id,
-                      title: match.title,
-                      status: match.status,
-                      rankGroupTeam1: match.rankGroupTeam1,
-                      rankGroupTeam2: match.rankGroupTeam2,
-                      nextMatchId: match.nextMatchId,
-                      matchStartDate: match.matchStartDate,
-                      teamId1: match.teams.team1?.id,
-                      teamId2: match.teams.team2?.id,
-                      venue: match.venue,
-                      duration: match.duration,
-                      breakDuration: dto.breakDuration,
-                      refereeId: match.refereeId,
-                      groupFixtureTeamId1: match.groupFixtureTeamId1,
-                      groupFixtureTeamId2: match.groupFixtureTeamId2,
-                    },
+          // await tx.group_fixtures.upsert({
+          //   where: {
+          //     id: dto.knockoutGroup.id,
+          //   },
+          //   update: {
+          //     fixtureId: fixture.id,
+          //     title: dto.knockoutGroup.title,
+          //     isFinal: true,
+          //     numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+          //   },
+          //   create: {
+          //     id: dto.knockoutGroup.id,
+          //     fixtureId: fixture.id,
+          //     title: dto.knockoutGroup.title,
+          //     isFinal: true,
+          //     numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+          //   },
+          // });
+          // await Promise.all(
+          //   dto.knockoutGroup.rounds.reverse().map(async (round) => {
+          //     await tx.rounds.upsert({
+          //       where: {
+          //         id: round.id,
+          //       },
+          //       update: {
+          //         groupFixtureId: dto.knockoutGroup.id,
+          //         title: round.title,
+          //         elo: 100,
+          //       },
+          //       create: {
+          //         id: round.id,
+          //         groupFixtureId: dto.knockoutGroup.id,
+          //         title: round.title,
+          //         elo: 100,
+          //       },
+          //     });
+          //     //apply elo
+          //     await Promise.all(
+          //       round.matches.map(async (match) => {
+          //         await tx.matches.upsert({
+          //           where: {
+          //             id: match.id,
+          //           },
+          //           update: {
+          //             roundId: round.id,
+          //             title: match.title,
+          //             status: match.status,
+          //             rankGroupTeam1: match.rankGroupTeam1,
+          //             rankGroupTeam2: match.rankGroupTeam2,
+          //             nextMatchId: match.nextMatchId,
+          //             matchStartDate: match.matchStartDate,
+          //             teamId1: match.teams.team1?.id,
+          //             teamId2: match.teams.team2?.id,
+          //             venue: match.venue,
+          //             duration: match.duration,
+          //             breakDuration: dto.breakDuration,
+          //             refereeId: match.refereeId,
+          //             groupFixtureTeamId1: match.groupFixtureTeamId1,
+          //             groupFixtureTeamId2: match.groupFixtureTeamId2,
+          //           },
 
-                    create: {
-                      id: match.id,
-                      roundId: round.id,
-                      title: match.title,
-                      status: match.status,
-                      rankGroupTeam1: match.rankGroupTeam1,
-                      rankGroupTeam2: match.rankGroupTeam2,
-                      nextMatchId: match.nextMatchId,
-                      matchStartDate: match.matchStartDate,
-                      teamId1: match.teams.team1?.id,
-                      teamId2: match.teams.team2?.id,
-                      venue: match.venue,
-                      duration: match.duration,
-                      breakDuration: dto.breakDuration,
-                      refereeId: match.refereeId,
-                      groupFixtureTeamId1: match.groupFixtureTeamId1,
-                      groupFixtureTeamId2: match.groupFixtureTeamId2,
-                    },
-                  });
-                }),
-              );
-            }),
-          );
+          //           create: {
+          //             id: match.id,
+          //             roundId: round.id,
+          //             title: match.title,
+          //             status: match.status,
+          //             rankGroupTeam1: match.rankGroupTeam1,
+          //             rankGroupTeam2: match.rankGroupTeam2,
+          //             nextMatchId: match.nextMatchId,
+          //             matchStartDate: match.matchStartDate,
+          //             teamId1: match.teams.team1?.id,
+          //             teamId2: match.teams.team2?.id,
+          //             venue: match.venue,
+          //             duration: match.duration,
+          //             breakDuration: dto.breakDuration,
+          //             refereeId: match.refereeId,
+          //             groupFixtureTeamId1: match.groupFixtureTeamId1,
+          //             groupFixtureTeamId2: match.groupFixtureTeamId2,
+          //           },
+          //         });
+          //       }),
+          //     );
+          //   }),
+          // );
 
           //update teams
           await Promise.all(

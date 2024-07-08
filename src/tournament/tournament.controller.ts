@@ -76,7 +76,6 @@ export class TournamentController {
   @Get(':tournamentId/standings')
   // Get tournament standing info
   async getTournamentStanding(@Param('tournamentId') tournamentId: number) {
-    console.log('tournamentId:', tournamentId);
     return await this.tournamentService.getTournamentStanding(tournamentId);
   }
 

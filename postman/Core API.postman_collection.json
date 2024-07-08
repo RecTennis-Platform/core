@@ -6216,6 +6216,1154 @@
 			]
 		},
 		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "Create post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"This is the content\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/posts",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"posts"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create post",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"This is the content\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/posts",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"posts"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "268"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"10c-kIAk3uT7aS7VAt/kuPvPHXxsHjM\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 08:07:03 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n    \"groupId\": 39,\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"This is the content\",\n    \"createdAt\": \"2024-07-07T08:07:03.636Z\",\n    \"updatedAt\": \"2024-07-07T08:07:03.636Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get posts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/posts",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"posts"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get posts",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/posts",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"posts"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "354"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"162-rNxyfX32mAPlj5GrmyPlM/ZJDe0\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 08:09:43 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Group posts fetched successfully\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n            \"groupId\": 39,\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"content\": \"This is the content\",\n            \"createdAt\": \"2024-07-07T08:07:03.636Z\",\n            \"updatedAt\": \"2024-07-07T08:07:03.636Z\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 1\n}"
+						}
+					]
+				},
+				{
+					"name": "Update post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Updated content\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/posts/1",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update post",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"Updated content\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/posts/1",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"posts",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "264"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"108-E8xitAHmNix46zEv+/ZydEyDCC0\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 08:10:52 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n    \"groupId\": 39,\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"Updated content\",\n    \"createdAt\": \"2024-07-07T08:07:03.636Z\",\n    \"updatedAt\": \"2024-07-07T08:10:52.806Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/posts/1",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete post",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/posts/1",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"posts",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "264"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"108-E8xitAHmNix46zEv+/ZydEyDCC0\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 08:11:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n    \"groupId\": 39,\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"Updated content\",\n    \"createdAt\": \"2024-07-07T08:07:03.636Z\",\n    \"updatedAt\": \"2024-07-07T08:10:52.806Z\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Advertisement",
+			"item": [
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Create",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"This is the content\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/advertisements",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"advertisements"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Create",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"This is the content\",\n    \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{CORE_URL}}/advertisements",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"advertisements"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "359"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"167-NcH90xGGBlSaz8OXJTWmlmlCD1E\""
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 07 Jul 2024 08:39:35 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"1b8327ab-79d9-4fd9-be47-723d9947cf1b\",\n    \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"This is the content\",\n    \"status\": \"pending\",\n    \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\",\n    \"createdAt\": \"2024-07-07T08:39:35.493Z\",\n    \"updatedAt\": \"2024-07-07T08:39:35.493Z\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Get my advertisement",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/advertisements/me",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"advertisements",
+										"me"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/advertisements/me",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"advertisements",
+												"me"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "400"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"190-QLvyD+kqhJbGd4q49g4Rnljhvh0\""
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 07 Jul 2024 08:41:53 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"data\": [\n        {\n            \"id\": \"1b8327ab-79d9-4fd9-be47-723d9947cf1b\",\n            \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"content\": \"This is the content\",\n            \"status\": \"pending\",\n            \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\",\n            \"createdAt\": \"2024-07-07T08:39:35.493Z\",\n            \"updatedAt\": \"2024-07-07T08:39:35.493Z\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 1\n}"
+								}
+							]
+						},
+						{
+							"name": "Get",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/advertisements/me",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"advertisements",
+										"me"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/advertisements/1b8327ab-79d9-4fd9-be47-723d9947cf1b",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"advertisements",
+												"1b8327ab-79d9-4fd9-be47-723d9947cf1b"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "359"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"167-NcH90xGGBlSaz8OXJTWmlmlCD1E\""
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 07 Jul 2024 08:43:02 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"1b8327ab-79d9-4fd9-be47-723d9947cf1b\",\n    \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"This is the content\",\n    \"status\": \"pending\",\n    \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\",\n    \"createdAt\": \"2024-07-07T08:39:35.493Z\",\n    \"updatedAt\": \"2024-07-07T08:39:35.493Z\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"approved\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/advertisements/1b8327ab-79d9-4fd9-be47-723d9947cf1b/admin",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"advertisements",
+										"1b8327ab-79d9-4fd9-be47-723d9947cf1b",
+										"admin"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Update",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"HAHAHAAH\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{CORE_URL}}/advertisements/1b8327ab-79d9-4fd9-be47-723d9947cf1b/me",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"advertisements",
+												"1b8327ab-79d9-4fd9-be47-723d9947cf1b",
+												"me"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "348"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"15c-siHa+24g9GL+tm0w6FqskHfzwlU\""
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 07 Jul 2024 08:46:57 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"1b8327ab-79d9-4fd9-be47-723d9947cf1b\",\n    \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"HAHAHAAH\",\n    \"status\": \"pending\",\n    \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\",\n    \"createdAt\": \"2024-07-07T08:39:35.493Z\",\n    \"updatedAt\": \"2024-07-07T08:46:57.533Z\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "Update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNjI4YTE0Mi0zODZiLTRlZTYtODE5OC1kMjgyZDlmNDEwNTkiLCJlbWFpbCI6InRob25nQG1haWwuY29tIiwiaWF0IjoxNzIwMzQyMTA5LCJleHAiOjE3MjE2MzgxMDl9.RCiYvEYblDOjG1Ew2YJVrWF9_AdUhDw0YeeBFys1e6w",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"approved\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/advertisements/1b8327ab-79d9-4fd9-be47-723d9947cf1b/admin",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"advertisements",
+										"1b8327ab-79d9-4fd9-be47-723d9947cf1b",
+										"admin"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Update",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"status\": \"approved\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{CORE_URL}}/advertisements/1b8327ab-79d9-4fd9-be47-723d9947cf1b/admin",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"advertisements",
+												"1b8327ab-79d9-4fd9-be47-723d9947cf1b",
+												"admin"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "349"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"15d-+wZNoec57eLiSZ/R8TcRP6RgRqw\""
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 07 Jul 2024 08:49:07 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"1b8327ab-79d9-4fd9-be47-723d9947cf1b\",\n    \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"HAHAHAAH\",\n    \"status\": \"approved\",\n    \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\",\n    \"createdAt\": \"2024-07-07T08:39:35.493Z\",\n    \"updatedAt\": \"2024-07-07T08:49:07.508Z\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Get List By Admin",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNjI4YTE0Mi0zODZiLTRlZTYtODE5OC1kMjgyZDlmNDEwNTkiLCJlbWFpbCI6InRob25nQG1haWwuY29tIiwiaWF0IjoxNzIwMzQyMTA5LCJleHAiOjE3MjE2MzgxMDl9.RCiYvEYblDOjG1Ew2YJVrWF9_AdUhDw0YeeBFys1e6w",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/advertisements/admin",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"advertisements",
+										"admin"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get List By Admin",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/advertisements/admin?status=approved",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"advertisements",
+												"admin"
+											],
+											"query": [
+												{
+													"key": "status",
+													"value": "approved"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "390"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"186-SJ+ZPTEQ4ixdrNdPQ+z8Fz6FFVI\""
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 07 Jul 2024 08:50:58 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"data\": [\n        {\n            \"id\": \"1b8327ab-79d9-4fd9-be47-723d9947cf1b\",\n            \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"content\": \"HAHAHAAH\",\n            \"status\": \"approved\",\n            \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\",\n            \"createdAt\": \"2024-07-07T08:39:35.493Z\",\n            \"updatedAt\": \"2024-07-07T08:49:07.508Z\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 1\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/advertisements/1b8327ab-79d9-4fd9-be47-723d9947cf1b",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"advertisements",
+								"1b8327ab-79d9-4fd9-be47-723d9947cf1b"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/advertisements/1b8327ab-79d9-4fd9-be47-723d9947cf1b",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"advertisements",
+										"1b8327ab-79d9-4fd9-be47-723d9947cf1b"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "349"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"15d-+wZNoec57eLiSZ/R8TcRP6RgRqw\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 08:51:51 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"1b8327ab-79d9-4fd9-be47-723d9947cf1b\",\n    \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n    \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n    \"content\": \"HAHAHAAH\",\n    \"status\": \"approved\",\n    \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\",\n    \"createdAt\": \"2024-07-07T08:39:35.493Z\",\n    \"updatedAt\": \"2024-07-07T08:49:07.508Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get list advertisements (approved and not expired)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/advertisements",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"advertisements"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get advertisement",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/advertisements",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"advertisements"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "397"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"18d-vPdenswQTUtllj56hgItRAtF0vk\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 08:55:44 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"id\": \"2ac71e87-28af-4782-9f92-b9c1a65fce26\",\n            \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"content\": \"dksjnksndkjsndk\",\n            \"status\": \"approved\",\n            \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\",\n            \"createdAt\": \"2024-07-07T08:54:28.063Z\",\n            \"updatedAt\": \"2024-07-07T08:55:08.893Z\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 1\n}"
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "Mobile mini app",
 			"item": [
 				{
@@ -13544,7 +14692,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"id\":\"fa83b537-be04-4e26-a695-35c4951804a7\",\"tournamentId\":29,\"numberOfParticipants\":8,\"numberOfGroups\":1,\"fixtureStartDate\":\"2024-06-22T00:00:00+07:00\",\"fixtureEndDate\":\"2024-07-15T23:59:59+07:00\",\"matchesStartTime\":\"00:00:00\",\"matchesEndTime\":\"00:00:00\",\"matchDuration\":30,\"breakDuration\":10,\"venue\":\"Here let me give ya an address ok\",\"status\":\"draft\",\"participantType\":\"single\",\"format\":\"group_playoff\",\"knockoutGroup\":{\"id\":\"4167a390-c8f7-4884-ad4c-7fe6e0fb2c87\",\"title\":\"Knockout Group\",\"isFinal\":true,\"rounds\":[{\"id\":\"0ad0e940-d10e-40ab-b95b-5dea164e77eb\",\"title\":\"Round 1\",\"matches\":[{\"id\":\"827b5897-5270-43e9-87c0-edbe99fbe482\",\"nextMatchId\":\"5eb02820-abf5-4448-9eae-a73d22a77136\",\"title\":\"Match 1\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"\",\"user1\":null,\"user2\":null,\"name\":\"Winner 1 Of Group A\"},\"team2\":{\"id\":\"\",\"user1\":null,\"user2\":null,\"name\":\"Winner 2 Of Group B\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":\"7d924e25-64b0-4db2-b765-596ff0167e79\",\"groupFixtureTeamId2\":\"e7d522a3-ba16-4bc5-b79e-7df696c9cd9c\",\"rankGroupTeam1\":1,\"rankGroupTeam2\":2},{\"id\":\"75c75cff-b913-4cae-89a9-2b302b4815be\",\"nextMatchId\":\"5eb02820-abf5-4448-9eae-a73d22a77136\",\"title\":\"Match 2\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"\",\"user1\":null,\"user2\":null,\"name\":\"Winner 1 Of Group B\"},\"team2\":{\"id\":\"\",\"user1\":null,\"user2\":null,\"name\":\"Winner 2 Of Group A\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":\"e7d522a3-ba16-4bc5-b79e-7df696c9cd9c\",\"groupFixtureTeamId2\":\"7d924e25-64b0-4db2-b765-596ff0167e79\",\"rankGroupTeam1\":1,\"rankGroupTeam2\":2}]},{\"id\":\"6af2e530-6f1f-4a0b-aaac-5e59b25c5505\",\"title\":\"Round 2\",\"matches\":[{\"id\":\"5eb02820-abf5-4448-9eae-a73d22a77136\",\"nextMatchId\":null,\"title\":\"Match 1\",\"matchStartDate\":null,\"duration\":30,\"status\":\"no_show\",\"teams\":{\"team1\":null,\"team2\":null,\"team1Placeholder\":\"Winner of Match 1 - Round 1\",\"team2Placeholder\":\"Winner of Match 2 - Round 1\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null}]}]},\"roundRobinGroups\":[{\"id\":\"7d924e25-64b0-4db2-b765-596ff0167e79\",\"title\":\"Group A\",\"isFinal\":false,\"rounds\":[{\"id\":\"7d586cc9-8691-417e-87fe-c159a46bd62d\",\"title\":\"Round 1\",\"matches\":[{\"id\":\"bdfa378c-1789-4b40-bf2a-78e346f84ead\",\"nextMatchId\":null,\"title\":\"Match 1\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"2feedc03-c910-4a7f-9bfd-ddfbd7def14b\",\"user1\":{\"id\":\"84f7b4ec-3c21-4183-8d68-1a123a0013fe\",\"image\":\"\",\"name\":\"shin8\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"bd883094-57c0-4a9a-9d6d-c12b90a6cd8f\",\"user1\":{\"id\":\"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\"image\":\"\",\"name\":\"shin2\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null},{\"id\":\"a511d2d3-4cb2-4c51-bc8d-0e40cc26c578\",\"nextMatchId\":null,\"title\":\"Match 2\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"32503ebc-cbe7-4b4b-89e4-f6869b577500\",\"user1\":{\"id\":\"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\"image\":\"\",\"name\":\"shin6\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"943ac771-e113-4347-9d41-4a051e9811f0\",\"user1\":{\"id\":\"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\"image\":\"\",\"name\":\"shin4\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null}]},{\"id\":\"90a4d1e4-04ea-4069-83c4-426df37576f5\",\"title\":\"Round 2\",\"matches\":[{\"id\":\"1d385dda-d546-4597-8dcb-2f71b39bdd88\",\"nextMatchId\":null,\"title\":\"Match 3\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"943ac771-e113-4347-9d41-4a051e9811f0\",\"user1\":{\"id\":\"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\"image\":\"\",\"name\":\"shin4\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"bd883094-57c0-4a9a-9d6d-c12b90a6cd8f\",\"user1\":{\"id\":\"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\"image\":\"\",\"name\":\"shin2\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null},{\"id\":\"06c11de6-4480-430f-a441-58ef76f9eaae\",\"nextMatchId\":null,\"title\":\"Match 4\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"2feedc03-c910-4a7f-9bfd-ddfbd7def14b\",\"user1\":{\"id\":\"84f7b4ec-3c21-4183-8d68-1a123a0013fe\",\"image\":\"\",\"name\":\"shin8\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"32503ebc-cbe7-4b4b-89e4-f6869b577500\",\"user1\":{\"id\":\"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\"image\":\"\",\"name\":\"shin6\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null}]},{\"id\":\"1f07013e-ff31-4c88-8fab-ac2c80b07c78\",\"title\":\"Round 3\",\"matches\":[{\"id\":\"297f7a49-3580-44ba-a7b4-114ffb0cb294\",\"nextMatchId\":null,\"title\":\"Match 5\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"32503ebc-cbe7-4b4b-89e4-f6869b577500\",\"user1\":{\"id\":\"c1cc50dd-a366-43d6-8e65-95d02b7615c4\",\"image\":\"\",\"name\":\"shin6\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"bd883094-57c0-4a9a-9d6d-c12b90a6cd8f\",\"user1\":{\"id\":\"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\"image\":\"\",\"name\":\"shin2\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null},{\"id\":\"73e11fa2-73d1-4c0a-a06a-b9cad907a165\",\"nextMatchId\":null,\"title\":\"Match 6\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"943ac771-e113-4347-9d41-4a051e9811f0\",\"user1\":{\"id\":\"f877a510-f035-4335-a3e9-1487c9e2f9bc\",\"image\":\"\",\"name\":\"shin4\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"2feedc03-c910-4a7f-9bfd-ddfbd7def14b\",\"user1\":{\"id\":\"84f7b4ec-3c21-4183-8d68-1a123a0013fe\",\"image\":\"\",\"name\":\"shin8\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null}]}]},{\"id\":\"e7d522a3-ba16-4bc5-b79e-7df696c9cd9c\",\"title\":\"Group B\",\"isFinal\":false,\"rounds\":[{\"id\":\"b35e9175-53da-469f-9b36-9fb413ce6658\",\"title\":\"Round 1\",\"matches\":[{\"id\":\"d29e54ac-8fc3-47aa-b07d-61d4e4fb5d5c\",\"nextMatchId\":null,\"title\":\"Match 1\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"12c4c2bf-e9b4-4a76-be45-d22f161dd33a\",\"user1\":{\"id\":\"a2c86b51-0d35-4f7f-afed-3257305d01d7\",\"image\":\"\",\"name\":\"shin7\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"7740488e-6e52-45a0-ab09-c5897ed43a35\",\"user1\":{\"id\":\"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\"image\":\"\",\"name\":\"shin9\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null},{\"id\":\"f796ad35-1389-4146-8fb8-ea24da20bf9e\",\"nextMatchId\":null,\"title\":\"Match 2\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"eafd83a9-1a8e-4c7d-8225-687cc4ce4ccb\",\"user1\":{\"id\":\"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\"image\":\"\",\"name\":\"shin5\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"49b0cc06-17b9-4cde-a49c-c7becc2936cb\",\"user1\":{\"id\":\"60288e3c-165c-4918-bbe9-ff1b84992d72\",\"image\":\"\",\"name\":\"shin3\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null}]},{\"id\":\"81ac6313-d100-4d2e-a362-52f70893fb08\",\"title\":\"Round 2\",\"matches\":[{\"id\":\"7f717575-9034-4a5c-93cb-432bb8302508\",\"nextMatchId\":null,\"title\":\"Match 3\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"49b0cc06-17b9-4cde-a49c-c7becc2936cb\",\"user1\":{\"id\":\"60288e3c-165c-4918-bbe9-ff1b84992d72\",\"image\":\"\",\"name\":\"shin3\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"7740488e-6e52-45a0-ab09-c5897ed43a35\",\"user1\":{\"id\":\"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\"image\":\"\",\"name\":\"shin9\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null},{\"id\":\"0d50cea6-4e49-4105-80bd-0fa250a81905\",\"nextMatchId\":null,\"title\":\"Match 4\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"12c4c2bf-e9b4-4a76-be45-d22f161dd33a\",\"user1\":{\"id\":\"a2c86b51-0d35-4f7f-afed-3257305d01d7\",\"image\":\"\",\"name\":\"shin7\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"eafd83a9-1a8e-4c7d-8225-687cc4ce4ccb\",\"user1\":{\"id\":\"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\"image\":\"\",\"name\":\"shin5\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null}]},{\"id\":\"3ec4cd43-8cd3-410e-b83c-3ca9b2045b95\",\"title\":\"Round 3\",\"matches\":[{\"id\":\"61cb0b36-e125-4d2f-8cec-c37effdbb408\",\"nextMatchId\":null,\"title\":\"Match 5\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"eafd83a9-1a8e-4c7d-8225-687cc4ce4ccb\",\"user1\":{\"id\":\"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\"image\":\"\",\"name\":\"shin5\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"7740488e-6e52-45a0-ab09-c5897ed43a35\",\"user1\":{\"id\":\"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\"image\":\"\",\"name\":\"shin9\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null},{\"id\":\"bd4fc22c-ec3b-4532-a31c-c4bdc2774a6d\",\"nextMatchId\":null,\"title\":\"Match 6\",\"matchStartDate\":null,\"duration\":30,\"status\":\"scheduled\",\"teams\":{\"team1\":{\"id\":\"49b0cc06-17b9-4cde-a49c-c7becc2936cb\",\"user1\":{\"id\":\"60288e3c-165c-4918-bbe9-ff1b84992d72\",\"image\":\"\",\"name\":\"shin3\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team2\":{\"id\":\"12c4c2bf-e9b4-4a76-be45-d22f161dd33a\",\"user1\":{\"id\":\"a2c86b51-0d35-4f7f-afed-3257305d01d7\",\"image\":\"\",\"name\":\"shin7\",\"email\":\"\",\"gender\":\"male\",\"elo\":0},\"user2\":null,\"name\":\"\"},\"team1Placeholder\":\"\",\"team2Placeholder\":\"\"},\"venue\":\"Here let me give ya an address ok\",\"refereeId\":null,\"referee\":null,\"isFollowed\":false,\"groupFixtureTeamId1\":null,\"groupFixtureTeamId2\":null,\"rankGroupTeam1\":null,\"rankGroupTeam2\":null}]}]}]}",
+							"raw": "{\r\n    \"id\": \"2db4b1bf-268c-4e4d-a9c3-abda853eb110\",\r\n     \"fixtureStartDate\": \"2024-07-06T14:32:22.499Z\",\r\n    \"fixtureEndDate\": \"2024-07-07T14:32:22.499Z\",\r\n    \"matchesStartTime\": \"2022-04-17T01:00:00.000Z\",\r\n    \"matchesEndTime\": \"2022-04-17T13:00:00.000Z\",\r\n    \"matchDuration\": 30,\r\n    \"breakDuration\": 10,\r\n    \"numberOfProceeders\": 1,\r\n    \"format\": \"group_playoff\",\r\n    \"venue\": \"San Van Dong Phu Tho\",\r\n    \"groups\": [\r\n        {\r\n            \"title\": \"Group A\",\r\n            \"id\": \"9469d40b-43ca-4796-ba25-883c4cb41f32\",\r\n            \"numberOfProceeders\": 1,\r\n            \"teams\": [\r\n                \"543c9585-2842-4b11-ac17-f4d9cdef80ed\",\r\n                \"7916a203-11be-4120-a17d-c35de7e36d8d\",\r\n                \"6898ee4b-7da9-4207-b70a-171d7c0a7ce6\"\r\n            ]\r\n        },\r\n        {\r\n            \"title\": \"Group B\",\r\n            \"id\": \"d5fddbc3-66d6-4d16-9fe9-0943cd4fb7b1\",\r\n            \"numberOfProceeders\": 1,\r\n            \"teams\": [\r\n                \"402452a6-0bf0-418c-b829-9b6df80c74fb\",\r\n                \"ef03676a-5d23-4cea-891b-b023fc18178a\",\r\n                \"faa00abb-b721-442b-a819-d1ae76b0d630\"\r\n            ]\r\n        }\r\n    ],\r\n    \"roundRobinGroups\": [\r\n        {\r\n            \"title\": \"Group A\",\r\n            \"rounds\": [\r\n                {\r\n                    \"title\": \"Round 1\",\r\n                    \"matches\": [\r\n                        {\r\n                            \"id\": \"797077ff-bb34-48bb-b586-eb7af025222c\",\r\n                            \"nextMatchId\": null,\r\n                            \"title\": \"Match 1\",\r\n                            \"matchStartDate\": \"2024-07-09T14:38:03.936Z\",\r\n                            \"duration\": 30,\r\n                            \"status\": \"scheduled\",\r\n                            \"teams\": {\r\n                                \"team1\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"5619b876-5c87-49cb-b9c2-a9c620feb103\",\r\n                                        \"image\": \"https://cdn4.vectorstock.com/i/1000x1000/22/23/simple-cartoon-avatar-vector-14132223.jpg\",\r\n                                        \"name\": \"Huy Nguyen 3\",\r\n                                        \"isReferee\": false\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"7916a203-11be-4120-a17d-c35de7e36d8d\"\r\n                                },\r\n                                \"team2\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"shin5\",\r\n                                        \"isReferee\": false\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"6898ee4b-7da9-4207-b70a-171d7c0a7ce6\"\r\n                                }\r\n                            },\r\n                            \"refereeId\": \"0a8c5a69-5647-4614-81dd-2901c30bc84d\",\r\n                            \"venue\": \"San Van Dong Phu Tho\"\r\n                        }\r\n                    ],\r\n                    \"id\": \"c37abf52-82e3-480e-aac7-1196c3fb2d4d\"\r\n                },\r\n                {\r\n                    \"title\": \"Round 2\",\r\n                    \"matches\": [\r\n                        {\r\n                            \"id\": \"cf1208ae-88e7-4d19-9556-cd73c125aa81\",\r\n                            \"nextMatchId\": null,\r\n                            \"title\": \"Match 2\",\r\n                            \"matchStartDate\": \"2024-07-09T14:38:03.937Z\",\r\n                            \"duration\": 30,\r\n                            \"status\": \"scheduled\",\r\n                            \"teams\": {\r\n                                \"team1\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"af9c5165-4612-4b82-9810-ef8479e85804\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"Huy Nguyen 6\",\r\n                                        \"isReferee\": false\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"543c9585-2842-4b11-ac17-f4d9cdef80ed\"\r\n                                },\r\n                                \"team2\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"5619b876-5c87-49cb-b9c2-a9c620feb103\",\r\n                                        \"image\": \"https://cdn4.vectorstock.com/i/1000x1000/22/23/simple-cartoon-avatar-vector-14132223.jpg\",\r\n                                        \"name\": \"Huy Nguyen 3\",\r\n                                        \"isReferee\": false\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"7916a203-11be-4120-a17d-c35de7e36d8d\"\r\n                                }\r\n                            },\r\n                            \"refereeId\": \"0a8c5a69-5647-4614-81dd-2901c30bc84d\",\r\n                            \"venue\": \"San Van Dong Phu Tho\"\r\n                        }\r\n                    ],\r\n                    \"id\": \"5e5a3ae9-2a01-4250-8351-eb8759e950d3\"\r\n                },\r\n                {\r\n                    \"title\": \"Round 3\",\r\n                    \"matches\": [\r\n                        {\r\n                            \"id\": \"ebdd4690-498c-4dfe-9b49-21356c28b2c9\",\r\n                            \"nextMatchId\": null,\r\n                            \"title\": \"Match 3\",\r\n                            \"matchStartDate\": \"2024-07-09T14:38:03.937Z\",\r\n                            \"duration\": 30,\r\n                            \"status\": \"scheduled\",\r\n                            \"teams\": {\r\n                                \"team1\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"shin5\",\r\n                                        \"isReferee\": false\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"6898ee4b-7da9-4207-b70a-171d7c0a7ce6\"\r\n                                },\r\n                                \"team2\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"af9c5165-4612-4b82-9810-ef8479e85804\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"Huy Nguyen 6\",\r\n                                        \"isReferee\": false\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"543c9585-2842-4b11-ac17-f4d9cdef80ed\"\r\n                                }\r\n                            },\r\n                            \"refereeId\": \"0a8c5a69-5647-4614-81dd-2901c30bc84d\",\r\n                            \"venue\": \"San Van Dong Phu Tho\"\r\n                        }\r\n                    ],\r\n                    \"id\": \"1d89e8c5-9648-43dc-814d-c8e2a3a37462\"\r\n                }\r\n            ],\r\n            \"id\": \"9469d40b-43ca-4796-ba25-883c4cb41f32\",\r\n            \"numberOfProceeders\": 1,\r\n            \"isFinal\": false\r\n        },\r\n        {\r\n            \"title\": \"Group B\",\r\n            \"rounds\": [\r\n                {\r\n                    \"title\": \"Round 1\",\r\n                    \"matches\": [\r\n                        {\r\n                            \"id\": \"ef50061d-6a3a-4c02-8c21-7bd925ea4832\",\r\n                            \"nextMatchId\": null,\r\n                            \"title\": \"Match 1\",\r\n                            \"matchStartDate\": \"2024-07-09T14:38:04.174Z\",\r\n                            \"duration\": 30,\r\n                            \"status\": \"scheduled\",\r\n                            \"teams\": {\r\n                                \"team1\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"shin9\",\r\n                                        \"isReferee\": false\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"ef03676a-5d23-4cea-891b-b023fc18178a\"\r\n                                },\r\n                                \"team2\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\r\n                                        \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\r\n                                        \"name\": \"Thong\",\r\n                                        \"isReferee\": true\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"faa00abb-b721-442b-a819-d1ae76b0d630\"\r\n                                }\r\n                            },\r\n                            \"refereeId\": \"0a8c5a69-5647-4614-81dd-2901c30bc84d\",\r\n                            \"venue\": \"San Van Dong Phu Tho\"\r\n                        }\r\n                    ],\r\n                    \"id\": \"87ee25a9-01ff-4ced-9731-34fcec1bca41\"\r\n                },\r\n                {\r\n                    \"title\": \"Round 2\",\r\n                    \"matches\": [\r\n                        {\r\n                            \"id\": \"678e5e7f-11dc-401f-873c-6181d96be9f5\",\r\n                            \"nextMatchId\": null,\r\n                            \"title\": \"Match 2\",\r\n                            \"matchStartDate\": \"2024-07-09T14:38:04.174Z\",\r\n                            \"duration\": 30,\r\n                            \"status\": \"scheduled\",\r\n                            \"teams\": {\r\n                                \"team1\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"54df148f-5562-4b6c-b9f5-3551388acd54\",\r\n                                        \"image\": \"https://avatoon.me/wp-content/uploads/2021/09/Cartoon-Pic-Ideas-for-DP-Profile11.png\",\r\n                                        \"name\": \"Huy Nguyen 4\",\r\n                                        \"isReferee\": false\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"402452a6-0bf0-418c-b829-9b6df80c74fb\"\r\n                                },\r\n                                \"team2\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\r\n                                        \"image\": null,\r\n                                        \"name\": \"shin9\",\r\n                                        \"isReferee\": false\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"ef03676a-5d23-4cea-891b-b023fc18178a\"\r\n                                }\r\n                            },\r\n                            \"refereeId\": \"0a8c5a69-5647-4614-81dd-2901c30bc84d\",\r\n                            \"venue\": \"San Van Dong Phu Tho\"\r\n                        }\r\n                    ],\r\n                    \"id\": \"f3dbca44-6842-43a8-802f-57f46bba9b0e\"\r\n                },\r\n                {\r\n                    \"title\": \"Round 3\",\r\n                    \"matches\": [\r\n                        {\r\n                            \"id\": \"4a146fcf-d132-48a2-a764-62cb4add4026\",\r\n                            \"nextMatchId\": null,\r\n                            \"title\": \"Match 3\",\r\n                            \"matchStartDate\": \"2024-07-09T14:38:04.174Z\",\r\n                            \"duration\": 30,\r\n                            \"status\": \"scheduled\",\r\n                            \"teams\": {\r\n                                \"team1\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\r\n                                        \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\r\n                                        \"name\": \"Thong\",\r\n                                        \"isReferee\": true\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"faa00abb-b721-442b-a819-d1ae76b0d630\"\r\n                                },\r\n                                \"team2\": {\r\n                                    \"user1\": {\r\n                                        \"id\": \"54df148f-5562-4b6c-b9f5-3551388acd54\",\r\n                                        \"image\": \"https://avatoon.me/wp-content/uploads/2021/09/Cartoon-Pic-Ideas-for-DP-Profile11.png\",\r\n                                        \"name\": \"Huy Nguyen 4\",\r\n                                        \"isReferee\": false\r\n                                    },\r\n                                    \"user2\": null,\r\n                                    \"id\": \"402452a6-0bf0-418c-b829-9b6df80c74fb\"\r\n                                }\r\n                            },\r\n                            \"refereeId\": \"0a8c5a69-5647-4614-81dd-2901c30bc84d\",\r\n                            \"venue\": \"San Van Dong Phu Tho\"\r\n                        }\r\n                    ],\r\n                    \"id\": \"56a714a8-1365-46d2-9f47-4e14680c8dd9\"\r\n                }\r\n            ],\r\n            \"id\": \"d5fddbc3-66d6-4d16-9fe9-0943cd4fb7b1\",\r\n            \"numberOfProceeders\": 1,\r\n            \"isFinal\": false\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -13552,7 +14700,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{CORE_URL}}/tournaments/29/fixtures/save",
+							"raw": "{{CORE_URL}}/tournaments/29/fixtures/save-publish",
 							"host": [
 								"{{CORE_URL}}"
 							],
@@ -13560,7 +14708,7 @@
 								"tournaments",
 								"29",
 								"fixtures",
-								"save"
+								"save-publish"
 							]
 						}
 					},
@@ -13775,7 +14923,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"fixtureStartDate\": \"2024-03-20T23:59:59\",\r\n  \"fixtureEndDate\": \"2024-03-20T23:59:59\",\r\n  \"matchesStartTime\": \"08:00:00\",\r\n  \"matchesEndTime\": \"20:00:00\",\r\n  \"matchDuration\": 30,\r\n  \"breakDuration\": 10,\r\n  \"venue\": \"86A, ap 5 xa Xuan Thoi Thuong, huyen Hoc Mon\",\r\n  \"groups\": [\r\n    {\r\n        \"title\": \"Group A\",\r\n        \"id\": \"0e836d10-903f-4d29-9240-839d95cd3269\",\r\n        \"numberOfProceeders\": 2,\r\n        \"teams\": [\"2f7ba0e0-ea7f-40ae-97a3-a9207faa092d\",\"941f8763-6a83-4d46-85da-627f1f38afc5\"]\r\n    },\r\n    {\r\n        \"title\": \"Group B\",\r\n        \"id\": \"31e74b0a-54b9-4070-b600-ef7855182bd1\",\r\n        \"numberOfProceeders\": 2,\r\n        \"teams\": [\"470c21c6-e1fc-47b8-ad2b-64f6ba992bd5\", \"26993f41-1181-448e-a84b-49114e633fd8\"]\r\n    }\r\n]\r\n}",
+							"raw": "{\r\n    \"fixtureStartDate\": \"2024-07-06T14:32:22.499Z\",\r\n    \"fixtureEndDate\": \"2024-07-07T14:32:22.499Z\",\r\n    \"matchesStartTime\": \"2022-04-17T01:00:00.000Z\",\r\n    \"matchesEndTime\": \"2022-04-17T13:00:00.000Z\",\r\n    \"matchDuration\": 30,\r\n    \"breakDuration\": 10,\r\n    \"numberOfProceeders\": 1,\r\n    \"format\": \"group_playoff\",\r\n    \"venue\": \"San Van Dong Phu Tho\",\r\n    \"groups\": [\r\n        {\r\n            \"title\": \"Group A\",\r\n            \"id\": \"9469d40b-43ca-4796-ba25-883c4cb41f32\",\r\n            \"numberOfProceeders\": 1,\r\n            \"teams\": [\r\n                \"543c9585-2842-4b11-ac17-f4d9cdef80ed\",\r\n                \"7916a203-11be-4120-a17d-c35de7e36d8d\",\r\n                \"6898ee4b-7da9-4207-b70a-171d7c0a7ce6\"\r\n            ]\r\n        },\r\n        {\r\n            \"title\": \"Group B\",\r\n            \"id\": \"d5fddbc3-66d6-4d16-9fe9-0943cd4fb7b1\",\r\n            \"numberOfProceeders\": 1,\r\n            \"teams\": [\r\n                \"402452a6-0bf0-418c-b829-9b6df80c74fb\",\r\n                \"ef03676a-5d23-4cea-891b-b023fc18178a\",\r\n                \"faa00abb-b721-442b-a819-d1ae76b0d630\"\r\n            ]\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -13783,13 +14931,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{CORE_URL}}/tournaments/3/fixtures/generate",
+							"raw": "{{CORE_URL}}/tournaments/35/fixtures/generate",
 							"host": [
 								"{{CORE_URL}}"
 							],
 							"path": [
 								"tournaments",
-								"3",
+								"35",
 								"fixtures",
 								"generate"
 							]
