@@ -818,7 +818,7 @@ export class TournamentService {
                 include: {
                   groupFixtures: {
                     where: {
-                      isFinal: true, // round_robin / knockout
+                      id: groupFixture.id,
                     },
                     include: {
                       rounds: {
