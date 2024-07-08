@@ -66,9 +66,11 @@ import {
   CreateRefereesGroupTournamentDto,
   CreateRefereesTournamentDto,
 } from 'src/referees_tournaments/dto/create-referees_tournament.dto';
-import { PageOptionsTournamentRegistrationDto } from 'src/tournament/dto';
-import { group } from 'console';
-import { dot } from 'node:test/reporters';
+import {
+  PageOptionsTournamentRegistrationDto,
+  UpdateGroupTournamentDto,
+} from 'src/tournament/dto';
+import { CreatePostDto, UpdatePostDto } from './dto/create-post-dto';
 
 @Injectable()
 export class GroupService {
@@ -818,56 +820,98 @@ export class GroupService {
     };
   }
 
-  // async createPost(userId: string, groupId: number) {
-  //   // Check if group exists
-  //   const group = await this.prismaService.groups.findUnique({
-  //     where: {
-  //       id: groupId,
-  //     },
-  //   });
+  async createPost(userId: string, groupId: number, dto: CreatePostDto) {
+    // Check if group exists
+    await this.checkValidGroup(groupId);
+    await this.checkMember(userId, groupId);
 
-  //   if (!group) {
-  //     throw new NotFoundException({
-  //       message: 'Group not found',
-  //       data: null,
-  //     });
-  //   }
+    try {
+      return await this.prismaService.posts.create({
+        data: {
+          userId,
+          groupId,
+          content: dto.content,
+          image: dto.image,
+        },
+      });
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new InternalServerErrorException({
+        message: 'Failed to create post',
+        data: null,
+      });
+    }
+  }
 
-  //   // Check if user is a member of the group
-  //   const member = await this.prismaService.members.findFirst({
-  //     where: {
-  //       userId,
-  //       groupId,
-  //     },
-  //   });
+  async updatePost(
+    userId: string,
+    groupId: number,
+    postId: number,
+    dto: UpdatePostDto,
+  ) {
+    // Check if group exists
+    await this.checkValidGroup(groupId);
+    const member = await this.checkMember(userId, groupId);
+    const post = await this.prismaService.posts.findFirst({
+      where: {
+        id: postId,
+      },
+    });
 
-  //   if (!member) {
-  //     throw new ForbiddenException({
-  //       message: 'You are not a member of this group',
-  //       data: null,
-  //     });
-  //   }
+    if (!post) {
+      throw new NotFoundException({
+        message: 'Post not found',
+        data: null,
+      });
+    }
+    if (post.userId != member.userId && member.role != MemberRole.group_admin) {
+      throw new BadRequestException({
+        message: 'Access Denied',
+        data: null,
+      });
+    }
 
-  //   try {
-  //     // const data = await this.prismaService.posts.create({
-  //     //   data: {
-  //     //     userId,
-  //     //     groupId,
-  //     //   },
-  //     // });
+    return await this.prismaService.posts.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        content: dto.content,
+        image: dto.image,
+      },
+    });
+  }
 
-  //     return {
-  //       message: 'Post created successfully',
-  //       // data,
-  //     };
-  //   } catch (error) {
-  //     console.log('Error:', error.message);
-  //     throw new BadRequestException({
-  //       message: 'Failed to create post',
-  //       data: null,
-  //     });
-  //   }
-  // }
+  async deletePost(userId: string, groupId: number, postId: number) {
+    // Check if group exists
+    await this.checkValidGroup(groupId);
+    const member = await this.checkMember(userId, groupId);
+    const post = await this.prismaService.posts.findFirst({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!post) {
+      throw new NotFoundException({
+        message: 'Post not found',
+        data: null,
+      });
+    }
+
+    if (post.userId != member.userId && member.role != MemberRole.group_admin) {
+      throw new BadRequestException({
+        message: 'Access Denied',
+        data: null,
+      });
+    }
+
+    return await this.prismaService.posts.delete({
+      where: {
+        id: postId,
+      },
+    });
+  }
 
   async getJwtToInviteUserToGroup(
     sub: string,
@@ -3336,113 +3380,92 @@ export class GroupService {
     };
   }
 
-  // async updateTournamentInfo(
-  //   userId: string,
-  //   tournamentId: number,
-  //   updateDto: UpdateGroupTournamentDto,
-  // ) {
-  //   // Get tournament info
-  //   const tournament = await this.prismaService.group_tournaments.findUnique({
-  //     where: {
-  //       id: tournamentId,
-  //     },
-  //   });
+  async updateTournamentInfo(
+    userId: string,
+    tournamentId: number,
+    groupId: number,
+    updateDto: UpdateGroupTournamentDto,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
 
-  //   if (!tournament) {
-  //     throw new NotFoundException({
-  //       code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
-  //       message: CustomResponseMessages.getMessage(
-  //         CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
-  //       ),
-  //       data: null,
-  //     });
-  //   }
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
 
-  //   // Get purchased package info
+    // Get purchased package info
+    const group = await this.checkValidGroup(groupId);
 
-  //   // Check if the user is the owner of this tournament
-  //   if (purchasedPackage.userId !== userId) {
-  //     throw new UnauthorizedException({
-  //       code: CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
-  //       message: CustomResponseMessages.getMessage(
-  //         CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
-  //       ),
-  //       data: null,
-  //     });
-  //   }
+    // Check if the user is the owner of this tournament
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        code: CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        ),
+        data: null,
+      });
+    }
 
-  //   // Update some fields based on the phase
-  //   if (tournament.phase === GroupTournamentPhase.new) {
-  //     // new
-  //     // Validate update data (participantType and gender)
-  //     if (updateDto.participantType) {
-  //       if (
-  //         updateDto.participantType === ParticipantType.single ||
-  //         updateDto.participantType === ParticipantType.doubles
-  //       ) {
-  //         if (!updateDto.gender) {
-  //           throw new BadRequestException({
-  //             code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
-  //             message: `Missing 'gender' field for 'participantType': '${updateDto.participantType}'`,
-  //           });
-  //         }
-  //       } else {
-  //         updateDto.gender = null;
-  //       }
-  //     } else {
-  //       delete updateDto['gender'];
-  //     }
-  //   } else if (tournament.phase === GroupTournamentPhase.published) {
-  //     // published
-  //     if (updateDto.format || updateDto.participantType || updateDto.gender) {
-  //       throw new BadRequestException({
-  //         code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
-  //         message: `The tournament phase is ${tournament.phase}. Invalid update data`,
-  //       });
-  //     }
-  //   } else {
-  //     // finalized_applicants -> completed
-  //     if (
-  //       updateDto.startDate ||
-  //       updateDto.endDate ||
-  //       updateDto.registrationDueDate ||
-  //       updateDto.format ||
-  //       updateDto.maxParticipants ||
-  //       updateDto.gender ||
-  //       updateDto.participantType ||
-  //       updateDto.playersBornAfterDate
-  //     ) {
-  //       throw new BadRequestException({
-  //         code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
-  //         message: `The tournament phase is ${tournament.phase}. Invalid update data`,
-  //       });
-  //     }
-  //   }
+    // Update some fields based on the phase
+    if (tournament.phase === GroupTournamentPhase.new) {
+    } else if (tournament.phase === GroupTournamentPhase.published) {
+      // published
+      if (updateDto.format) {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+          message: `The tournament phase is ${tournament.phase}. Invalid update data`,
+        });
+      }
+    } else {
+      // finalized_applicants -> completed
+      if (
+        updateDto.startDate ||
+        updateDto.endDate ||
+        updateDto.format ||
+        updateDto.maxParticipants
+      ) {
+        throw new BadRequestException({
+          code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+          message: `The tournament phase is ${tournament.phase}. Invalid update data`,
+        });
+      }
+    }
 
-  //   // Update tournament info
-  //   try {
-  //     const updatedTournament =
-  //       await this.prismaService.group_tournaments.update({
-  //         where: {
-  //           id: tournamentId,
-  //         },
-  //         data: {
-  //           ...updateDto,
-  //         },
-  //       });
+    // Update tournament info
+    try {
+      const updatedTournament =
+        await this.prismaService.group_tournaments.update({
+          where: {
+            id: tournamentId,
+          },
+          data: {
+            ...updateDto,
+          },
+        });
 
-  //     return updatedTournament;
-  //   } catch (err) {
-  //     console.log('Error:', err.message);
-  //     throw new InternalServerErrorException({
-  //       code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
-  //       message: CustomResponseMessages.getMessage(
-  //         CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
-  //       ),
-  //       data: null,
-  //     });
-  //   }
-  // }
+      return updatedTournament;
+    } catch (err) {
+      console.log('Error:', err.message);
+      throw new InternalServerErrorException({
+        code: CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_INFO_UPDATE_FAIL,
+        ),
+        data: null,
+      });
+    }
+  }
   // Utils
   async getTournamentParticipantsCount(tournamentId: number): Promise<number> {
     const participantCountUser1 =

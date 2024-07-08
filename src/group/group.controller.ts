@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   Query,
   UseGuards,
   UseInterceptors,
@@ -35,13 +36,18 @@ import { GroupService } from './group.service';
 import { AddRefereesTournamentDto } from 'src/tournament/dto/create-referees_tournament.dto';
 import { CreateRefereesGroupTournamentDto } from 'src/referees_tournaments/dto/create-referees_tournament.dto';
 import { PageOptionsRefereesGroupTournamentsDto } from 'src/referees_tournaments/dto/page-options-referees-tournaments.dto';
-import { PageOptionsTournamentRegistrationDto } from 'src/tournament/dto';
+import {
+  PageOptionsTournamentRegistrationDto,
+  UpdateGroupTournamentDto,
+  UpdateTournamentDto,
+} from 'src/tournament/dto';
 import {
   CreateFixtureDto,
   GenerateFixtureDto,
 } from 'src/fixture/dto/create-fixture.dto';
 import { FixtureService } from 'src/fixture/fixture.service';
 import { CreateFixturePublishDto } from 'src/fixture/dto/create-fixture-save-publish.dto';
+import { CreatePostDto, UpdatePostDto } from './dto/create-post-dto';
 
 @Controller('groups')
 export class GroupController {
@@ -119,30 +125,36 @@ export class GroupController {
     return await this.groupService.getPostDetails(id, postId);
   }
 
-  // @UseGuards(JwtGuard)
-  // @Post(':id/posts')
-  // async createPost(
-  //   @GetUser('sub') userId: string,
-  //   @Param('id', ParseIntPipe) groupId: number,
-  // ) {
-  //   return await this.groupService.createPost(userId, groupId);
-  // }
+  @UseGuards(JwtGuard)
+  @Post(':id/posts')
+  async createPost(
+    @GetUser('sub') userId: string,
+    @Param('id', ParseIntPipe) groupId: number,
+    @Body() dto: CreatePostDto,
+  ) {
+    return await this.groupService.createPost(userId, groupId, dto);
+  }
 
-  // @UseGuards(JwtGuard)
-  // @Patch(':id/posts/:postId')
-  // async updatePost(
-  //   @GetUser('sub') adminId: string,
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Param('postId', ParseIntPipe) postId: number,
-  // ) {}
+  @UseGuards(JwtGuard)
+  @Patch(':id/posts/:postId')
+  async updatePost(
+    @GetUser('sub') userId: string,
+    @Param('id', ParseIntPipe) groupId: number,
+    @Param('postId', ParseIntPipe) postId: number,
+    @Body() dto: UpdatePostDto,
+  ) {
+    return await this.groupService.updatePost(userId, groupId, postId, dto);
+  }
 
-  // @UseGuards(JwtGuard)
-  // @Patch(':id/posts/:postId/delete') // @Delete(':id/posts/:postId') instead
-  // async deletePost(
-  //   @GetUser('sub') adminId: string,
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Param('postId', ParseIntPipe) postId: number,
-  // ) {}
+  @UseGuards(JwtGuard)
+  @Delete(':id/posts/:postId') // @Delete(':id/posts/:postId') instead
+  async deletePost(
+    @GetUser('sub') userId: string,
+    @Param('id', ParseIntPipe) groupId: number,
+    @Param('postId', ParseIntPipe) postId: number,
+  ) {
+    return await this.groupService.deletePost(userId, groupId, postId);
+  }
 
   // Invite user
   @UseGuards(JwtGuard)
@@ -375,20 +387,22 @@ export class GroupController {
     );
   }
 
-  // @UseGuards(JwtGuard)
-  // @Put(':tournamentId')
-  // // Update tournament info
-  // async updateTournamentInfo(
-  //   @GetUser('sub') userId: string,
-  //   @Param('tournamentId') tournamentId: number,
-  //   @Body() updateDto: UpdateTournamentDto,
-  // ) {
-  //   return this.groupService.updateTournamentInfo(
-  //     userId,
-  //     tournamentId,
-  //     updateDto,
-  //   );
-  // }
+  @UseGuards(JwtGuard)
+  @Put(':groupId/tournaments/:tournamentId')
+  // Update tournament info
+  async updateTournamentInfo(
+    @GetUser('sub') userId: string,
+    @Param('tournamentId') tournamentId: number,
+    @Param('groupId') groupId: number,
+    @Body() updateDto: UpdateGroupTournamentDto,
+  ) {
+    return this.groupService.updateTournamentInfo(
+      userId,
+      tournamentId,
+      groupId,
+      updateDto,
+    );
+  }
 
   @UseGuards(JwtGuard)
   @Post(':groupId/tournaments/:tournamentId/participants/finalize')

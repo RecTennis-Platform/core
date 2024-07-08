@@ -4646,90 +4646,90 @@ export class TournamentService {
           );
 
           //knockout
-          await tx.group_fixtures.upsert({
-            where: {
-              id: dto.knockoutGroup.id,
-            },
-            update: {
-              fixtureId: fixture.id,
-              title: dto.knockoutGroup.title,
-              isFinal: true,
-              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
-            },
-            create: {
-              id: dto.knockoutGroup.id,
-              fixtureId: fixture.id,
-              title: dto.knockoutGroup.title,
-              isFinal: true,
-              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
-            },
-          });
-          await Promise.all(
-            dto.knockoutGroup.rounds.reverse().map(async (round) => {
-              await tx.rounds.upsert({
-                where: {
-                  id: round.id,
-                },
-                update: {
-                  groupFixtureId: dto.knockoutGroup.id,
-                  title: round.title,
-                  elo: 100,
-                },
-                create: {
-                  id: round.id,
-                  groupFixtureId: dto.knockoutGroup.id,
-                  title: round.title,
-                  elo: 100,
-                },
-              });
-              //apply elo
-              await Promise.all(
-                round.matches.map(async (match) => {
-                  await tx.matches.upsert({
-                    where: {
-                      id: match.id,
-                    },
-                    update: {
-                      roundId: round.id,
-                      title: match.title,
-                      status: match.status,
-                      rankGroupTeam1: match.rankGroupTeam1,
-                      rankGroupTeam2: match.rankGroupTeam2,
-                      nextMatchId: match.nextMatchId,
-                      matchStartDate: match.matchStartDate,
-                      teamId1: match.teams.team1?.id,
-                      teamId2: match.teams.team2?.id,
-                      venue: match.venue,
-                      duration: match.duration,
-                      breakDuration: dto.breakDuration,
-                      refereeId: match.refereeId,
-                      groupFixtureTeamId1: match.groupFixtureTeamId1,
-                      groupFixtureTeamId2: match.groupFixtureTeamId2,
-                    },
+          // await tx.group_fixtures.upsert({
+          //   where: {
+          //     id: dto.knockoutGroup.id,
+          //   },
+          //   update: {
+          //     fixtureId: fixture.id,
+          //     title: dto.knockoutGroup.title,
+          //     isFinal: true,
+          //     numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+          //   },
+          //   create: {
+          //     id: dto.knockoutGroup.id,
+          //     fixtureId: fixture.id,
+          //     title: dto.knockoutGroup.title,
+          //     isFinal: true,
+          //     numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+          //   },
+          // });
+          // await Promise.all(
+          //   dto.knockoutGroup.rounds.reverse().map(async (round) => {
+          //     await tx.rounds.upsert({
+          //       where: {
+          //         id: round.id,
+          //       },
+          //       update: {
+          //         groupFixtureId: dto.knockoutGroup.id,
+          //         title: round.title,
+          //         elo: 100,
+          //       },
+          //       create: {
+          //         id: round.id,
+          //         groupFixtureId: dto.knockoutGroup.id,
+          //         title: round.title,
+          //         elo: 100,
+          //       },
+          //     });
+          //     //apply elo
+          //     await Promise.all(
+          //       round.matches.map(async (match) => {
+          //         await tx.matches.upsert({
+          //           where: {
+          //             id: match.id,
+          //           },
+          //           update: {
+          //             roundId: round.id,
+          //             title: match.title,
+          //             status: match.status,
+          //             rankGroupTeam1: match.rankGroupTeam1,
+          //             rankGroupTeam2: match.rankGroupTeam2,
+          //             nextMatchId: match.nextMatchId,
+          //             matchStartDate: match.matchStartDate,
+          //             teamId1: match.teams.team1?.id,
+          //             teamId2: match.teams.team2?.id,
+          //             venue: match.venue,
+          //             duration: match.duration,
+          //             breakDuration: dto.breakDuration,
+          //             refereeId: match.refereeId,
+          //             groupFixtureTeamId1: match.groupFixtureTeamId1,
+          //             groupFixtureTeamId2: match.groupFixtureTeamId2,
+          //           },
 
-                    create: {
-                      id: match.id,
-                      roundId: round.id,
-                      title: match.title,
-                      status: match.status,
-                      rankGroupTeam1: match.rankGroupTeam1,
-                      rankGroupTeam2: match.rankGroupTeam2,
-                      nextMatchId: match.nextMatchId,
-                      matchStartDate: match.matchStartDate,
-                      teamId1: match.teams.team1?.id,
-                      teamId2: match.teams.team2?.id,
-                      venue: match.venue,
-                      duration: match.duration,
-                      breakDuration: dto.breakDuration,
-                      refereeId: match.refereeId,
-                      groupFixtureTeamId1: match.groupFixtureTeamId1,
-                      groupFixtureTeamId2: match.groupFixtureTeamId2,
-                    },
-                  });
-                }),
-              );
-            }),
-          );
+          //           create: {
+          //             id: match.id,
+          //             roundId: round.id,
+          //             title: match.title,
+          //             status: match.status,
+          //             rankGroupTeam1: match.rankGroupTeam1,
+          //             rankGroupTeam2: match.rankGroupTeam2,
+          //             nextMatchId: match.nextMatchId,
+          //             matchStartDate: match.matchStartDate,
+          //             teamId1: match.teams.team1?.id,
+          //             teamId2: match.teams.team2?.id,
+          //             venue: match.venue,
+          //             duration: match.duration,
+          //             breakDuration: dto.breakDuration,
+          //             refereeId: match.refereeId,
+          //             groupFixtureTeamId1: match.groupFixtureTeamId1,
+          //             groupFixtureTeamId2: match.groupFixtureTeamId2,
+          //           },
+          //         });
+          //       }),
+          //     );
+          //   }),
+          // );
 
           //update teams
           await Promise.all(

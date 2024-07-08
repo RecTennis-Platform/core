@@ -71,6 +71,18 @@ model posts {
   updatedAt DateTime @updatedAt @map("updated_at")
 }
 
+model advertisements {
+  id                 String              @id @default(uuid())
+  userId             String              @map("user_id") @db.Uuid
+  image              String?
+  content            String
+  status             AdvertisementStatus @default(pending)
+  purchasedPackageId String              @map("purchased_package_id")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  user               users               @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_adv_users")
+}
+
 model packages {
   id              Int                 @id @default(autoincrement())
   name            String
@@ -149,6 +161,7 @@ model users {
   elo                          Int?
   fcmToken                     String?                          @map("fcm_token")
   isReferee                    Boolean                          @default(false) @map("is_referee")
+  advertisements               advertisements[]
   fund                         fund[]
   groupTournamentRegistrations group_tournament_registrations[]
   matches                      matches[]
@@ -579,6 +592,12 @@ enum TournamentPhase {
 enum RegistrationStatus {
   inviting
   canceled
+  pending
+  approved
+  rejected
+}
+
+enum AdvertisementStatus {
   pending
   approved
   rejected
