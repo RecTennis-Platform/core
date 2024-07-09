@@ -20,6 +20,7 @@ export class NewsCrawlerService {
       },
       timeframe: '2h',
     });
+    console.log('fetch articles successfully');
     const news = (
       await Promise.all(
         articles.map(async (article) => {
@@ -51,6 +52,7 @@ export class NewsCrawlerService {
     await this.prismaService.news.createMany({
       data: news,
     });
+    console.log('save articles successfully');
   }
 
   async getFinalImageUrl(originalUrl: string): Promise<string> {
