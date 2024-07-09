@@ -42,7 +42,7 @@
     "class-validator": "^0.14.1",
     "date-fns": "^3.6.0",
     "firebase-admin": "^12.1.0",
-    "google-news-scraper": "^1.2.3",
+    "newsapi": "^2.4.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
