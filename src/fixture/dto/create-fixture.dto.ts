@@ -18,7 +18,7 @@ export class Group {
   @IsArray()
   teams: string[];
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   numberOfProceeders: number;
 
