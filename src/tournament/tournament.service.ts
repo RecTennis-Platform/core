@@ -3760,6 +3760,11 @@ export class TournamentService {
       });
       //generate matches
       if (format === TournamentFormat.group_playoff) {
+        if (dto.groups.length < 2) {
+          throw new BadRequestException({
+            message: 'Invalid number of groups',
+          });
+        }
         const groups = [];
         for (let i = 0; i < dto.groups.length; i++) {
           const teams = await Promise.all(

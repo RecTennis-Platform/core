@@ -5,6 +5,7 @@ import { Order } from '../../../constants/order';
 export enum PackageType {
   TOURNAMENT = 'tournament',
   GROUP = 'group',
+  ADVERTISEMENT = 'advertisement',
 }
 export class PageOptionsPackageDto {
   @IsEnum(Order)
