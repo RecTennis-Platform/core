@@ -81,6 +81,8 @@ model advertisements {
   purchasedPackageId String              @map("purchased_package_id")
   createdAt          DateTime            @default(now()) @map("created_at")
   updatedAt          DateTime            @updatedAt @map("updated_at")
+  title              String
+  website            String?
   user               users               @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_adv_users")
 }
 
@@ -168,6 +170,7 @@ model users {
   matches                      matches[]
   memberShips                  member_ships[]
   orders                       orders[]
+  posts                        posts[]
   referees_group_tournaments   referees_group_tournaments[]
   referees_tournaments         referees_tournaments[]
   team1                        teams[]                          @relation("user1")
@@ -175,7 +178,6 @@ model users {
   tournamentRegistration1      tournament_registrations[]       @relation("user1")
   tournamentRegistration2      tournament_registrations[]       @relation("user2")
   followMatches                users_follow_matches[]
-  posts                        posts[]
 }
 
 model tournaments {

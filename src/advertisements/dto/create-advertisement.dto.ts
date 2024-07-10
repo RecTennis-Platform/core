@@ -1,4 +1,4 @@
-import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateAdvertisementDto {
   @IsNotEmpty()
@@ -8,6 +8,14 @@ export class CreateAdvertisementDto {
   @IsNotEmpty()
   @IsString()
   content: string;
+
+  @IsNotEmpty()
+  @IsString()
+  title: string;
+
+  @IsOptional()
+  @IsString()
+  website: string;
 
   @IsString()
   @IsNotEmpty()

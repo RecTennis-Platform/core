@@ -121,6 +121,13 @@ export class SystemConfigController {
               'Manage Participants, Generate Schedules & Score Matches While Keeping Track Of Scores & Statistics.',
             path: 'tournaments',
           },
+          {
+            id: '3',
+            name: 'Affiliate',
+            description:
+              'Create advertisements to promote affiliated products or services.',
+            path: 'affiliates',
+          },
         ],
         openTournament: {
           format: ['round_robin', 'knock_out', 'group_playoff'],

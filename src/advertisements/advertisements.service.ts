@@ -124,6 +124,8 @@ export class AdvertisementsService {
         image: dto.image,
         purchasedPackageId: dto.purchasedPackageId,
         userId: userId,
+        title: dto.title,
+        website: dto.website,
       },
     });
   }
@@ -154,6 +156,18 @@ export class AdvertisementsService {
       this.prismaService.advertisements.findMany({
         ...conditions,
         ...pageOption,
+        include: {
+          user: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+              email: true,
+              gender: true,
+              phoneNumber: true,
+            },
+          },
+        },
       }),
       this.prismaService.advertisements.count(conditions),
     ]);
@@ -224,6 +238,18 @@ export class AdvertisementsService {
       this.prismaService.advertisements.findMany({
         ...conditions,
         ...pageOption,
+        include: {
+          user: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+              email: true,
+              gender: true,
+              phoneNumber: true,
+            },
+          },
+        },
       }),
       this.prismaService.advertisements.count(conditions),
     ]);
@@ -277,6 +303,18 @@ export class AdvertisementsService {
       this.prismaService.advertisements.findMany({
         ...conditions,
         ...pageOption,
+        include: {
+          user: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+              email: true,
+              gender: true,
+              phoneNumber: true,
+            },
+          },
+        },
       }),
       this.prismaService.advertisements.count(conditions),
     ]);
@@ -291,6 +329,18 @@ export class AdvertisementsService {
     return await this.prismaService.advertisements.findUnique({
       where: {
         id,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            image: true,
+            name: true,
+            email: true,
+            gender: true,
+            phoneNumber: true,
+          },
+        },
       },
     });
   }
@@ -330,6 +380,8 @@ export class AdvertisementsService {
         content: updateAdvertisementDto.content,
         image: updateAdvertisementDto.image,
         status: updateAdvertisementDto.status,
+        title: updateAdvertisementDto.title,
+        website: updateAdvertisementDto.website,
       },
     });
   }

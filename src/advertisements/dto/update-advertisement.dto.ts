@@ -13,4 +13,12 @@ export class UpdateAdvertisementDto {
   @IsOptional()
   @IsEnum(AdvertisementStatus)
   status?: AdvertisementStatus;
+
+  @IsOptional()
+  @IsString()
+  title?: string;
+
+  @IsOptional()
+  @IsString()
+  website?: string;
 }

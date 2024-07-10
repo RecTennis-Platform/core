@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import axios from 'axios';
 import { PrismaService } from 'src/prisma/prisma.service';
-const googleNewsScraper = require('google-news-scraper');
+const NewsAPI = require('newsapi');
 
 @Injectable()
 export class NewsCrawlerService {
@@ -10,57 +9,42 @@ export class NewsCrawlerService {
 
   @Cron(CronExpression.EVERY_2_HOURS)
   async handleCron() {
-    const articles = await googleNewsScraper({
-      searchTerm: 'tennis',
-      getArticleContent: true,
-      queryVars: {
-        hl: 'en-US',
-        gl: 'US',
-        ceid: 'US:en',
-      },
-      timeframe: '2h',
-    });
-    const news = (
-      await Promise.all(
-        articles.map(async (article) => {
-          if (
-            (article.title.includes('tennis') ||
-              article.content.includes('tennis')) &&
-            article.content.length > 2000
-          ) {
-            let articleDescription = article.content.split('\n')[0] + '...';
-            if (articleDescription.length > 1000) {
-              articleDescription = articleDescription.slice(0, 500) + '...';
-            }
-            const authors = ['Robert', 'John', 'Emily', 'David', 'Sarah'];
-            const randomIndex = Math.floor(Math.random() * authors.length);
-            const author = authors[randomIndex];
-            const imgUrl = await this.getFinalImageUrl(article.image);
-            return {
-              image: imgUrl,
-              title: article.title,
-              description: articleDescription,
-              content: article.content,
-              createdAt: article.datetime,
-              author: author,
-            };
-          }
-        }),
-      )
-    ).filter(Boolean);
-    await this.prismaService.news.createMany({
-      data: news,
-    });
-  }
-
-  async getFinalImageUrl(originalUrl: string): Promise<string> {
-    try {
-      const response = await axios.get(originalUrl); // Perform a HEAD request to avoid downloading the entire response body
-      const finalUrl = response.request.res.responseUrl;
-      return finalUrl;
-    } catch (error) {
-      console.error('Error fetching final URL:', error);
-      throw error;
-    }
+    const newsapi = new NewsAPI(process.env.NEWS_API_KEY);
+    const now = new Date();
+    const toDate = now.toISOString();
+    const fromDate = new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString();
+    newsapi.v2
+      .everything({
+        q: 'tennis',
+        sources: 'bbc-sport',
+        from: fromDate,
+        to: toDate,
+        language: 'en',
+        page: 1,
+        pageSize: 10,
+      })
+      .then(async (response) => {
+        if (response.status === 'ok') {
+          const news = (
+            await Promise.all(
+              response.articles.map(async (article) => {
+                const author =
+                  article.author || 'https://www.facebook.com/bbcnews';
+                return {
+                  image: article.urlToImage,
+                  title: article.title,
+                  description: article.description,
+                  content: article.content,
+                  createdAt: article.publishedAt,
+                  author: author,
+                };
+              }),
+            )
+          ).filter(Boolean);
+          await this.prismaService.news.createMany({
+            data: news,
+          });
+        }
+      });
   }
 }
