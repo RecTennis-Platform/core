@@ -7360,6 +7360,91 @@
 							"body": "{\n    \"data\": [\n        {\n            \"id\": \"2ac71e87-28af-4782-9f92-b9c1a65fce26\",\n            \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n            \"image\": \"https://cdn.shopvnb.com/uploads/images/tin_tuc/1-set-tennis-co-may-game-1.webp\",\n            \"content\": \"dksjnksndkjsndk\",\n            \"status\": \"approved\",\n            \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\",\n            \"createdAt\": \"2024-07-07T08:54:28.063Z\",\n            \"updatedAt\": \"2024-07-07T08:55:08.893Z\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 1\n}"
 						}
 					]
+				},
+				{
+					"name": "Get list advertisements by userId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/advertisements",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"advertisements"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get list advertisements (approved and not expired) Copy",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/advertisements/users/c599f628-a2c5-4728-8dd4-ec85f0de530b",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"advertisements",
+										"users",
+										"c599f628-a2c5-4728-8dd4-ec85f0de530b"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "7785"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1e69-wQ/GMGDc+IchtF5AJQZn+oI6A1c\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 12 Jul 2024 02:58:54 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"id\": \"5d693c7d-66d8-4e0d-b811-fdc9ef3350ed\",\n            \"userId\": \"c599f628-a2c5-4728-8dd4-ec85f0de530b\",\n            \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1720752692496-product1.jpg?alt=media\",\n            \"content\": \"Mã: 14103\\nThương hiệu: Yonex \\nTình trạng: Còn hàng\\nGiá: 3.800.000 ₫\\n\\n1. Giới thiệu Vợt Tennis Yonex Vcore Pro 100 2021 (300gr) Made In Japan\\n- Phiên bản VCORE PRO 100 là bản nâng cấp mới nhất từ 2021 cho cây vợt VCORE PRO 100 inch với mật độ dây 16x19\\n- Khung vợt bổ sung chất liệu mới 2G-Namd Flex Force / FLEX Fuse giúp cây vợt ổ định hơn, độ đàn hồi hoàn hảo hơn + công nghệ VDM ở phần cán vợt, êm hơn và Feel hơn.\\n- Tăng lực đánh bóng nhanh, nặng và kiểm soát bóng hoàn hảo. \\n- Hàng MADE IN JAPAN màu sắc và hoàn thiện khung vợt vô cùng sắc sảo.\\n\\n2. Thông số Vợt Tennis Yonex Vcore Pro 100 2021 (300gr) Made In Japan\\n- Trọng lượng chưa căng dây : 300 gram\\n- Mặt vợt : 100 inch \\n- Chiều dài vợt : 27 inch \\n- Mật độ lưới : 16 x 19\\n- Độ cân bằng  : 4HL đã bao gồm dây - không trợ lực\\n- Swing weight : 321\\n- Độ cứng : 63\\n- Kích cỡ khung vợt : 23mm / 23mm / 23mm /\\n- Lực căng dây khuyến cáo :  20 - 27kg  - khuyến cáo căng dây 4 mối gút tiêu chuẩn.\\n\\n3. Công nghệ tích hợp trên Vợt Tennis Yonex Vcore Pro 100 2021 (300gr) Made In Japan\\n- Cây vợt sử dụng nhiều công nghệ mới giúp giảm chấn thương cho người chơi so với phiên bản cũ. Yonex đã tích hợp vào khung vợt chất liệu mới là Flex Fuse, Flex Fuse là chất liệu polyme mềm, có khả năng hấp thụ va chạm được tăng cường trong các lớp graphite, để mang lại độ êm ái và tăng cảm giác bóng\",\n            \"status\": \"approved\",\n            \"purchasedPackageId\": \"668f8a10143f25c8f1109a97\",\n            \"createdAt\": \"2024-07-12T02:53:06.686Z\",\n            \"updatedAt\": \"2024-07-12T02:55:16.967Z\",\n            \"title\": \"Vợt Tennis Yonex Vcore Pro 100 2021 (300gr) Made In Japan\",\n            \"website\": \"shopvnb.com/vot-tennis-yonex-vcore-pro-100-2021-300gr-made-in-japan.html\",\n            \"user\": {\n                \"id\": \"c599f628-a2c5-4728-8dd4-ec85f0de530b\",\n                \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1720682822901-affiliate1.png?alt=media\",\n                \"name\": \"ShopVNB\",\n                \"email\": \"affiliate1@gmail.com\",\n                \"gender\": \"male\",\n                \"phoneNumber\": \"0123123123\"\n            }\n        },\n        {\n            \"id\": \"53c09e89-2673-430c-838c-4f7ef809dd32\",\n            \"userId\": \"c599f628-a2c5-4728-8dd4-ec85f0de530b\",\n            \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1720683328692-product.jpg?alt=media\",\n            \"content\": \"1. Giới thiệu vợt tennis Yonex EZONE 98L 2022 \\n- Vợt Yonex EZONE 98L 2022 là một phiên bản nhẹ hơn của Yonex EZONE 98 2022, được thiết kế để phù hợp với người chơi có sức mạnh vừa phải và muốn tăng cường sự kiểm soát trong trận đấu.\\n- Vợt có kích cỡ đầu vợt là 98 inch vuông, nhưng khác với phiên bản gốc, EZONE 98L 2022 có trọng lượng nhẹ hơn khoảng 10 gram, giúp người chơi dễ dàng di chuyển vợt và tạo ra tốc độ đánh nhanh hơn.\\n\\n- EZONE 98L 2022 cũng được trang bị công nghệ mới Vibration Dampening Mesh (VDM), giúp giảm độ rung của vợt khi đánh bóng, giúp người chơi cảm thấy thoải mái hơn và giảm thiểu nguy cơ chấn thương.\\n\\n- Ngoài ra, vợt còn có hệ thống Spin Grommets giúp tăng cường lực xoay cho quả bóng, giúp người chơi có thể tạo ra những cú đánh xoay đầy hiệu quả.\\n2. Thông số vợt tennis Yonex EZONE 98L 2022 \\n- Mã: 07EZ98L\\n\\n- Xuất xứ: Nhật Bản (Japan)\\n\\n- Kích cỡ mặt vợt: 98 sq.in ~ 632.26 sq.cm\\n\\n- Size cán vợt: 0 - 4\\n\\n- Chiều dài vợt: 27in ~ 68.58cm\\n\\n- Trọng lượng vợt chưa có dây (+/- 5g): 270g\\n\\n- Trọng lượng vợt đã có dây: 10oz / 283g \\n\\n- Điểm cân bằng: 330 mm\\n\\n- Màu sắc: Xanh bầu trời (Sky blue)\\n\\n- Độ dày thành vợt: 23.5 mm - 24.5 mm - 19.5 mm\\n\\n- Chất liệu: HM GRAPHITE / 2G-Namd™ SPEED / VDM\\n\\n- Cốt vợt: Yonex Synthetic\\n\\n- Mật độ dây: 16 Mains / 19 Crosses (16 x19)\\n\\n- Độ căng dây (khuyến nghị): 40-55 pounds\\n\\n3. Công nghệ vợt tennis Yonex EZONE 98L 2022 \\n2G-Namd Speed\\n\\nNamd là công nghệ được phát triển bởi Công ty TNHH Nitta để phân tán đồng đều các ống nano cacbon trong vật liệu tổng hợp sợi cacbon. Sợi than chì có mô đun cao được liên kết với cấu trúc ống nano cacbon (CNT), giúp giảm tổn thất năng lượng, cho phép truyền năng lượng thành phản hồi nhanh.\",\n            \"status\": \"approved\",\n            \"purchasedPackageId\": \"668f8a10143f25c8f1109a97\",\n            \"createdAt\": \"2024-07-11T07:35:35.164Z\",\n            \"updatedAt\": \"2024-07-12T02:50:03.309Z\",\n            \"title\": \"Vợt Tennis Yonex EZONE 98L 2022 (285gr) Chính Hãng\",\n            \"website\": \"\",\n            \"user\": {\n                \"id\": \"c599f628-a2c5-4728-8dd4-ec85f0de530b\",\n                \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1720682822901-affiliate1.png?alt=media\",\n                \"name\": \"ShopVNB\",\n                \"email\": \"affiliate1@gmail.com\",\n                \"gender\": \"male\",\n                \"phoneNumber\": \"0123123123\"\n            }\n        },\n        {\n            \"id\": \"8b91236a-2342-4690-9fe2-be569479b7b3\",\n            \"userId\": \"c599f628-a2c5-4728-8dd4-ec85f0de530b\",\n            \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1720683076779-product.jpg?alt=media\",\n            \"content\": \"1. Giới thiệu Vợt Tennis Yonex Frame Vcore 98 (305gr) chính hãng\\n- Vợt Tennis Yonex Frame Vcore 98 (305gr) chính hãng được thiết kế kết hợp giữa khả năng kiểm soát toàn diện và khả năng tạo độ xoáy giúp bóng đi một cách chính xác nhất.\\n\\n- Thiết kế mang màu đỏ chủ đạo cùng với các chi tiết màu xanh, đen tím được thiết kế tỉ khắp từ khung đến thân vợt tạo nên một tổng thể bắt mắt, hiện đại và năng động. Được sử dụng nước sơn bóng giúp tăng thêm vẻ sang trọng vốn có của vợt.\\n1. Giới thiệu Vợt Tennis Yonex Frame Vcore 98 (305gr) chính hãng\\n- Vợt Tennis Yonex Frame Vcore 98 (305gr) chính hãng được thiết kế kết hợp giữa khả năng kiểm soát toàn diện và khả năng tạo độ xoáy giúp bóng đi một cách chính xác nhất.\\n\\n- Thiết kế mang màu đỏ chủ đạo cùng với các chi tiết màu xanh, đen tím được thiết kế tỉ khắp từ khung đến thân vợt tạo nên một tổng thể bắt mắt, hiện đại và năng động. Được sử dụng nước sơn bóng giúp tăng thêm vẻ sang trọng vốn có của vợt.\\n\\n4. Đối tượng phù hợp với Vợt Tennis Yonex Frame Vcore 98 (305gr) chính hãng\\n- Vợt Tennis Yonex Frame Vcore 98 (305gr) chính hãng phù hợp với lối chơi có kiểm soát, đánh bóng với độ xoáy cao và chính xác.\\n\\n- Thích hợp cho người chơi trình độ trung bình trở lên mới có thể làm quen và kiểm soát được vợt.\\n\\nXem thêm các mẫu vợt tennis mới nhất tại VNBShop.\",\n            \"status\": \"approved\",\n            \"purchasedPackageId\": \"668f8a10143f25c8f1109a97\",\n            \"createdAt\": \"2024-07-11T07:31:24.144Z\",\n            \"updatedAt\": \"2024-07-11T07:32:38.258Z\",\n            \"title\": \"Vợt Tennis Yonex Frame Vcore 98 (305gr) Chính Hãng\",\n            \"website\": \"\",\n            \"user\": {\n                \"id\": \"c599f628-a2c5-4728-8dd4-ec85f0de530b\",\n                \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1720682822901-affiliate1.png?alt=media\",\n                \"name\": \"ShopVNB\",\n                \"email\": \"affiliate1@gmail.com\",\n                \"gender\": \"male\",\n                \"phoneNumber\": \"0123123123\"\n            }\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 3\n}"
+						}
+					]
 				}
 			]
 		},

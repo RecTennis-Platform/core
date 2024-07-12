@@ -96,6 +96,25 @@ export class AdvertisementsController {
     }
   }
 
+  @Get('users/:userId')
+  async findAllUserAds(
+    @Query() dto: PageOptionsAdvertisementDto,
+    @Param('userId') userId: string,
+  ) {
+    try {
+      dto.status = 'approved';
+      return await this.advertisementsService.findAllByOwner(userId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.advertisementsService.findOne(id);
