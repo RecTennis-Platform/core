@@ -3752,7 +3752,7 @@ export class TournamentService {
       }
       //get list of team order by rank
 
-      const rounds = [];
+      //const rounds = [];
       const tournament = await this.prismaService.tournaments.findFirst({
         where: {
           id: id,
@@ -3849,21 +3849,107 @@ export class TournamentService {
           groups.push(group);
         }
 
-        const winnersByGroup = [];
-        for (const group of groups) {
-          const { title, numberOfProceeders, id } = group;
-          // Generate winner labels with correct numbering
-          const winners = [];
-          for (let i = 1; i <= numberOfProceeders; i++) {
-            winners.push({ title: `Winner ${i} Of ${title}`, id: id, rank: i });
-          }
-          winnersByGroup.push(winners);
-        }
-        const winners = mergeArrays(winnersByGroup);
+        // const winnersByGroup = [];
+        // for (const group of groups) {
+        //   const { title, numberOfProceeders, id } = group;
+        //   // Generate winner labels with correct numbering
+        //   const winners = [];
+        //   for (let i = 1; i <= numberOfProceeders; i++) {
+        //     winners.push({ title: `Winner ${i} Of ${title}`, id: id, rank: i });
+        //   }
+        //   winnersByGroup.push(winners);
+        // }
+        // const winners = mergeArrays(winnersByGroup);
+        // const tables = this.formatTournamentService.generateTables(
+        //   'knockout',
+        //   1,
+        //   winners.length,
+        // );
+
+        // for (let i = 0; i < tables.table1.length; i++) {
+        //   const rawMatches = [];
+        //   let status = MatchStatus.scheduled.toString();
+        //   for (let j = 0; j < tables.table1[i].length; j++) {
+        //     let id = randomUUID();
+        //     let nextMatchId = randomUUID();
+        //     if (i === 0) {
+        //       if (j % 2 !== 0) {
+        //         nextMatchId = rawMatches[j - 1].nextMatchId;
+        //       }
+        //     } else if (i === tables.table1.length - 1) {
+        //       id = rounds[i - 1].matches[j * 2].nextMatchId;
+        //       nextMatchId = null;
+        //     } else {
+        //       if (j % 2 !== 0) {
+        //         nextMatchId = rawMatches[j - 1].nextMatchId;
+        //       }
+        //       id = rounds[i - 1].matches[j * 2].nextMatchId;
+        //     }
+        //     let team1 = null,
+        //       team2 = null,
+        //       groupFixtureTeamId1 = null,
+        //       groupFixtureTeamId2 = null,
+        //       rankGroupTeam1 = null,
+        //       rankGroupTeam2 = null;
+        //     if (tables.table1[i][j] !== 0 && tables.table1[i][j] !== -1) {
+        //       groupFixtureTeamId1 = winners[tables.table1[i][j] - 1].id;
+        //       rankGroupTeam1 = winners[tables.table1[i][j] - 1].rank;
+        //       team1 = {
+        //         user1: null,
+        //         user2: null,
+        //         name: winners[tables.table1[i][j] - 1].title,
+        //       };
+        //     } else {
+        //       status = MatchStatus.skipped.toString();
+        //     }
+
+        //     if (tables.table2[i][j] !== 0 && tables.table2[i][j] !== -1) {
+        //       groupFixtureTeamId2 = winners[tables.table2[i][j] - 1].id;
+        //       rankGroupTeam2 = winners[tables.table2[i][j] - 1].rank;
+        //       team2 = {
+        //         user1: null,
+        //         user2: null,
+        //         name: winners[tables.table2[i][j] - 1].title,
+        //       };
+        //       status = MatchStatus.scheduled.toString();
+        //     } else {
+        //       status = MatchStatus.skipped.toString();
+        //     }
+
+        //     if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
+        //       status = MatchStatus.no_show.toString();
+        //     }
+        //     const today = new Date();
+        //     const match = {
+        //       id: id,
+        //       nextMatchId: nextMatchId,
+        //       title: `Match ${j + 1}`,
+        //       matchStartDate: new Date(today.setDate(today.getDate() + 3)),
+        //       duration: dto.matchDuration,
+        //       status: status,
+        //       teams: { team1, team2 },
+        //       groupFixtureTeamId1,
+        //       groupFixtureTeamId2,
+        //       rankGroupTeam1,
+        //       rankGroupTeam2,
+        //       refereeId: null,
+        //       venue: dto.venue,
+        //     };
+        //     rawMatches.push(match);
+        //   }
+        //   const round = {
+        //     title: `Round ${i + 1}`,
+        //     id: randomUUID(),
+        //     matches: rawMatches,
+        //   };
+        //   rounds.push(round);
+        // }
+        const rounds = [];
+
         const tables = this.formatTournamentService.generateTables(
           'knockout',
           1,
-          winners.length,
+          dto.numberOfKnockoutTeams,
         );
 
         for (let i = 0; i < tables.table1.length; i++) {
@@ -3885,32 +3971,17 @@ export class TournamentService {
               }
               id = rounds[i - 1].matches[j * 2].nextMatchId;
             }
+
             let team1 = null,
-              team2 = null,
-              groupFixtureTeamId1 = null,
-              groupFixtureTeamId2 = null,
-              rankGroupTeam1 = null,
-              rankGroupTeam2 = null;
+              team2 = null;
             if (tables.table1[i][j] !== 0 && tables.table1[i][j] !== -1) {
-              groupFixtureTeamId1 = winners[tables.table1[i][j] - 1].id;
-              rankGroupTeam1 = winners[tables.table1[i][j] - 1].rank;
-              team1 = {
-                user1: null,
-                user2: null,
-                name: winners[tables.table1[i][j] - 1].title,
-              };
+              team1 = null;
             } else {
               status = MatchStatus.skipped.toString();
             }
 
             if (tables.table2[i][j] !== 0 && tables.table2[i][j] !== -1) {
-              groupFixtureTeamId2 = winners[tables.table2[i][j] - 1].id;
-              rankGroupTeam2 = winners[tables.table2[i][j] - 1].rank;
-              team2 = {
-                user1: null,
-                user2: null,
-                name: winners[tables.table2[i][j] - 1].title,
-              };
+              team2 = null;
               status = MatchStatus.scheduled.toString();
             } else {
               status = MatchStatus.skipped.toString();
@@ -3928,10 +3999,6 @@ export class TournamentService {
               duration: dto.matchDuration,
               status: status,
               teams: { team1, team2 },
-              groupFixtureTeamId1,
-              groupFixtureTeamId2,
-              rankGroupTeam1,
-              rankGroupTeam2,
               refereeId: null,
               venue: dto.venue,
             };
@@ -3954,7 +4021,8 @@ export class TournamentService {
         return {
           id: randomUUID(),
           roundRobinGroups: groups,
-          knockoutGroup: null,
+          knockoutGroup: knockoutGroup,
+          numberOfKnockoutTeams: dto.numberOfKnockoutTeams,
           status: 'new',
           participantType: tournament.participantType,
           format: 'group_playoff',
@@ -3980,7 +4048,7 @@ export class TournamentService {
       const tables = this.formatTournamentService.generateTables(
         'knockout',
         1,
-        dto.numberOfProceeders,
+        dto.numberOfKnockoutTeams,
       );
 
       for (let i = 0; i < tables.table1.length; i++) {
@@ -4349,6 +4417,7 @@ export class TournamentService {
             breakDuration: dto.breakDuration,
             status: dto.status,
             venue: dto.venue,
+            numberOfKnockoutTeams: dto.numberOfKnockoutTeams,
           },
           create: {
             id: dto.id,
@@ -4363,6 +4432,7 @@ export class TournamentService {
             breakDuration: dto.breakDuration,
             status: dto.status,
             venue: dto.venue,
+            numberOfKnockoutTeams: dto.numberOfKnockoutTeams,
           },
         });
 
@@ -4651,90 +4721,90 @@ export class TournamentService {
           );
 
           //knockout
-          // await tx.group_fixtures.upsert({
-          //   where: {
-          //     id: dto.knockoutGroup.id,
-          //   },
-          //   update: {
-          //     fixtureId: fixture.id,
-          //     title: dto.knockoutGroup.title,
-          //     isFinal: true,
-          //     numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
-          //   },
-          //   create: {
-          //     id: dto.knockoutGroup.id,
-          //     fixtureId: fixture.id,
-          //     title: dto.knockoutGroup.title,
-          //     isFinal: true,
-          //     numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
-          //   },
-          // });
-          // await Promise.all(
-          //   dto.knockoutGroup.rounds.reverse().map(async (round) => {
-          //     await tx.rounds.upsert({
-          //       where: {
-          //         id: round.id,
-          //       },
-          //       update: {
-          //         groupFixtureId: dto.knockoutGroup.id,
-          //         title: round.title,
-          //         elo: 100,
-          //       },
-          //       create: {
-          //         id: round.id,
-          //         groupFixtureId: dto.knockoutGroup.id,
-          //         title: round.title,
-          //         elo: 100,
-          //       },
-          //     });
-          //     //apply elo
-          //     await Promise.all(
-          //       round.matches.map(async (match) => {
-          //         await tx.matches.upsert({
-          //           where: {
-          //             id: match.id,
-          //           },
-          //           update: {
-          //             roundId: round.id,
-          //             title: match.title,
-          //             status: match.status,
-          //             rankGroupTeam1: match.rankGroupTeam1,
-          //             rankGroupTeam2: match.rankGroupTeam2,
-          //             nextMatchId: match.nextMatchId,
-          //             matchStartDate: match.matchStartDate,
-          //             teamId1: match.teams.team1?.id,
-          //             teamId2: match.teams.team2?.id,
-          //             venue: match.venue,
-          //             duration: match.duration,
-          //             breakDuration: dto.breakDuration,
-          //             refereeId: match.refereeId,
-          //             groupFixtureTeamId1: match.groupFixtureTeamId1,
-          //             groupFixtureTeamId2: match.groupFixtureTeamId2,
-          //           },
+          await tx.group_fixtures.upsert({
+            where: {
+              id: dto.knockoutGroup.id,
+            },
+            update: {
+              fixtureId: fixture.id,
+              title: dto.knockoutGroup.title,
+              isFinal: true,
+              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+            },
+            create: {
+              id: dto.knockoutGroup.id,
+              fixtureId: fixture.id,
+              title: dto.knockoutGroup.title,
+              isFinal: true,
+              numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
+            },
+          });
+          await Promise.all(
+            dto.knockoutGroup.rounds.reverse().map(async (round) => {
+              await tx.rounds.upsert({
+                where: {
+                  id: round.id,
+                },
+                update: {
+                  groupFixtureId: dto.knockoutGroup.id,
+                  title: round.title,
+                  elo: 100,
+                },
+                create: {
+                  id: round.id,
+                  groupFixtureId: dto.knockoutGroup.id,
+                  title: round.title,
+                  elo: 100,
+                },
+              });
+              //apply elo
+              await Promise.all(
+                round.matches.map(async (match) => {
+                  await tx.matches.upsert({
+                    where: {
+                      id: match.id,
+                    },
+                    update: {
+                      roundId: round.id,
+                      title: match.title,
+                      status: match.status,
+                      rankGroupTeam1: match.rankGroupTeam1,
+                      rankGroupTeam2: match.rankGroupTeam2,
+                      nextMatchId: match.nextMatchId,
+                      matchStartDate: match.matchStartDate,
+                      teamId1: match.teams.team1?.id,
+                      teamId2: match.teams.team2?.id,
+                      venue: match.venue,
+                      duration: match.duration,
+                      breakDuration: dto.breakDuration,
+                      refereeId: match.refereeId,
+                      groupFixtureTeamId1: match.groupFixtureTeamId1,
+                      groupFixtureTeamId2: match.groupFixtureTeamId2,
+                    },
 
-          //           create: {
-          //             id: match.id,
-          //             roundId: round.id,
-          //             title: match.title,
-          //             status: match.status,
-          //             rankGroupTeam1: match.rankGroupTeam1,
-          //             rankGroupTeam2: match.rankGroupTeam2,
-          //             nextMatchId: match.nextMatchId,
-          //             matchStartDate: match.matchStartDate,
-          //             teamId1: match.teams.team1?.id,
-          //             teamId2: match.teams.team2?.id,
-          //             venue: match.venue,
-          //             duration: match.duration,
-          //             breakDuration: dto.breakDuration,
-          //             refereeId: match.refereeId,
-          //             groupFixtureTeamId1: match.groupFixtureTeamId1,
-          //             groupFixtureTeamId2: match.groupFixtureTeamId2,
-          //           },
-          //         });
-          //       }),
-          //     );
-          //   }),
-          // );
+                    create: {
+                      id: match.id,
+                      roundId: round.id,
+                      title: match.title,
+                      status: match.status,
+                      rankGroupTeam1: match.rankGroupTeam1,
+                      rankGroupTeam2: match.rankGroupTeam2,
+                      nextMatchId: match.nextMatchId,
+                      matchStartDate: match.matchStartDate,
+                      teamId1: match.teams.team1?.id,
+                      teamId2: match.teams.team2?.id,
+                      venue: match.venue,
+                      duration: match.duration,
+                      breakDuration: dto.breakDuration,
+                      refereeId: match.refereeId,
+                      groupFixtureTeamId1: match.groupFixtureTeamId1,
+                      groupFixtureTeamId2: match.groupFixtureTeamId2,
+                    },
+                  });
+                }),
+              );
+            }),
+          );
 
           //update teams
           await Promise.all(
@@ -5245,7 +5315,6 @@ export class TournamentService {
       await this.prismaService.tournament_payment_info.create({
         data: {
           unit: dto.unit,
-          image: dto.image,
           amount: dto.amount,
           payment: payment,
           tournamentId: tournamentId,
@@ -5576,7 +5645,6 @@ export class TournamentService {
         reminderDate: dto.reminderDate,
         dueDate: dto.dueDate,
         unit: dto.unit,
-        image: dto.image,
         amount: dto.amount,
         payment: JSON.stringify(dto.payment),
       },

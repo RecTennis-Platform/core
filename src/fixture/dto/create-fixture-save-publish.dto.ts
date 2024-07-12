@@ -204,6 +204,10 @@ export class CreateFixturePublishDto {
   @ArrayMinSize(1)
   @Type(() => Group)
   groups: Group[];
+
+  @IsOptional()
+  @IsNumber()
+  numberOfKnockoutTeams: number;
 }
 
 export class CreateFixturePublishKnockoutDto {

@@ -28,17 +28,16 @@ export class Payment {
   @IsString()
   method: string;
 
+  @IsNotEmpty()
+  @IsString()
+  information: string;
+
   @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => Bank)
-  bank: Bank;
+  @IsString()
+  image: string;
 }
 
 export class CreatePaymentInfoDto {
-  @IsNotEmpty()
-  @IsString()
-  image: string;
-
   @IsNotEmpty()
   @IsNumber()
   amount: number;
