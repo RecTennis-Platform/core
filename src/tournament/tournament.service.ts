@@ -3951,66 +3951,94 @@ export class TournamentService {
           1,
           dto.numberOfKnockoutTeams,
         );
-
-        for (let i = 0; i < tables.table1.length; i++) {
-          const rawMatches = [];
-          let status = MatchStatus.scheduled.toString();
-          for (let j = 0; j < tables.table1[i].length; j++) {
-            let id = randomUUID();
-            let nextMatchId = randomUUID();
-            if (i === 0) {
-              if (j % 2 !== 0) {
-                nextMatchId = rawMatches[j - 1].nextMatchId;
-              }
-            } else if (i === tables.table1.length - 1) {
-              id = rounds[i - 1].matches[j * 2].nextMatchId;
-              nextMatchId = null;
-            } else {
-              if (j % 2 !== 0) {
-                nextMatchId = rawMatches[j - 1].nextMatchId;
-              }
-              id = rounds[i - 1].matches[j * 2].nextMatchId;
-            }
-
-            let team1 = null,
-              team2 = null;
-            if (tables.table1[i][j] !== 0 && tables.table1[i][j] !== -1) {
-              team1 = null;
-            } else {
-              status = MatchStatus.skipped.toString();
-            }
-
-            if (tables.table2[i][j] !== 0 && tables.table2[i][j] !== -1) {
-              team2 = null;
-              status = MatchStatus.scheduled.toString();
-            } else {
-              status = MatchStatus.skipped.toString();
-            }
-
-            if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
-              status = MatchStatus.no_show.toString();
-            }
-            const today = new Date();
-            const match = {
-              id: id,
-              nextMatchId: nextMatchId,
-              title: `Match ${j + 1}`,
-              matchStartDate: new Date(today.setDate(today.getDate() + 3)),
-              duration: dto.matchDuration,
-              status: status,
-              teams: { team1, team2 },
-              refereeId: null,
-              venue: dto.venue,
-            };
-            rawMatches.push(match);
-          }
-          const round = {
-            title: `Round ${i + 1}`,
+        console.log(tables);
+        if (
+          tables.table1.length === 1 &&
+          tables.table1[0].length === 1 &&
+          tables.table2.length === 1 &&
+          tables.table2[0].length === 1
+        ) {
+          const today = new Date();
+          const team1 = null,
+            team2 = null;
+          const match = {
             id: randomUUID(),
-            matches: rawMatches,
+            nextMatchId: null,
+            title: `Match 1`,
+            matchStartDate: new Date(today.setDate(today.getDate() + 3)),
+            duration: dto.matchDuration,
+            status: MatchStatus.scheduled,
+            teams: { team1, team2 },
+            refereeId: null,
+            venue: dto.venue,
+          };
+
+          const round = {
+            title: `Round 1`,
+            id: randomUUID(),
+            matches: [match],
           };
           rounds.push(round);
-        }
+        } else
+          for (let i = 0; i < tables.table1.length; i++) {
+            const rawMatches = [];
+            let status = MatchStatus.scheduled.toString();
+            for (let j = 0; j < tables.table1[i].length; j++) {
+              let id = randomUUID();
+              let nextMatchId = randomUUID();
+              if (i === 0) {
+                if (j % 2 !== 0) {
+                  nextMatchId = rawMatches[j - 1].nextMatchId;
+                }
+              } else if (i === tables.table1.length - 1) {
+                id = rounds[i - 1].matches[j * 2].nextMatchId;
+                nextMatchId = null;
+              } else {
+                if (j % 2 !== 0) {
+                  nextMatchId = rawMatches[j - 1].nextMatchId;
+                }
+                id = rounds[i - 1].matches[j * 2].nextMatchId;
+              }
+
+              let team1 = null,
+                team2 = null;
+              if (tables.table1[i][j] !== 0 && tables.table1[i][j] !== -1) {
+                team1 = null;
+              } else {
+                status = MatchStatus.skipped.toString();
+              }
+
+              if (tables.table2[i][j] !== 0 && tables.table2[i][j] !== -1) {
+                team2 = null;
+                status = MatchStatus.scheduled.toString();
+              } else {
+                status = MatchStatus.skipped.toString();
+              }
+
+              if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
+                status = MatchStatus.no_show.toString();
+              }
+              const today = new Date();
+              const match = {
+                id: id,
+                nextMatchId: nextMatchId,
+                title: `Match ${j + 1}`,
+                matchStartDate: new Date(today.setDate(today.getDate() + 3)),
+                duration: dto.matchDuration,
+                status: status,
+                teams: { team1, team2 },
+                refereeId: null,
+                venue: dto.venue,
+              };
+              rawMatches.push(match);
+            }
+            const round = {
+              title: `Round ${i + 1}`,
+              id: randomUUID(),
+              matches: rawMatches,
+            };
+            rounds.push(round);
+          }
 
         const knockoutGroup = {
           id: randomUUID(),
@@ -4739,6 +4767,7 @@ export class TournamentService {
               numberOfProceeders: dto.knockoutGroup.numberOfProceeders,
             },
           });
+          console.log(dto.knockoutGroup);
           await Promise.all(
             dto.knockoutGroup.rounds.reverse().map(async (round) => {
               await tx.rounds.upsert({
