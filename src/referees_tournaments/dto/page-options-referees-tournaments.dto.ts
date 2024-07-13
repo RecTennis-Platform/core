@@ -17,7 +17,7 @@ export class PageOptionsRefereesTournamentsDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  @Max(50)
+  @Max(5000)
   @IsOptional()
   readonly take?: number = 10;
 
@@ -41,7 +41,7 @@ export class PageOptionsRefereesGroupTournamentsDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  @Max(50)
+  @Max(5000)
   @IsOptional()
   readonly take?: number = 10;
 

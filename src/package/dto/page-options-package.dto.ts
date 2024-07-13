@@ -25,7 +25,7 @@ export class PageOptionsPackageDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  @Max(50)
+  @Max(5000)
   @IsOptional()
   take?: number;
 

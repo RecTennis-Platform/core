@@ -23,7 +23,7 @@ export class PageOptionsTournamentRegistrationDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  @Max(50)
+  @Max(5000)
   @IsOptional()
   readonly take?: number = 10;
 

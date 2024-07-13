@@ -4789,6 +4789,7 @@ export class TournamentService {
               //apply elo
               await Promise.all(
                 round.matches.map(async (match) => {
+                  console.log(match);
                   await tx.matches.upsert({
                     where: {
                       id: match.id,
