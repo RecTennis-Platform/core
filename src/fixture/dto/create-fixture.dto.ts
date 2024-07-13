@@ -1,3 +1,4 @@
+import { Optional } from '@nestjs/common';
 import { FixtureStatus, MatchStatus, TournamentFormat } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
@@ -72,6 +73,10 @@ export class GenerateFixtureDto {
   @ArrayMinSize(1)
   @Type(() => Group)
   groups: Group[];
+
+  @Optional()
+  @IsNumber()
+  numberOfKnockoutTeams: number;
 }
 
 export class GenerateFixtureKnockoutDto {
@@ -110,9 +115,9 @@ export class GenerateFixtureKnockoutDto {
   // @IsNumber()
   // breakDuration: number = 10;
 
-  @IsNotEmpty()
+  @Optional()
   @IsNumber()
-  numberOfProceeders: number;
+  numberOfKnockoutTeams: number;
 }
 
 export class Team {
@@ -288,4 +293,8 @@ export class CreateFixtureDto {
   @ArrayMinSize(1)
   @Type(() => Group)
   groups: Group[];
+
+  @IsOptional()
+  @IsNumber()
+  numberOfKnockoutTeams: number;
 }

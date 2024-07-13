@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  Patch,
+} from '@nestjs/common';
 import { MatchService } from './match.service';
 import { GetUser } from 'src/auth_utils/decorators';
 import { JwtGuard } from 'src/auth_utils/guards';
 import { UpdateScoreDto } from './dto';
+import { UpdateMatchDto } from './dto/update-match.dto';
 
 @Controller('matches')
 export class MatchController {
@@ -11,6 +20,16 @@ export class MatchController {
   @Get(':id')
   async getMatchDetails(@Param('id') id: string) {
     return await this.matchService.getMatchDetails(id);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(':id')
+  async updateMatch(
+    @Param('id') matchId: string,
+    @GetUser('sub') userId: string,
+    @Body() dto: UpdateMatchDto,
+  ) {
+    return await this.matchService.updateMatch(matchId, userId, dto);
   }
 
   // Referee

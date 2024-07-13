@@ -172,6 +172,13 @@ export class FormatTournamentService {
       2,
       Math.ceil(Math.log2(numberOfParticipants)),
     );
+    if (maxParticipants === 2) {
+      return {
+        table1: [[1]],
+        table2: [[2]],
+      };
+    }
+    console.log(maxParticipants);
     const table1 = [];
     const table2 = [];
 
@@ -179,11 +186,14 @@ export class FormatTournamentService {
     const row2: number[] = new Array(maxParticipants / 2).fill(0);
 
     const interval = maxParticipants / 4;
+    console.log('interval=', interval);
     let j = numberOfParticipants;
     //let step = 0;
     for (let i = 0, step = 0; i < interval; i++, step++) {
       row1[i] = i + 1 + step;
       row1[i + interval] = row1[i] + 1;
+      console.log('i=', i);
+      console.log('step=', step);
 
       if (j > maxParticipants / 2) {
         row2[i] = j;

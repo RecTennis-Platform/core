@@ -286,24 +286,25 @@ model group_tournament_registrations {
 }
 
 model fixtures {
-  id                   String             @id @default(uuid())
-  tournamentId         Int?               @map("tournament_id")
-  numberOfParticipants Int                @map("number_of_participants")
-  fixtureStartDate     DateTime           @map("fixture_start_date")
-  fixtureEndDate       DateTime           @map("fixture_end_date")
-  status               FixtureStatus      @default(draft)
-  matchDuration        Int                @map("match_duration")
-  breakDuration        Int                @map("break_duration")
-  createdAt            DateTime           @default(now()) @map("created_at")
-  updatedAt            DateTime           @updatedAt @map("updated_at")
-  numberOfGroups       Int?               @map("number_of_groups")
-  matchesEndTime       String?            @map("matches_end_time")
-  matchesStartTime     String             @map("matches_start_time")
-  venue                String?
-  groupTournamentId    Int?               @map("group_tournament_id")
-  groupTournament      group_tournaments? @relation(fields: [groupTournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixtures_group_tournaments")
-  tournament           tournaments?       @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixtures_tournaments")
-  groupFixtures        group_fixtures[]
+  id                    String             @id @default(uuid())
+  tournamentId          Int?               @map("tournament_id")
+  numberOfParticipants  Int                @map("number_of_participants")
+  fixtureStartDate      DateTime           @map("fixture_start_date")
+  fixtureEndDate        DateTime           @map("fixture_end_date")
+  status                FixtureStatus      @default(draft)
+  matchDuration         Int                @map("match_duration")
+  breakDuration         Int                @map("break_duration")
+  createdAt             DateTime           @default(now()) @map("created_at")
+  updatedAt             DateTime           @updatedAt @map("updated_at")
+  numberOfGroups        Int?               @map("number_of_groups")
+  matchesEndTime        String?            @map("matches_end_time")
+  matchesStartTime      String             @map("matches_start_time")
+  venue                 String?
+  groupTournamentId     Int?               @map("group_tournament_id")
+  numberOfKnockoutTeams Int?               @map("number_of_knockout_teams")
+  groupTournament       group_tournaments? @relation(fields: [groupTournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixtures_group_tournaments")
+  tournament            tournaments?       @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixtures_tournaments")
+  groupFixtures         group_fixtures[]
 }
 
 model group_fixtures {
@@ -472,7 +473,6 @@ model fund {
 
 model tournament_payment_info {
   id                String             @id @default(uuid())
-  image             String             @map("image")
   amount            Int                @map("amount")
   unit              String             @map("unit")
   payment           String             @map("payment")

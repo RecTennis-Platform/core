@@ -1,7 +1,9 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { MatchStatus, ScoreType, SetStatus } from '@prisma/client';
 import { Order } from 'constants/order';
@@ -9,12 +11,17 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateScoreDto } from './dto';
 import { reverseScoreMap, scoreMap } from './constanst';
 import { NotificationProducer } from 'src/services/notification/notification-producer';
+import { UpdateMatchDto } from './dto/update-match.dto';
+import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-code';
+import { CustomResponseMessages } from 'src/helper/custom-response-message';
+import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
 
 @Injectable()
 export class MatchService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly notificationProducer: NotificationProducer,
+    private readonly mongodbPrismaService: MongoDBPrismaService,
   ) {}
 
   // Matches
@@ -980,6 +987,99 @@ export class MatchService {
         message: `Error: ${err.message}`,
       });
     }
+  }
+
+  async updateMatch(matchId: string, userId: string, dto: UpdateMatchDto) {
+    const match = await this.prismaService.matches.findFirst({
+      where: {
+        id: matchId,
+      },
+      include: {
+        round: {
+          include: {
+            fixture: {
+              include: {
+                fixture: {
+                  include: {
+                    tournament: true,
+                    groupTournament: {
+                      include: {
+                        group: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    let purchasedPackage;
+    if (match.round.fixture.fixture.tournament.purchasedPackageId) {
+      // Get purchased package info
+      purchasedPackage =
+        await this.mongodbPrismaService.purchasedPackage.findUnique({
+          where: {
+            id: match.round.fixture.fixture.tournament.purchasedPackageId,
+          },
+        });
+    } else if (
+      match.round.fixture.fixture.groupTournament.group.purchasedPackageId
+    ) {
+      purchasedPackage =
+        await this.mongodbPrismaService.purchasedPackage.findUnique({
+          where: {
+            id: match.round.fixture.fixture.groupTournament.group
+              .purchasedPackageId,
+          },
+        });
+    }
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if the user is the creator of the tournament
+    const isCreator = purchasedPackage.userId === userId;
+    if (!isCreator) {
+      throw new ForbiddenException({
+        message: 'You are not a creator of this tournament',
+        data: null,
+      });
+    }
+
+    return await this.prismaService.matches.update({
+      where: {
+        id: match.id,
+      },
+      data: {
+        groupFixtureTeamId1: dto.groupFixtureTeamId1,
+        groupFixtureTeamId2: dto.groupFixtureTeamId2,
+        rankGroupTeam1: dto.rankGroupTeam1,
+        rankGroupTeam2: dto.rankGroupTeam2,
+        teamId1: dto.teamId1,
+        teamId2: dto.teamId2,
+        teamWinnerId: dto.teamWinnerId,
+        matchStartDate: dto.matchStartDate,
+        matchEndDate: dto.matchEndDate,
+        venue: dto.venue,
+        duration: dto.duration,
+        breakDuration: dto.breakDuration,
+        nextMatchId: dto.nextMatchId,
+        title: dto.title,
+        refereeId: dto.refereeId,
+        team1MatchScore: dto.team1MatchScore,
+        team2MatchScore: dto.team2MatchScore,
+        status: dto.status,
+      },
+    });
   }
 
   // Utils

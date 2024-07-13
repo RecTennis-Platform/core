@@ -31,16 +31,15 @@ export class Payment {
   type: string;
 
   @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => Bank)
-  bank: Bank;
-}
+  @IsString()
+  information: string;
 
-export class UpdatePaymentInfoDto {
   @IsOptional()
   @IsString()
   image: string;
+}
 
+export class UpdatePaymentInfoDto {
   @IsOptional()
   @IsNumber()
   amount: number;

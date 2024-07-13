@@ -81,6 +81,13 @@ export class AdvertisementsService {
         data: null,
       });
     }
+
+    if (purchasedPackage.userId != userId) {
+      throw new BadRequestException({
+        message: 'Permission Denied',
+        data: null,
+      });
+    }
     const maxAds = JSON.parse(adService.config).maxAdvertisements;
     const count = await this.prismaService.advertisements.count({
       where: {
@@ -364,6 +371,9 @@ export class AdvertisementsService {
       data: {
         content: updateAdvertisementDto.content,
         image: updateAdvertisementDto.image,
+        title: updateAdvertisementDto.title,
+        website: updateAdvertisementDto.website,
+        status: AdvertisementStatus.pending,
       },
     });
   }
