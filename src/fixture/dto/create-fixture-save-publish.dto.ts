@@ -16,7 +16,6 @@ import {
 export class Group {
   @IsNotEmpty()
   @IsArray()
-  @ValidateNested({ each: true })
   teams: string[];
 
   @IsOptional()
