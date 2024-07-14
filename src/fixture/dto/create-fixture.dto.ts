@@ -74,7 +74,7 @@ export class GenerateFixtureDto {
   @Type(() => Group)
   groups: Group[];
 
-  @Optional()
+  @IsOptional()
   @IsNumber()
   numberOfKnockoutTeams: number;
 }

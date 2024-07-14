@@ -513,9 +513,6 @@ export class UserService {
       where: {
         userId: userId,
       },
-      select: {
-        match: true,
-      },
     };
 
     const pageOption =
@@ -531,6 +528,14 @@ export class UserService {
       this.prismaService.users_follow_matches.findMany({
         ...conditions,
         ...pageOption,
+        include: {
+          match: {
+            include: {
+              team1: true,
+              team2: true,
+            },
+          },
+        },
       }),
       this.prismaService.users_follow_matches.count({
         where: conditions.where,
