@@ -17,9 +17,13 @@ import { UpdateMatchDto } from './dto/update-match.dto';
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
+  @UseGuards(JwtGuard)
   @Get(':id')
-  async getMatchDetails(@Param('id') id: string) {
-    return await this.matchService.getMatchDetails(id);
+  async getMatchDetails(
+    @Param('id') id: string,
+    @GetUser('sub') userId: string,
+  ) {
+    return await this.matchService.getMatchDetails(id, userId);
   }
 
   @UseGuards(JwtGuard)

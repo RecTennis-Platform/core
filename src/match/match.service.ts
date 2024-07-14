@@ -25,7 +25,7 @@ export class MatchService {
   ) {}
 
   // Matches
-  async getMatchDetails(matchId: string) {
+  async getMatchDetails(matchId: string, userId: string) {
     // Get match details with populated relations (sets, games, scores)
     // Build populate conditions
     const conditions = {
@@ -188,11 +188,23 @@ export class MatchService {
 
     // console.log('matchFinalScore:', matchFinalScore);
 
+    const followMatches = (
+      await this.prismaService.users_follow_matches.findMany({
+        where: {
+          userId: userId,
+        },
+        select: {
+          matchId: true,
+        },
+      })
+    ).map((followMatch) => followMatch.matchId);
+
     // Remove unnecessary data
     delete matchDetails.teamId1;
     delete matchDetails.teamId2;
 
     matchDetails['matchFinalScore'] = matchFinalScore;
+    matchDetails['isFollowed'] = followMatches.includes(matchId);
 
     return matchDetails;
   }
@@ -251,7 +263,7 @@ export class MatchService {
         },
       });
 
-      return await this.getMatchDetails(matchId);
+      return await this.getMatchDetails(matchId, refereeId);
     } catch (err) {
       throw new InternalServerErrorException({
         message: `Error: ${err.message}`,
@@ -317,7 +329,7 @@ export class MatchService {
         },
       });
 
-      return await this.getMatchDetails(matchId);
+      return await this.getMatchDetails(matchId, refereeId);
     } catch (err) {
       throw new InternalServerErrorException({
         message: `Error: ${err.message}`,
@@ -980,7 +992,7 @@ export class MatchService {
         }
       }
 
-      return await this.getMatchDetails(matchId);
+      return await this.getMatchDetails(matchId, refereeId);
     } catch (err) {
       console.log('err', err);
       throw new InternalServerErrorException({

@@ -531,8 +531,46 @@ export class UserService {
         include: {
           match: {
             include: {
-              team1: true,
-              team2: true,
+              team1: {
+                include: {
+                  user1: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                      isReferee: true,
+                    },
+                  },
+                  user2: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                      isReferee: true,
+                    },
+                  },
+                },
+              },
+              team2: {
+                include: {
+                  user1: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                      isReferee: true,
+                    },
+                  },
+                  user2: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                      isReferee: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },
