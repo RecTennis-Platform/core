@@ -74,7 +74,7 @@ export class GenerateFixtureDto {
   @Type(() => Group)
   groups: Group[];
 
-  @Optional()
+  @IsOptional()
   @IsNumber()
   numberOfKnockoutTeams: number;
 }
@@ -115,7 +115,7 @@ export class GenerateFixtureKnockoutDto {
   // @IsNumber()
   // breakDuration: number = 10;
 
-  @Optional()
+  @IsOptional()
   @IsNumber()
   numberOfKnockoutTeams: number;
 }
