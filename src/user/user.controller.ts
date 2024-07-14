@@ -1,4 +1,3 @@
-import { UserRole } from '@prisma/client';
 import {
   Body,
   Controller,
@@ -11,6 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { UserRole } from '@prisma/client';
 import { GetUser, Roles } from 'src/auth_utils/decorators';
 import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import { IRequestWithUser } from 'src/auth_utils/interfaces';
@@ -63,6 +63,11 @@ export class UserController {
   @Get('me')
   async getUserDetails(@Req() req: IRequestWithUser) {
     const userId = req.user['sub'];
+    return await this.userService.getUserDetails(userId);
+  }
+
+  @Get(':userId')
+  async getUserDetailsById(@Param('userId') userId: string) {
     return await this.userService.getUserDetails(userId);
   }
 
