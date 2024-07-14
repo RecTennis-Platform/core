@@ -814,6 +814,7 @@ export class MatchService {
                   10,
                   5,
                 );
+                console.log(winnerElo, loserElo);
 
                 await this.prismaService.users.update({
                   where: {
@@ -868,6 +869,7 @@ export class MatchService {
                   10,
                   5,
                 );
+                console.log(winnerElo, loserElo);
                 await this.prismaService.users.update({
                   where: {
                     id: assignedMatch.team2.userId1,
