@@ -2629,6 +2629,7 @@ export class TournamentService {
               image: true,
               email: true,
               gender: true,
+              elo: true,
             },
           },
           user2: {
@@ -2638,6 +2639,7 @@ export class TournamentService {
               image: true,
               email: true,
               gender: true,
+              elo: true,
             },
           },
           message: true,
