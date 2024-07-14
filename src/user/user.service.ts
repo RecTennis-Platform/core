@@ -194,7 +194,9 @@ export class UserService {
     }
     const token = user.fcmToken;
     const data = {
-      params: JSON.stringify({ matchId: 1 }),
+      params: JSON.stringify({
+        matchId: '5065e45d-39a8-4cf4-83d3-ff520444c121',
+      }),
       type: 'MATCH_UPDATE',
     };
     const notification = {

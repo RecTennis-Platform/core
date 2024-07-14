@@ -36,6 +36,7 @@ export class NotificationConsumer {
         title: 'Match Score Update',
         body: "The match you're following has an update! Check the latest score now",
       };
+      console.log('Notidata:', data);
       await this.fcmNotificationService.sendingNotificationOneUser(
         token,
         data,
