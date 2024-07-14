@@ -759,13 +759,14 @@ export class MatchService {
                 },
               });
               let matchStatus = undefined;
+              const matchNumber = parseInt(assignedMatch.title.match(/\d+/)[0]);
               if (
                 nextMatch.status === MatchStatus.no_show &&
                 (nextMatch.teamId1 || nextMatch.teamId2)
               ) {
                 matchStatus = MatchStatus.scheduled;
               }
-              if (nextMatch.teamId1 === null) {
+              if (matchNumber % 2 !== 0) {
                 updateNextMatchData = {
                   teamId1: scoreData['teamWinId'],
                   status: matchStatus,

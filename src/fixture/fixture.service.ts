@@ -196,8 +196,14 @@ export class FixtureService {
           },
           include: {
             rounds: {
+              orderBy: {
+                title: 'asc',
+              },
               include: {
                 matches: {
+                  orderBy: {
+                    title: 'asc',
+                  },
                   include: {
                     groupFixture1: true,
                     groupFixture2: true,
@@ -396,8 +402,14 @@ export class FixtureService {
           },
           include: {
             rounds: {
+              orderBy: {
+                title: 'asc',
+              },
               include: {
                 matches: {
+                  orderBy: {
+                    title: 'asc',
+                  },
                   include: {
                     team1: {
                       include: {
