@@ -37,11 +37,13 @@ export class MatchService {
         team1: {
           select: {
             id: true,
+            totalElo: true,
             user1: {
               select: {
                 id: true,
                 name: true,
                 image: true,
+                elo: true,
               },
             },
             user2: {
@@ -49,6 +51,7 @@ export class MatchService {
                 id: true,
                 name: true,
                 image: true,
+                elo: true,
               },
             },
           },
@@ -57,11 +60,13 @@ export class MatchService {
         team2: {
           select: {
             id: true,
+            totalElo: true,
             user1: {
               select: {
                 id: true,
                 name: true,
                 image: true,
+                elo: true,
               },
             },
             user2: {
@@ -69,6 +74,7 @@ export class MatchService {
                 id: true,
                 name: true,
                 image: true,
+                elo: true,
               },
             },
           },
@@ -808,12 +814,10 @@ export class MatchService {
                   },
                 });
               if (dto.teamWin === 1) {
-                [winnerElo, loserElo] = this.calculateEloNew(
+                [winnerElo, loserElo] = this.calculateTennisElo(
                   assignedMatch.team1.totalElo,
                   assignedMatch.team2.totalElo,
                   tournament.level,
-                  10,
-                  5,
                 );
                 console.log(winnerElo, loserElo);
 
@@ -822,9 +826,7 @@ export class MatchService {
                     id: assignedMatch.team1.userId1,
                   },
                   data: {
-                    elo: {
-                      increment: winnerElo,
-                    },
+                    elo: winnerElo,
                   },
                 });
                 if (assignedMatch.team1.userId2) {
@@ -833,9 +835,7 @@ export class MatchService {
                       id: assignedMatch.team1.userId2,
                     },
                     data: {
-                      elo: {
-                        increment: winnerElo,
-                      },
+                      elo: winnerElo,
                     },
                   });
                 }
@@ -845,9 +845,7 @@ export class MatchService {
                     id: assignedMatch.team2.userId1,
                   },
                   data: {
-                    elo: {
-                      increment: loserElo,
-                    },
+                    elo: loserElo,
                   },
                 });
                 if (assignedMatch.team2.userId2) {
@@ -856,19 +854,15 @@ export class MatchService {
                       id: assignedMatch.team2.userId2,
                     },
                     data: {
-                      elo: {
-                        increment: loserElo,
-                      },
+                      elo: loserElo,
                     },
                   });
                 }
               } else {
-                [winnerElo, loserElo] = this.calculateEloNew(
+                [winnerElo, loserElo] = this.calculateTennisElo(
                   assignedMatch.team2.totalElo,
                   assignedMatch.team1.totalElo,
                   tournament.level,
-                  10,
-                  5,
                 );
                 console.log(winnerElo, loserElo);
                 await this.prismaService.users.update({
@@ -876,9 +870,7 @@ export class MatchService {
                     id: assignedMatch.team2.userId1,
                   },
                   data: {
-                    elo: {
-                      increment: winnerElo,
-                    },
+                    elo: winnerElo,
                   },
                 });
                 if (assignedMatch.team2.userId2) {
@@ -887,9 +879,7 @@ export class MatchService {
                       id: assignedMatch.team2.userId2,
                     },
                     data: {
-                      elo: {
-                        increment: winnerElo,
-                      },
+                      elo: winnerElo,
                     },
                   });
                 }
@@ -899,9 +889,7 @@ export class MatchService {
                     id: assignedMatch.team1.userId1,
                   },
                   data: {
-                    elo: {
-                      increment: loserElo,
-                    },
+                    elo: loserElo,
                   },
                 });
                 if (assignedMatch.team1.userId2) {
@@ -910,9 +898,7 @@ export class MatchService {
                       id: assignedMatch.team1.userId2,
                     },
                     data: {
-                      elo: {
-                        increment: loserElo,
-                      },
+                      elo: loserElo,
                     },
                   });
                 }
@@ -1180,5 +1166,95 @@ export class MatchService {
       n;
 
     return [eloA_new, eloB_new];
+  }
+
+  calculateTennisElo(
+    winnerElo: number,
+    loserElo: number,
+    tournamentLevel: number,
+  ) {
+    if (!winnerElo) {
+      winnerElo = 200;
+    }
+
+    if (!loserElo) {
+      loserElo = 200;
+    }
+    // Hằng số K cơ bản
+    const K_base: number = 32;
+
+    // Tính hằng số K dựa trên mức độ giải đấu (từ 0 đến 9)
+    let K: number;
+    switch (tournamentLevel) {
+      case 0:
+        K = K_base + 10;
+        break;
+      case 1:
+        K = K_base + 8;
+        break;
+      case 2:
+        K = K_base + 6;
+        break;
+      case 3:
+        K = K_base + 4;
+        break;
+      case 4:
+        K = K_base + 2;
+        break;
+      case 5:
+        K = K_base;
+        break;
+      case 6:
+        K = K_base - 2;
+        break;
+      case 7:
+        K = K_base - 4;
+        break;
+      case 8:
+        K = K_base - 6;
+        break;
+      case 9:
+        K = K_base - 8;
+        break;
+      default:
+        K = K_base;
+    }
+
+    // Tính điểm chênh lệch
+    const diff: number = Math.abs(winnerElo - loserElo);
+
+    // Điều chỉnh K dựa trên chênh lệch điểm
+    if (diff >= 1000) {
+      K += 100; // Chênh lệch lớn hơn hoặc bằng 400 điểm, tăng K thêm 10
+    } else if (diff >= 300) {
+      K += 8; // Chênh lệch lớn hơn hoặc bằng 300 điểm, tăng K thêm 8
+    } else if (diff >= 200) {
+      K += 6; // Chênh lệch lớn hơn hoặc bằng 200 điểm, tăng K thêm 6
+    } else if (diff >= 100) {
+      K += 4; // Chênh lệch lớn hơn hoặc bằng 100 điểm, tăng K thêm 4
+    }
+
+    // Tính kết quả dự đoán
+    const E_winner: number =
+      1 / (1 + Math.pow(10, (loserElo - winnerElo) / 400));
+    const E_loser: number =
+      1 / (1 + Math.pow(10, (winnerElo - loserElo) / 400));
+
+    // Kết quả thực tế (đơn giản 1 cho người thắng, 0 cho người thua)
+    const S_winner: number = 1;
+    const S_loser: number = 0;
+
+    // Tính toán Elo mới sau trận đấu
+    let winnerEloPrime: number = winnerElo + K * (S_winner - E_winner);
+    let loserEloPrime: number = loserElo + K * (S_loser - E_loser);
+
+    if (winnerEloPrime < 200) {
+      winnerEloPrime = 200;
+    }
+    if (loserEloPrime < 200) {
+      loserEloPrime = 200;
+    }
+
+    return [winnerEloPrime, loserEloPrime];
   }
 }
