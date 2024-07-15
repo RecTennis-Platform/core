@@ -379,7 +379,7 @@ export class FixtureService {
         isFollowed: followMatches.includes(others.id),
       };
     } else if (tournament.format === TournamentFormat.knockout) {
-      groups[0].rounds.reverse();
+      //groups[0].rounds.reverse();
       return {
         ...others,
         knockoutGroup: groups[0],
@@ -389,7 +389,7 @@ export class FixtureService {
     } else if (tournament.format === TournamentFormat.group_playoff) {
       let knockoutGroup = null;
       if (groups) {
-        groups[0].rounds.reverse();
+        //groups[0].rounds.reverse();
         knockoutGroup = groups[0];
       }
 
