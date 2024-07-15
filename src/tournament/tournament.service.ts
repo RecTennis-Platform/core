@@ -83,12 +83,12 @@ export class TournamentService {
       });
     }
 
-    if (tournament.phase != TournamentPhase.finalized_applicants) {
-      throw new BadRequestException({
-        code: 400,
-        message: 'Tournament phase must be finalized_applicants',
-      });
-    }
+    // if (tournament.phase != TournamentPhase.finalized_applicants) {
+    //   throw new BadRequestException({
+    //     code: 400,
+    //     message: 'Tournament phase must be finalized_applicants',
+    //   });
+    // }
 
     // Get purchased package info
     const purchasedPackage =
