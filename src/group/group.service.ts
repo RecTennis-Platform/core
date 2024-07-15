@@ -2641,8 +2641,14 @@ export class GroupService {
             },
             include: {
               rounds: {
+                orderBy: {
+                  title: 'asc',
+                },
                 include: {
                   matches: {
+                    orderBy: {
+                      title: 'asc',
+                    },
                     include: {
                       groupFixture1: true,
                       groupFixture2: true,
@@ -2745,7 +2751,7 @@ export class GroupService {
     if (format === GroupTournamentFormat.round_robin) {
       return { ...others, roundRobinGroups: groups, format };
     } else if (format === GroupTournamentFormat.knockout) {
-      groups[0].rounds.reverse();
+      //groups[0].rounds.reverse();
       return { ...others, knockoutGroup: groups[0], format };
     } else if (format === TournamentFormat.group_playoff) {
       throw new BadRequestException({
@@ -2978,8 +2984,14 @@ export class GroupService {
           },
           include: {
             rounds: {
+              orderBy: {
+                title: 'asc',
+              },
               include: {
                 matches: {
+                  orderBy: {
+                    title: 'asc',
+                  },
                   include: {
                     groupFixture1: true,
                     groupFixture2: true,
@@ -3134,7 +3146,7 @@ export class GroupService {
         isFollowed: followMatches.includes(others.id),
       };
     } else if (tournament.format === TournamentFormat.knockout) {
-      groups[0].rounds.reverse();
+      //groups[0].rounds.reverse();
       return {
         ...others,
         knockoutGroup: groups[0],
@@ -3142,7 +3154,7 @@ export class GroupService {
         isFollowed: followMatches.includes(others.id),
       };
     } else if (tournament.format === TournamentFormat.group_playoff) {
-      groups[0].rounds.reverse();
+      //groups[0].rounds.reverse();
       const knockoutGroup = groups[0];
       const fixtureGroups = [];
       const roundRobinGroups = (
@@ -3153,8 +3165,14 @@ export class GroupService {
           },
           include: {
             rounds: {
+              orderBy: {
+                title: 'asc',
+              },
               include: {
                 matches: {
+                  orderBy: {
+                    title: 'asc',
+                  },
                   include: {
                     team1: {
                       include: {

@@ -1,4 +1,3 @@
-import { UserRole } from '@prisma/client';
 import {
   Body,
   Controller,
@@ -11,6 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { UserRole } from '@prisma/client';
 import { GetUser, Roles } from 'src/auth_utils/decorators';
 import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import { IRequestWithUser } from 'src/auth_utils/interfaces';
@@ -142,16 +142,6 @@ export class UserController {
     @GetUser('sub') userId: string,
     @Query() pageOptions: PageOptionsRefereeMatchesDto,
   ) {
-    // const start = new Date(); // Date is in milliseconds
-    // const end = new Date(start.getTime() + 5 * 60 * 1000);
-    // // Difference in milliseconds
-    // const difference = end.getTime() - start.getTime();
-    // console.log('difference: ', difference);
-    // // Convert milliseconds to minutes
-    // const differenceInMinutes = difference / (1000 * 60);
-    // console.log('differenceInMinutes: ', differenceInMinutes);
-    // console.log('differenceInMinutes type: ', typeof differenceInMinutes);
-    // return 'ok';
     return await this.userService.getRefereeMatches(userId, pageOptions);
   }
 
@@ -167,5 +157,10 @@ export class UserController {
   @Get(':userId/test-noti')
   async testNoti(@Param('userId') userId: string) {
     return await this.userService.testNotification(userId);
+  }
+
+  @Get(':userId')
+  async getUserDetailsById(@Param('userId') userId: string) {
+    return await this.userService.getUserDetails(userId);
   }
 }

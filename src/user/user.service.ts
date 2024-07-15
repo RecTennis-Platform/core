@@ -194,7 +194,9 @@ export class UserService {
     }
     const token = user.fcmToken;
     const data = {
-      params: JSON.stringify({ matchId: 1 }),
+      params: JSON.stringify({
+        matchId: '5065e45d-39a8-4cf4-83d3-ff520444c121',
+      }),
       type: 'MATCH_UPDATE',
     };
     const notification = {
@@ -513,9 +515,6 @@ export class UserService {
       where: {
         userId: userId,
       },
-      select: {
-        match: true,
-      },
     };
 
     const pageOption =
@@ -531,6 +530,52 @@ export class UserService {
       this.prismaService.users_follow_matches.findMany({
         ...conditions,
         ...pageOption,
+        include: {
+          match: {
+            include: {
+              team1: {
+                include: {
+                  user1: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                      isReferee: true,
+                    },
+                  },
+                  user2: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                      isReferee: true,
+                    },
+                  },
+                },
+              },
+              team2: {
+                include: {
+                  user1: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                      isReferee: true,
+                    },
+                  },
+                  user2: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                      isReferee: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       }),
       this.prismaService.users_follow_matches.count({
         where: conditions.where,
