@@ -172,6 +172,42 @@ export class UserService {
     }
   }
 
+  calculateEloNew(
+    eloA: number,
+    eloB: number,
+    D: number,
+    m: number,
+    n: number,
+  ): [number, number] {
+    if (eloA === 0) {
+      eloA = 200;
+    }
+
+    if (eloB === 0) {
+      eloB = 200;
+    }
+
+    const eloAvg = (eloA + eloB) / 2;
+    const eloDiff = Math.abs(eloA - eloB);
+    const expTerm = Math.exp(-eloDiff / eloAvg);
+    const k = eloAvg / 60;
+
+    const eloA_new =
+      (k *
+        (1 + D / 10 - expTerm) *
+        (1 + D / 10 + (eloAvg - eloA) / eloAvg) *
+        (m + n)) /
+      n;
+    const eloB_new =
+      (k *
+        expTerm *
+        (1 + D / 10 - (eloAvg - eloB) / eloAvg) *
+        (2 * m - n + 1)) /
+      n;
+
+    return [eloA_new, eloB_new];
+  }
+
   async testNotification(userId: string) {
     // Check if user exists
     const user = await this.prismaService.users.findUnique({
