@@ -952,6 +952,9 @@ export class TournamentService {
             },
             include: {
               rounds: {
+                orderBy: {
+                  title: 'asc',
+                },
                 select: {
                   id: true,
                   title: true,
