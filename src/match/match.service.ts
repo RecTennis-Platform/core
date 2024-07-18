@@ -100,6 +100,7 @@ export class MatchService {
               select: {
                 id: true,
                 teamWinId: true,
+                // Scores
                 scores: {
                   orderBy: {
                     id: Order.DESC,
@@ -110,6 +111,7 @@ export class MatchService {
                     team1Score: true,
                     team2Score: true,
                     teamWinId: true,
+                    teamServeId: true,
                     time: true,
                   },
                 },
@@ -215,7 +217,7 @@ export class MatchService {
     return matchDetails;
   }
 
-  async startMatch(matchId: string, refereeId: string) {
+  async startMatch(matchId: string, refereeId: string, teamServeId: string) {
     // Validate if referee is assigned to this match
     const assignedMatch = await this.prismaService.matches.findUnique({
       where: {
@@ -255,6 +257,7 @@ export class MatchService {
       await this.prismaService.scores.create({
         data: {
           gameId: newGame.id,
+          teamServeId: teamServeId,
         },
       });
 
@@ -277,7 +280,7 @@ export class MatchService {
     }
   }
 
-  async startSet(matchId: string, refereeId: string) {
+  async startSet(matchId: string, refereeId: string, teamServeId: string) {
     // Validate if referee is assigned to this match
     const assignedMatch = await this.prismaService.matches.findUnique({
       where: {
@@ -332,6 +335,7 @@ export class MatchService {
       await this.prismaService.scores.create({
         data: {
           gameId: newGame.id,
+          teamServeId: teamServeId,
         },
       });
 
@@ -422,6 +426,15 @@ export class MatchService {
     if (![1, 2].includes(dto.teamWin)) {
       throw new BadRequestException(
         `Invalid teamWin value: '${dto.teamWin}'. Only 1 or 2`,
+      );
+    }
+
+    // Check valid teamServeId -> teamId1 or teamId2
+    if (
+      ![assignedMatch.teamId1, assignedMatch.teamId2].includes(dto.teamServeId)
+    ) {
+      throw new BadRequestException(
+        `Invalid teamServeId value: '${dto.teamServeId}'. Must be teamId1 or teamId2`,
       );
     }
 
@@ -562,6 +575,7 @@ export class MatchService {
           gameId: activeGame.id,
           type: dto.type,
           time: scoreTime,
+          teamServeId: dto.teamServeId,
           ...scoreData,
         },
       });
@@ -678,6 +692,7 @@ export class MatchService {
           await this.prismaService.scores.create({
             data: {
               gameId: newTieBreak.id,
+              teamServeId: dto.teamServeId,
             },
           });
         } else {
@@ -975,6 +990,7 @@ export class MatchService {
             await this.prismaService.scores.create({
               data: {
                 gameId: newGame.id,
+                teamServeId: dto.teamServeId,
               },
             });
           }

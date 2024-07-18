@@ -10,8 +10,12 @@ import {
 import { MatchService } from './match.service';
 import { GetUser } from 'src/auth_utils/decorators';
 import { JwtGuard } from 'src/auth_utils/guards';
-import { UpdateScoreDto } from './dto';
-import { UpdateMatchDto } from './dto/update-match.dto';
+import {
+  StartMatchDto,
+  StartSetDto,
+  UpdateMatchDto,
+  UpdateScoreDto,
+} from './dto';
 
 @Controller('matches')
 export class MatchController {
@@ -42,8 +46,13 @@ export class MatchController {
   async startMatch(
     @Param('id') matchId: string,
     @GetUser('sub') refereeId: string,
+    @Body() dto: StartMatchDto,
   ) {
-    return await this.matchService.startMatch(matchId, refereeId);
+    return await this.matchService.startMatch(
+      matchId,
+      refereeId,
+      dto.teamServeId,
+    );
   }
 
   @UseGuards(JwtGuard)
@@ -51,8 +60,13 @@ export class MatchController {
   async startSet(
     @Param('id') matchId: string,
     @GetUser('sub') refereeId: string,
+    @Body() dto: StartSetDto,
   ) {
-    return await this.matchService.startSet(matchId, refereeId);
+    return await this.matchService.startSet(
+      matchId,
+      refereeId,
+      dto.teamServeId,
+    );
   }
 
   @UseGuards(JwtGuard)
