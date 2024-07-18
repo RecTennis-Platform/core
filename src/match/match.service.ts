@@ -218,7 +218,7 @@ export class MatchService {
     return matchDetails;
   }
 
-  async startMatch(matchId: string, refereeId: string, teamServeId: string) {
+  async startMatch(matchId: string, refereeId: string, teamServeId?: string) {
     // Validate if referee is assigned to this match
     const assignedMatch = await this.prismaService.matches.findUnique({
       where: {
@@ -258,7 +258,7 @@ export class MatchService {
       await this.prismaService.scores.create({
         data: {
           gameId: newGame.id,
-          teamServeId: teamServeId,
+          // teamServeId: teamServeId,
         },
       });
 
@@ -336,7 +336,7 @@ export class MatchService {
       await this.prismaService.scores.create({
         data: {
           gameId: newGame.id,
-          teamServeId: teamServeId,
+          // teamServeId: teamServeId,
         },
       });
 

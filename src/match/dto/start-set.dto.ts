@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class StartSetDto {
-  @IsNotEmpty()
+  // @IsNotEmpty()
   @IsString()
-  teamServeId: string;
+  teamServeId?: string;
 }
