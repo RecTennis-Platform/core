@@ -5841,7 +5841,7 @@ export class TournamentService {
           },
         },
         team1: {
-          select: {
+          include: {
             user1: {
               select: {
                 id: true,
@@ -5899,7 +5899,12 @@ export class TournamentService {
 
     const matches = result.map((match) => {
       delete match.round;
-      return match;
+      const { team1, team2, ...others } = match;
+      const teams = {
+        team1: team1,
+        team2: team2,
+      };
+      return { teams: teams, ...others };
     });
     return { matches };
   }
