@@ -52,7 +52,6 @@ import {
 import { PageOptionsTournamentFundDto } from './dto/page-options-tournament-fund.dto';
 import { UpdatePaymentInfoDto } from './dto/update-payment-info.dto';
 import { CreateFixturePublishKnockoutDto } from 'src/fixture/dto/create-fixture-save-publish.dto';
-import { PageOptionsUserFollowedMatchesDto } from 'src/user/dto';
 import { PageOptionsMatchesDto } from 'src/match/dto/page-options-match.dto';
 
 @Injectable()
@@ -5193,7 +5192,16 @@ export class TournamentService {
     const fund = await this.prismaService.fund.findFirst({
       where: {
         tournamentId: tournamentId,
-        userId: dto.userId,
+        team: {
+          OR: [
+            {
+              userId1: dto.userId,
+            },
+            {
+              userId2: dto.userId,
+            },
+          ],
+        },
       },
     });
     if (!fund) {
@@ -5205,11 +5213,15 @@ export class TournamentService {
         data: null,
       });
     }
+    if (fund.status === FundStatus.succeed) {
+      throw new BadRequestException({
+        message: 'Invalid fund status',
+        data: null,
+      });
+    }
     return await this.prismaService.fund.update({
       where: {
         id: fund.id,
-        tournamentId: tournamentId,
-        userId: dto.userId,
       },
       data: {
         status: FundStatus.pending,
@@ -5222,12 +5234,42 @@ export class TournamentService {
     const fund = await this.prismaService.fund.findFirst({
       where: {
         tournamentId: tournamentId,
-        userId: userId,
+        team: {
+          OR: [
+            {
+              userId1: userId,
+            },
+            {
+              userId2: userId,
+            },
+          ],
+        },
       },
       select: {
         id: true,
         tournamentId: true,
-        userId: true,
+        team: {
+          include: {
+            user1: {
+              select: {
+                id: true,
+                image: true,
+                name: true,
+                elo: true,
+                gender: true,
+              },
+            },
+            user2: {
+              select: {
+                id: true,
+                image: true,
+                name: true,
+                elo: true,
+                gender: true,
+              },
+            },
+          },
+        },
         status: true,
         reminderDate: true,
         dueDate: true,
@@ -5251,7 +5293,16 @@ export class TournamentService {
     const fund = await this.prismaService.fund.findFirst({
       where: {
         tournamentId: tournamentId,
-        userId: userId,
+        team: {
+          OR: [
+            {
+              userId1: userId,
+            },
+            {
+              userId2: userId,
+            },
+          ],
+        },
         reminderDate: {
           lte: new Date(),
         },
@@ -5260,7 +5311,28 @@ export class TournamentService {
       select: {
         id: true,
         tournamentId: true,
-        userId: true,
+        team: {
+          include: {
+            user1: {
+              select: {
+                id: true,
+                image: true,
+                name: true,
+                elo: true,
+                gender: true,
+              },
+            },
+            user2: {
+              select: {
+                id: true,
+                image: true,
+                name: true,
+                elo: true,
+                gender: true,
+              },
+            },
+          },
+        },
         status: true,
         reminderDate: true,
         dueDate: true,
@@ -5367,34 +5439,22 @@ export class TournamentService {
         tournamentId: tournamentId,
       },
     });
-    const participants =
-      await this.prismaService.tournament_registrations.findMany({
-        where: {
-          status: 'approved',
-          tournamentId: tournament.id,
-        },
-      });
+    const teams = await this.prismaService.teams.findMany({
+      where: {
+        tournamentId: tournament.id,
+      },
+    });
     if (previousFunds.length === 0) {
       const funds = [];
-      for (const participant of participants) {
-        const user1Fund = {
-          userId: participant.userId1,
+      for (const team of teams) {
+        const teamFund = {
+          teamId: team.id,
           tournamentId: tournamentId,
           reminderDate: dto.reminderDate,
           dueDate: dto.dueDate,
           status: FundStatus.wait,
         };
-        funds.push(user1Fund);
-        if (participant.userId2) {
-          const user2Fund = {
-            userId: participant.userId2,
-            tournamentId: tournamentId,
-            reminderDate: dto.reminderDate,
-            dueDate: dto.dueDate,
-            status: FundStatus.wait,
-          };
-          funds.push(user2Fund);
-        }
+        funds.push(teamFund);
       }
       await this.prismaService.fund.createMany({
         data: funds,
@@ -5489,34 +5549,22 @@ export class TournamentService {
         tournamentId: tournamentId,
       },
     });
-    const participants =
-      await this.prismaService.tournament_registrations.findMany({
-        where: {
-          status: 'approved',
-          tournamentId: tournament.id,
-        },
-      });
+    const teams = await this.prismaService.teams.findMany({
+      where: {
+        tournamentId: tournament.id,
+      },
+    });
     if (previousFunds.length === 0) {
       const funds = [];
-      for (const participant of participants) {
-        const user1Fund = {
-          userId: participant.userId1,
+      for (const team of teams) {
+        const teamFund = {
+          teamId: team.id,
           tournamentId: tournamentId,
           reminderDate: dto.reminderDate,
           dueDate: dto.dueDate,
           status: FundStatus.wait,
         };
-        funds.push(user1Fund);
-        if (participant.userId2) {
-          const user2Fund = {
-            userId: participant.userId2,
-            tournamentId: tournamentId,
-            reminderDate: dto.reminderDate,
-            dueDate: dto.dueDate,
-            status: FundStatus.wait,
-          };
-          funds.push(user2Fund);
-        }
+        funds.push(teamFund);
       }
       return await this.prismaService.fund.createMany({
         data: funds,
@@ -5532,7 +5580,7 @@ export class TournamentService {
     if (previousFailureFunds.length > 0) {
       const funds = previousFailureFunds.map((participant) => {
         return {
-          userId: participant.userId,
+          teamId: participant.teamId,
           tournamentId: tournamentId,
           reminderDate: dto.reminderDate,
           dueDate: dto.dueDate,
@@ -5656,7 +5704,7 @@ export class TournamentService {
       if (previousFailureFunds.length > 0) {
         const funds = previousFailureFunds.map((participant) => {
           return {
-            userId: participant.userId,
+            teamId: participant.teamId,
             tournamentId: tournamentId,
             reminderDate: dto.reminderDate,
             dueDate: dto.dueDate,
@@ -5787,7 +5835,7 @@ export class TournamentService {
     const fund = await this.prismaService.fund.findFirst({
       where: {
         tournamentId: tournamentId,
-        userId: dto.userId,
+        teamId: dto.teamId,
       },
     });
     if (!fund) {
@@ -5803,7 +5851,7 @@ export class TournamentService {
       where: {
         id: fund.id,
         tournamentId: tournamentId,
-        userId: dto.userId,
+        teamId: dto.teamId,
       },
       data: {
         status: dto.status,
@@ -5987,25 +6035,40 @@ export class TournamentService {
         select: {
           id: true,
           tournamentId: true,
-          userId: true,
+          team: {
+            include: {
+              user1: {
+                select: {
+                  id: true,
+                  image: true,
+                  name: true,
+                  elo: true,
+                  gender: true,
+                },
+              },
+              user2: {
+                select: {
+                  id: true,
+                  image: true,
+                  name: true,
+                  elo: true,
+                  gender: true,
+                },
+              },
+            },
+          },
           status: true,
           reminderDate: true,
           dueDate: true,
           message: true,
           errorMessage: true,
-          user: {
-            select: {
-              name: true,
-              image: true,
-            },
-          },
         },
       }),
       this.prismaService.fund.count(conditions),
     ]);
 
     const r = result.map((fund) => {
-      const { user, ...others } = fund;
+      const { team, ...others } = fund;
       if (fund.message === null) {
         others.message = '';
       }
@@ -6013,8 +6076,7 @@ export class TournamentService {
         others.errorMessage = '';
       }
       return {
-        name: user.name,
-        image: user.image,
+        team: team,
         ...others,
       };
     });

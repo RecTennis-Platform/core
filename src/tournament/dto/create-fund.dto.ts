@@ -35,7 +35,7 @@ export class UpdateTournamentFundDto {
 export class UpdateTournamentFundByCreatorDto {
   @IsNotEmpty()
   @IsString()
-  userId: string;
+  teamId: string;
 
   @IsNotEmpty()
   @IsEnum(FundStatus)

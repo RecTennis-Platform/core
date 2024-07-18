@@ -627,7 +627,7 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Get('/:tournamentId/fund/users')
+  @Get('/:tournamentId/fund/teams')
   async getListOfUserFund(
     @Param('tournamentId') tournamentId: number,
     @GetUser('sub') userId: string,
@@ -667,7 +667,7 @@ export class TournamentController {
   // }
 
   @UseGuards(JwtGuard)
-  @Patch('/:tournamentId/fund/users')
+  @Patch('/:tournamentId/fund/teams')
   async updateFundByCreator(
     @Param('tournamentId') tournamentId: number,
     @GetUser('sub') userId: string,
