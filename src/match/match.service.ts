@@ -15,6 +15,7 @@ import { UpdateMatchDto } from './dto/update-match.dto';
 import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-code';
 import { CustomResponseMessages } from 'src/helper/custom-response-message';
 import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class MatchService {
@@ -355,8 +356,18 @@ export class MatchService {
         refereeId: refereeId,
       },
       include: {
-        team1: true,
-        team2: true,
+        team1: {
+          include: {
+            user1: true,
+            user2: true,
+          },
+        },
+        team2: {
+          include: {
+            user1: true,
+            user2: true,
+          },
+        },
       },
     });
 
@@ -835,41 +846,50 @@ export class MatchService {
                   tournament.level,
                 );
                 console.log(winnerElo, loserElo);
+                const user1WinnerElo = assignedMatch.team1.user1.elo || 200;
+                let sumElo = this.sumElo(user1WinnerElo, winnerElo);
 
                 await this.prismaService.users.update({
                   where: {
                     id: assignedMatch.team1.userId1,
                   },
                   data: {
-                    elo: winnerElo,
+                    elo: sumElo,
                   },
                 });
                 if (assignedMatch.team1.userId2) {
+                  const user2WinnerElo = assignedMatch.team1.user2.elo || 200;
+                  sumElo = this.sumElo(user2WinnerElo, winnerElo);
                   await this.prismaService.users.update({
                     where: {
                       id: assignedMatch.team1.userId2,
                     },
                     data: {
-                      elo: winnerElo,
+                      elo: sumElo,
                     },
                   });
                 }
+
+                const user1LoserElo = assignedMatch.team2.user1.elo || 200;
+                sumElo = this.sumElo(user1LoserElo, winnerElo);
 
                 await this.prismaService.users.update({
                   where: {
                     id: assignedMatch.team2.userId1,
                   },
                   data: {
-                    elo: loserElo,
+                    elo: sumElo,
                   },
                 });
                 if (assignedMatch.team2.userId2) {
+                  const user2LoserElo = assignedMatch.team2.user2.elo || 200;
+                  sumElo = this.sumElo(user2LoserElo, winnerElo);
                   await this.prismaService.users.update({
                     where: {
                       id: assignedMatch.team2.userId2,
                     },
                     data: {
-                      elo: loserElo,
+                      elo: sumElo,
                     },
                   });
                 }
@@ -880,40 +900,47 @@ export class MatchService {
                   tournament.level,
                 );
                 console.log(winnerElo, loserElo);
+                const user1WinnerElo = assignedMatch.team2.user1.elo || 200;
+                let sumElo = this.sumElo(user1WinnerElo, winnerElo);
                 await this.prismaService.users.update({
                   where: {
                     id: assignedMatch.team2.userId1,
                   },
                   data: {
-                    elo: winnerElo,
+                    elo: sumElo,
                   },
                 });
                 if (assignedMatch.team2.userId2) {
+                  const user2WinnerElo = assignedMatch.team2.user2.elo || 200;
+                  sumElo = this.sumElo(user2WinnerElo, winnerElo);
                   await this.prismaService.users.update({
                     where: {
                       id: assignedMatch.team2.userId2,
                     },
                     data: {
-                      elo: winnerElo,
+                      elo: sumElo,
                     },
                   });
                 }
-
+                const user1LoserElo = assignedMatch.team1.user1.elo || 200;
+                sumElo = this.sumElo(user1LoserElo, winnerElo);
                 await this.prismaService.users.update({
                   where: {
                     id: assignedMatch.team1.userId1,
                   },
                   data: {
-                    elo: loserElo,
+                    elo: sumElo,
                   },
                 });
                 if (assignedMatch.team1.userId2) {
+                  const user2LoserElo = assignedMatch.team1.user2.elo || 200;
+                  sumElo = this.sumElo(user2LoserElo, winnerElo);
                   await this.prismaService.users.update({
                     where: {
                       id: assignedMatch.team1.userId2,
                     },
                     data: {
-                      elo: loserElo,
+                      elo: sumElo,
                     },
                   });
                 }
@@ -1261,16 +1288,17 @@ export class MatchService {
     const S_loser: number = 0;
 
     // Tính toán Elo mới sau trận đấu
-    let winnerEloPrime: number = winnerElo + K * (S_winner - E_winner);
-    let loserEloPrime: number = loserElo + K * (S_loser - E_loser);
-
-    if (winnerEloPrime < 200) {
-      winnerEloPrime = 200;
-    }
-    if (loserEloPrime < 200) {
-      loserEloPrime = 200;
-    }
+    const winnerEloPrime: number = Math.ceil(K * (S_winner - E_winner));
+    const loserEloPrime: number = Math.ceil(K * (S_loser - E_loser));
 
     return [winnerEloPrime, loserEloPrime];
+  }
+
+  sumElo(elo: number, change: number) {
+    const finalElo = elo + change;
+    if (finalElo < 200) {
+      return 200;
+    }
+    return finalElo;
   }
 }
