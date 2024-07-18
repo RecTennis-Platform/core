@@ -429,14 +429,14 @@ export class MatchService {
       );
     }
 
-    // Check valid teamServeId -> teamId1 or teamId2
-    if (
-      ![assignedMatch.teamId1, assignedMatch.teamId2].includes(dto.teamServeId)
-    ) {
-      throw new BadRequestException(
-        `Invalid teamServeId value: '${dto.teamServeId}'. Must be teamId1 or teamId2`,
-      );
-    }
+    // // Check valid teamServeId -> teamId1 or teamId2
+    // if (
+    //   ![assignedMatch.teamId1, assignedMatch.teamId2].includes(dto.teamServeId)
+    // ) {
+    //   throw new BadRequestException(
+    //     `Invalid teamServeId value: '${dto.teamServeId}'. Must be teamId1 or teamId2`,
+    //   );
+    // }
 
     let isGameEnd = false;
 
@@ -575,7 +575,7 @@ export class MatchService {
           gameId: activeGame.id,
           type: dto.type,
           time: scoreTime,
-          teamServeId: dto.teamServeId,
+          // teamServeId: dto.teamServeId,
           ...scoreData,
         },
       });
@@ -692,7 +692,7 @@ export class MatchService {
           await this.prismaService.scores.create({
             data: {
               gameId: newTieBreak.id,
-              teamServeId: dto.teamServeId,
+              // teamServeId: dto.teamServeId,
             },
           });
         } else {
@@ -990,7 +990,7 @@ export class MatchService {
             await this.prismaService.scores.create({
               data: {
                 gameId: newGame.id,
-                teamServeId: dto.teamServeId,
+                // teamServeId: dto.teamServeId,
               },
             });
           }
