@@ -13445,6 +13445,91 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Get all tournaments matches",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/tournaments/37/matches/",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"tournaments",
+										"37",
+										"matches",
+										""
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "New Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/tournaments/37/matches/?status=score_done",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"tournaments",
+												"37",
+												"matches",
+												""
+											],
+											"query": [
+												{
+													"key": "status",
+													"value": "score_done"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "8973"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"230d-kSWPqG1CL3y0Krx7TvK/fKy1Auo\""
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 18 Jul 2024 14:15:54 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"matches\": [\n        {\n            \"id\": \"57e0ff0c-7e58-42f3-b922-15580e4eaec3\",\n            \"roundId\": \"6a411606-24d0-4797-b940-79d7f3ba54e2\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"teamId2\": \"e7241718-6f34-4dd1-a194-1001d498e846\",\n            \"teamWinnerId\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"matchStartDate\": \"2024-07-15T15:28:04.678Z\",\n            \"matchEndDate\": \"2024-07-15T15:31:18.662Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T15:31:19.210Z\",\n            \"nextMatchId\": null,\n            \"title\": \"Match 1\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 2,\n            \"team2MatchScore\": 0,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n                    \"name\": \"Ho Quang Khai\",\n                    \"image\": null,\n                    \"elo\": 222,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n                    \"name\": \"Thong\",\n                    \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                    \"elo\": 207,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"862a82a1-f974-4bda-b319-747e10413876\",\n            \"roundId\": \"4be907ff-c801-4ad1-899b-e9df42d00a92\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"e7241718-6f34-4dd1-a194-1001d498e846\",\n            \"teamId2\": \"948d52ee-ccf0-4a1d-9154-a1ab86f516cb\",\n            \"teamWinnerId\": \"e7241718-6f34-4dd1-a194-1001d498e846\",\n            \"matchStartDate\": \"2024-07-15T15:20:15.481Z\",\n            \"matchEndDate\": \"2024-07-15T15:22:48.868Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T15:22:49.566Z\",\n            \"nextMatchId\": \"57e0ff0c-7e58-42f3-b922-15580e4eaec3\",\n            \"title\": \"Match 2\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 2,\n            \"team2MatchScore\": 0,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n                    \"name\": \"Thong\",\n                    \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                    \"elo\": 207,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"83cc226b-1336-42af-8abc-4edac566d4c0\",\n                    \"name\": \"Huy Nguyen 2\",\n                    \"image\": \"https://imgv3.fotor.com/images/gallery/anime-male-avatar-with-a-pair-of-glasses-made-in-fotor-ai-anime-avatar-creator_2023-06-25-054224_ybzr.jpg\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"316d4980-7601-495e-a212-4f91a01b868e\",\n            \"roundId\": \"4be907ff-c801-4ad1-899b-e9df42d00a92\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"36d35fe3-6d69-4189-8fc1-aad3513e073b\",\n            \"teamId2\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"teamWinnerId\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"matchStartDate\": \"2024-07-15T15:10:01.181Z\",\n            \"matchEndDate\": \"2024-07-15T15:15:31.785Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T15:15:32.445Z\",\n            \"nextMatchId\": \"57e0ff0c-7e58-42f3-b922-15580e4eaec3\",\n            \"title\": \"Match 1\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 0,\n            \"team2MatchScore\": 2,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"94a0f849-d722-44d7-8f0f-50146c61c3dd\",\n                    \"name\": \"Huy Nguyen 1\",\n                    \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n                    \"name\": \"Ho Quang Khai\",\n                    \"image\": null,\n                    \"elo\": 222,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"a416b099-d3da-470d-b065-811f79ab5845\",\n            \"roundId\": \"b8f66dc8-6182-47e8-b560-0d713b563d7c\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"teamId2\": \"a36e8fee-2058-4898-b974-8976041861ac\",\n            \"teamWinnerId\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"matchStartDate\": \"2024-07-15T14:30:25.666Z\",\n            \"matchEndDate\": \"2024-07-15T14:37:36.211Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T14:37:37.679Z\",\n            \"nextMatchId\": \"316d4980-7601-495e-a212-4f91a01b868e\",\n            \"title\": \"Match 2\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 2,\n            \"team2MatchScore\": 0,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n                    \"name\": \"Ho Quang Khai\",\n                    \"image\": null,\n                    \"elo\": 222,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"d3dce5c7-6418-4697-8802-459e4a38d480\",\n                    \"name\": \"Tri Do\",\n                    \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1720926300973-affiliate2.png?alt=media\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"11b66340-e15d-4993-b6c6-9f607cd59f96\",\n            \"roundId\": \"b8f66dc8-6182-47e8-b560-0d713b563d7c\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"e7241718-6f34-4dd1-a194-1001d498e846\",\n            \"teamId2\": \"606e5d0e-92d1-4e74-8962-64a279b5144c\",\n            \"teamWinnerId\": \"e7241718-6f34-4dd1-a194-1001d498e846\",\n            \"matchStartDate\": \"2024-07-15T14:47:06.435Z\",\n            \"matchEndDate\": \"2024-07-15T14:52:09.269Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T14:52:10.770Z\",\n            \"nextMatchId\": \"862a82a1-f974-4bda-b319-747e10413876\",\n            \"title\": \"Match 3\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 2,\n            \"team2MatchScore\": 0,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n                    \"name\": \"Thong\",\n                    \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                    \"elo\": 207,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"e9525cb4-43ac-40a1-8336-893f449aaf34\",\n                    \"name\": \"Thong Nguyen 8\",\n                    \"image\": null,\n                    \"elo\": 262,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"e365f83b-818b-4182-9943-a48993408658\",\n            \"roundId\": \"b8f66dc8-6182-47e8-b560-0d713b563d7c\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"b600bf8b-10d2-41f6-b451-29466a5b1693\",\n            \"teamId2\": \"36d35fe3-6d69-4189-8fc1-aad3513e073b\",\n            \"teamWinnerId\": \"36d35fe3-6d69-4189-8fc1-aad3513e073b\",\n            \"matchStartDate\": \"2024-07-14T04:23:02.249Z\",\n            \"matchEndDate\": \"2024-07-14T04:28:12.245Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-14T04:28:13.867Z\",\n            \"nextMatchId\": \"316d4980-7601-495e-a212-4f91a01b868e\",\n            \"title\": \"Match 1\",\n            \"refereeId\": \"b5ffeaa3-d994-4b12-b37f-5be097532f7b\",\n            \"team1MatchScore\": 0,\n            \"team2MatchScore\": 2,\n            \"referee\": {\n                \"id\": \"b5ffeaa3-d994-4b12-b37f-5be097532f7b\",\n                \"name\": \"T6@m.com\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"female\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                    \"name\": \"Tri Do\",\n                    \"image\": \"https://lh3.googleusercontent.com/a/ACg8ocJ5fXYZ6d74iUT0d6j6RrWvdc0_bkSkXWqRMqDW4GeOJcwGfw4p=s96-c\",\n                    \"elo\": 210,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"94a0f849-d722-44d7-8f0f-50146c61c3dd\",\n                    \"name\": \"Huy Nguyen 1\",\n                    \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"c87c0b33-38a3-448d-b668-c604de7b355b\",\n            \"roundId\": \"b8f66dc8-6182-47e8-b560-0d713b563d7c\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"4e646f2e-3b10-42cf-a1ed-7b052e516c42\",\n            \"teamId2\": \"948d52ee-ccf0-4a1d-9154-a1ab86f516cb\",\n            \"teamWinnerId\": \"948d52ee-ccf0-4a1d-9154-a1ab86f516cb\",\n            \"matchStartDate\": \"2024-07-15T14:55:57.875Z\",\n            \"matchEndDate\": \"2024-07-15T15:03:57.846Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T15:03:59.314Z\",\n            \"nextMatchId\": \"862a82a1-f974-4bda-b319-747e10413876\",\n            \"title\": \"Match 4\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 0,\n            \"team2MatchScore\": 2,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"0fbf1036-dd85-4e02-8e07-558a8d0d22f6\",\n                    \"name\": \"shin\",\n                    \"image\": \"https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=1874\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"83cc226b-1336-42af-8abc-4edac566d4c0\",\n                    \"name\": \"Huy Nguyen 2\",\n                    \"image\": \"https://imgv3.fotor.com/images/gallery/anime-male-avatar-with-a-pair-of-glasses-made-in-fotor-ai-anime-avatar-creator_2023-06-25-054224_ybzr.jpg\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        }\n    ]\n}"
+								}
+							]
 						}
 					]
 				},

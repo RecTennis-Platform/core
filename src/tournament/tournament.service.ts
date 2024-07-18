@@ -52,6 +52,8 @@ import {
 import { PageOptionsTournamentFundDto } from './dto/page-options-tournament-fund.dto';
 import { UpdatePaymentInfoDto } from './dto/update-payment-info.dto';
 import { CreateFixturePublishKnockoutDto } from 'src/fixture/dto/create-fixture-save-publish.dto';
+import { PageOptionsUserFollowedMatchesDto } from 'src/user/dto';
+import { PageOptionsMatchesDto } from 'src/match/dto/page-options-match.dto';
 
 @Injectable()
 export class TournamentService {
@@ -5808,6 +5810,98 @@ export class TournamentService {
         errorMessage: dto.errorMessage,
       },
     });
+  }
+
+  async getTournamentMatches(
+    tournamentId: number,
+    pageOptions: PageOptionsMatchesDto,
+  ) {
+    const result = await this.prismaService.matches.findMany({
+      include: {
+        round: {
+          include: {
+            fixture: {
+              include: {
+                fixture: {
+                  include: {
+                    tournament: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        referee: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            elo: true,
+            gender: true,
+          },
+        },
+        team1: {
+          select: {
+            user1: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+                elo: true,
+                gender: true,
+              },
+            },
+            user2: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+                elo: true,
+                gender: true,
+              },
+            },
+          },
+        },
+        team2: {
+          select: {
+            user1: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+                elo: true,
+                gender: true,
+              },
+            },
+            user2: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+                elo: true,
+                gender: true,
+              },
+            },
+          },
+        },
+      },
+      where: {
+        round: {
+          fixture: {
+            fixture: {
+              tournamentId: tournamentId,
+            },
+          },
+        },
+        status: pageOptions.status,
+      },
+    });
+
+    const matches = result.map((match) => {
+      delete match.round;
+      return match;
+    });
+    return { matches };
   }
 
   async getAllUserFunds(
