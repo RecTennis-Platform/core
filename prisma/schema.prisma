@@ -506,12 +506,12 @@ enum FundStatus {
 }
 
 enum MatchStatus {
+  walk_over
   scheduled
+  score_done
   no_party
   no_show
-  walk_over
   done
-  score_done
   skipped
 }
 

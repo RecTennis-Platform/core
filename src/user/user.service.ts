@@ -637,9 +637,6 @@ export class UserService {
       where: {
         refereeId: userId,
       },
-      orderBy: {
-        matchStartDate: Order.ASC,
-      },
       select: {
         // Team 1
         team1: {
@@ -748,6 +745,14 @@ export class UserService {
     // Get referee's matches
     const [result, totalCount] = await Promise.all([
       this.prismaService.matches.findMany({
+        orderBy: [
+          {
+            status: 'asc', // Sắp xếp trường status theo thứ tự Enum: walk_over > scheduled > score_done
+          },
+          {
+            matchStartDate: 'asc', // Sau khi sắp xếp theo status, sắp xếp theo matchStartDate
+          },
+        ],
         ...conditions,
         ...pageOption,
       }),
