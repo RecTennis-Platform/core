@@ -10,6 +10,7 @@ export class UpdateScoreDto {
   @IsEnum(ScoreType)
   type: ScoreType;
 
+  @IsNotEmpty()
   @IsString()
-  teamServeId?: string;
+  teamServeId: string;
 }

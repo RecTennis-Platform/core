@@ -218,7 +218,7 @@ export class MatchService {
     return matchDetails;
   }
 
-  async startMatch(matchId: string, refereeId: string, teamServeId?: string) {
+  async startMatch(matchId: string, refereeId: string, teamServeId: string) {
     // Validate if referee is assigned to this match
     const assignedMatch = await this.prismaService.matches.findUnique({
       where: {
@@ -258,7 +258,7 @@ export class MatchService {
       await this.prismaService.scores.create({
         data: {
           gameId: newGame.id,
-          // teamServeId: teamServeId,
+          teamServeId: teamServeId,
         },
       });
 
@@ -269,7 +269,6 @@ export class MatchService {
         },
         data: {
           status: MatchStatus.walk_over,
-          matchStartDate: new Date(),
         },
       });
 
@@ -281,7 +280,7 @@ export class MatchService {
     }
   }
 
-  async startSet(matchId: string, refereeId: string, teamServeId: string) {
+  async startSet(matchId: string, refereeId: string) {
     // Validate if referee is assigned to this match
     const assignedMatch = await this.prismaService.matches.findUnique({
       where: {
@@ -336,7 +335,6 @@ export class MatchService {
       await this.prismaService.scores.create({
         data: {
           gameId: newGame.id,
-          // teamServeId: teamServeId,
         },
       });
 
@@ -451,8 +449,7 @@ export class MatchService {
 
     let isGameEnd = false;
 
-    // Calculate score time (Current time - matchStartDate)
-
+    // Calculate score time (Current time - gameStartTime)
     const scoreTime = this.calculateTimeDifference(
       activeGame.gameStartTime,
       new Date(),
@@ -586,7 +583,7 @@ export class MatchService {
           gameId: activeGame.id,
           type: dto.type,
           time: scoreTime,
-          // teamServeId: dto.teamServeId,
+          teamServeId: dto.teamServeId,
           ...scoreData,
         },
       });
@@ -703,7 +700,6 @@ export class MatchService {
           await this.prismaService.scores.create({
             data: {
               gameId: newTieBreak.id,
-              // teamServeId: dto.teamServeId,
             },
           });
         } else {
@@ -1017,7 +1013,6 @@ export class MatchService {
             await this.prismaService.scores.create({
               data: {
                 gameId: newGame.id,
-                // teamServeId: dto.teamServeId,
               },
             });
           }

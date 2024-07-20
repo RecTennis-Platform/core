@@ -10,12 +10,7 @@ import {
 import { MatchService } from './match.service';
 import { GetUser } from 'src/auth_utils/decorators';
 import { JwtGuard } from 'src/auth_utils/guards';
-import {
-  StartMatchDto,
-  StartSetDto,
-  UpdateMatchDto,
-  UpdateScoreDto,
-} from './dto';
+import { StartMatchDto, UpdateMatchDto, UpdateScoreDto } from './dto';
 
 @Controller('matches')
 export class MatchController {
@@ -60,13 +55,8 @@ export class MatchController {
   async startSet(
     @Param('id') matchId: string,
     @GetUser('sub') refereeId: string,
-    @Body() dto: StartSetDto,
   ) {
-    return await this.matchService.startSet(
-      matchId,
-      refereeId,
-      dto.teamServeId,
-    );
+    return await this.matchService.startSet(matchId, refereeId);
   }
 
   @UseGuards(JwtGuard)
