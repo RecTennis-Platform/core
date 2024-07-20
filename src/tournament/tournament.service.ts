@@ -1693,9 +1693,7 @@ export class TournamentService {
     if (!allMatchesEnded) {
       throw new BadRequestException({
         message: "All matches haven't ended yet",
-        data: {
-          unfinishedMatches,
-        },
+        unfinishedMatches,
       });
     }
 
