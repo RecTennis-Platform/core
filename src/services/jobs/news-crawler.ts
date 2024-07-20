@@ -15,13 +15,13 @@ import { Readability } from '@mozilla/readability';
 export class NewsCrawlerService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_11PM)
+  @Cron(CronExpression.EVERY_DAY_AT_2AM)
   async handleCron() {
     const newsapi = new NewsAPI(process.env.NEWS_API_KEY);
     const now = new Date();
     const toDate = now.toISOString();
     const fromDate = new Date(
-      now.getTime() - 24 * 60 * 60 * 1000 * 30,
+      now.getTime() - 24 * 60 * 60 * 1000 * 1,
     ).toISOString();
     newsapi.v2
       .everything({

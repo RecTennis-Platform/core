@@ -47,6 +47,7 @@ import {
 } from 'src/fixture/dto/create-fixture-save-publish.dto';
 import { FixtureStatus } from '@prisma/client';
 import { UpdatePaymentInfoDto } from './dto/update-payment-info.dto';
+import { PageOptionsMatchesDto } from 'src/match/dto/page-options-match.dto';
 
 @Controller('tournaments')
 export class TournamentController {
@@ -626,7 +627,7 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
-  @Get('/:tournamentId/fund/users')
+  @Get('/:tournamentId/fund/teams')
   async getListOfUserFund(
     @Param('tournamentId') tournamentId: number,
     @GetUser('sub') userId: string,
@@ -666,7 +667,7 @@ export class TournamentController {
   // }
 
   @UseGuards(JwtGuard)
-  @Patch('/:tournamentId/fund/users')
+  @Patch('/:tournamentId/fund/teams')
   async updateFundByCreator(
     @Param('tournamentId') tournamentId: number,
     @GetUser('sub') userId: string,
@@ -678,6 +679,24 @@ export class TournamentController {
         userId,
         dto,
       );
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/:tournamentId/matches')
+  async getMatchesByTournamentId(
+    @Param('tournamentId') tournamentId: number,
+    @Query() dto: PageOptionsMatchesDto,
+  ) {
+    try {
+      return this.tournamentService.getTournamentMatches(tournamentId, dto);
     } catch (error) {
       throw new HttpException(
         {

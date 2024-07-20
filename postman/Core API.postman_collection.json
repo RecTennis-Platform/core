@@ -13445,6 +13445,91 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Get all tournaments matches",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/tournaments/37/matches/",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"tournaments",
+										"37",
+										"matches",
+										""
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "New Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/tournaments/37/matches/?status=score_done",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"tournaments",
+												"37",
+												"matches",
+												""
+											],
+											"query": [
+												{
+													"key": "status",
+													"value": "score_done"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "8973"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"230d-kSWPqG1CL3y0Krx7TvK/fKy1Auo\""
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 18 Jul 2024 14:15:54 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"matches\": [\n        {\n            \"id\": \"57e0ff0c-7e58-42f3-b922-15580e4eaec3\",\n            \"roundId\": \"6a411606-24d0-4797-b940-79d7f3ba54e2\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"teamId2\": \"e7241718-6f34-4dd1-a194-1001d498e846\",\n            \"teamWinnerId\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"matchStartDate\": \"2024-07-15T15:28:04.678Z\",\n            \"matchEndDate\": \"2024-07-15T15:31:18.662Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T15:31:19.210Z\",\n            \"nextMatchId\": null,\n            \"title\": \"Match 1\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 2,\n            \"team2MatchScore\": 0,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n                    \"name\": \"Ho Quang Khai\",\n                    \"image\": null,\n                    \"elo\": 222,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n                    \"name\": \"Thong\",\n                    \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                    \"elo\": 207,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"862a82a1-f974-4bda-b319-747e10413876\",\n            \"roundId\": \"4be907ff-c801-4ad1-899b-e9df42d00a92\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"e7241718-6f34-4dd1-a194-1001d498e846\",\n            \"teamId2\": \"948d52ee-ccf0-4a1d-9154-a1ab86f516cb\",\n            \"teamWinnerId\": \"e7241718-6f34-4dd1-a194-1001d498e846\",\n            \"matchStartDate\": \"2024-07-15T15:20:15.481Z\",\n            \"matchEndDate\": \"2024-07-15T15:22:48.868Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T15:22:49.566Z\",\n            \"nextMatchId\": \"57e0ff0c-7e58-42f3-b922-15580e4eaec3\",\n            \"title\": \"Match 2\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 2,\n            \"team2MatchScore\": 0,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n                    \"name\": \"Thong\",\n                    \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                    \"elo\": 207,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"83cc226b-1336-42af-8abc-4edac566d4c0\",\n                    \"name\": \"Huy Nguyen 2\",\n                    \"image\": \"https://imgv3.fotor.com/images/gallery/anime-male-avatar-with-a-pair-of-glasses-made-in-fotor-ai-anime-avatar-creator_2023-06-25-054224_ybzr.jpg\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"316d4980-7601-495e-a212-4f91a01b868e\",\n            \"roundId\": \"4be907ff-c801-4ad1-899b-e9df42d00a92\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"36d35fe3-6d69-4189-8fc1-aad3513e073b\",\n            \"teamId2\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"teamWinnerId\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"matchStartDate\": \"2024-07-15T15:10:01.181Z\",\n            \"matchEndDate\": \"2024-07-15T15:15:31.785Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T15:15:32.445Z\",\n            \"nextMatchId\": \"57e0ff0c-7e58-42f3-b922-15580e4eaec3\",\n            \"title\": \"Match 1\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 0,\n            \"team2MatchScore\": 2,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"94a0f849-d722-44d7-8f0f-50146c61c3dd\",\n                    \"name\": \"Huy Nguyen 1\",\n                    \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n                    \"name\": \"Ho Quang Khai\",\n                    \"image\": null,\n                    \"elo\": 222,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"a416b099-d3da-470d-b065-811f79ab5845\",\n            \"roundId\": \"b8f66dc8-6182-47e8-b560-0d713b563d7c\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"teamId2\": \"a36e8fee-2058-4898-b974-8976041861ac\",\n            \"teamWinnerId\": \"a735e514-70a5-40b5-9bc7-103bf0e8939a\",\n            \"matchStartDate\": \"2024-07-15T14:30:25.666Z\",\n            \"matchEndDate\": \"2024-07-15T14:37:36.211Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T14:37:37.679Z\",\n            \"nextMatchId\": \"316d4980-7601-495e-a212-4f91a01b868e\",\n            \"title\": \"Match 2\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 2,\n            \"team2MatchScore\": 0,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n                    \"name\": \"Ho Quang Khai\",\n                    \"image\": null,\n                    \"elo\": 222,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"d3dce5c7-6418-4697-8802-459e4a38d480\",\n                    \"name\": \"Tri Do\",\n                    \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1720926300973-affiliate2.png?alt=media\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"11b66340-e15d-4993-b6c6-9f607cd59f96\",\n            \"roundId\": \"b8f66dc8-6182-47e8-b560-0d713b563d7c\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"e7241718-6f34-4dd1-a194-1001d498e846\",\n            \"teamId2\": \"606e5d0e-92d1-4e74-8962-64a279b5144c\",\n            \"teamWinnerId\": \"e7241718-6f34-4dd1-a194-1001d498e846\",\n            \"matchStartDate\": \"2024-07-15T14:47:06.435Z\",\n            \"matchEndDate\": \"2024-07-15T14:52:09.269Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T14:52:10.770Z\",\n            \"nextMatchId\": \"862a82a1-f974-4bda-b319-747e10413876\",\n            \"title\": \"Match 3\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 2,\n            \"team2MatchScore\": 0,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n                    \"name\": \"Thong\",\n                    \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                    \"elo\": 207,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"e9525cb4-43ac-40a1-8336-893f449aaf34\",\n                    \"name\": \"Thong Nguyen 8\",\n                    \"image\": null,\n                    \"elo\": 262,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"e365f83b-818b-4182-9943-a48993408658\",\n            \"roundId\": \"b8f66dc8-6182-47e8-b560-0d713b563d7c\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"b600bf8b-10d2-41f6-b451-29466a5b1693\",\n            \"teamId2\": \"36d35fe3-6d69-4189-8fc1-aad3513e073b\",\n            \"teamWinnerId\": \"36d35fe3-6d69-4189-8fc1-aad3513e073b\",\n            \"matchStartDate\": \"2024-07-14T04:23:02.249Z\",\n            \"matchEndDate\": \"2024-07-14T04:28:12.245Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-14T04:28:13.867Z\",\n            \"nextMatchId\": \"316d4980-7601-495e-a212-4f91a01b868e\",\n            \"title\": \"Match 1\",\n            \"refereeId\": \"b5ffeaa3-d994-4b12-b37f-5be097532f7b\",\n            \"team1MatchScore\": 0,\n            \"team2MatchScore\": 2,\n            \"referee\": {\n                \"id\": \"b5ffeaa3-d994-4b12-b37f-5be097532f7b\",\n                \"name\": \"T6@m.com\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"female\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n                    \"name\": \"Tri Do\",\n                    \"image\": \"https://lh3.googleusercontent.com/a/ACg8ocJ5fXYZ6d74iUT0d6j6RrWvdc0_bkSkXWqRMqDW4GeOJcwGfw4p=s96-c\",\n                    \"elo\": 210,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"94a0f849-d722-44d7-8f0f-50146c61c3dd\",\n                    \"name\": \"Huy Nguyen 1\",\n                    \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        },\n        {\n            \"id\": \"c87c0b33-38a3-448d-b668-c604de7b355b\",\n            \"roundId\": \"b8f66dc8-6182-47e8-b560-0d713b563d7c\",\n            \"groupFixtureTeamId1\": null,\n            \"groupFixtureTeamId2\": null,\n            \"rankGroupTeam1\": null,\n            \"rankGroupTeam2\": null,\n            \"teamId1\": \"4e646f2e-3b10-42cf-a1ed-7b052e516c42\",\n            \"teamId2\": \"948d52ee-ccf0-4a1d-9154-a1ab86f516cb\",\n            \"teamWinnerId\": \"948d52ee-ccf0-4a1d-9154-a1ab86f516cb\",\n            \"matchStartDate\": \"2024-07-15T14:55:57.875Z\",\n            \"matchEndDate\": \"2024-07-15T15:03:57.846Z\",\n            \"venue\": \"Sân vân động Phú Thọ\",\n            \"status\": \"score_done\",\n            \"duration\": 30,\n            \"breakDuration\": 10,\n            \"createdAt\": \"2024-07-14T04:20:33.554Z\",\n            \"updatedAt\": \"2024-07-15T15:03:59.314Z\",\n            \"nextMatchId\": \"862a82a1-f974-4bda-b319-747e10413876\",\n            \"title\": \"Match 4\",\n            \"refereeId\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n            \"team1MatchScore\": 0,\n            \"team2MatchScore\": 2,\n            \"referee\": {\n                \"id\": \"d8d9b849-ea93-4bc3-9b71-fab90cb4fa4d\",\n                \"name\": \"shin2\",\n                \"image\": null,\n                \"elo\": null,\n                \"gender\": \"male\"\n            },\n            \"team1\": {\n                \"user1\": {\n                    \"id\": \"0fbf1036-dd85-4e02-8e07-558a8d0d22f6\",\n                    \"name\": \"shin\",\n                    \"image\": \"https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=1874\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"team2\": {\n                \"user1\": {\n                    \"id\": \"83cc226b-1336-42af-8abc-4edac566d4c0\",\n                    \"name\": \"Huy Nguyen 2\",\n                    \"image\": \"https://imgv3.fotor.com/images/gallery/anime-male-avatar-with-a-pair-of-glasses-made-in-fotor-ai-anime-avatar-creator_2023-06-25-054224_ybzr.jpg\",\n                    \"elo\": null,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            }\n        }\n    ]\n}"
+								}
+							]
 						}
 					]
 				},
@@ -13710,105 +13795,6 @@
 									"response": []
 								},
 								{
-									"name": "Send request to user",
-									"request": {
-										"auth": {
-											"type": "bearer",
-											"bearer": [
-												{
-													"key": "token",
-													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE4MDMzMDIzLCJleHAiOjE3MTkzMjkwMjN9.AwMAosbq7IaCrW7tM9CD-ooyW3bGMb37D6AkzOqbT_4",
-													"type": "string"
-												}
-											]
-										},
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\r\n  \"reminderDate\": \"2024-06-23 14:54:42.468\", // ngày nhắc thanh toán\r\n  \"dueDate\": \"2024-06-30 14:54:42.468\" // ngày đến hạn thanh toán\r\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{CORE_URL}}/tournaments/34/fund/users",
-											"host": [
-												"{{CORE_URL}}"
-											],
-											"path": [
-												"tournaments",
-												"34",
-												"fund",
-												"users"
-											]
-										}
-									},
-									"response": [
-										{
-											"name": "Success",
-											"originalRequest": {
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\r\n  \"reminderDate\": \"2024-06-23 14:54:42.468\", // ngày nhắc thanh toán\r\n  \"dueDate\": \"2024-06-30 14:54:42.468\" // ngày đến hạn thanh toán\r\n}",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{CORE_URL}}/tournaments/34/fund/users",
-													"host": [
-														"{{CORE_URL}}"
-													],
-													"path": [
-														"tournaments",
-														"34",
-														"fund",
-														"users"
-													]
-												}
-											},
-											"status": "Created",
-											"code": 201,
-											"_postman_previewlanguage": "plain",
-											"header": [
-												{
-													"key": "X-Powered-By",
-													"value": "Express"
-												},
-												{
-													"key": "Access-Control-Allow-Origin",
-													"value": "*"
-												},
-												{
-													"key": "Date",
-													"value": "Sun, 23 Jun 2024 15:19:30 GMT"
-												},
-												{
-													"key": "Connection",
-													"value": "keep-alive"
-												},
-												{
-													"key": "Keep-Alive",
-													"value": "timeout=5"
-												},
-												{
-													"key": "Content-Length",
-													"value": "0"
-												}
-											],
-											"cookie": [],
-											"body": null
-										}
-									]
-								},
-								{
 									"name": "Update fund",
 									"request": {
 										"auth": {
@@ -13816,7 +13802,7 @@
 											"bearer": [
 												{
 													"key": "token",
-													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE4MDMzMDIzLCJleHAiOjE3MTkzMjkwMjN9.AwMAosbq7IaCrW7tM9CD-ooyW3bGMb37D6AkzOqbT_4",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxMDU3MTk5LCJleHAiOjE3MjIzNTMxOTl9.rccMekKM_KaHXg-KvLt_Wg549Ia_NtGK6yxfO-fqXR8",
 													"type": "string"
 												}
 											]
@@ -13825,7 +13811,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"userId\": \"54df148f-5562-4b6c-b9f5-3551388acd54\",\r\n  \"status\": \"succeed\" // succeed | failed\r\n}",
+											"raw": "{\r\n  \"teamId\": \"862d2e4f-091a-4c68-86f9-2cf7151faaf5\",\r\n  \"status\": \"succeed\" // succeed | failed\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -13833,7 +13819,7 @@
 											}
 										},
 										"url": {
-											"raw": "{{CORE_URL}}/tournaments/34/fund/users",
+											"raw": "{{CORE_URL}}/tournaments/34/fund/teams",
 											"host": [
 												"{{CORE_URL}}"
 											],
@@ -13841,19 +13827,19 @@
 												"tournaments",
 												"34",
 												"fund",
-												"users"
+												"teams"
 											]
 										}
 									},
 									"response": [
 										{
-											"name": "success",
+											"name": "Update fund",
 											"originalRequest": {
 												"method": "PATCH",
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\r\n  \"userId\": \"54df148f-5562-4b6c-b9f5-3551388acd54\",\r\n  \"status\": \"succeed\" // succeed | failed\r\n}",
+													"raw": "{\r\n  \"teamId\": \"862d2e4f-091a-4c68-86f9-2cf7151faaf5\",\r\n  \"status\": \"succeed\" // succeed | failed\r\n}",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -13861,7 +13847,7 @@
 													}
 												},
 												"url": {
-													"raw": "{{CORE_URL}}/tournaments/34/fund/users",
+													"raw": "{{CORE_URL}}/tournaments/34/fund/teams",
 													"host": [
 														"{{CORE_URL}}"
 													],
@@ -13869,7 +13855,7 @@
 														"tournaments",
 														"34",
 														"fund",
-														"users"
+														"teams"
 													]
 												}
 											},
@@ -13891,15 +13877,15 @@
 												},
 												{
 													"key": "Content-Length",
-													"value": "362"
+													"value": "378"
 												},
 												{
 													"key": "ETag",
-													"value": "W/\"16a-5yR0dlVB0aIZpJW3FJ/Ah2xM48Y\""
+													"value": "W/\"17a-ysDKAqbbkvuMtCkFfq34KvSt3LY\""
 												},
 												{
 													"key": "Date",
-													"value": "Sun, 23 Jun 2024 15:00:06 GMT"
+													"value": "Thu, 18 Jul 2024 16:19:15 GMT"
 												},
 												{
 													"key": "Connection",
@@ -13911,7 +13897,7 @@
 												}
 											],
 											"cookie": [],
-											"body": "{\n    \"id\": \"4af5008d-dcfd-4df5-93cf-5e38596649b3\",\n    \"tournamentId\": 34,\n    \"groupId\": null,\n    \"userId\": \"54df148f-5562-4b6c-b9f5-3551388acd54\",\n    \"createdAt\": \"2024-06-23T14:54:43.786Z\",\n    \"updatedAt\": \"2024-06-23T15:00:06.531Z\",\n    \"status\": \"succeed\",\n    \"reminderDate\": \"2024-06-30T14:54:42.468Z\",\n    \"dueDate\": \"2024-07-23T14:54:42.468Z\",\n    \"message\": null,\n    \"errorMessage\": null,\n    \"groupTournamentId\": null\n}"
+											"body": "{\n    \"id\": \"88cb088a-16d8-41c2-ad9d-f321d19d7b04\",\n    \"tournamentId\": 34,\n    \"groupId\": null,\n    \"teamId\": \"862d2e4f-091a-4c68-86f9-2cf7151faaf5\",\n    \"createdAt\": \"2024-07-18T16:14:57.630Z\",\n    \"updatedAt\": \"2024-07-18T16:19:15.110Z\",\n    \"status\": \"succeed\",\n    \"reminderDate\": \"2024-06-23T07:54:42.468Z\",\n    \"dueDate\": \"2024-06-30T07:54:42.468Z\",\n    \"message\": \"Da dong tien roi nha\",\n    \"errorMessage\": \"\",\n    \"groupTournamentId\": null\n}"
 										}
 									]
 								},
@@ -13923,7 +13909,7 @@
 											"bearer": [
 												{
 													"key": "token",
-													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NjQ5MzA2LCJleHAiOjE3MjA5NDUzMDZ9.HR_Q2MNHr2bNq9vZLw5U1UimU3OZ2jO-raRt3iqKGGg",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxMDU3MTk5LCJleHAiOjE3MjIzNTMxOTl9.rccMekKM_KaHXg-KvLt_Wg549Ia_NtGK6yxfO-fqXR8",
 													"type": "string"
 												}
 											]
@@ -13931,7 +13917,7 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{CORE_URL}}/tournaments/34/fund/users?order=asc&page=1&take=10",
+											"raw": "{{CORE_URL}}/tournaments/34/fund/teams?order=asc&page=1&take=10&status=pending",
 											"host": [
 												"{{CORE_URL}}"
 											],
@@ -13939,7 +13925,7 @@
 												"tournaments",
 												"34",
 												"fund",
-												"users"
+												"teams"
 											],
 											"query": [
 												{
@@ -13956,20 +13942,19 @@
 												},
 												{
 													"key": "status",
-													"value": "pending",
-													"disabled": true
+													"value": "pending"
 												}
 											]
 										}
 									},
 									"response": [
 										{
-											"name": "success",
+											"name": "Get list user funds",
 											"originalRequest": {
 												"method": "GET",
 												"header": [],
 												"url": {
-													"raw": "{{CORE_URL}}/tournaments/34/fund/users?order=asc&page=1&take=10",
+													"raw": "{{CORE_URL}}/tournaments/34/fund/teams?order=asc&page=1&take=10&status=pending",
 													"host": [
 														"{{CORE_URL}}"
 													],
@@ -13977,7 +13962,7 @@
 														"tournaments",
 														"34",
 														"fund",
-														"users"
+														"teams"
 													],
 													"query": [
 														{
@@ -13991,6 +13976,10 @@
 														{
 															"key": "take",
 															"value": "10"
+														},
+														{
+															"key": "status",
+															"value": "pending"
 														}
 													]
 												}
@@ -14013,15 +14002,15 @@
 												},
 												{
 													"key": "Content-Length",
-													"value": "2200"
+													"value": "760"
 												},
 												{
 													"key": "ETag",
-													"value": "W/\"898-LdTc/E8auiutvvZ9o1Qzpg1AJL4\""
+													"value": "W/\"2f8-LL285pOHDu1YZf/DGL1Y+yb1OOg\""
 												},
 												{
 													"key": "Date",
-													"value": "Sun, 23 Jun 2024 14:56:22 GMT"
+													"value": "Thu, 18 Jul 2024 16:17:44 GMT"
 												},
 												{
 													"key": "Connection",
@@ -14033,7 +14022,7 @@
 												}
 											],
 											"cookie": [],
-											"body": "{\n    \"data\": [\n        {\n            \"id\": \"195aefe5-9378-41af-a57a-11e7c7b91cc9\",\n            \"tournamentId\": 34,\n            \"groupId\": null,\n            \"userId\": \"af9c5165-4612-4b82-9810-ef8479e85804\",\n            \"createdAt\": \"2024-06-23T14:54:43.786Z\",\n            \"updatedAt\": \"2024-06-23T14:54:43.786Z\",\n            \"status\": \"wait\",\n            \"reminderDate\": \"2024-06-30T14:54:42.468Z\",\n            \"dueDate\": \"2024-07-23T14:54:42.468Z\",\n            \"message\": null,\n            \"errorMessage\": null,\n            \"groupTournamentId\": null\n        },\n        {\n            \"id\": \"4af5008d-dcfd-4df5-93cf-5e38596649b3\",\n            \"tournamentId\": 34,\n            \"groupId\": null,\n            \"userId\": \"54df148f-5562-4b6c-b9f5-3551388acd54\",\n            \"createdAt\": \"2024-06-23T14:54:43.786Z\",\n            \"updatedAt\": \"2024-06-23T14:54:43.786Z\",\n            \"status\": \"wait\",\n            \"reminderDate\": \"2024-06-30T14:54:42.468Z\",\n            \"dueDate\": \"2024-07-23T14:54:42.468Z\",\n            \"message\": null,\n            \"errorMessage\": null,\n            \"groupTournamentId\": null\n        },\n        {\n            \"id\": \"6aafe59b-7954-4e65-bab1-0a44c456ab97\",\n            \"tournamentId\": 34,\n            \"groupId\": null,\n            \"userId\": \"5619b876-5c87-49cb-b9c2-a9c620feb103\",\n            \"createdAt\": \"2024-06-23T14:54:43.786Z\",\n            \"updatedAt\": \"2024-06-23T14:54:43.786Z\",\n            \"status\": \"wait\",\n            \"reminderDate\": \"2024-06-30T14:54:42.468Z\",\n            \"dueDate\": \"2024-07-23T14:54:42.468Z\",\n            \"message\": null,\n            \"errorMessage\": null,\n            \"groupTournamentId\": null\n        },\n        {\n            \"id\": \"b77c4c8c-0824-46a9-9fd3-9085dd96a92e\",\n            \"tournamentId\": 34,\n            \"groupId\": null,\n            \"userId\": \"929f36d5-df1f-489a-99b1-8f8839dc8f3f\",\n            \"createdAt\": \"2024-06-23T14:54:43.786Z\",\n            \"updatedAt\": \"2024-06-23T14:54:43.786Z\",\n            \"status\": \"wait\",\n            \"reminderDate\": \"2024-06-30T14:54:42.468Z\",\n            \"dueDate\": \"2024-07-23T14:54:42.468Z\",\n            \"message\": null,\n            \"errorMessage\": null,\n            \"groupTournamentId\": null\n        },\n        {\n            \"id\": \"318e46cf-606b-4c72-b031-4164a96d265c\",\n            \"tournamentId\": 34,\n            \"groupId\": null,\n            \"userId\": \"b7d25dba-efd5-4aad-8e48-a98dffb0400c\",\n            \"createdAt\": \"2024-06-23T14:54:43.786Z\",\n            \"updatedAt\": \"2024-06-23T14:54:43.786Z\",\n            \"status\": \"wait\",\n            \"reminderDate\": \"2024-06-30T14:54:42.468Z\",\n            \"dueDate\": \"2024-07-23T14:54:42.468Z\",\n            \"message\": null,\n            \"errorMessage\": null,\n            \"groupTournamentId\": null\n        },\n        {\n            \"id\": \"b6fea33f-9d38-4194-970b-b75e6f0d7c35\",\n            \"tournamentId\": 34,\n            \"groupId\": null,\n            \"userId\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n            \"createdAt\": \"2024-06-23T14:54:43.786Z\",\n            \"updatedAt\": \"2024-06-23T14:54:43.786Z\",\n            \"status\": \"wait\",\n            \"reminderDate\": \"2024-06-30T14:54:42.468Z\",\n            \"dueDate\": \"2024-07-23T14:54:42.468Z\",\n            \"message\": null,\n            \"errorMessage\": null,\n            \"groupTournamentId\": null\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 6\n}"
+											"body": "{\n    \"data\": [\n        {\n            \"team\": {\n                \"id\": \"862d2e4f-091a-4c68-86f9-2cf7151faaf5\",\n                \"name\": \"Huy Nguyen 6\",\n                \"userId1\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n                \"userId2\": null,\n                \"totalElo\": 0,\n                \"point\": 0,\n                \"createdAt\": \"2024-06-23T14:42:47.208Z\",\n                \"updatedAt\": \"2024-06-23T14:42:47.208Z\",\n                \"tournamentId\": 34,\n                \"groupFixtureId\": null,\n                \"seed\": null,\n                \"groupTournamentId\": null,\n                \"user1\": {\n                    \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n                    \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                    \"name\": \"Thong\",\n                    \"elo\": 207,\n                    \"gender\": \"male\"\n                },\n                \"user2\": null\n            },\n            \"id\": \"88cb088a-16d8-41c2-ad9d-f321d19d7b04\",\n            \"tournamentId\": 34,\n            \"status\": \"pending\",\n            \"reminderDate\": \"2024-06-23T07:54:42.468Z\",\n            \"dueDate\": \"2024-06-30T07:54:42.468Z\",\n            \"message\": \"Da dong tien roi nha\",\n            \"errorMessage\": \"\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 1\n}"
 										}
 									]
 								}
@@ -14050,7 +14039,7 @@
 											"bearer": [
 												{
 													"key": "token",
-													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNjI4YTE0Mi0zODZiLTRlZTYtODE5OC1kMjgyZDlmNDEwNTkiLCJlbWFpbCI6InRob25nQG1haWwuY29tIiwiaWF0IjoxNzE5MTUzNjMyLCJleHAiOjE3MjA0NDk2MzJ9.xwXw4rahOlCWSee3EJR87BNTtCWfAu6yrPel28Fm5zc",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNjI4YTE0Mi0zODZiLTRlZTYtODE5OC1kMjgyZDlmNDEwNTkiLCJlbWFpbCI6InRob25nQG1haWwuY29tIiwiaWF0IjoxNzIxMzE4Nzk4LCJleHAiOjE3MjI2MTQ3OTh9.GdXln2znM4wEfqoMzS8bN_T0GRsylI47i0uWum2O6AU",
 													"type": "string"
 												}
 											]
@@ -14137,7 +14126,7 @@
 											"bearer": [
 												{
 													"key": "token",
-													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNjI4YTE0Mi0zODZiLTRlZTYtODE5OC1kMjgyZDlmNDEwNTkiLCJlbWFpbCI6InRob25nQG1haWwuY29tIiwiaWF0IjoxNzE5MTUzNjMyLCJleHAiOjE3MjA0NDk2MzJ9.xwXw4rahOlCWSee3EJR87BNTtCWfAu6yrPel28Fm5zc",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNjI4YTE0Mi0zODZiLTRlZTYtODE5OC1kMjgyZDlmNDEwNTkiLCJlbWFpbCI6InRob25nQG1haWwuY29tIiwiaWF0IjoxNzIxMzE4Nzk4LCJleHAiOjE3MjI2MTQ3OTh9.GdXln2znM4wEfqoMzS8bN_T0GRsylI47i0uWum2O6AU",
 													"type": "string"
 												}
 											]
@@ -14158,7 +14147,7 @@
 									},
 									"response": [
 										{
-											"name": "Success",
+											"name": "Get fund",
 											"originalRequest": {
 												"method": "GET",
 												"header": [],
@@ -14192,15 +14181,15 @@
 												},
 												{
 													"key": "Content-Length",
-													"value": "241"
+													"value": "696"
 												},
 												{
 													"key": "ETag",
-													"value": "W/\"f1-nKVcYlRtwP7OHpruYEyV05X8ZYw\""
+													"value": "W/\"2b8-DS1FLuW/kiCaPvLbN871nPryhR0\""
 												},
 												{
 													"key": "Date",
-													"value": "Sun, 23 Jun 2024 15:10:57 GMT"
+													"value": "Thu, 18 Jul 2024 16:15:13 GMT"
 												},
 												{
 													"key": "Connection",
@@ -14212,7 +14201,7 @@
 												}
 											],
 											"cookie": [],
-											"body": "{\n    \"id\": \"b6fea33f-9d38-4194-970b-b75e6f0d7c35\",\n    \"tournamentId\": 34,\n    \"userId\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n    \"status\": \"wait\",\n    \"reminderDate\": \"2024-06-30T14:54:42.468Z\",\n    \"dueDate\": \"2024-07-23T14:54:42.468Z\",\n    \"message\": null,\n    \"errorMessage\": null\n}"
+											"body": "{\n    \"id\": \"88cb088a-16d8-41c2-ad9d-f321d19d7b04\",\n    \"tournamentId\": 34,\n    \"team\": {\n        \"id\": \"862d2e4f-091a-4c68-86f9-2cf7151faaf5\",\n        \"name\": \"Huy Nguyen 6\",\n        \"userId1\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n        \"userId2\": null,\n        \"totalElo\": 0,\n        \"point\": 0,\n        \"createdAt\": \"2024-06-23T14:42:47.208Z\",\n        \"updatedAt\": \"2024-06-23T14:42:47.208Z\",\n        \"tournamentId\": 34,\n        \"groupFixtureId\": null,\n        \"seed\": null,\n        \"groupTournamentId\": null,\n        \"user1\": {\n            \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n            \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n            \"name\": \"Thong\",\n            \"elo\": 207,\n            \"gender\": \"male\"\n        },\n        \"user2\": null\n    },\n    \"status\": \"wait\",\n    \"reminderDate\": \"2024-06-23T07:54:42.468Z\",\n    \"dueDate\": \"2024-06-30T07:54:42.468Z\",\n    \"message\": \"\",\n    \"errorMessage\": \"\"\n}"
 										}
 									]
 								},
@@ -14224,7 +14213,7 @@
 											"bearer": [
 												{
 													"key": "token",
-													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNjI4YTE0Mi0zODZiLTRlZTYtODE5OC1kMjgyZDlmNDEwNTkiLCJlbWFpbCI6InRob25nQG1haWwuY29tIiwiaWF0IjoxNzE5MTUzNjMyLCJleHAiOjE3MjA0NDk2MzJ9.xwXw4rahOlCWSee3EJR87BNTtCWfAu6yrPel28Fm5zc",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNjI4YTE0Mi0zODZiLTRlZTYtODE5OC1kMjgyZDlmNDEwNTkiLCJlbWFpbCI6InRob25nQG1haWwuY29tIiwiaWF0IjoxNzIxMzE4Nzk4LCJleHAiOjE3MjI2MTQ3OTh9.GdXln2znM4wEfqoMzS8bN_T0GRsylI47i0uWum2O6AU",
 													"type": "string"
 												}
 											]
@@ -14329,7 +14318,7 @@
 											"bearer": [
 												{
 													"key": "token",
-													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNjI4YTE0Mi0zODZiLTRlZTYtODE5OC1kMjgyZDlmNDEwNTkiLCJlbWFpbCI6InRob25nQG1haWwuY29tIiwiaWF0IjoxNzE5MTUzNjMyLCJleHAiOjE3MjA0NDk2MzJ9.xwXw4rahOlCWSee3EJR87BNTtCWfAu6yrPel28Fm5zc",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNjI4YTE0Mi0zODZiLTRlZTYtODE5OC1kMjgyZDlmNDEwNTkiLCJlbWFpbCI6InRob25nQG1haWwuY29tIiwiaWF0IjoxNzIxMzE4Nzk4LCJleHAiOjE3MjI2MTQ3OTh9.GdXln2znM4wEfqoMzS8bN_T0GRsylI47i0uWum2O6AU",
 													"type": "string"
 												}
 											]
@@ -14349,63 +14338,6 @@
 										}
 									},
 									"response": [
-										{
-											"name": "get tournament noti",
-											"originalRequest": {
-												"method": "GET",
-												"header": [],
-												"url": {
-													"raw": "{{CORE_URL}}/tournaments/34/noti",
-													"host": [
-														"{{CORE_URL}}"
-													],
-													"path": [
-														"tournaments",
-														"34",
-														"noti"
-													]
-												}
-											},
-											"status": "OK",
-											"code": 200,
-											"_postman_previewlanguage": "json",
-											"header": [
-												{
-													"key": "X-Powered-By",
-													"value": "Express"
-												},
-												{
-													"key": "Access-Control-Allow-Origin",
-													"value": "*"
-												},
-												{
-													"key": "Content-Type",
-													"value": "application/json; charset=utf-8"
-												},
-												{
-													"key": "Content-Length",
-													"value": "340"
-												},
-												{
-													"key": "ETag",
-													"value": "W/\"154-K1Li4Q/HPfXYUMaqhjL1UzGjzTA\""
-												},
-												{
-													"key": "Date",
-													"value": "Sun, 23 Jun 2024 15:20:49 GMT"
-												},
-												{
-													"key": "Connection",
-													"value": "keep-alive"
-												},
-												{
-													"key": "Keep-Alive",
-													"value": "timeout=5"
-												}
-											],
-											"cookie": [],
-											"body": "{\n    \"user\": {\n        \"payment\": {\n            \"fund\": {\n                \"id\": \"b6fea33f-9d38-4194-970b-b75e6f0d7c35\",\n                \"tournamentId\": 34,\n                \"userId\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n                \"status\": \"wait\",\n                \"reminderDate\": \"2024-06-23T07:54:42.468Z\",\n                \"dueDate\": \"2024-06-30T07:54:42.468Z\",\n                \"message\": null,\n                \"errorMessage\": null\n            },\n            \"message\": \"Reminder: Please settle the tournament participation fee\"\n        }\n    }\n}"
-										},
 										{
 											"name": "no data",
 											"originalRequest": {
@@ -14462,6 +14394,63 @@
 											],
 											"cookie": [],
 											"body": "{\n    \"user\": {\n        \"payment\": null\n    }\n}"
+										},
+										{
+											"name": "Get tournament noti",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{CORE_URL}}/tournaments/34/noti",
+													"host": [
+														"{{CORE_URL}}"
+													],
+													"path": [
+														"tournaments",
+														"34",
+														"noti"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "795"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"31b-4V+yKiFMZKpxmvJ4xA+ugr/KWaI\""
+												},
+												{
+													"key": "Date",
+													"value": "Thu, 18 Jul 2024 16:15:44 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"user\": {\n        \"payment\": {\n            \"fund\": {\n                \"id\": \"88cb088a-16d8-41c2-ad9d-f321d19d7b04\",\n                \"tournamentId\": 34,\n                \"team\": {\n                    \"id\": \"862d2e4f-091a-4c68-86f9-2cf7151faaf5\",\n                    \"name\": \"Huy Nguyen 6\",\n                    \"userId1\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n                    \"userId2\": null,\n                    \"totalElo\": 0,\n                    \"point\": 0,\n                    \"createdAt\": \"2024-06-23T14:42:47.208Z\",\n                    \"updatedAt\": \"2024-06-23T14:42:47.208Z\",\n                    \"tournamentId\": 34,\n                    \"groupFixtureId\": null,\n                    \"seed\": null,\n                    \"groupTournamentId\": null,\n                    \"user1\": {\n                        \"id\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n                        \"image\": \"https://i.pinimg.com/474x/06/12/23/0612238c2c3f67edec6b07f87a26e258.jpg\",\n                        \"name\": \"Thong\",\n                        \"elo\": 207,\n                        \"gender\": \"male\"\n                    },\n                    \"user2\": null\n                },\n                \"status\": \"wait\",\n                \"reminderDate\": \"2024-06-23T07:54:42.468Z\",\n                \"dueDate\": \"2024-06-30T07:54:42.468Z\",\n                \"message\": \"\",\n                \"errorMessage\": \"\"\n            },\n            \"message\": \"Reminder: Please settle the tournament participation fee\"\n        }\n    }\n}"
 										}
 									]
 								}
