@@ -25,6 +25,7 @@ export class FcmNotificationService {
         };
       })
       .catch((error) => {
+        console.log(error);
         return {
           success: false,
           message: error.message,
