@@ -32,15 +32,11 @@ export class NotificationConsumer {
         params: JSON.stringify({ matchId: job.data.matchId }),
         type: 'MATCH_UPDATE',
       };
-      const notification = {
-        title: 'Match Score Update',
-        body: "The match you're following has an update! Check the latest score now",
-      };
       console.log('Notidata:', data);
       await this.fcmNotificationService.sendingNotificationOneUser(
         token,
         data,
-        notification,
+        job.data.notification,
       );
     }
     return {};

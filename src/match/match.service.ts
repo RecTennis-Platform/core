@@ -272,6 +272,29 @@ export class MatchService {
         },
       });
 
+      const followUsers = (
+        await this.prismaService.users_follow_matches.findMany({
+          where: {
+            matchId: matchId,
+          },
+          select: {
+            userId: true,
+          },
+        })
+      ).map((user) => {
+        return user.userId;
+      });
+      const notification = {
+        title: 'Match Beginning',
+        body: 'The match you are following has just started! Tune in now to catch the action.',
+      };
+      const notificationData = {
+        userIds: followUsers,
+        matchId: matchId,
+        notification,
+      };
+      await this.notificationProducer.add(notificationData);
+
       return await this.getMatchDetails(matchId, refereeId);
     } catch (err) {
       throw new InternalServerErrorException({
@@ -993,9 +1016,14 @@ export class MatchService {
           ).map((user) => {
             return user.userId;
           });
+          const notification = {
+            title: 'Match Score Update',
+            body: "The match you're following has an update! Check the latest score now",
+          };
           const notificationData = {
             userIds: followUsers,
             matchId: matchId,
+            notification,
           };
           await this.notificationProducer.add(notificationData);
         } else {
