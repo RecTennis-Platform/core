@@ -1599,6 +1599,130 @@ export class TournamentService {
     }
   }
 
+  async endTournament(userId: string, tournamentId: number) {
+    // Get tournament info
+    const tournament = await this.prismaService.tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Check if user is the owner of this tournament
+    if (purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        code: CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_UNAUTHORIZED_ACCESS,
+        ),
+        data: null,
+      });
+    }
+
+    // Check status of tournament
+    if (tournament.status === TournamentStatus.completed) {
+      throw new BadRequestException('The tournament has already ended');
+    }
+
+    // Check if all matches ended
+    // Get fixture
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        tournamentId: tournamentId,
+      },
+      include: {
+        groupFixtures: {
+          include: {
+            rounds: {
+              include: {
+                matches: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!fixture) {
+      throw new NotFoundException('Fixture not found');
+    }
+
+    let allMatchesEnded = true;
+    const unfinishedMatches = [];
+
+    fixture.groupFixtures.forEach((groupFixture) => {
+      groupFixture.rounds.forEach((round) => {
+        round.matches.forEach((match) => {
+          if (match.status !== MatchStatus.score_done) {
+            // Set allMatchesEnded to false
+            allMatchesEnded = false;
+
+            // Add unfinished match id to the array
+            unfinishedMatches.push(match.id);
+          }
+        });
+      });
+    });
+
+    if (!allMatchesEnded) {
+      throw new BadRequestException({
+        message: "All matches haven't ended yet",
+        unfinishedMatches,
+      });
+    }
+
+    // Update tournament info
+    try {
+      const updatedTournament = await this.prismaService.tournaments.update({
+        where: {
+          id: tournamentId,
+        },
+        data: {
+          status: TournamentStatus.completed,
+          phase: TournamentPhase.completed,
+        },
+      });
+
+      return updatedTournament;
+    } catch (err) {
+      console.log('Error:', err.message);
+      throw new InternalServerErrorException({
+        code: CustomResponseStatusCodes.TOURNAMENT_END_FAILED,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_END_FAILED,
+        ),
+        data: null,
+      });
+    }
+  }
+
   async updateTournamentInfo(
     userId: string,
     tournamentId: number,

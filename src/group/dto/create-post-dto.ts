@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreatePostDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  image: string;
+  image?: string;
 
   @IsNotEmpty()
   @IsString()

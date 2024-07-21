@@ -162,6 +162,15 @@ export class TournamentController {
   }
 
   @UseGuards(JwtGuard)
+  @Put(':tournamentId/end')
+  async endTournament(
+    @GetUser('sub') userId: string,
+    @Param('tournamentId') tournamentId: number,
+  ) {
+    return this.tournamentService.endTournament(userId, tournamentId);
+  }
+
+  @UseGuards(JwtGuard)
   @Put(':tournamentId')
   // Update tournament info
   async updateTournamentInfo(

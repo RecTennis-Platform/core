@@ -1,0 +1,211 @@
+{
+	"info": {
+		"_postman_id": "fe93771a-87b5-41ba-bdc2-131aad66dc2a",
+		"name": "End tournament API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24188163"
+	},
+	"item": [
+		{
+			"name": "End tournament",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1OThlZGZmYy05OWRkLTQxNzYtYmVjOS04NmY4Yjk1ZTNhNDYiLCJlbWFpbCI6ImNoaWhpZW4yMDAyQGdtYWlsLmNvbSIsImlhdCI6MTcyMTQ3NDI2OCwiZXhwIjoxNzIyNzcwMjY4fQ.rUDpBCQyJpF5OIiUl6KHpq1K8ySrWjRpbwzFD14N1bk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{CORE_URL}}/tournaments/28/end",
+					"host": [
+						"{{CORE_URL}}"
+					],
+					"path": [
+						"tournaments",
+						"28",
+						"end"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "End tournament",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/tournaments/28/end",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"tournaments",
+								"28",
+								"end"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "338"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"152-pW2480M30+uUedvbbhk4GOJ6At8\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 20 Jul 2024 11:21:05 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"All matches haven't ended yet\",\n    \"unfinishedMatches\": [\n        \"86db39bc-3131-4223-90ea-7766cbd8768e\",\n        \"e3663919-18dc-4dd3-a662-bc4f66ab05d1\",\n        \"a972bb1b-027c-4cfb-8c71-2431bc2fd593\",\n        \"cb660f40-cc10-4070-ba51-683de729d61c\",\n        \"36dc39d0-1bae-4bb8-a2b3-99a0df6ca544\",\n        \"9d8cb4fa-b0c6-4690-9d84-f706795d6bca\",\n        \"1f0ce2a9-2614-40cb-a461-742467ae59bc\"\n    ]\n}"
+				},
+				{
+					"name": "End tournament",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/tournaments/28/end",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"tournaments",
+								"28",
+								"end"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "783"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"30f-BaqvAXRABU9N9zW2/k+eHgXQp3c\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 20 Jul 2024 11:21:59 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 28,\n    \"purchasedPackageId\": \"666a58af876cca643b1b5d27\",\n    \"name\": \"Giai dau 123\",\n    \"maxParticipants\": 20,\n    \"gender\": \"male\",\n    \"format\": \"knockout\",\n    \"participantType\": \"single\",\n    \"description\": \"12312312312312312ádfasdf\",\n    \"playersBornAfterDate\": \"1990-01-01T00:00:00.000Z\",\n    \"registrationDueDate\": \"2024-06-19T23:59:59.000Z\",\n    \"startDate\": \"2024-06-20T00:00:00.000Z\",\n    \"endDate\": \"2024-07-13T23:59:59.000Z\",\n    \"status\": \"completed\",\n    \"address\": \"ádfasdfHo chi minh city \",\n    \"contactPersonName\": \"Trí Đỗ Minh\",\n    \"contactNumber\": \"0344043493\",\n    \"contactEmail\": \"mitidevus@gmail.com\",\n    \"createdAt\": \"2024-06-13T02:29:00.821Z\",\n    \"updatedAt\": \"2024-07-20T11:21:58.844Z\",\n    \"phase\": \"completed\",\n    \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1718245660501-tournament4.jpeg?alt=media\",\n    \"level\": 1\n}"
+				},
+				{
+					"name": "End tournament",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/tournaments/28/end",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"tournaments",
+								"28",
+								"end"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "76"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"4c-S56kXDr0mZo47nll0oVn8HmzluA\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 20 Jul 2024 11:22:19 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 1006,\n    \"message\": \"Unauthorized to access this tournament\",\n    \"data\": null\n}"
+				}
+			]
+		}
+	]
+}
