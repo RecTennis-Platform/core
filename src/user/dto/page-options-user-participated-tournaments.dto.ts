@@ -23,7 +23,7 @@ export class PageOptionsUserParticipatedTournamentsDto {
   @Min(1)
   @Max(5000)
   @IsOptional()
-  readonly take?: number = 10;
+  readonly take?: number = 1000;
 
   get skip(): number {
     return (this.page - 1) * this.take;

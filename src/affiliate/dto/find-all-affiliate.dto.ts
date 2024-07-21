@@ -19,7 +19,7 @@ export class PageOptionsAffiliateDto {
   @Min(1)
   @Max(5000)
   @IsOptional()
-  readonly take?: number;
+  readonly take?: number = 1000;
 
   @IsEnum(AffiliateStatus)
   @IsOptional()

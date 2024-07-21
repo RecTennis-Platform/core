@@ -18,7 +18,7 @@ export class PageOptionsPostDto {
   @Min(1)
   @Max(5000)
   @IsOptional()
-  take?: number = 10;
+  take?: number = 1000;
 
   get skip(): number {
     return (this.page - 1) * this.take;

@@ -53,6 +53,7 @@ import { PageOptionsTournamentFundDto } from './dto/page-options-tournament-fund
 import { UpdatePaymentInfoDto } from './dto/update-payment-info.dto';
 import { CreateFixturePublishKnockoutDto } from 'src/fixture/dto/create-fixture-save-publish.dto';
 import { PageOptionsMatchesDto } from 'src/match/dto/page-options-match.dto';
+import { Order } from 'constants/order';
 
 @Injectable()
 export class TournamentService {
@@ -4937,6 +4938,45 @@ export class TournamentService {
                           dob: true,
                           phoneNumber: true,
                           isReferee: true,
+                        },
+                      },
+                      sets: {
+                        orderBy: {
+                          id: Order.DESC,
+                        },
+                        select: {
+                          id: true,
+                          team1SetScore: true,
+                          team2SetScore: true,
+                          isTieBreak: true,
+                          status: true,
+                          teamWinId: true,
+                          setStartTime: true,
+                          // Games
+                          games: {
+                            orderBy: {
+                              id: Order.DESC,
+                            },
+                            select: {
+                              id: true,
+                              teamWinId: true,
+                              // Scores
+                              scores: {
+                                orderBy: {
+                                  id: Order.DESC,
+                                },
+                                select: {
+                                  id: true,
+                                  type: true,
+                                  team1Score: true,
+                                  team2Score: true,
+                                  teamWinId: true,
+                                  teamServeId: true,
+                                  time: true,
+                                },
+                              },
+                            },
+                          },
                         },
                       },
                     },

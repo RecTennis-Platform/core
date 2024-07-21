@@ -23,7 +23,7 @@ export class PageOptionsOrderDto {
   @Min(1)
   @Max(5000)
   @IsOptional()
-  take?: number;
+  take?: number = 1000;
 
   get skip(): number {
     return (this.page - 1) * this.take;

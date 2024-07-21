@@ -18,7 +18,7 @@ export class PageOptionsNewsDto {
   @Min(1)
   @Max(5000)
   @IsOptional()
-  readonly take?: number;
+  readonly take?: number = 1000;
 
   get skip(): number {
     return (this.page - 1) * this.take;

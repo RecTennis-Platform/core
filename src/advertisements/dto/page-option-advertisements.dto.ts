@@ -19,7 +19,7 @@ export class PageOptionsAdvertisementDto {
   @Min(1)
   @Max(5000)
   @IsOptional()
-  take?: number = 10;
+  take?: number = 1000;
 
   @IsEnum(AdvertisementStatus)
   @IsOptional()
