@@ -279,6 +279,7 @@ export class MatchService {
         },
         data: {
           status: MatchStatus.walk_over,
+          refereeMatchStartDate: new Date(),
         },
       });
 
@@ -733,6 +734,7 @@ export class MatchService {
           await this.prismaService.scores.create({
             data: {
               gameId: newTieBreak.id,
+              teamServeId: dto.teamServeId,
             },
           });
         } else {
@@ -1051,6 +1053,7 @@ export class MatchService {
             await this.prismaService.scores.create({
               data: {
                 gameId: newGame.id,
+                teamServeId: dto.teamServeId,
               },
             });
           }
