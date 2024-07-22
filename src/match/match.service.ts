@@ -238,6 +238,16 @@ export class MatchService {
       );
     }
 
+    const today = new Date();
+
+    const isTodayMatchStartDate =
+      today.getFullYear() === assignedMatch.matchStartDate.getFullYear() &&
+      today.getMonth() === assignedMatch.matchStartDate.getMonth() &&
+      today.getDate() === assignedMatch.matchStartDate.getDate();
+    if (!isTodayMatchStartDate) {
+      throw new BadRequestException(`MatchStartDate must be today`);
+    }
+
     try {
       // Create new set
       const newSet = await this.prismaService.sets.create({
