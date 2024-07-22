@@ -128,6 +128,7 @@ export class MatchService {
         venue: true,
         teamWinnerId: true,
         matchStartDate: true,
+        refereeMatchStartDate: true,
         matchEndDate: true,
         team1MatchScore: true,
         team2MatchScore: true,
