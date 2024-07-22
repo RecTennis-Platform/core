@@ -900,7 +900,7 @@ export class MatchService {
                 }
 
                 const user1LoserElo = assignedMatch.team2.user1.elo || 200;
-                sumElo = this.sumElo(user1LoserElo, winnerElo);
+                sumElo = this.sumElo(user1LoserElo, loserElo);
 
                 await this.prismaService.users.update({
                   where: {
@@ -912,7 +912,7 @@ export class MatchService {
                 });
                 if (assignedMatch.team2.userId2) {
                   const user2LoserElo = assignedMatch.team2.user2.elo || 200;
-                  sumElo = this.sumElo(user2LoserElo, winnerElo);
+                  sumElo = this.sumElo(user2LoserElo, loserElo);
                   await this.prismaService.users.update({
                     where: {
                       id: assignedMatch.team2.userId2,
@@ -952,7 +952,7 @@ export class MatchService {
                   });
                 }
                 const user1LoserElo = assignedMatch.team1.user1.elo || 200;
-                sumElo = this.sumElo(user1LoserElo, winnerElo);
+                sumElo = this.sumElo(user1LoserElo, loserElo);
                 await this.prismaService.users.update({
                   where: {
                     id: assignedMatch.team1.userId1,
@@ -963,7 +963,7 @@ export class MatchService {
                 });
                 if (assignedMatch.team1.userId2) {
                   const user2LoserElo = assignedMatch.team1.user2.elo || 200;
-                  sumElo = this.sumElo(user2LoserElo, winnerElo);
+                  sumElo = this.sumElo(user2LoserElo, loserElo);
                   await this.prismaService.users.update({
                     where: {
                       id: assignedMatch.team1.userId2,
