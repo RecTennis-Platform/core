@@ -6099,6 +6099,45 @@ export class TournamentService {
             },
           },
         },
+        sets: {
+          orderBy: {
+            id: Order.DESC,
+          },
+          select: {
+            id: true,
+            team1SetScore: true,
+            team2SetScore: true,
+            isTieBreak: true,
+            status: true,
+            teamWinId: true,
+            setStartTime: true,
+            // Games
+            games: {
+              orderBy: {
+                id: Order.DESC,
+              },
+              select: {
+                id: true,
+                teamWinId: true,
+                // Scores
+                scores: {
+                  orderBy: {
+                    id: Order.DESC,
+                  },
+                  select: {
+                    id: true,
+                    type: true,
+                    team1Score: true,
+                    team2Score: true,
+                    teamWinId: true,
+                    teamServeId: true,
+                    time: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
       where: {
         round: {
