@@ -6151,16 +6151,88 @@ export class TournamentService {
       },
     });
 
-    const matches = result.map((match) => {
-      delete match.round;
-      const { team1, team2, ...others } = match;
-      const teams = {
-        team1: team1,
-        team2: team2,
-      };
-      return { teams: teams, ...others };
-    });
+    // Modify match data
+    // Modify sets
+
+    const matches = await Promise.all(
+      result.map(async (match) => {
+        match.sets = await Promise.all(
+          match.sets.map(async (set) => {
+            // Set final score
+            const setFinalScore = {
+              team1: set.team1SetScore,
+              team2: set.team2SetScore,
+              tieBreak: null,
+            };
+
+            // If this set has tiebreak
+            if (set.isTieBreak) {
+              // Get tiebreak score
+              const tieBreakScore = await this.getTieBreakScore(set.id);
+
+              // console.log('tieBreakScore:', tieBreakScore);
+
+              setFinalScore.tieBreak = {
+                team1: tieBreakScore.team1Score,
+                team2: tieBreakScore.team2Score,
+              };
+            }
+
+            // Remove unnecessary data
+            delete set.team1SetScore;
+            delete set.team2SetScore;
+
+            return {
+              ...set,
+              setFinalScore,
+            };
+          }),
+        );
+
+        const matchFinalScore = {
+          team1: match.team1MatchScore,
+          team2: match.team2MatchScore,
+          teamWinnerId: match.teamWinnerId,
+        };
+        delete match.round;
+        const { team1, team2, ...others } = match;
+        const teams = {
+          team1: team1,
+          team2: team2,
+        };
+        return { teams: teams, matchFinalScore, ...others };
+      }),
+    );
     return { matches };
+  }
+
+  async getTieBreakScore(setId: number) {
+    // Get tie break game
+    const tieBreakGame = await this.prismaService.games.findFirst({
+      where: {
+        setId: setId,
+        isTieBreak: true,
+      },
+      orderBy: {
+        id: Order.DESC,
+      },
+    });
+
+    // Get tie break score
+    const tieBreakScore = await this.prismaService.scores.findFirst({
+      where: {
+        gameId: tieBreakGame.id,
+      },
+      orderBy: {
+        id: Order.DESC,
+      },
+      select: {
+        team1Score: true,
+        team2Score: true,
+      },
+    });
+
+    return tieBreakScore;
   }
 
   async getAllUserFunds(
