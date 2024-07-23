@@ -1576,7 +1576,7 @@ export class TournamentService {
         },
       });
 
-      return {};
+      return await this.getTournamentDetails(userId, tournamentId);
     } catch (error) {
       console.log('Error:', error.message);
       if (unpublish) {
