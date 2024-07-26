@@ -227,6 +227,22 @@ export class MatchService {
         id: matchId,
         refereeId: refereeId,
       },
+      include: {
+        round: {
+          include: {
+            fixture: {
+              include: {
+                fixture: {
+                  include: {
+                    tournament: true,
+                    groupTournament: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!assignedMatch) {
@@ -285,6 +301,50 @@ export class MatchService {
         },
       });
 
+      const userIds = [];
+      let otherParams, type;
+      if (assignedMatch.round.fixture.fixture.tournamentId) {
+        const participants = await this.prismaService.teams.findMany({
+          where: {
+            tournamentId: assignedMatch.round.fixture.fixture.tournamentId,
+          },
+        });
+
+        participants.forEach((participant) => {
+          if (participant.userId1) {
+            userIds.push(participant.userId1);
+          }
+          if (participant.userId2) {
+            userIds.push(participant.userId2);
+          }
+        });
+        otherParams = {
+          tournamentId: assignedMatch.round.fixture.fixture.tournamentId,
+        };
+        type = 'tournament_matches';
+      } else {
+        const participants = await this.prismaService.teams.findMany({
+          where: {
+            groupTournamentId:
+              assignedMatch.round.fixture.fixture.groupTournamentId,
+          },
+        });
+
+        participants.forEach((participant) => {
+          if (participant.userId1) {
+            userIds.push(participant.userId1);
+          }
+          if (participant.userId2) {
+            userIds.push(participant.userId2);
+          }
+        });
+        otherParams = {
+          groupTournamentId:
+            assignedMatch.round.fixture.fixture.groupTournamentId,
+        };
+        type = 'group_tournament_matches';
+      }
+
       const followUsers = (
         await this.prismaService.users_follow_matches.findMany({
           where: {
@@ -301,10 +361,20 @@ export class MatchService {
         title: 'Match Beginning',
         body: 'The match you are following has just started! Tune in now to catch the action.',
       };
-      const notificationData = {
-        userIds: followUsers,
-        matchId: matchId,
+      const notiData = {
+        mobileType: 'MATCH_UPDATE',
+        type,
+        params: {
+          matchId: matchId,
+          ...otherParams,
+        },
         notification,
+        web: true,
+        mobile: true,
+      };
+      const notificationData = {
+        userIds: [...new Set(followUsers.concat(userIds))],
+        notiData,
       };
       await this.notificationProducer.add(notificationData);
 
@@ -980,7 +1050,81 @@ export class MatchService {
               }
             }
 
-            // TODO: Noti: Match end
+            const userIds = [];
+            let otherParams, type;
+            if (assignedMatch.team1.tournamentId) {
+              const participants = await this.prismaService.teams.findMany({
+                where: {
+                  tournamentId: assignedMatch.team1.tournamentId,
+                },
+              });
+
+              participants.forEach((participant) => {
+                if (participant.userId1) {
+                  userIds.push(participant.userId1);
+                }
+                if (participant.userId2) {
+                  userIds.push(participant.userId2);
+                }
+              });
+              otherParams = {
+                tournamentId: assignedMatch.team1.tournamentId,
+              };
+              type = 'tournament_matches';
+            } else {
+              const participants = await this.prismaService.teams.findMany({
+                where: {
+                  groupTournamentId: assignedMatch.team1.groupTournamentId,
+                },
+              });
+
+              participants.forEach((participant) => {
+                if (participant.userId1) {
+                  userIds.push(participant.userId1);
+                }
+                if (participant.userId2) {
+                  userIds.push(participant.userId2);
+                }
+              });
+              otherParams = {
+                groupTournamentId: assignedMatch.team1.groupTournamentId,
+              };
+              type = 'group_tournament_matches';
+            }
+
+            // Send notification
+            const followUsers = (
+              await this.prismaService.users_follow_matches.findMany({
+                where: {
+                  matchId: matchId,
+                },
+                select: {
+                  userId: true,
+                },
+              })
+            ).map((user) => {
+              return user.userId;
+            });
+            const notification = {
+              title: 'Match End',
+              body: "The match you're following has been ended! Check the latest score now",
+            };
+            const notiData = {
+              mobileType: 'MATCH_UPDATE',
+              type,
+              params: {
+                matchId: matchId,
+                ...otherParams,
+              },
+              notification,
+              web: true,
+              mobile: true,
+            };
+            const notificationData = {
+              userIds: [...new Set(followUsers.concat(userIds))],
+              notiData,
+            };
+            await this.notificationProducer.add(notificationData);
           } else {
             // Normal match score
             if (dto.teamWin === 1) {
@@ -1017,6 +1161,47 @@ export class MatchService {
             });
           }
 
+          const userIds = [];
+          let otherParams, type;
+          if (assignedMatch.team1.tournamentId) {
+            const participants = await this.prismaService.teams.findMany({
+              where: {
+                tournamentId: assignedMatch.team1.tournamentId,
+              },
+            });
+
+            participants.forEach((participant) => {
+              if (participant.userId1) {
+                userIds.push(participant.userId1);
+              }
+              if (participant.userId2) {
+                userIds.push(participant.userId2);
+              }
+            });
+            otherParams = {
+              tournamentId: assignedMatch.team1.tournamentId,
+            };
+            type = 'tournament_matches';
+          } else {
+            const participants = await this.prismaService.teams.findMany({
+              where: {
+                groupTournamentId: assignedMatch.team1.groupTournamentId,
+              },
+            });
+
+            participants.forEach((participant) => {
+              if (participant.userId1) {
+                userIds.push(participant.userId1);
+              }
+              if (participant.userId2) {
+                userIds.push(participant.userId2);
+              }
+            });
+            otherParams = {
+              groupTournamentId: assignedMatch.team1.groupTournamentId,
+            };
+            type = 'group_tournament_matches';
+          }
           // Send notification
           const followUsers = (
             await this.prismaService.users_follow_matches.findMany({
@@ -1034,10 +1219,20 @@ export class MatchService {
             title: 'Match Score Update',
             body: "The match you're following has an update! Check the latest score now",
           };
-          const notificationData = {
-            userIds: followUsers,
-            matchId: matchId,
+          const notiData = {
+            mobileType: 'MATCH_UPDATE',
+            type,
+            params: {
+              matchId: matchId,
+              ...otherParams,
+            },
             notification,
+            web: false,
+            mobile: true,
+          };
+          const notificationData = {
+            userIds: [...new Set(followUsers.concat(userIds))],
+            notiData,
           };
           await this.notificationProducer.add(notificationData);
         } else {
@@ -1137,7 +1332,7 @@ export class MatchService {
       });
     }
 
-    return await this.prismaService.matches.update({
+    const updatedMatch = await this.prismaService.matches.update({
       where: {
         id: match.id,
       },
@@ -1162,6 +1357,89 @@ export class MatchService {
         status: dto.status,
       },
     });
+    if (
+      match.round.fixture.fixture?.tournament?.phase === 'generated_fixtures' ||
+      match.round.fixture.fixture?.groupTournament?.phase ===
+        'generated_fixtures'
+    ) {
+      const userIds = [];
+      let otherParams, type;
+      if (match.round.fixture.fixture.tournamentId) {
+        const participants = await this.prismaService.teams.findMany({
+          where: {
+            tournamentId: match.round.fixture.fixture.tournamentId,
+          },
+        });
+
+        participants.forEach((participant) => {
+          if (participant.userId1) {
+            userIds.push(participant.userId1);
+          }
+          if (participant.userId2) {
+            userIds.push(participant.userId2);
+          }
+        });
+        otherParams = {
+          tournamentId: match.round.fixture.fixture.tournamentId,
+        };
+        type = 'tournament_matches';
+      } else {
+        const participants = await this.prismaService.teams.findMany({
+          where: {
+            groupTournamentId: match.round.fixture.fixture.groupTournamentId,
+          },
+        });
+
+        participants.forEach((participant) => {
+          if (participant.userId1) {
+            userIds.push(participant.userId1);
+          }
+          if (participant.userId2) {
+            userIds.push(participant.userId2);
+          }
+        });
+        otherParams = {
+          groupTournamentId: match.round.fixture.fixture.groupTournamentId,
+        };
+        type = 'group_tournament_matches';
+      }
+
+      const followUsers = (
+        await this.prismaService.users_follow_matches.findMany({
+          where: {
+            matchId: matchId,
+          },
+          select: {
+            userId: true,
+          },
+        })
+      ).map((user) => {
+        return user.userId;
+      });
+      const notification = {
+        title: 'Match Update',
+        body: 'The match you are following has just update!',
+      };
+      const notiData = {
+        mobileType: 'MATCH_UPDATE',
+        type,
+        params: {
+          matchId: matchId,
+          ...otherParams,
+        },
+        notification,
+        web: true,
+        mobile: true,
+      };
+      userIds.push(match.refereeId);
+      const notificationData = {
+        userIds: [...new Set(followUsers.concat(userIds))],
+        notiData,
+      };
+      await this.notificationProducer.add(notificationData);
+    }
+
+    return updatedMatch;
   }
 
   // Utils

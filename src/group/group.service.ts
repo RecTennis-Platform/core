@@ -21,6 +21,9 @@ import {
   MatchStatus,
   FixtureStatus,
   TournamentPhase,
+  GroupFundStatus,
+  ExpenseType,
+  UnitCurrency,
 } from '@prisma/client';
 import { ITokenPayload } from 'src/auth_utils/interfaces';
 import { MembershipService } from 'src/membership/membership.service';
@@ -30,7 +33,14 @@ import { SendMailTemplateDto } from 'src/services/mail/mail.dto';
 import { MailService } from 'src/services/mail/mail.service';
 
 import {
+  ConfirmGroupFundRequestDto,
   CreateGroupDto,
+  CreateGroupExpenseDto,
+  CreateGroupFundDto,
+  FetchGroupExpensesDto,
+  FetchGroupFundBalanceDto,
+  PageOptionsGroupExpenseDto,
+  PageOptionsGroupFundDto,
   PageOptionsPostDto,
   PageOptionsUserDto,
   UpdateGroupDto,
@@ -72,6 +82,7 @@ import {
 } from 'src/tournament/dto';
 import { CreatePostDto, UpdatePostDto } from './dto/create-post-dto';
 import { Order } from 'constants/order';
+import { VND_EXCHANGE_RATE } from 'constants/currency-prices';
 
 @Injectable()
 export class GroupService {
@@ -3806,6 +3817,753 @@ export class GroupService {
         totalCount / pageOptionsRefereesTournamentsDto.take,
       ),
       totalCount,
+    };
+  }
+
+  // Group funds
+  async createGroupFund(
+    groupId: number,
+    userId: string,
+    dto: CreateGroupFundDto,
+  ) {
+    // Check and get group's info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if req user is the group admin
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Only the group admin can perform this action',
+        data: null,
+      });
+    }
+
+    // Create group fund
+    try {
+      const groupFund = await this.prismaService.group_funds.create({
+        data: {
+          ...dto,
+          groupId,
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          dueDate: true,
+          amount: true,
+          unit: true,
+          paymentInfo: true,
+          qrImage: true,
+          createdAt: true,
+        },
+      });
+
+      // Create all member group fund requests
+      const members = await this.prismaService.member_ships.findMany({
+        where: {
+          groupId: groupId,
+        },
+      });
+
+      for (const member of members) {
+        await this.prismaService.user_group_funds.create({
+          data: {
+            groupFundId: groupFund.id,
+            userId: member.userId,
+          },
+        });
+      }
+
+      return groupFund;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async fetchGroupFunds(
+    groupId: number,
+    userId: string,
+    pageOptions: PageOptionsGroupFundDto,
+  ) {
+    // Check and get group's info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if req user is the group admin
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Only the group admin can perform this action',
+        data: null,
+      });
+    }
+
+    // Fetch group funds
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        groupId: groupId,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        dueDate: true,
+        amount: true,
+        unit: true,
+        paymentInfo: true,
+        qrImage: true,
+        createdAt: true,
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.group_funds.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.group_funds.count({
+        where: {
+          ...conditions.where,
+        },
+      }),
+    ]);
+
+    return {
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+      data: result,
+    };
+  }
+
+  async fetchUserFundRequests(
+    groupId: number,
+    userId: string,
+    pageOptions: PageOptionsGroupFundDto,
+  ) {
+    // Check and get group's info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if req user is in the group
+    const member = await this.prismaService.member_ships.findFirst({
+      where: {
+        groupId: group.id,
+        userId: userId,
+      },
+    });
+
+    if (!member) {
+      throw new UnauthorizedException({
+        message: 'User is not a member of the group',
+        data: null,
+      });
+    }
+
+    // Get user's group fund requests
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        groupId: groupId,
+        userId: userId,
+      },
+      select: {
+        id: true,
+        groupFundId: true,
+        status: true,
+        groupFund: {
+          select: {
+            title: true,
+            description: true,
+            dueDate: true,
+            amount: true,
+            unit: true,
+            paymentInfo: true,
+            qrImage: true,
+            createdAt: true,
+          },
+        },
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.user_group_funds.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.user_group_funds.count({
+        where: {
+          ...conditions.where,
+        },
+      }),
+    ]);
+
+    // Update response data
+    result.map((userFundReq) => {
+      // Move data out of groupFund
+      userFundReq['title'] = userFundReq.groupFund.title;
+      userFundReq['description'] = userFundReq.groupFund.description;
+      userFundReq['dueDate'] = userFundReq.groupFund.dueDate;
+      userFundReq['amount'] = userFundReq.groupFund.amount;
+      userFundReq['unit'] = userFundReq.groupFund.unit;
+      userFundReq['paymentInfo'] = userFundReq.groupFund.paymentInfo;
+      userFundReq['qrImage'] = userFundReq.groupFund.qrImage;
+      userFundReq['createdAt'] = userFundReq.groupFund.createdAt;
+    });
+
+    return {
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+      data: result,
+    };
+  }
+
+  async fetchGroupFundUserRequests(
+    groupId: number,
+    fundId: number,
+    userId: string,
+    pageOptions: PageOptionsGroupFundDto,
+  ) {
+    // Check and get group's info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if req user is the group admin
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Only the group admin can perform this action',
+        data: null,
+      });
+    }
+
+    // Get group_fund's info
+    const group_fund = await this.prismaService.group_funds.findUnique({
+      where: {
+        id: fundId,
+      },
+    });
+
+    if (!group_fund) {
+      throw new BadRequestException({
+        message: 'Group fund not found',
+        data: null,
+      });
+    }
+
+    // Get user's group fund requests
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        groupFundId: fundId,
+      },
+      select: {
+        id: true,
+        userId: true,
+        user: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+        description: true,
+        status: true,
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.user_group_funds.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.user_group_funds.count({
+        where: {
+          ...conditions.where,
+        },
+      }),
+    ]);
+
+    return {
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+      data: result,
+    };
+  }
+
+  async userConfirmFundRequest(
+    groupId: number,
+    fundId: number,
+    userId: string,
+  ) {
+    // Check and get group's info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if req user is a member of the group
+    const member = await this.prismaService.member_ships.findFirst({
+      where: {
+        groupId: group.id,
+        userId: userId,
+      },
+    });
+
+    if (!member) {
+      throw new UnauthorizedException({
+        message: 'User is not a member of the group',
+        data: null,
+      });
+    }
+
+    // Get group_fund's info
+    const groupFund = await this.prismaService.group_funds.findUnique({
+      where: {
+        id: fundId,
+      },
+    });
+
+    if (!groupFund) {
+      throw new BadRequestException({
+        message: 'Group fund not found',
+        data: null,
+      });
+    }
+
+    // Get user's group fund request
+    const userGroupFund = await this.prismaService.user_group_funds.findFirst({
+      where: {
+        groupFundId: fundId,
+        userId: userId,
+      },
+    });
+
+    if (!userGroupFund) {
+      throw new BadRequestException({
+        message: 'User fund request not found',
+        data: null,
+      });
+    }
+
+    // Confirm user's fund request
+    try {
+      const userFundReq = await this.prismaService.user_group_funds.update({
+        where: {
+          id: userGroupFund.id,
+        },
+        data: {
+          status: GroupFundStatus.pending,
+        },
+        select: {
+          id: true,
+          groupFundId: true,
+          status: true,
+          groupFund: {
+            select: {
+              title: true,
+              description: true,
+              dueDate: true,
+              amount: true,
+              unit: true,
+              paymentInfo: true,
+              qrImage: true,
+              createdAt: true,
+            },
+          },
+        },
+      });
+
+      // Update response data
+      // Move data out of groupFund
+      userFundReq['title'] = userFundReq.groupFund.title;
+      userFundReq['description'] = userFundReq.groupFund.description;
+      userFundReq['dueDate'] = userFundReq.groupFund.dueDate;
+      userFundReq['amount'] = userFundReq.groupFund.amount;
+      userFundReq['unit'] = userFundReq.groupFund.unit;
+      userFundReq['paymentInfo'] = userFundReq.groupFund.paymentInfo;
+      userFundReq['qrImage'] = userFundReq.groupFund.qrImage;
+      userFundReq['createdAt'] = userFundReq.groupFund.createdAt;
+
+      return userFundReq;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async adminConfirmGroupFundRequest(
+    groupId: number,
+    fundId: number,
+    userId: string,
+    dto: ConfirmGroupFundRequestDto,
+  ) {
+    // Check and get group's info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if req user is the group admin
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Only the group admin can perform this action',
+        data: null,
+      });
+    }
+
+    // Get group_fund's info
+    const groupFund = await this.prismaService.group_funds.findUnique({
+      where: {
+        id: fundId,
+      },
+    });
+
+    if (!groupFund) {
+      throw new BadRequestException({
+        message: 'Group fund not found',
+        data: null,
+      });
+    }
+
+    // Get user's group fund request
+    const userFund = await this.prismaService.user_group_funds.findFirst({
+      where: {
+        groupFundId: fundId,
+        userId: dto.userId,
+      },
+    });
+
+    if (!userFund) {
+      throw new BadRequestException({
+        message: 'User fund request not found',
+        data: null,
+      });
+    }
+
+    if (userFund.status === GroupFundStatus.waiting) {
+      throw new BadRequestException({
+        message: `User fund request status invalid, cannot be '${userFund.status} when approve'`,
+        data: null,
+      });
+    }
+
+    // Confirm user's fund request
+    try {
+      const userFundReq = await this.prismaService.user_group_funds.update({
+        where: {
+          id: userFund.id,
+        },
+        data: {
+          status: dto.status,
+        },
+        select: {
+          id: true,
+          groupFundId: true,
+          status: true,
+          groupFund: {
+            select: {
+              title: true,
+              description: true,
+              dueDate: true,
+              amount: true,
+              unit: true,
+              paymentInfo: true,
+              qrImage: true,
+              createdAt: true,
+            },
+          },
+        },
+      });
+
+      // Update response data
+      // Move data out of groupFund
+      userFundReq['title'] = userFundReq.groupFund.title;
+      userFundReq['description'] = userFundReq.groupFund.description;
+      userFundReq['dueDate'] = userFundReq.groupFund.dueDate;
+      userFundReq['amount'] = userFundReq.groupFund.amount;
+      userFundReq['unit'] = userFundReq.groupFund.unit;
+      userFundReq['paymentInfo'] = userFundReq.groupFund.paymentInfo;
+      userFundReq['qrImage'] = userFundReq.groupFund.qrImage;
+      userFundReq['createdAt'] = userFundReq.groupFund.createdAt;
+
+      return userFundReq;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Group expenses
+  async createGroupExpense(
+    groupId: number,
+    userId: string,
+    dto: CreateGroupExpenseDto,
+  ) {
+    // Check and get group's info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if req user is the group admin
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Only the group admin can perform this action',
+        data: null,
+      });
+    }
+
+    // Convert categories to JSON string
+    const category_data_json_str = JSON.stringify({
+      categories: dto.categories,
+    });
+
+    // Create group expense
+    try {
+      const group_expense = await this.prismaService.group_expenses.create({
+        data: {
+          groupId: groupId,
+          fundId: dto.fundId,
+          type: dto.type,
+          description: dto.description,
+          amount: dto.amount,
+          categories: category_data_json_str,
+        },
+        select: {
+          id: true,
+          groupId: true,
+          fundId: true,
+          type: true,
+          categories: true,
+          amount: true,
+          groupFund: {
+            select: {
+              unit: true,
+            },
+          },
+          description: true,
+          createdAt: true,
+        },
+      });
+
+      // Update response data
+      // Move groupFund.unit to group_expense
+      group_expense['unit'] = group_expense.groupFund.unit;
+      delete group_expense.groupFund;
+
+      // Parse categories to JSON
+      group_expense.categories = JSON.parse(
+        group_expense.categories,
+      ).categories;
+
+      return group_expense;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async fetchGroupExpenses(
+    groupId: number,
+    userId: string,
+    pageOptions: PageOptionsGroupExpenseDto,
+    dto: FetchGroupExpensesDto,
+  ) {
+    // Check and get group's info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if req user is the group admin
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Only the group admin can perform this action',
+        data: null,
+      });
+    }
+
+    // Fetch group expenses
+    const whereConditions = {
+      groupId: groupId,
+      fundId: dto.fundId,
+    };
+
+    if (dto.type) {
+      whereConditions['type'] = dto.type;
+    }
+
+    if (dto.startDate) {
+      whereConditions['createdAt'] = {
+        gte: new Date(dto.startDate),
+      };
+    }
+
+    if (dto.endDate) {
+      whereConditions['createdAt'] = {
+        ...whereConditions['createdAt'],
+        lte: new Date(dto.endDate),
+      };
+    }
+
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: whereConditions,
+      select: {
+        id: true,
+        type: true,
+        categories: true,
+        amount: true,
+        groupFund: {
+          select: {
+            unit: true,
+          },
+        },
+        description: true,
+        createdAt: true,
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.group_expenses.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.group_expenses.count({
+        where: {
+          ...conditions.where,
+        },
+      }),
+    ]);
+
+    // Update response data
+    result.map((expense) => {
+      // Move groupFund.unit out of groupFund
+      expense['unit'] = expense.groupFund.unit;
+      delete expense.groupFund;
+
+      // Parse categories to JSON
+      expense.categories = JSON.parse(expense.categories).categories;
+    });
+
+    return {
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+      data: result,
+    };
+  }
+
+  convertBalance(amount: number, target_unit: UnitCurrency) {
+    if (target_unit === UnitCurrency.USD) {
+      // VND -> USD
+      return (amount * 1) / VND_EXCHANGE_RATE;
+    }
+
+    // USD -> VND
+    return amount * VND_EXCHANGE_RATE;
+  }
+
+  async fetchGroupFundBalance(
+    groupId: number,
+    userId: string,
+    dto: FetchGroupFundBalanceDto,
+  ) {
+    // Check and get group's info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if req user is the group admin
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Only the group admin can perform this action',
+        data: null,
+      });
+    }
+
+    // Get group expenses
+    const groupExpenses = await this.prismaService.group_expenses.findMany({
+      where: {
+        groupId: groupId,
+      },
+      select: {
+        amount: true,
+        type: true,
+        groupFund: {
+          select: {
+            unit: true,
+          },
+        },
+      },
+    });
+
+    // Calculate balance
+    // Filter expenses by UnitCurrency
+    let reqUnitExpenseBalance = 0;
+    let otherUnitExpenseBalance = 0;
+    const reqUnitExpense = [];
+    const otherUnitExpense = [];
+
+    for (const expense of groupExpenses) {
+      if (expense.groupFund.unit === dto.unit) {
+        reqUnitExpense.push(expense);
+      } else {
+        otherUnitExpense.push(expense);
+      }
+    }
+
+    // Calculate balance of reqUnitExpense
+    reqUnitExpense.forEach((expense) => {
+      if (expense.type === ExpenseType.income) {
+        reqUnitExpenseBalance += expense.amount;
+      } else {
+        reqUnitExpenseBalance -= expense.amount;
+      }
+    });
+
+    // Calculate balance of otherUnitExpense
+    otherUnitExpense.forEach((expense) => {
+      if (expense.type === ExpenseType.income) {
+        otherUnitExpenseBalance += expense.amount;
+      } else {
+        otherUnitExpenseBalance -= expense.amount;
+      }
+    });
+
+    // Convert otherUnitExpenseBalance to request unit (dto.unit)
+    otherUnitExpenseBalance = this.convertBalance(
+      otherUnitExpenseBalance,
+      dto.unit,
+    );
+
+    return {
+      balance: reqUnitExpenseBalance + otherUnitExpenseBalance,
+      unit: dto.unit,
     };
   }
 }

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -15,13 +16,20 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { FixtureStatus, UserRole } from '@prisma/client';
+import { FixtureStatus, GroupFundStatus, UserRole } from '@prisma/client';
 import { GetUser, Roles } from 'src/auth_utils/decorators';
 import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import {
+  ConfirmGroupFundRequestDto,
   CreateGroupDto,
+  CreateGroupExpenseDto,
+  CreateGroupFundDto,
+  FetchGroupExpensesDto,
+  FetchGroupFundBalanceDto,
   InviteUser2GroupDto,
   PageOptionsGroupDto,
+  PageOptionsGroupExpenseDto,
+  PageOptionsGroupFundDto,
   PageOptionsGroupMembershipDto,
   PageOptionsPostDto,
   PageOptionsUserDto,
@@ -48,6 +56,7 @@ import {
 import { FixtureService } from 'src/fixture/fixture.service';
 import { CreateFixturePublishDto } from 'src/fixture/dto/create-fixture-save-publish.dto';
 import { CreatePostDto, UpdatePostDto } from './dto/create-post-dto';
+import { ConsumerFetchStartEvent } from '@nestjs/microservices/external/kafka.interface';
 
 @Controller('groups')
 export class GroupController {
@@ -536,6 +545,218 @@ export class GroupController {
   async deleteFixture(@Param('id') tournamentId: number) {
     try {
       return this.groupService.removeByGroupTournamentId(tournamentId);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  // Group funds
+  @UseGuards(JwtGuard)
+  @Post(':groupId/funds')
+  async createGroupFund(
+    @Param('groupId') groupId: number,
+    @GetUser('sub') userId: string,
+    @Body() dto: CreateGroupFundDto,
+  ) {
+    try {
+      return this.groupService.createGroupFund(groupId, userId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':groupId/funds')
+  async fetchGroupFunds(
+    @Param('groupId') groupId: number,
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsGroupFundDto,
+  ) {
+    try {
+      return this.groupService.fetchGroupFunds(groupId, userId, pageOptions);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':groupId/funds/users')
+  async fetchUserFundRequests(
+    @Param('groupId') groupId: number,
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsGroupFundDto,
+  ) {
+    try {
+      return this.groupService.fetchUserFundRequests(
+        groupId,
+        userId,
+        pageOptions,
+      );
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':groupId/funds/:fundId/users')
+  async fetchGroupFundUserRequests(
+    @Param('groupId') groupId: number,
+    @Param('fundId') fundId: number,
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsGroupFundDto,
+  ) {
+    try {
+      return this.groupService.fetchGroupFundUserRequests(
+        groupId,
+        fundId,
+        userId,
+        pageOptions,
+      );
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(':groupId/funds/:fundId/users/confirm')
+  async userConfirmFundRequest(
+    @Param('groupId') groupId: number,
+    @Param('fundId') fundId: number,
+    @GetUser('sub') userId: string,
+  ) {
+    try {
+      return this.groupService.userConfirmFundRequest(groupId, fundId, userId);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(':groupId/funds/:fundId/confirm')
+  async adminConfirmGroupFundRequest(
+    @Param('groupId') groupId: number,
+    @Param('fundId') fundId: number,
+    @GetUser('sub') userId: string,
+    @Body() dto: ConfirmGroupFundRequestDto,
+  ) {
+    // Check status value: Only allow "accepted" or "rejected"
+    if (
+      dto.status !== GroupFundStatus.accepted &&
+      dto.status !== GroupFundStatus.rejected
+    ) {
+      throw new BadRequestException('Invalid status value');
+    }
+
+    try {
+      return this.groupService.adminConfirmGroupFundRequest(
+        groupId,
+        fundId,
+        userId,
+        dto,
+      );
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  // Group expenses
+  @UseGuards(JwtGuard)
+  @Post(':groupId/expenses')
+  async createGroupExpense(
+    @Param('groupId') groupId: number,
+    @GetUser('sub') userId: string,
+    @Body() dto: CreateGroupExpenseDto,
+  ) {
+    try {
+      return this.groupService.createGroupExpense(groupId, userId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':groupId/expenses')
+  async fetchGroupExpenses(
+    @Param('groupId') groupId: number,
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsGroupExpenseDto,
+    @Body() dto: FetchGroupExpensesDto,
+  ) {
+    try {
+      return this.groupService.fetchGroupExpenses(
+        groupId,
+        userId,
+        pageOptions,
+        dto,
+      );
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':groupId/expenses/balance')
+  async FetchGroupFundBalance(
+    @Param('groupId') groupId: number,
+    @GetUser('sub') userId: string,
+    @Body() dto: FetchGroupFundBalanceDto,
+  ) {
+    try {
+      return this.groupService.fetchGroupFundBalance(groupId, userId, dto);
     } catch (error) {
       throw new HttpException(
         {

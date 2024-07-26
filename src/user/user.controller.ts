@@ -22,6 +22,7 @@ import {
   UpdateUserAccountDto,
 } from './dto';
 import { UserService } from './user.service';
+import { PageOptionsNotificationDto, UpdateNotitDto } from './dto/noti.dto';
 
 @Controller('users')
 export class UserController {
@@ -64,6 +65,24 @@ export class UserController {
   async getUserDetails(@Req() req: IRequestWithUser) {
     const userId = req.user['sub'];
     return await this.userService.getUserDetails(userId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('system-noti')
+  async getUserNoti(
+    @GetUser('sub') userId: string,
+    @Query() pageOptions: PageOptionsNotificationDto,
+  ) {
+    return await this.userService.getUserNotifications(userId, pageOptions);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch('system-noti')
+  async updateNoti(
+    @GetUser('sub') userId: string,
+    @Body() dto: UpdateNotitDto,
+  ) {
+    return await this.userService.markNotificationAsRead(userId, dto);
   }
 
   @UseGuards(JwtGuard)
