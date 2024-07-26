@@ -493,58 +493,75 @@ model tournament_payment_info {
 }
 
 model notifications {
-  id        String   @id @default(uuid())
+  id        String   @id
   userId    String   @map("user_id") @db.Uuid
   type      String
   data      String
-  timestamp DateTime @default(now()) @map("timestamp")
+  timestamp DateTime @default(now())
   isRead    Boolean  @default(false)
-  user      users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_notifications")
-}
-
-model group_expenses {
-  id            Int         @id @default(autoincrement())
-  group_id      Int
-  group_fund_id Int
-  type          ExpenseType
-  description   String?
-  amount        Float       @default(0)
-  categories    String
-  is_enabled    Boolean     @default(true)
-  created_at    DateTime    @default(now())
-  updated_at    DateTime    @default(now())
-  deleted_at    DateTime?
-  group_funds   group_funds @relation(fields: [group_fund_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_expenses_group_funds")
-  groups        groups      @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_expenses_groups")
+  users     users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_notifications_users")
 }
 
 model group_funds {
-  id               Int                @id @default(autoincrement())
-  group_id         Int
-  title            String
-  description      String?
-  amount           Float              @default(0)
-  unit             UnitCurrency
-  due_date         DateTime
-  payment_info     String
-  qr_image         String?
-  created_at       DateTime           @default(now())
-  updated_at       DateTime           @default(now())
-  group_expenses   group_expenses[]
-  groups           groups             @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_funds_groups")
-  user_group_funds user_group_funds[]
+  id             Int                @id @default(autoincrement())
+  groupId        Int                @map("group_id")
+  title          String
+  description    String?
+  amount         Float              @default(0)
+  unit           UnitCurrency
+  dueDate        DateTime           @map("due_date")
+  paymentInfo    String             @map("payment_info")
+  qrImage        String?            @map("qr_image")
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @default(now()) @updatedAt @map("updated_at")
+  groupExpenses  group_expenses[]
+  group          groups             @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_funds_groups")
+  userGroupFunds user_group_funds[]
 }
 
 model user_group_funds {
-  id            Int             @id @default(autoincrement())
-  group_fund_id Int
-  user_id       String          @db.Uuid
-  status        GroupFundStatus @default(waiting)
-  description   String?
-  created_at    DateTime        @default(now())
-  updated_at    DateTime        @default(now())
-  group_funds   group_funds     @relation(fields: [group_fund_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_group_funds_group_funds")
-  users         users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_group_funds_users")
+  id          Int             @id @default(autoincrement())
+  groupFundId Int             @map("group_fund_id")
+  userId      String          @map("user_id") @db.Uuid
+  status      GroupFundStatus @default(waiting)
+  description String?
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @default(now()) @updatedAt @map("updated_at")
+  groupFund   group_funds     @relation(fields: [groupFundId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_group_funds_group_funds")
+  user        users           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_group_funds_users")
+}
+
+model group_expenses {
+  id          Int         @id @default(autoincrement())
+  groupId     Int         @map("group_id")
+  fundId      Int         @map("group_fund_id")
+  type        ExpenseType
+  description String?
+  amount      Float       @default(0)
+  categories  String
+  isEnabled   Boolean     @default(true) @map("is_enabled")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at")
+  deletedAt   DateTime?   @map("deleted_at")
+  groupFund   group_funds @relation(fields: [fundId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_expenses_group_funds")
+  group       groups      @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_expenses_groups")
+}
+
+enum ExpenseType {
+  income
+  expense
+}
+
+enum GroupFundStatus {
+  waiting
+  pending
+  accepted
+  rejected
+}
+
+enum UnitCurrency {
+  VND
+  USD
 }
 
 enum AffiliateStatus {
