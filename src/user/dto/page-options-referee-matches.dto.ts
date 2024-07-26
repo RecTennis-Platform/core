@@ -20,6 +20,11 @@ export class PageOptionsRefereeMatchesDto {
   @IsOptional()
   readonly take?: number = 1000;
 
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  readonly groupId: number;
+
   get skip(): number {
     return (this.page - 1) * this.take;
   }

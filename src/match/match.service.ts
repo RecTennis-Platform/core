@@ -122,6 +122,7 @@ export class MatchService {
         },
         // Other match details
         id: true,
+        title: true,
         teamId1: true,
         teamId2: true,
         status: true,
@@ -1097,7 +1098,7 @@ export class MatchService {
       },
     });
     let purchasedPackage;
-    if (match.round.fixture.fixture.tournament.purchasedPackageId) {
+    if (match.round.fixture.fixture.tournament?.purchasedPackageId) {
       // Get purchased package info
       purchasedPackage =
         await this.mongodbPrismaService.purchasedPackage.findUnique({
@@ -1106,7 +1107,7 @@ export class MatchService {
           },
         });
     } else if (
-      match.round.fixture.fixture.groupTournament.group.purchasedPackageId
+      match.round.fixture.fixture.groupTournament?.group.purchasedPackageId
     ) {
       purchasedPackage =
         await this.mongodbPrismaService.purchasedPackage.findUnique({

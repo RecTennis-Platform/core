@@ -13,7 +13,12 @@ import {
   PageOptionsUserParticipatedTournamentsDto,
   UpdateUserAccountDto,
 } from './dto';
-import { RegistrationStatus, TournamentStatus, UserRole } from '@prisma/client';
+import {
+  MatchStatus,
+  RegistrationStatus,
+  TournamentStatus,
+  UserRole,
+} from '@prisma/client';
 import { CustomResponseStatusCodes } from 'src/helper/custom-response-status-code';
 import { CustomResponseMessages } from 'src/helper/custom-response-message';
 import { TournamentService } from 'src/tournament/tournament.service';
@@ -636,6 +641,20 @@ export class UserService {
     const conditions = {
       where: {
         refereeId: userId,
+        status: {
+          notIn: [MatchStatus.no_show, MatchStatus.skipped],
+        },
+        ...(pageOptions.groupId && {
+          round: {
+            fixture: {
+              fixture: {
+                groupTournament: {
+                  groupId: pageOptions.groupId,
+                },
+              },
+            },
+          },
+        }),
       },
       select: {
         // Team 1
@@ -722,6 +741,7 @@ export class UserService {
         },
         // Other match details
         id: true,
+        title: true,
         teamId1: true,
         teamId2: true,
         status: true,
@@ -731,6 +751,23 @@ export class UserService {
         matchEndDate: true,
         team1MatchScore: true,
         team2MatchScore: true,
+        round: {
+          select: {
+            fixture: {
+              select: {
+                fixture: {
+                  select: {
+                    ...(pageOptions.groupId
+                      ? {
+                          groupTournament: true,
+                        }
+                      : { tournament: true }),
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     };
 
@@ -823,6 +860,11 @@ export class UserService {
           teamWinnerId: match.teamWinnerId,
         };
 
+        // @ts-ignore
+        const tournament = pageOptions.groupId ? match.round.fixture.fixture.groupTournament : match.round.fixture.fixture.tournament;
+
+        delete match.round;
+
         // console.log('matchFinalScore:', matchFinalScore);
 
         // Remove unnecessary data
@@ -832,6 +874,7 @@ export class UserService {
         return {
           ...match,
           matchFinalScore,
+          tournament
         };
       }),
     );
