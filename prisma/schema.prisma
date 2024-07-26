@@ -704,3 +704,20 @@ enum SetStatus {
   on_going
   ended
 }
+
+enum ExpenseType {
+  income
+  expense
+}
+
+enum GroupFundStatus {
+  waiting
+  pending
+  accepted
+  rejected
+}
+
+enum UnitCurrency {
+  VND
+  USD
+}

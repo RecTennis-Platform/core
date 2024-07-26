@@ -23,21 +23,37 @@ export class NotificationConsumer {
         console.log(`User ${userId} not found`);
         continue;
       }
-      if (!user.fcmToken) {
-        console.log(`User ${userId} does not have fcm token`);
-        continue;
+      if (user.fcmToken && job.data.notiData.mobile) {
+        const token = user.fcmToken;
+        const data = {
+          params: JSON.stringify(job.data.notiData.params),
+          type: job.data.notiData.mobileType || job.data.notiData.type,
+        };
+        console.log('Notidata:', data);
+        await this.fcmNotificationService.sendingNotificationOneUser(
+          token,
+          data,
+          job.data.notiData.notification,
+        );
       }
-      const token = user.fcmToken;
-      const data = {
-        params: JSON.stringify({ matchId: job.data.matchId }),
-        type: 'MATCH_UPDATE',
-      };
-      console.log('Notidata:', data);
-      await this.fcmNotificationService.sendingNotificationOneUser(
-        token,
-        data,
-        job.data.notification,
-      );
+
+      if (job.data.notiData.web) {
+        const notification = {
+          title: job.data.notiData.notification.title,
+          message: job.data.notiData.notification.body,
+        };
+
+        await this.prismaService.notifications.create({
+          data: {
+            type: job.data.notiData.type,
+            data: JSON.stringify({
+              ...job.data.notiData.params,
+              ...notification,
+            }),
+            userId: userId,
+          },
+        });
+      }
     }
     return {};
   }
