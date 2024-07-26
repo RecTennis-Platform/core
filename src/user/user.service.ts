@@ -20,6 +20,8 @@ import { TournamentService } from 'src/tournament/tournament.service';
 import { FcmNotificationService } from 'src/services/notification/fcm-notification';
 import { MatchService } from 'src/match/match.service';
 import { Order } from 'constants/order';
+import { PageOptionsNotificationDto, UpdateNotitDto } from './dto/noti.dto';
+import { dot } from 'node:test/reporters';
 
 @Injectable()
 export class UserService {
@@ -625,6 +627,101 @@ export class UserService {
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
     };
+  }
+
+  async getUserNotifications(
+    userId: string,
+    pageOptions: PageOptionsNotificationDto,
+  ) {
+    // Check if user exists
+    const user = await this.prismaService.users.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.USER_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.USER_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          timestamp: pageOptions.order,
+        },
+      ],
+      where: {
+        userId: userId,
+        isRead: pageOptions.isRead,
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get user's tournament registrations
+    const [result, totalCount, unreadNumber] = await Promise.all([
+      this.prismaService.notifications.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.notifications.count({
+        where: conditions.where,
+      }),
+      this.prismaService.notifications.count({
+        where: {
+          userId: userId,
+          isRead: false,
+        },
+      }),
+    ]);
+
+    const notifications = result.map((r) => {
+      r.data = JSON.parse(r.data);
+      return r;
+    });
+
+    return {
+      notiList: notifications,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+      unreadNumber,
+    };
+  }
+
+  async markNotificationAsRead(userId: string, dto: UpdateNotitDto) {
+    try {
+      await this.prismaService.notifications.updateMany({
+        where: {
+          userId: userId,
+          id: {
+            in: dto.notiListId,
+          },
+        },
+        data: {
+          isRead: true,
+        },
+      });
+      return {};
+    } catch (err) {
+      console.log('Error:', err.message);
+
+      throw new InternalServerErrorException({
+        message: err.message,
+      });
+    }
   }
 
   // Referee

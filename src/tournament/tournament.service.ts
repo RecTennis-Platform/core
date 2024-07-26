@@ -54,6 +54,7 @@ import { UpdatePaymentInfoDto } from './dto/update-payment-info.dto';
 import { CreateFixturePublishKnockoutDto } from 'src/fixture/dto/create-fixture-save-publish.dto';
 import { PageOptionsMatchesDto } from 'src/match/dto/page-options-match.dto';
 import { Order } from 'constants/order';
+import { NotificationProducer } from 'src/services/notification/notification-producer';
 
 @Injectable()
 export class TournamentService {
@@ -63,6 +64,7 @@ export class TournamentService {
     private readonly formatTournamentService: FormatTournamentService,
     private readonly refereesTournamentsService: RefereesTournamentsService,
     private readonly fixtureService: FixtureService,
+    private readonly notificationProducer: NotificationProducer,
   ) {}
 
   async addReferee(
@@ -190,6 +192,25 @@ export class TournamentService {
         isReferee: true,
       },
     });
+    const notification = {
+      title: 'Tournament Referee Assignment',
+      body: 'You have been added as a referee for an upcoming tournament. Please review your assigned matches and prepare accordingly.',
+    };
+    const notiData = {
+      //mobileType: 'MATCH_UPDATE',
+      type: 'tournament_participant',
+      params: {
+        tournamentId: createRefereesTournamentDto.tournamentId,
+      },
+      notification,
+      web: true,
+      mobile: true,
+    };
+    const notificationData = {
+      userIds: [referee.id],
+      notiData,
+    };
+    await this.notificationProducer.add(notificationData);
   }
 
   async listReferees(
@@ -2116,6 +2137,10 @@ export class TournamentService {
           userId1: applicantId,
           status: RegistrationStatus.pending,
         },
+        include: {
+          user1: true,
+          user2: true,
+        },
       });
 
     if (!tournament_registration) {
@@ -2148,6 +2173,30 @@ export class TournamentService {
         data: null,
       });
     }
+
+    const notification = {
+      title: 'Application Approved',
+      body: 'Congratulations! Your application has been approved. You are now registered for the tournament.',
+    };
+    const notiData = {
+      //mobileType: 'MATCH_UPDATE',
+      type: 'tournament_participant',
+      params: {
+        tournamentId: tournamentId,
+      },
+      notification,
+      web: true,
+      mobile: true,
+    };
+    const userIds = [tournament_registration.userId1];
+    if (tournament_registration.userId2) {
+      userIds.push(tournament_registration.userId2);
+    }
+    const notificationData = {
+      userIds,
+      notiData,
+    };
+    await this.notificationProducer.add(notificationData);
 
     return {
       message: 'Applicant approved successfully',
@@ -2382,6 +2431,30 @@ export class TournamentService {
       });
     }
 
+    const notification = {
+      title: 'Application Rejected',
+      body: 'We regret to inform you that your application has been rejected. Thank you for your interest.',
+    };
+    const notiData = {
+      //mobileType: 'MATCH_UPDATE',
+      type: 'tournament_participant',
+      params: {
+        tournamentId: tournamentId,
+      },
+      notification,
+      web: true,
+      mobile: true,
+    };
+    const userIds = [tournament_registration.userId1];
+    if (tournament_registration.userId2) {
+      userIds.push(tournament_registration.userId2);
+    }
+    const notificationData = {
+      userIds,
+      notiData,
+    };
+    await this.notificationProducer.add(notificationData);
+
     return {
       message: 'Applicant rejected successfully',
       data: null,
@@ -2531,9 +2604,40 @@ export class TournamentService {
               level: level,
             },
           });
-          return await tx.teams.createMany({
+          const createdTeams = await tx.teams.createMany({
             data: teams,
           });
+          const userIdsNoti = [];
+
+          teams.forEach((participant) => {
+            if (participant.userId1) {
+              userIdsNoti.push(participant.userId1);
+            }
+            if (participant.userId2) {
+              userIdsNoti.push(participant.userId2);
+            }
+          });
+          const notification = {
+            title: 'Finalized Participants List',
+            body: 'The administrator has finalized the list of participants for the tournament. Please check your status or notifications for updates.',
+          };
+          const notiData = {
+            //mobileType: 'MATCH_UPDATE',
+            type: 'tournament_participant',
+            params: {
+              tournamentId: tournamentId,
+            },
+            notification,
+            web: true,
+            mobile: true,
+          };
+          const notificationData = {
+            userIds: userIdsNoti,
+            notiData,
+          };
+          await this.notificationProducer.add(notificationData);
+
+          return createdTeams;
         },
         {
           maxWait: 10000, // default: 2000
@@ -3151,7 +3255,46 @@ export class TournamentService {
 
       // Cancell all invitations to user1
       await this.cancelAllTournamentInvitations(userId, tournamentId);
+      const notification = {
+        title: 'Tournament Invitation Received',
+        body: `You have received an invitation to join a tournament from ${user1.name}. Check your notifications to accept the invitation and participate.`,
+      };
+      const notiData = {
+        //mobileType: 'MATCH_UPDATE',
+        type: 'tournament_participant',
+        params: {
+          tournamentId: tournamentId,
+        },
+        notification,
+        web: true,
+        mobile: true,
+      };
+      const notificationData = {
+        userIds: [user2.id],
+        notiData,
+      };
+      await this.notificationProducer.add(notificationData);
     }
+
+    const notification = {
+      title: 'New Application Form Received',
+      body: 'A new application form has been submitted. Please proceed to review and process it accordingly.',
+    };
+    const notiData = {
+      //mobileType: 'MATCH_UPDATE',
+      type: 'tournament_participant',
+      params: {
+        tournamentId: tournamentId,
+      },
+      notification,
+      web: true,
+      mobile: true,
+    };
+    const notificationData = {
+      userIds: [purchasedPackage.userId],
+      notiData,
+    };
+    await this.notificationProducer.add(notificationData);
 
     return {
       message: 'Application submitted successfully',
@@ -3434,6 +3577,10 @@ export class TournamentService {
           userId1: inviterId,
           userId2: userId,
         },
+        include: {
+          user1: true,
+          user2: true,
+        },
       });
 
     if (!tournament_registration) {
@@ -3479,6 +3626,25 @@ export class TournamentService {
 
     // Cancel all invitation
     await this.cancelAllTournamentInvitations(userId, tournamentId);
+    const notification = {
+      title: 'Invitation Accepted',
+      body: `${tournament_registration.user2.name} has accepted your invitation. Get ready for the competition!`,
+    };
+    const notiData = {
+      //mobileType: 'MATCH_UPDATE',
+      type: 'tournament_participant',
+      params: {
+        tournamentId: tournamentId,
+      },
+      notification,
+      web: true,
+      mobile: true,
+    };
+    const notificationData = {
+      userIds: [tournament_registration.user1.id],
+      notiData,
+    };
+    await this.notificationProducer.add(notificationData);
 
     return {
       message: 'Invitation accepted successfully',
@@ -3533,6 +3699,10 @@ export class TournamentService {
           tournamentId: tournamentId,
           userId1: inviterId,
           userId2: userId,
+        },
+        include: {
+          user1: true,
+          user2: true,
         },
       });
 
@@ -3592,6 +3762,25 @@ export class TournamentService {
         data: null,
       });
     }
+    const notification = {
+      title: 'Invitation Declined',
+      body: `${tournament_registration.user2.name} has declined your invitation. Perhaps next time!`,
+    };
+    const notiData = {
+      //mobileType: 'MATCH_UPDATE',
+      type: 'tournament_participant',
+      params: {
+        tournamentId: tournamentId,
+      },
+      notification,
+      web: true,
+      mobile: true,
+    };
+    const notificationData = {
+      userIds: [tournament_registration.user1.id],
+      notiData,
+    };
+    await this.notificationProducer.add(notificationData);
 
     return {
       message: 'Invitation canceled successfully',
@@ -4557,16 +4746,6 @@ export class TournamentService {
     await this.prismaService.$transaction(
       async (tx) => {
         await this.fixtureService.removeByTournamentIdIdempontent(id);
-        if (dto.status === FixtureStatus.published) {
-          await tx.tournaments.update({
-            where: {
-              id: id,
-            },
-            data: {
-              phase: phase,
-            },
-          });
-        }
         const fixture = await tx.fixtures.upsert({
           where: {
             id: dto.id,
@@ -4600,6 +4779,16 @@ export class TournamentService {
             numberOfKnockoutTeams: dto.numberOfKnockoutTeams,
           },
         });
+        if (dto.status === FixtureStatus.published) {
+          await tx.tournaments.update({
+            where: {
+              id: id,
+            },
+            data: {
+              phase: phase,
+            },
+          });
+        }
 
         if (format === TournamentFormat.round_robin) {
           let groupFixtureId = null;
@@ -4995,6 +5184,100 @@ export class TournamentService {
         timeout: 10000, // default: 5000
       },
     );
+
+    if (dto.status === FixtureStatus.published) {
+      const userIds = [];
+      let otherParams, type;
+      if (fixture.tournamentId) {
+        const participants = await this.prismaService.teams.findMany({
+          where: {
+            tournamentId: fixture.tournamentId,
+          },
+        });
+
+        participants.forEach((participant) => {
+          if (participant.userId1) {
+            userIds.push(participant.userId1);
+          }
+          if (participant.userId2) {
+            userIds.push(participant.userId2);
+          }
+        });
+        otherParams = {
+          tournamentId: fixture.tournamentId,
+        };
+        type = 'tournament_schedule';
+      } else {
+        const participants = await this.prismaService.teams.findMany({
+          where: {
+            groupTournamentId: fixture.groupTournamentId,
+          },
+        });
+
+        participants.forEach((participant) => {
+          if (participant.userId1) {
+            userIds.push(participant.userId1);
+          }
+          if (participant.userId2) {
+            userIds.push(participant.userId2);
+          }
+        });
+        otherParams = {
+          groupTournamentId: fixture.groupTournamentId,
+        };
+        type = 'group_tournament_schedule';
+      }
+      const notification = {
+        title: 'Fixture Published',
+        body: 'The fixture for your tournament has been published. View it now to see your match schedule!',
+      };
+      const notiData = {
+        //mobileType: 'MATCH_UPDATE',
+        type,
+        params: {
+          ...otherParams,
+        },
+        notification,
+        web: true,
+        mobile: true,
+      };
+      const notificationData = {
+        userIds,
+        notiData,
+      };
+      await this.notificationProducer.add(notificationData);
+
+      //noti for referee
+      const refereeIds = (
+        await this.prismaService.referees_tournaments.findMany({
+          where: {
+            tournamentId: fixture.tournamentId,
+          },
+        })
+      ).map((referee) => {
+        return referee.refereeId;
+      });
+
+      const notificationReferee = {
+        title: 'Fixture Published',
+        body: 'The tournament schedule is now available. Please check your match assignments.',
+      };
+      const notiDataReferee = {
+        //mobileType: 'MATCH_UPDATE',
+        type,
+        params: {
+          ...otherParams,
+        },
+        notification: notificationReferee,
+        web: true,
+        mobile: true,
+      };
+      const notificationDataReferee = {
+        userIds: refereeIds,
+        notiData: notiDataReferee,
+      };
+      await this.notificationProducer.add(notificationDataReferee);
+    }
 
     //return response
     const { groupFixtures, ...others } =

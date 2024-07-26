@@ -8430,6 +8430,91 @@
 							"response": []
 						},
 						{
+							"name": "Get user noti",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1OThlZGZmYy05OWRkLTQxNzYtYmVjOS04NmY4Yjk1ZTNhNDYiLCJlbWFpbCI6ImNoaWhpZW4yMDAyQGdtYWlsLmNvbSIsImlhdCI6MTcxNTA2NzE2NSwiZXhwIjoxNzE3NjU5MTY1fQ.y3lyiGj7KZZWM6vvdmlLQIqZ62yF5qbD6I4JAwO4miw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/users/me",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "get user noti",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/users/system-noti",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"users",
+												"system-noti"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "1723"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"6bb-ztKLRNkV590eZ1e7flRBS7Aufe8\""
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 26 Jul 2024 08:53:26 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"notiList\": [\n        {\n            \"id\": \"e5e9b733-2d7f-4ce7-9f5b-dc28602cb838\",\n            \"userId\": \"0fbf1036-dd85-4e02-8e07-558a8d0d22f6\",\n            \"type\": \"tournament_matches\",\n            \"data\": {\n                \"matchId\": \"012b9d07-05aa-475a-a1c1-def6f325b068\",\n                \"tournamentId\": 20,\n                \"title\": \"Match Update\",\n                \"message\": \"The match you are following has just update!\"\n            },\n            \"timestamp\": \"2024-07-25T15:15:47.308Z\",\n            \"isRead\": false\n        },\n        {\n            \"id\": \"e5e9b733-2d7f-4ce7-9f5b-dc28602cb834\",\n            \"userId\": \"0fbf1036-dd85-4e02-8e07-558a8d0d22f6\",\n            \"type\": \"tournament_matches\",\n            \"data\": {\n                \"matchId\": \"012b9d07-05aa-475a-a1c1-def6f325b068\",\n                \"tournamentId\": 20,\n                \"title\": \"Match Update\",\n                \"message\": \"The match you are following has just update!\"\n            },\n            \"timestamp\": \"2024-07-25T15:15:47.129Z\",\n            \"isRead\": false\n        },\n        {\n            \"id\": \"e5e9b733-2d7f-4ce7-9f5b-dc28602cb832\",\n            \"userId\": \"0fbf1036-dd85-4e02-8e07-558a8d0d22f6\",\n            \"type\": \"tournament_matches\",\n            \"data\": {\n                \"matchId\": \"012b9d07-05aa-475a-a1c1-def6f325b068\",\n                \"tournamentId\": 20,\n                \"title\": \"Match Update\",\n                \"message\": \"The match you are following has just update!\"\n            },\n            \"timestamp\": \"2024-07-25T15:15:47.061Z\",\n            \"isRead\": false\n        },\n        {\n            \"id\": \"e5e9b733-2d7f-4ce7-9f5b-dc28602cb835\",\n            \"userId\": \"0fbf1036-dd85-4e02-8e07-558a8d0d22f6\",\n            \"type\": \"tournament_matches\",\n            \"data\": {\n                \"matchId\": \"012b9d07-05aa-475a-a1c1-def6f325b068\",\n                \"tournamentId\": 20,\n                \"title\": \"Match Update\",\n                \"message\": \"The match you are following has just update!\"\n            },\n            \"timestamp\": \"2024-07-25T15:15:46.803Z\",\n            \"isRead\": false\n        },\n        {\n            \"id\": \"e5e9b733-2d7f-4ce7-9f5b-dc28602cb837\",\n            \"userId\": \"0fbf1036-dd85-4e02-8e07-558a8d0d22f6\",\n            \"type\": \"tournament_matches\",\n            \"data\": {\n                \"matchId\": \"012b9d07-05aa-475a-a1c1-def6f325b068\",\n                \"tournamentId\": 20,\n                \"title\": \"Match Update\",\n                \"message\": \"The match you are following has just update!\"\n            },\n            \"timestamp\": \"2024-07-25T15:15:46.736Z\",\n            \"isRead\": false\n        }\n    ],\n    \"totalPages\": 2,\n    \"totalCount\": 10,\n    \"unreadNumber\": 10\n}"
+								}
+							]
+						},
+						{
 							"name": "Update user account",
 							"request": {
 								"auth": {
@@ -8461,6 +8546,43 @@
 									"path": [
 										"users",
 										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Mark Noti Read",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoiY2hpaGllbjIwMDIzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzEwMTMzODU0LCJleHAiOjE3MTAxMzU2NTR9.bfg1YoJoQDBItjQn21LaMoN9WWzMl42r1ZelNkOtdjg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Chihien\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/users/system-noti",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"users",
+										"system-noti"
 									]
 								}
 							},

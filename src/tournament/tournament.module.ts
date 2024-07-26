@@ -5,6 +5,7 @@ import { FormatTournamentService } from 'src/services/format_tournament/format_t
 import { FixtureService } from 'src/fixture/fixture.service';
 import { RefereesTournamentsService } from 'src/referees_tournaments/referees_tournaments.service';
 import { FcmNotificationService } from 'src/services/notification/fcm-notification';
+import { NotificationModule } from 'src/services/notification/notification.module';
 
 @Module({
   controllers: [TournamentController],
@@ -16,5 +17,6 @@ import { FcmNotificationService } from 'src/services/notification/fcm-notificati
     FcmNotificationService,
   ],
   exports: [TournamentService],
+  imports: [NotificationModule],
 })
 export class TournamentModule {}
