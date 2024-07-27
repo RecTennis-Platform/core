@@ -1450,7 +1450,7 @@ export class MatchService {
       });
       const notification = {
         title: 'Match Update',
-        body: 'The match you are following has just update!',
+        body: `The match you are following has just been updated! It is scheduled for ${match.matchStartDate.toDateString()}.`,
       };
       const notiData = {
         mobileType: 'MATCH_UPDATE',
