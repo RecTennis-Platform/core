@@ -400,7 +400,8 @@ export class TournamentService {
       // Check if the user is the creator of the tournament
       if (purchasedPackage.userId === userId) {
         tournamentRoles.push(TournamentRole.CREATOR);
-      } else if (user.referees_tournaments.length > 0) {
+      }
+      if (user.referees_tournaments.length > 0) {
         // Check if the user is the referee of the tournament
         const referees = user.referees_tournaments.filter((r) => {
           return r.tournamentId === tournamentId;
@@ -408,7 +409,8 @@ export class TournamentService {
         if (referees.length > 0) {
           tournamentRoles.push(TournamentRole.REFEREE);
         }
-      } else if (participant) {
+      }
+      if (participant !== null) {
         tournamentRoles.push(TournamentRole.PARTICIPANT);
       }
       if (tournamentRoles.length === 0) {
