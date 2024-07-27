@@ -1,11 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
-import { MatchStatus } from '@prisma/client';
+import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
+import { Order } from 'constants/order';
 
-export class PageOptionsRefereeMatchesDto {
-  @IsString()
+export class PageOptionsGroupFundDto {
+  // Pagination options
+  @IsEnum(Order)
   @IsOptional()
-  readonly status?: MatchStatus;
+  readonly order?: Order = Order.DESC;
 
   @Type(() => Number)
   @IsInt()
@@ -19,11 +20,6 @@ export class PageOptionsRefereeMatchesDto {
   @Max(5000)
   @IsOptional()
   readonly take?: number = 1000;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  readonly groupId: number;
 
   get skip(): number {
     return (this.page - 1) * this.take;
