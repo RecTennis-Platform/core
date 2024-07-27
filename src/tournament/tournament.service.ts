@@ -116,7 +116,7 @@ export class TournamentService {
     const isCreator = purchasedPackage.userId === userId;
     if (!isCreator) {
       throw new ForbiddenException({
-        message: 'You are not a creator of this group',
+        message: 'You are not a creator of this tournament',
         data: null,
       });
     }
@@ -5655,6 +5655,9 @@ export class TournamentService {
           ],
         },
       },
+      include: {
+        tournament: true,
+      },
     });
     if (!fund) {
       throw new NotFoundException({
@@ -5671,7 +5674,7 @@ export class TournamentService {
         data: null,
       });
     }
-    return await this.prismaService.fund.update({
+    const updatedFund = await this.prismaService.fund.update({
       where: {
         id: fund.id,
       },
@@ -5680,6 +5683,43 @@ export class TournamentService {
         message: dto.message,
       },
     });
+    // Get purchased package info
+    const purchasedPackage =
+      await this.mongodbPrismaService.purchasedPackage.findUnique({
+        where: {
+          id: fund.tournament.purchasedPackageId,
+        },
+      });
+
+    if (!purchasedPackage) {
+      throw new NotFoundException({
+        code: CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PURCHASED_PACKAGE_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+    const notification = {
+      title: 'Fund Request Updated',
+      body: 'A participant has updated their fund request to pending. Please review the updated request to take necessary action.',
+    };
+    const notiData = {
+      //mobileType: 'MATCH_UPDATE',
+      type: 'tournament_finances',
+      params: {
+        tournamentId: tournamentId,
+      },
+      notification,
+      web: true,
+      mobile: true,
+    };
+    const notificationData = {
+      userIds: [purchasedPackage.userId],
+      notiData,
+    };
+    await this.notificationProducer.add(notificationData);
+    return updatedFund;
   }
 
   async getUserFund(tournamentId: number, userId: string) {
@@ -5856,7 +5896,7 @@ export class TournamentService {
     const isCreator = purchasedPackage.userId === userId;
     if (!isCreator) {
       throw new ForbiddenException({
-        message: 'You are not a creator of this group',
+        message: 'You are not a creator of this tournament',
         data: null,
       });
     }
@@ -5896,6 +5936,7 @@ export class TournamentService {
         tournamentId: tournament.id,
       },
     });
+    const userIds = [];
     if (previousFunds.length === 0) {
       const funds = [];
       for (const team of teams) {
@@ -5907,12 +5948,35 @@ export class TournamentService {
           status: FundStatus.wait,
         };
         funds.push(teamFund);
+        userIds.push(team.userId1);
+        if (team.userId2) {
+          userIds.push(team.userId2);
+        }
       }
       await this.prismaService.fund.createMany({
         data: funds,
       });
       const { payment, groupId, groupTournamentId, ...others } =
         tournamentPaymentInfo;
+      const notification = {
+        title: 'Fund Request Alert',
+        body: `You have received a fund request from the admin for the tournament: ${tournament.name}. Please check your account for details`,
+      };
+      const notiData = {
+        //mobileType: 'MATCH_UPDATE',
+        type: 'tournament_finances',
+        params: {
+          tournamentId: tournamentId,
+        },
+        notification,
+        web: true,
+        mobile: true,
+      };
+      const notificationData = {
+        userIds,
+        notiData,
+      };
+      await this.notificationProducer.add(notificationData);
       return {
         ...others,
         payment: JSON.parse(payment),
@@ -5992,7 +6056,7 @@ export class TournamentService {
     const isCreator = purchasedPackage.userId === userId;
     if (!isCreator) {
       throw new ForbiddenException({
-        message: 'You are not a creator of this group',
+        message: 'You are not a creator of this tournament',
         data: null,
       });
     }
@@ -6141,7 +6205,7 @@ export class TournamentService {
     const isCreator = purchasedPackage.userId === userId;
     if (!isCreator) {
       throw new ForbiddenException({
-        message: 'You are not a creator of this group',
+        message: 'You are not a creator of this tournament',
         data: null,
       });
     }
@@ -6279,7 +6343,7 @@ export class TournamentService {
     const isCreator = purchasedPackage.userId === userId;
     if (!isCreator) {
       throw new ForbiddenException({
-        message: 'You are not a creator of this group',
+        message: 'You are not a creator of this tournament',
         data: null,
       });
     }
@@ -6299,7 +6363,7 @@ export class TournamentService {
         data: null,
       });
     }
-    return await this.prismaService.fund.update({
+    const updatedFund = await this.prismaService.fund.update({
       where: {
         id: fund.id,
         tournamentId: tournamentId,
@@ -6309,7 +6373,34 @@ export class TournamentService {
         status: dto.status,
         errorMessage: dto.errorMessage,
       },
+      include: {
+        team: true,
+      },
     });
+    const notification = {
+      title: 'Fund Request Update',
+      body: `Your fund request of ${tournament.name} tournament has been updated to ${dto.status} by the admin. Please check your fund request for the latest status and details.`,
+    };
+    const notiData = {
+      //mobileType: 'MATCH_UPDATE',
+      type: 'tournament_finances',
+      params: {
+        tournamentId: tournamentId,
+      },
+      notification,
+      web: true,
+      mobile: true,
+    };
+    const userIds = [updatedFund.team.userId1];
+    if (updatedFund.team.userId2) {
+      userIds.push(updatedFund.team.userId2);
+    }
+    const notificationData = {
+      userIds,
+      notiData,
+    };
+    await this.notificationProducer.add(notificationData);
+    return updatedFund;
   }
 
   async getTournamentMatches(
@@ -6563,7 +6654,7 @@ export class TournamentService {
     const isCreator = purchasedPackage.userId === userId;
     if (!isCreator) {
       throw new ForbiddenException({
-        message: 'You are not a creator of this group',
+        message: 'You are not a creator of this tournament',
         data: null,
       });
     }

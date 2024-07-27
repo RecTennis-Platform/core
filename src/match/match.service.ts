@@ -321,7 +321,11 @@ export class MatchService {
         otherParams = {
           tournamentId: assignedMatch.round.fixture.fixture.tournamentId,
         };
-        type = 'tournament_matches';
+        if (assignedMatch.teamId1 && assignedMatch.teamId2) {
+          type = 'tournament_matches_on_going';
+        } else {
+          type = 'tournament_matches_schedule';
+        }
       } else {
         const participants = await this.prismaService.teams.findMany({
           where: {
@@ -342,7 +346,11 @@ export class MatchService {
           groupTournamentId:
             assignedMatch.round.fixture.fixture.groupTournamentId,
         };
-        type = 'group_tournament_matches';
+        if (assignedMatch.teamId1 && assignedMatch.teamId2) {
+          type = 'group_tournament_matches_on_going';
+        } else {
+          type = 'group_tournament_matches_schedule';
+        }
       }
 
       const followUsers = (
@@ -1070,7 +1078,11 @@ export class MatchService {
               otherParams = {
                 tournamentId: assignedMatch.team1.tournamentId,
               };
-              type = 'tournament_matches';
+              if (assignedMatch.teamId1 && assignedMatch.teamId2) {
+                type = 'tournament_matches_on_going';
+              } else {
+                type = 'tournament_matches_schedule';
+              }
             } else {
               const participants = await this.prismaService.teams.findMany({
                 where: {
@@ -1089,7 +1101,11 @@ export class MatchService {
               otherParams = {
                 groupTournamentId: assignedMatch.team1.groupTournamentId,
               };
-              type = 'group_tournament_matches';
+              if (assignedMatch.teamId1 && assignedMatch.teamId2) {
+                type = 'group_tournament_matches_on_going';
+              } else {
+                type = 'group_tournament_matches_schedule';
+              }
             }
 
             // Send notification
@@ -1181,7 +1197,11 @@ export class MatchService {
             otherParams = {
               tournamentId: assignedMatch.team1.tournamentId,
             };
-            type = 'tournament_matches';
+            if (assignedMatch.teamId1 && assignedMatch.teamId2) {
+              type = 'tournament_matches_on_going';
+            } else {
+              type = 'tournament_matches_schedule';
+            }
           } else {
             const participants = await this.prismaService.teams.findMany({
               where: {
@@ -1200,7 +1220,11 @@ export class MatchService {
             otherParams = {
               groupTournamentId: assignedMatch.team1.groupTournamentId,
             };
-            type = 'group_tournament_matches';
+            if (assignedMatch.teamId1 && assignedMatch.teamId2) {
+              type = 'group_tournament_matches_on_going';
+            } else {
+              type = 'group_tournament_matches_schedule';
+            }
           }
           // Send notification
           const followUsers = (
@@ -1382,7 +1406,11 @@ export class MatchService {
         otherParams = {
           tournamentId: match.round.fixture.fixture.tournamentId,
         };
-        type = 'tournament_matches';
+        if (match.teamId1 && match.teamId2) {
+          type = 'tournament_matches_on_going';
+        } else {
+          type = 'tournament_matches_schedule';
+        }
       } else {
         const participants = await this.prismaService.teams.findMany({
           where: {
@@ -1401,7 +1429,11 @@ export class MatchService {
         otherParams = {
           groupTournamentId: match.round.fixture.fixture.groupTournamentId,
         };
-        type = 'group_tournament_matches';
+        if (match.teamId1 && match.teamId2) {
+          type = 'group_tournament_matches_on_going';
+        } else {
+          type = 'group_tournament_matches_schedule';
+        }
       }
 
       const followUsers = (
