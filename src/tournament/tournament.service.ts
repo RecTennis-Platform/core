@@ -3897,6 +3897,31 @@ export class TournamentService {
         id: id,
       },
     });
+    const referees = (
+      await this.prismaService.referees_tournaments.findMany({
+        where: {
+          tournamentId: tournament.id,
+        },
+        include: {
+          referee: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+              dob: true,
+              phoneNumber: true,
+            },
+          },
+        },
+      })
+    ).map((referee) => referee.referee);
+    if (referees.length === 0) {
+      throw new BadRequestException({
+        code: 7005,
+        message: 'Please add referee to tournament before generating fixture',
+        data: null,
+      });
+    }
     const format = tournament?.format;
     try {
       if (
@@ -3964,8 +3989,9 @@ export class TournamentService {
                 duration: dto.matchDuration,
                 status: MatchStatus.scheduled,
                 teams: { team1, team2 },
-                refereeId: null,
+                refereeId: referees[k % referees.length].id,
                 venue: dto.venue,
+                referee: referees[k % referees.length],
               };
               matches.push(match);
             }
@@ -4051,8 +4077,9 @@ export class TournamentService {
                 duration: dto.matchDuration,
                 status: status,
                 teams: { team1, team2 },
-                refereeId: null,
+                refereeId: referees[(j + 1) % referees.length].id,
                 venue: dto.venue,
+                referee: referees[(j + 1) % referees.length],
               };
               rawMatches.push(match);
             }
@@ -4155,8 +4182,9 @@ export class TournamentService {
                 duration: dto.matchDuration,
                 status: MatchStatus.scheduled,
                 teams: { team1, team2 },
-                refereeId: null,
+                refereeId: referees[k % referees.length].id,
                 venue: dto.venue,
+                referee: referees[k % referees.length],
               };
               matches.push(match);
             }
@@ -4297,8 +4325,9 @@ export class TournamentService {
             duration: dto.matchDuration,
             status: MatchStatus.scheduled,
             teams: { team1, team2 },
-            refereeId: null,
+            refereeId: referees[1 % referees.length].id,
             venue: dto.venue,
+            referee: referees[1 % referees.length],
           };
 
           const round = {
@@ -4355,8 +4384,9 @@ export class TournamentService {
                 duration: dto.matchDuration,
                 status: status,
                 teams: { team1, team2 },
-                refereeId: null,
+                refereeId: referees[(j + 1) % referees.length].id,
                 venue: dto.venue,
+                referee: referees[(j + 1) % referees.length],
               };
               rawMatches.push(match);
             }
@@ -5190,6 +5220,11 @@ export class TournamentService {
     if (dto.status === FixtureStatus.published) {
       const userIds = [];
       let otherParams, type;
+      const fixture = await this.prismaService.fixtures.findFirst({
+        where: {
+          id: dto.id,
+        },
+      });
       if (fixture.tournamentId) {
         const participants = await this.prismaService.teams.findMany({
           where: {

@@ -2193,6 +2193,32 @@ export class GroupService {
           },
         });
         const rounds = [];
+        const referees = (
+          await this.prismaService.referees_group_tournaments.findMany({
+            where: {
+              groupTournamentId: tournament.id,
+            },
+            include: {
+              referee: {
+                select: {
+                  id: true,
+                  image: true,
+                  name: true,
+                  dob: true,
+                  phoneNumber: true,
+                },
+              },
+            },
+          })
+        ).map((referee) => referee.referee);
+        if (referees.length === 0) {
+          throw new BadRequestException({
+            code: 7005,
+            message:
+              'Please add referee to tournament before generating fixture',
+            data: null,
+          });
+        }
         if (format === GroupTournamentFormat.round_robin) {
           const tables = this.formatTournamentService.generateTables(
             format,
@@ -2216,16 +2242,19 @@ export class GroupService {
                 user2: teams[tables.table2[i][j] - 1].user2,
                 id: teams[tables.table2[i][j] - 1].id,
               };
+              const today = new Date();
+
               const match = {
                 id: randomUUID(),
                 nextMatchId: null,
                 title: `Match ${k++}`,
-                matchStartDate: null,
+                matchStartDate: new Date(today.setDate(today.getDate() + 3)),
                 duration: dto.matchDuration,
                 status: MatchStatus.scheduled,
                 teams: { team1, team2 },
-                refereeId: null,
+                refereeId: referees[k % referees.length].id,
                 venue: dto.venue,
+                referee: referees[k % referees.length],
               };
               matches.push(match);
             }
@@ -2302,16 +2331,18 @@ export class GroupService {
               if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
                 status = MatchStatus.no_show.toString();
               }
+              const today = new Date();
               const match = {
                 id: id,
                 nextMatchId: nextMatchId,
                 title: `Match ${j + 1}`,
-                matchStartDate: null,
+                matchStartDate: new Date(today.setDate(today.getDate() + 3)),
                 duration: dto.matchDuration,
                 status: status,
                 teams: { team1, team2 },
-                refereeId: null,
+                refereeId: referees[(j + 1) % referees.length].id,
                 venue: dto.venue,
+                referee: referees[(j + 1) % referees.length],
               };
               rawMatches.push(match);
             }

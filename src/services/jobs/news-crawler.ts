@@ -35,7 +35,7 @@ export class NewsCrawlerService {
       })
       .then(async (response) => {
         if (response.status === 'ok') {
-          console.log(response.articles);
+          // console.log(response.articles);
           const news = (
             await Promise.all(
               response.articles.map(async (article) => {
