@@ -25,6 +25,7 @@ List of software and tools required:
 2. Navigate to the project directory:
 3. Install dependencies:
    ```bash
+   $ npx prisma db push
    $ yarn bootstrap
    ```
 
