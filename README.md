@@ -1,6 +1,6 @@
 # PROJECT: TENITY
 
-A brief description of what the API server does. Component: CORE
+The CORE service serves as the central processing unit for core application functionalities. It handles essential business logic, including management and creation of tournaments, groups, news, and other essential features, data processing, and interacts with other components to provide foundational services necessary for the application's operation.
 
 ## Table of Contents
 
