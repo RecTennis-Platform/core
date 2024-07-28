@@ -6,6 +6,9 @@ import {
   Post,
   UseGuards,
   Patch,
+  Delete,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { GetUser } from 'src/auth_utils/decorators';
@@ -67,5 +70,24 @@ export class MatchController {
     @Body() dto: UpdateScoreDto,
   ) {
     return await this.matchService.updateScore(matchId, refereeId, dto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(':id/update-score')
+  async undoUpdateScore(
+    @Param('id') matchId: string,
+    @GetUser('sub') refereeId: string,
+  ) {
+    try {
+      return this.matchService.undoUpdateScore(matchId, refereeId);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

@@ -1290,6 +1290,101 @@ export class MatchService {
     }
   }
 
+  async undoUpdateScore(matchId: string, refereeId: string) {
+    // Validate if referee is assigned to this match
+    const assignedMatch = await this.prismaService.matches.findUnique({
+      where: {
+        id: matchId,
+        refereeId: refereeId,
+      },
+      include: {
+        team1: {
+          include: {
+            user1: true,
+            user2: true,
+          },
+        },
+        team2: {
+          include: {
+            user1: true,
+            user2: true,
+          },
+        },
+      },
+    });
+
+    if (!assignedMatch) {
+      throw new BadRequestException('Referee is not assigned to this match');
+    }
+
+    // Check match status (== 'walk_over')
+    if (assignedMatch.status !== MatchStatus.walk_over) {
+      throw new BadRequestException(
+        `Match must be in progress - 'walk_over'. Match status is '${assignedMatch.status}'`,
+      );
+    }
+
+    // Get current active set
+    const activeSet = await this.prismaService.sets.findFirst({
+      where: {
+        matchId: matchId,
+        status: SetStatus.on_going,
+        teamWinId: null,
+      },
+      orderBy: {
+        id: Order.DESC,
+      },
+    });
+
+    // No active set (set.status != 'on_going')
+    if (!activeSet) {
+      throw new BadRequestException(`No active set for match ${matchId}`);
+    }
+
+    // Get current active game
+    const activeGame = await this.prismaService.games.findFirst({
+      where: {
+        setId: activeSet.id,
+        teamWinId: null,
+      },
+      orderBy: {
+        id: Order.DESC,
+      },
+    });
+
+    if (!activeGame) {
+      throw new BadRequestException(`No active game for set ${activeSet.id}`);
+    }
+
+    // Get current active score
+    const activeScore = await this.prismaService.scores.findFirst({
+      where: {
+        gameId: activeGame.id,
+      },
+      orderBy: {
+        id: Order.DESC,
+      },
+    });
+
+    if (!activeScore) {
+      throw new BadRequestException(`No score for game ${activeGame.id}`);
+    }
+
+    try {
+      // Delete current score
+      await this.prismaService.scores.delete({
+        where: {
+          id: activeScore.id,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+
+    // Get match details
+    return await this.getMatchDetails(matchId, refereeId);
+  }
+
   async updateMatch(matchId: string, userId: string, dto: UpdateMatchDto) {
     const match = await this.prismaService.matches.findFirst({
       where: {
