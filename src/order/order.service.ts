@@ -85,7 +85,11 @@ export class OrderService {
           id: purchasedPackage.orderId,
         },
         include: {
-          package: true,
+          package: {
+            include: {
+              parentPackage: true,
+            },
+          },
         },
       });
       if (!updatedOrder) {
@@ -101,11 +105,15 @@ export class OrderService {
           data: null,
         });
       }
+      const price =
+        dto.type === 'upgrade'
+          ? updatedOrder.package.parentPackage.price
+          : updatedOrder.package.price;
       const order = await this.prismaService.orders.create({
         data: {
           userId: userId,
-          packageId: updatedOrder.packageId,
-          price: updatedOrder.package.price,
+          packageId: updatedOrder.package.id,
+          price,
           partner: dto.partner,
           type: dto.type,
           referenceId: updatedOrder.id,
@@ -262,7 +270,10 @@ export class OrderService {
           data: null,
         });
       }
-      if (order.type === 'renew' && order.status === 'completed') {
+      if (
+        order.type === 'renew' &&
+        updateOrderDto.status == OrderStatus.completed
+      ) {
         const purchasedPackage =
           await this.mongodbPrismaService.purchasedPackage.findFirst({
             where: {
@@ -380,17 +391,17 @@ export class OrderService {
             expired: false,
             endDate: addMonths(
               purchasedPackage.endDate,
-              packageWithService.duration,
+              packageWithService.parentPackage.duration,
             ),
             userId: order.userId,
             package: {
-              id: packageWithService.id,
-              name: packageWithService.name,
-              price: packageWithService.price,
-              duration: packageWithService.duration,
-              images: packageWithService.images,
-              createdAt: packageWithService.createdAt,
-              updatedAt: packageWithService.updatedAt,
+              id: packageWithService.parentPackage.id,
+              name: packageWithService.parentPackage.name,
+              price: packageWithService.parentPackage.price,
+              duration: packageWithService.parentPackage.duration,
+              images: packageWithService.parentPackage.images,
+              createdAt: packageWithService.parentPackage.createdAt,
+              updatedAt: packageWithService.parentPackage.updatedAt,
               services: services,
             },
           },
