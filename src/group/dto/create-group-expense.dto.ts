@@ -1,4 +1,4 @@
-import { ExpenseType, UnitCurrency } from '@prisma/client';
+import { ExpenseType } from '@prisma/client';
 import {
   IsArray,
   IsEnum,
@@ -9,10 +9,6 @@ import {
 } from 'class-validator';
 
 export class CreateGroupExpenseDto {
-  @IsNumber()
-  @IsNotEmpty()
-  fundId: number;
-
   @IsEnum(ExpenseType)
   @IsNotEmpty()
   type: ExpenseType;
@@ -24,10 +20,6 @@ export class CreateGroupExpenseDto {
   @IsNumber()
   @IsNotEmpty()
   amount: number;
-
-  @IsEnum(UnitCurrency)
-  @IsNotEmpty()
-  unit: UnitCurrency;
 
   @IsString()
   @IsOptional()

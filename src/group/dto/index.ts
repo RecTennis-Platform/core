@@ -9,5 +9,3 @@ export * from './page-options-group-fund.dto';
 export * from './confirm-group-fund-request.dto';
 export * from './create-group-expense.dto';
 export * from './page-options-group-expense.dto copy';
-export * from './fetch-group-expenses.dto';
-export * from './fetch-group-fund-balance.dto';

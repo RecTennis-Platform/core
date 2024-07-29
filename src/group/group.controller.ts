@@ -24,8 +24,6 @@ import {
   CreateGroupDto,
   CreateGroupExpenseDto,
   CreateGroupFundDto,
-  FetchGroupExpensesDto,
-  FetchGroupFundBalanceDto,
   InviteUser2GroupDto,
   PageOptionsGroupDto,
   PageOptionsGroupExpenseDto,
@@ -728,15 +726,9 @@ export class GroupController {
     @Param('groupId') groupId: number,
     @GetUser('sub') userId: string,
     @Query() pageOptions: PageOptionsGroupExpenseDto,
-    @Body() dto: FetchGroupExpensesDto,
   ) {
     try {
-      return this.groupService.fetchGroupExpenses(
-        groupId,
-        userId,
-        pageOptions,
-        dto,
-      );
+      return this.groupService.fetchGroupExpenses(groupId, userId, pageOptions);
     } catch (error) {
       throw new HttpException(
         {
@@ -753,10 +745,9 @@ export class GroupController {
   async FetchGroupFundBalance(
     @Param('groupId') groupId: number,
     @GetUser('sub') userId: string,
-    @Body() dto: FetchGroupFundBalanceDto,
   ) {
     try {
-      return this.groupService.fetchGroupFundBalance(groupId, userId, dto);
+      return this.groupService.fetchGroupFundBalance(groupId, userId);
     } catch (error) {
       throw new HttpException(
         {

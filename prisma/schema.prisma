@@ -508,13 +508,11 @@ model group_funds {
   title          String
   description    String?
   amount         Float              @default(0)
-  unit           UnitCurrency
   dueDate        DateTime           @map("due_date")
   paymentInfo    String             @map("payment_info")
   qrImage        String?            @map("qr_image")
   createdAt      DateTime           @default(now()) @map("created_at")
   updatedAt      DateTime           @default(now()) @updatedAt @map("updated_at")
-  groupExpenses  group_expenses[]
   group          groups             @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_funds_groups")
   userGroupFunds user_group_funds[]
 }
@@ -534,16 +532,14 @@ model user_group_funds {
 model group_expenses {
   id          Int         @id @default(autoincrement())
   groupId     Int         @map("group_id")
-  fundId      Int         @map("group_fund_id")
   type        ExpenseType
   description String?
   amount      Float       @default(0)
-  categories  String
+  categories  String      @default("{\"categories\":[]}")
   isEnabled   Boolean     @default(true) @map("is_enabled")
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at")
   deletedAt   DateTime?   @map("deleted_at")
-  groupFund   group_funds @relation(fields: [fundId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_expenses_group_funds")
   group       groups      @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_expenses_groups")
 }
 
@@ -557,11 +553,6 @@ enum GroupFundStatus {
   pending
   accepted
   rejected
-}
-
-enum UnitCurrency {
-  VND
-  USD
 }
 
 enum AffiliateStatus {
