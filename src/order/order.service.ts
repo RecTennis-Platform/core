@@ -109,10 +109,14 @@ export class OrderService {
         dto.type === 'upgrade'
           ? updatedOrder.package.parentPackage.price
           : updatedOrder.package.price;
+      const packageId =
+        dto.type === 'upgrade'
+          ? updatedOrder.package.parentPackage.id
+          : updatedOrder.package.id;
       const order = await this.prismaService.orders.create({
         data: {
           userId: userId,
-          packageId: updatedOrder.package.id,
+          packageId,
           price,
           partner: dto.partner,
           type: dto.type,
@@ -291,6 +295,7 @@ export class OrderService {
             orderId: order.referenceId,
           },
           data: {
+            orderId: order.id,
             endDate: addMonths(
               purchasedPackage.endDate,
               order.package.duration,
@@ -374,14 +379,12 @@ export class OrderService {
             },
           },
         });
-        const services = packageWithService.parentPackage.packageServices.map(
-          (value) => {
-            const serviceConfig = JSON.parse(value.service.config);
-            serviceConfig.used = 0;
-            value.service.config = JSON.stringify(serviceConfig);
-            return value.service;
-          },
-        );
+        const services = packageWithService.packageServices.map((value) => {
+          const serviceConfig = JSON.parse(value.service.config);
+          serviceConfig.used = 0;
+          value.service.config = JSON.stringify(serviceConfig);
+          return value.service;
+        });
 
         await this.mongodbPrismaService.purchasedPackage.updateMany({
           where: {
@@ -391,17 +394,18 @@ export class OrderService {
             expired: false,
             endDate: addMonths(
               purchasedPackage.endDate,
-              packageWithService.parentPackage.duration,
+              packageWithService.duration,
             ),
             userId: order.userId,
+            orderId: order.id,
             package: {
-              id: packageWithService.parentPackage.id,
-              name: packageWithService.parentPackage.name,
-              price: packageWithService.parentPackage.price,
-              duration: packageWithService.parentPackage.duration,
-              images: packageWithService.parentPackage.images,
-              createdAt: packageWithService.parentPackage.createdAt,
-              updatedAt: packageWithService.parentPackage.updatedAt,
+              id: packageWithService.id,
+              name: packageWithService.name,
+              price: packageWithService.price,
+              duration: packageWithService.duration,
+              images: packageWithService.images,
+              createdAt: packageWithService.createdAt,
+              updatedAt: packageWithService.updatedAt,
               services: services,
             },
           },
