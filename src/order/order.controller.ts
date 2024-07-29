@@ -13,7 +13,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, UpgradeOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Ip } from '@nestjs/common';
 import { JwtGuard } from 'src/auth_utils/guards';
@@ -35,6 +35,27 @@ export class OrderController {
     try {
       createOrderDto.userId = userId;
       return this.orderService.create(createOrderDto, ip, headers);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('purchased-packages')
+  async upgrade(
+    @GetUser('sub') userId: string,
+    @Body() dto: UpgradeOrderDto,
+    @Ip() ip,
+    @Headers() headers,
+  ) {
+    try {
+      return this.orderService.upgrade(dto, ip, headers, userId);
     } catch (error) {
       throw new HttpException(
         {

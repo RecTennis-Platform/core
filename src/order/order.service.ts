@@ -1,9 +1,11 @@
 import {
+  BadGatewayException,
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, UpgradeOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaymentService } from 'src/services/payment/payment.service';
@@ -49,6 +51,74 @@ export class OrderService {
         locale: 'vi',
         orderId: order.id,
         partner: createOrderDto.partner,
+        clientIp: ip,
+        returnUrl: returnUrl,
+      };
+      const payment = await this.paymentService.createPayment(paymentDto);
+      return { order, payment: payment?.data };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async upgrade(
+    dto: UpgradeOrderDto,
+    ip: string,
+    headers: any,
+    userId: string,
+  ) {
+    try {
+      const purchasedPackage =
+        await this.mongodbPrismaService.purchasedPackage.findUnique({
+          where: {
+            id: dto.purchasedPackageId,
+          },
+        });
+      if (!purchasedPackage) {
+        throw new NotFoundException({
+          message: 'Purchased Package not found',
+          data: null,
+        });
+      }
+      const updatedOrder = await this.prismaService.orders.findFirst({
+        where: {
+          id: purchasedPackage.orderId,
+        },
+        include: {
+          package: true,
+        },
+      });
+      if (!updatedOrder) {
+        throw new NotFoundException({
+          message: 'Order not found',
+          data: null,
+        });
+      }
+
+      if (!updatedOrder.package.parentId && dto.type === 'upgrade') {
+        throw new BadRequestException({
+          message: 'This package cannot upgrade',
+          data: null,
+        });
+      }
+      const order = await this.prismaService.orders.create({
+        data: {
+          userId: userId,
+          packageId: updatedOrder.packageId,
+          price: updatedOrder.package.price,
+          partner: dto.partner,
+          type: dto.type,
+          referenceId: updatedOrder.id,
+        },
+      });
+      const returnUrl = headers?.ismobile
+        ? process.env.RETURN_URL_PAYMENT_FOR_MOBILE
+        : process.env.RETURN_URL_PAYMENT_FOR_WEB;
+      const paymentDto: CreatePaymentUrlRequest = {
+        amount: order.price,
+        locale: 'vi',
+        orderId: order.id,
+        partner: dto.partner,
         clientIp: ip,
         returnUrl: returnUrl,
       };
@@ -178,12 +248,12 @@ export class OrderService {
 
   async updateFromPaymentService(id: string, updateOrderDto: UpdateOrderDto) {
     try {
-      const order = await this.prismaService.orders.update({
+      const order = await this.prismaService.orders.findFirst({
         where: {
           id: id,
         },
-        data: {
-          status: updateOrderDto.status,
+        include: {
+          package: true,
         },
       });
       if (!order) {
@@ -192,7 +262,35 @@ export class OrderService {
           data: null,
         });
       }
-      if (updateOrderDto.status == OrderStatus.completed) {
+      if (order.type === 'renew' && order.status === 'completed') {
+        const purchasedPackage =
+          await this.mongodbPrismaService.purchasedPackage.findFirst({
+            where: {
+              orderId: order.referenceId,
+            },
+          });
+        if (!purchasedPackage) {
+          throw new NotFoundException({
+            message: 'Purchased Package not found',
+            data: null,
+          });
+        }
+        await this.mongodbPrismaService.purchasedPackage.updateMany({
+          where: {
+            orderId: order.referenceId,
+          },
+          data: {
+            endDate: addMonths(
+              purchasedPackage.endDate,
+              order.package.duration,
+            ),
+          },
+        });
+      }
+      if (
+        updateOrderDto.status == OrderStatus.completed &&
+        order.type === 'create'
+      ) {
         const packageWithService = await this.prismaService.packages.findFirst({
           where: { id: order.packageId },
           include: {
@@ -229,8 +327,85 @@ export class OrderService {
           },
         });
       }
+
+      if (
+        updateOrderDto.status == OrderStatus.completed &&
+        order.type === 'upgrade'
+      ) {
+        const purchasedPackage =
+          await this.mongodbPrismaService.purchasedPackage.findFirst({
+            where: {
+              orderId: order.referenceId,
+            },
+          });
+        if (!purchasedPackage) {
+          throw new NotFoundException({
+            message: 'Purchased Package not found',
+            data: null,
+          });
+        }
+        const packageWithService = await this.prismaService.packages.findFirst({
+          where: { id: order.packageId },
+          include: {
+            packageServices: {
+              include: {
+                service: true,
+              },
+            },
+            parentPackage: {
+              include: {
+                packageServices: {
+                  include: {
+                    service: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+        const services = packageWithService.parentPackage.packageServices.map(
+          (value) => {
+            const serviceConfig = JSON.parse(value.service.config);
+            serviceConfig.used = 0;
+            value.service.config = JSON.stringify(serviceConfig);
+            return value.service;
+          },
+        );
+
+        await this.mongodbPrismaService.purchasedPackage.updateMany({
+          where: {
+            orderId: order.referenceId,
+          },
+          data: {
+            expired: false,
+            endDate: addMonths(
+              purchasedPackage.endDate,
+              packageWithService.duration,
+            ),
+            userId: order.userId,
+            package: {
+              id: packageWithService.id,
+              name: packageWithService.name,
+              price: packageWithService.price,
+              duration: packageWithService.duration,
+              images: packageWithService.images,
+              createdAt: packageWithService.createdAt,
+              updatedAt: packageWithService.updatedAt,
+              services: services,
+            },
+          },
+        });
+      }
+      const updatedOrder = await this.prismaService.orders.update({
+        where: {
+          id: id,
+        },
+        data: {
+          status: updateOrderDto.status,
+        },
+      });
       return {
-        ...order,
+        ...updatedOrder,
       };
     } catch (error) {
       throw new InternalServerErrorException({
