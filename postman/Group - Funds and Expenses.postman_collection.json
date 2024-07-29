@@ -1,0 +1,1207 @@
+{
+	"info": {
+		"_postman_id": "65dd8871-e675-41ef-84de-2e5da0d5180d",
+		"name": "Group - Funds and Expenses",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24188163"
+	},
+	"item": [
+		{
+			"name": "Funding",
+			"item": [
+				{
+					"name": "Create group fund",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxNDc0MjY4LCJleHAiOjE3MjI3NzAyNjh9.Y41rbTpL6oHOjrl0Idwsdng-2tRpWyUHD3i-bidZNuU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Quỹ tháng 8\",\n  \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n  \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n  \"amount\": 100000,\n  \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n  \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/funds",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"funds"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create group fund",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Quỹ tháng 7\",\n  \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n  \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n  \"amount\": 100000,\n  \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n  \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/funds",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"funds"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "358"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"166-FH0uSpihUbECC5OubQDLA9MPtSw\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 03:32:25 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"title\": \"Quỹ tháng 7\",\n    \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n    \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n    \"amount\": 100000,\n    \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n    \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n    \"createdAt\": \"2024-07-29T03:32:23.773Z\"\n}"
+						},
+						{
+							"name": "Create group fund",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Quỹ tháng 7\",\n  \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n  \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n  \"amount\": 100000,\n  \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n  \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/groups/1/funds",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"1",
+										"funds"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "41"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"29-x+D+l1lIa6ReXT2kz8xOQNmNVZg\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 03:33:55 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Group not found\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Fetch group funds",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxNDc0MjY4LCJleHAiOjE3MjI3NzAyNjh9.Y41rbTpL6oHOjrl0Idwsdng-2tRpWyUHD3i-bidZNuU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/funds?page=1&take=10",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"funds"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "take",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Fetch group funds",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/funds?page=1&take=10",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"funds"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "take",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "758"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2f6-d782pRXGD9OL+M+Eir1nJl6fF54\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 03:35:46 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"totalPages\": 1,\n    \"totalCount\": 2,\n    \"data\": [\n        {\n            \"id\": 2,\n            \"title\": \"Quỹ tháng 8\",\n            \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n            \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n            \"amount\": 100000,\n            \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n            \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n            \"createdAt\": \"2024-07-29T03:35:39.020Z\"\n        },\n        {\n            \"id\": 1,\n            \"title\": \"Quỹ tháng 7\",\n            \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n            \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n            \"amount\": 100000,\n            \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n            \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n            \"createdAt\": \"2024-07-29T03:32:23.773Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Fetch members fund request (Requests of a fund)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxNDc0MjY4LCJleHAiOjE3MjI3NzAyNjh9.Y41rbTpL6oHOjrl0Idwsdng-2tRpWyUHD3i-bidZNuU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/funds/1/users?page=1&take=10",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"funds",
+								"1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "take",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Fetch members fund request (Requests of a fund)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/funds/1/users?page=1&take=10",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"funds",
+										"1",
+										"users"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "take",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1646"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"66e-D/6R9Gy7Ft76NxSsDqgNampZAX4\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 03:37:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"totalPages\": 1,\n    \"totalCount\": 8,\n    \"data\": [\n        {\n            \"id\": 8,\n            \"userId\": \"836e63a3-3867-475a-b7fa-6ccf568c6459\",\n            \"description\": null,\n            \"status\": \"waiting\",\n            \"name\": \"Thong Nguyen\",\n            \"image\": null\n        },\n        {\n            \"id\": 7,\n            \"userId\": \"0a8c5a69-5647-4614-81dd-2901c30bc84d\",\n            \"description\": null,\n            \"status\": \"waiting\",\n            \"name\": \"T3@m.com\",\n            \"image\": null\n        },\n        {\n            \"id\": 6,\n            \"userId\": \"0fbf1036-dd85-4e02-8e07-558a8d0d22f6\",\n            \"description\": null,\n            \"status\": \"waiting\",\n            \"name\": \"shin\",\n            \"image\": \"https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=1874\"\n        },\n        {\n            \"id\": 5,\n            \"userId\": \"32b27e3d-6ae5-4635-86cb-c7c09c561d29\",\n            \"description\": null,\n            \"status\": \"waiting\",\n            \"name\": \"Truong Chi Hien\",\n            \"image\": \"https://cdn4.vectorstock.com/i/1000x1000/22/23/simple-cartoon-avatar-vector-14132223.jpg\"\n        },\n        {\n            \"id\": 4,\n            \"userId\": \"6e58e555-b452-4205-93c9-eb26adac7e98\",\n            \"description\": null,\n            \"status\": \"waiting\",\n            \"name\": \"Huy Nguyen\",\n            \"image\": \"https://ca.slack-edge.com/T03DP5X71-U05L1MKDY0Z-873df95b529e-192\"\n        },\n        {\n            \"id\": 3,\n            \"userId\": \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\",\n            \"description\": null,\n            \"status\": \"waiting\",\n            \"name\": \"Tri Do\",\n            \"image\": \"https://lh3.googleusercontent.com/a/ACg8ocJ5fXYZ6d74iUT0d6j6RrWvdc0_bkSkXWqRMqDW4GeOJcwGfw4p=s96-c\"\n        },\n        {\n            \"id\": 2,\n            \"userId\": \"d3dce5c7-6418-4697-8802-459e4a38d480\",\n            \"description\": null,\n            \"status\": \"waiting\",\n            \"name\": \"Tri Do\",\n            \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1720926300973-affiliate2.png?alt=media\"\n        },\n        {\n            \"id\": 1,\n            \"userId\": \"d762a454-53de-4c32-a6cd-b60e703f8f93\",\n            \"description\": null,\n            \"status\": \"waiting\",\n            \"name\": \"Trí Đỗ Minh\",\n            \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1720337616237-user.jpeg?alt=media\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Fetch member fund requests (Request of a member)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNzYyYTQ1NC01M2RlLTRjMzItYTZjZC1iNjBlNzAzZjhmOTMiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxNDc0MjY4LCJleHAiOjE3MjI3NzAyNjh9.BORLXGO5vh_pGgzYFpvwMwd_DuaRpRyfInCW970f_3Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/funds/users?page=1&take=10",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"funds",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "take",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Fetch member fund requests (Request of a member)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/funds/users?page=1&take=10",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"funds",
+										"users"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "take",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "828"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"33c-JIEkD+Iulx9jz+CkHkPLOKdaga0\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 03:47:03 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"totalPages\": 1,\n    \"totalCount\": 2,\n    \"data\": [\n        {\n            \"id\": 9,\n            \"groupFundId\": 2,\n            \"status\": \"waiting\",\n            \"title\": \"Quỹ tháng 8\",\n            \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n            \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n            \"amount\": 100000,\n            \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n            \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n            \"createdAt\": \"2024-07-29T03:35:39.020Z\"\n        },\n        {\n            \"id\": 1,\n            \"groupFundId\": 1,\n            \"status\": \"waiting\",\n            \"title\": \"Quỹ tháng 7\",\n            \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n            \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n            \"amount\": 100000,\n            \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n            \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n            \"createdAt\": \"2024-07-29T03:32:23.773Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Member confirm fund request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkM2RjZTVjNy02NDE4LTQ2OTctODgwMi00NTllNGEzOGQ0ODAiLCJlbWFpbCI6Im1pdGlkZXZ1c0BnbWFpbC5jb20iLCJpYXQiOjE3MjE0NzQyNjgsImV4cCI6MTcyMjc3MDI2OH0.vtmF3On8_v7tPUjrbd5fXfQrOFFFzSmlj7BnCkgopCg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/funds/2/users/confirm",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"funds",
+								"2",
+								"users",
+								"confirm"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "User confirm fund request",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/funds/2/users/confirm",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"funds",
+										"2",
+										"users",
+										"confirm"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "377"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"179-VJWhCj51ClKx7i3XQZ0/hIxuJHE\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 03:51:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 9,\n    \"status\": \"pending\",\n    \"title\": \"Quỹ tháng 8\",\n    \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n    \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n    \"amount\": 100000,\n    \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n    \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n    \"createdAt\": \"2024-07-29T03:35:39.020Z\"\n}"
+						},
+						{
+							"name": "Member confirm fund request",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/funds/2/users/confirm",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"funds",
+										"2",
+										"users",
+										"confirm"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "99"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"63-ihP1VdsN0n/ZFdZeAmDqUcvXRoQ\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 04:10:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Invalid fund request status, status: 'pending'\",\n    \"error\": \"Bad Request\",\n    \"statusCode\": 400\n}"
+						}
+					]
+				},
+				{
+					"name": "Admin confirm member fund request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxNDc0MjY4LCJleHAiOjE3MjI3NzAyNjh9.Y41rbTpL6oHOjrl0Idwsdng-2tRpWyUHD3i-bidZNuU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"d3dce5c7-6418-4697-8802-459e4a38d480\",\n  \"status\": \"accepted\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/funds/2/confirm",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"funds",
+								"2",
+								"confirm"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Admin confirm member fund request",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"userId\": \"d762a454-53de-4c32-a6cd-b60e703f8f93\",\n  \"status\": \"accepted\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/funds/2/confirm",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"funds",
+										"2",
+										"confirm"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "378"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"17a-IubRw4JPepwgyb/NS8cbNSezrCE\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 03:54:10 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 9,\n    \"status\": \"accepted\",\n    \"title\": \"Quỹ tháng 8\",\n    \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n    \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n    \"amount\": 100000,\n    \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n    \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n    \"createdAt\": \"2024-07-29T03:35:39.020Z\"\n}"
+						},
+						{
+							"name": "Admin confirm member fund request",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"userId\": \"d762a454-53de-4c32-a6cd-b60e703f8f93\",\n  \"status\": \"accepted\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/funds/2/confirm",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"funds",
+										"2",
+										"confirm"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "100"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"64-2UfxWGXlGYf6Q1R68s5zTWM42as\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 04:10:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Invalid fund request status, status: 'accepted'\",\n    \"error\": \"Bad Request\",\n    \"statusCode\": 400\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Expense",
+			"item": [
+				{
+					"name": "Create group expense",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxNDc0MjY4LCJleHAiOjE3MjI3NzAyNjh9.Y41rbTpL6oHOjrl0Idwsdng-2tRpWyUHD3i-bidZNuU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"expense\",\n  \"categories\": [],\n  \"amount\": 100000,\n  \"description\": \"Thue san ngày 28/7\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/expenses",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"expenses"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create group expense",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"type\": \"expense\",\n  \"categories\": [],\n  \"amount\": 100000,\n  \"description\": \"Thue san ngày 28/7\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/expenses",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"expenses"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "132"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"84-jzPV+6t5i390QGpV80mFpmDA+Uc\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 04:13:40 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"type\": \"expense\",\n    \"categories\": [],\n    \"amount\": 100000,\n    \"description\": \"Thue san ngày 28/7\",\n    \"createdAt\": \"2024-07-29T04:13:39.811Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Fetch group expenses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxNDc0MjY4LCJleHAiOjE3MjI3NzAyNjh9.Y41rbTpL6oHOjrl0Idwsdng-2tRpWyUHD3i-bidZNuU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/expenses?page=1&take=10",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"expenses"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "take",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Fetch group expenses",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/expenses?page=1&take=10",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"expenses"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "take",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "531"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"213-tNTAFOorDOQYpmBaVqjmfevR60A\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 04:16:25 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"totalPages\": 1,\n    \"totalCount\": 3,\n    \"data\": [\n        {\n            \"id\": 8,\n            \"type\": \"income\",\n            \"categories\": [],\n            \"amount\": 100000,\n            \"description\": \"Income from group fund - id: 2, title: Quỹ tháng 8, member: 4fc83843-0e9a-4c07-a324-35d805c101db\",\n            \"createdAt\": \"2024-07-29T04:16:10.607Z\"\n        },\n        {\n            \"id\": 7,\n            \"type\": \"expense\",\n            \"categories\": [],\n            \"amount\": 100000,\n            \"description\": \"Thue san ngày 29/7\",\n            \"createdAt\": \"2024-07-29T04:13:39.811Z\"\n        },\n        {\n            \"id\": 1,\n            \"type\": \"expense\",\n            \"categories\": [\n                \"court\",\n                \"abc\"\n            ],\n            \"amount\": 100000,\n            \"description\": \"Thue san ngày 28/7\",\n            \"createdAt\": \"2024-07-29T03:56:55.196Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Fetch group fund balance",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxNDc0MjY4LCJleHAiOjE3MjI3NzAyNjh9.Y41rbTpL6oHOjrl0Idwsdng-2tRpWyUHD3i-bidZNuU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/expenses/balance",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"expenses",
+								"balance"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Fetch group expenses Copy",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/expenses/balance",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"expenses",
+										"balance"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "106"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"6a-9YHxbvnvMJiysX71ti4iwmxDAgw\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 04:21:08 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"balance\": 0,\n    \"currentFund\": {\n        \"id\": 2,\n        \"title\": \"Quỹ tháng 8\",\n        \"currentAmount\": 100000,\n        \"targetAmount\": 800000\n    }\n}"
+						},
+						{
+							"name": "Fetch group expenses Copy",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/expenses/balance",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"expenses",
+										"balance"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "111"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"6f-ouBxkWI0Kw5gXLBbUyjg8Qp+jwg\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Jul 2024 04:22:11 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"balance\": 100000,\n    \"currentFund\": {\n        \"id\": 2,\n        \"title\": \"Quỹ tháng 8\",\n        \"currentAmount\": 200000,\n        \"targetAmount\": 800000\n    }\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}

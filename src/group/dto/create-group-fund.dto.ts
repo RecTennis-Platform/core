@@ -1,7 +1,5 @@
-import { UnitCurrency } from '@prisma/client';
 import {
-  IsDate,
-  IsEnum,
+  IsDateString,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -17,17 +15,13 @@ export class CreateGroupFundDto {
   @IsOptional()
   description?: string;
 
-  @IsDate()
+  @IsDateString()
   @IsNotEmpty()
   dueDate: Date;
 
   @IsNumber()
   @IsNotEmpty()
   amount: number;
-
-  @IsEnum(UnitCurrency)
-  @IsNotEmpty()
-  unit: UnitCurrency;
 
   @IsString()
   @IsNotEmpty()

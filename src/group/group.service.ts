@@ -23,7 +23,6 @@ import {
   TournamentPhase,
   GroupFundStatus,
   ExpenseType,
-  UnitCurrency,
 } from '@prisma/client';
 import { ITokenPayload } from 'src/auth_utils/interfaces';
 import { MembershipService } from 'src/membership/membership.service';
@@ -37,8 +36,6 @@ import {
   CreateGroupDto,
   CreateGroupExpenseDto,
   CreateGroupFundDto,
-  FetchGroupExpensesDto,
-  FetchGroupFundBalanceDto,
   PageOptionsGroupExpenseDto,
   PageOptionsGroupFundDto,
   PageOptionsPostDto,
@@ -3881,17 +3878,17 @@ export class GroupService {
           description: true,
           dueDate: true,
           amount: true,
-          unit: true,
           paymentInfo: true,
           qrImage: true,
           createdAt: true,
         },
       });
 
-      // Create all member group fund requests
+      // Create all member group fund requests - Only members
       const members = await this.prismaService.member_ships.findMany({
         where: {
           groupId: groupId,
+          role: MemberRole.member,
         },
       });
 
@@ -3903,6 +3900,8 @@ export class GroupService {
           },
         });
       }
+
+      // TODO: Notify to all group member about the new group fund
 
       return groupFund;
     } catch (error) {
@@ -3942,7 +3941,6 @@ export class GroupService {
         description: true,
         dueDate: true,
         amount: true,
-        unit: true,
         paymentInfo: true,
         qrImage: true,
         createdAt: true,
@@ -3999,6 +3997,19 @@ export class GroupService {
       });
     }
 
+    if (member.role === MemberRole.group_admin) {
+      throw new BadRequestException('Group admin do not have fund requests');
+    }
+
+    // Get all group fund of the group
+    const group_funds = await this.prismaService.group_funds.findMany({
+      where: {
+        groupId: groupId,
+      },
+    });
+
+    const group_funds_ids = group_funds.map((group_fund) => group_fund.id);
+
     // Get user's group fund requests
     const conditions = {
       orderBy: [
@@ -4007,7 +4018,9 @@ export class GroupService {
         },
       ],
       where: {
-        groupId: groupId,
+        groupFundId: {
+          in: group_funds_ids,
+        },
         userId: userId,
       },
       select: {
@@ -4020,7 +4033,6 @@ export class GroupService {
             description: true,
             dueDate: true,
             amount: true,
-            unit: true,
             paymentInfo: true,
             qrImage: true,
             createdAt: true,
@@ -4056,10 +4068,10 @@ export class GroupService {
       userFundReq['description'] = userFundReq.groupFund.description;
       userFundReq['dueDate'] = userFundReq.groupFund.dueDate;
       userFundReq['amount'] = userFundReq.groupFund.amount;
-      userFundReq['unit'] = userFundReq.groupFund.unit;
       userFundReq['paymentInfo'] = userFundReq.groupFund.paymentInfo;
       userFundReq['qrImage'] = userFundReq.groupFund.qrImage;
       userFundReq['createdAt'] = userFundReq.groupFund.createdAt;
+      delete userFundReq.groupFund;
     });
 
     return {
@@ -4144,6 +4156,13 @@ export class GroupService {
       }),
     ]);
 
+    // Update response data
+    result.map((userFundReq) => {
+      userFundReq['name'] = userFundReq.user.name;
+      userFundReq['image'] = userFundReq.user.image;
+      delete userFundReq.user;
+    });
+
     return {
       totalPages: Math.ceil(totalCount / pageOptions.take),
       totalCount,
@@ -4203,6 +4222,13 @@ export class GroupService {
       });
     }
 
+    // Check fund request status
+    if (userGroupFund.status !== GroupFundStatus.waiting) {
+      throw new BadRequestException(
+        `Invalid fund request status, status: '${userGroupFund.status}'`,
+      );
+    }
+
     // Confirm user's fund request
     try {
       const userFundReq = await this.prismaService.user_group_funds.update({
@@ -4214,7 +4240,7 @@ export class GroupService {
         },
         select: {
           id: true,
-          groupFundId: true,
+          // groupFundId: true,
           status: true,
           groupFund: {
             select: {
@@ -4222,7 +4248,6 @@ export class GroupService {
               description: true,
               dueDate: true,
               amount: true,
-              unit: true,
               paymentInfo: true,
               qrImage: true,
               createdAt: true,
@@ -4237,10 +4262,10 @@ export class GroupService {
       userFundReq['description'] = userFundReq.groupFund.description;
       userFundReq['dueDate'] = userFundReq.groupFund.dueDate;
       userFundReq['amount'] = userFundReq.groupFund.amount;
-      userFundReq['unit'] = userFundReq.groupFund.unit;
       userFundReq['paymentInfo'] = userFundReq.groupFund.paymentInfo;
       userFundReq['qrImage'] = userFundReq.groupFund.qrImage;
       userFundReq['createdAt'] = userFundReq.groupFund.createdAt;
+      delete userFundReq.groupFund;
 
       return userFundReq;
     } catch (error) {
@@ -4294,11 +4319,13 @@ export class GroupService {
       });
     }
 
-    if (userFund.status === GroupFundStatus.waiting) {
-      throw new BadRequestException({
-        message: `User fund request status invalid, cannot be '${userFund.status} when approve'`,
-        data: null,
-      });
+    if (
+      userFund.status !== GroupFundStatus.pending &&
+      userFund.status !== GroupFundStatus.rejected
+    ) {
+      throw new BadRequestException(
+        `Invalid fund request status, status: '${userFund.status}'`,
+      );
     }
 
     // Confirm user's fund request
@@ -4312,7 +4339,6 @@ export class GroupService {
         },
         select: {
           id: true,
-          groupFundId: true,
           status: true,
           groupFund: {
             select: {
@@ -4320,12 +4346,21 @@ export class GroupService {
               description: true,
               dueDate: true,
               amount: true,
-              unit: true,
               paymentInfo: true,
               qrImage: true,
               createdAt: true,
             },
           },
+        },
+      });
+
+      // Create group expense - type: income
+      await this.prismaService.group_expenses.create({
+        data: {
+          groupId: groupId,
+          type: ExpenseType.income,
+          description: `Income from group fund - id: ${groupFund.id}, title: ${groupFund.title}, member: ${userId}`,
+          amount: groupFund.amount,
         },
       });
 
@@ -4335,10 +4370,10 @@ export class GroupService {
       userFundReq['description'] = userFundReq.groupFund.description;
       userFundReq['dueDate'] = userFundReq.groupFund.dueDate;
       userFundReq['amount'] = userFundReq.groupFund.amount;
-      userFundReq['unit'] = userFundReq.groupFund.unit;
       userFundReq['paymentInfo'] = userFundReq.groupFund.paymentInfo;
       userFundReq['qrImage'] = userFundReq.groupFund.qrImage;
       userFundReq['createdAt'] = userFundReq.groupFund.createdAt;
+      delete userFundReq.groupFund;
 
       return userFundReq;
     } catch (error) {
@@ -4373,7 +4408,6 @@ export class GroupService {
       const group_expense = await this.prismaService.group_expenses.create({
         data: {
           groupId: groupId,
-          fundId: dto.fundId,
           type: dto.type,
           description: dto.description,
           amount: dto.amount,
@@ -4381,26 +4415,15 @@ export class GroupService {
         },
         select: {
           id: true,
-          groupId: true,
-          fundId: true,
           type: true,
           categories: true,
           amount: true,
-          groupFund: {
-            select: {
-              unit: true,
-            },
-          },
           description: true,
           createdAt: true,
         },
       });
 
       // Update response data
-      // Move groupFund.unit to group_expense
-      group_expense['unit'] = group_expense.groupFund.unit;
-      delete group_expense.groupFund;
-
       // Parse categories to JSON
       group_expense.categories = JSON.parse(
         group_expense.categories,
@@ -4416,7 +4439,6 @@ export class GroupService {
     groupId: number,
     userId: string,
     pageOptions: PageOptionsGroupExpenseDto,
-    dto: FetchGroupExpensesDto,
   ) {
     // Check and get group's info
     const group = await this.checkValidGroup(groupId);
@@ -4430,45 +4452,20 @@ export class GroupService {
     }
 
     // Fetch group expenses
-    const whereConditions = {
-      groupId: groupId,
-      fundId: dto.fundId,
-    };
-
-    if (dto.type) {
-      whereConditions['type'] = dto.type;
-    }
-
-    if (dto.startDate) {
-      whereConditions['createdAt'] = {
-        gte: new Date(dto.startDate),
-      };
-    }
-
-    if (dto.endDate) {
-      whereConditions['createdAt'] = {
-        ...whereConditions['createdAt'],
-        lte: new Date(dto.endDate),
-      };
-    }
-
     const conditions = {
       orderBy: [
         {
           createdAt: pageOptions.order,
         },
       ],
-      where: whereConditions,
+      where: {
+        groupId: groupId,
+      },
       select: {
         id: true,
         type: true,
         categories: true,
         amount: true,
-        groupFund: {
-          select: {
-            unit: true,
-          },
-        },
         description: true,
         createdAt: true,
       },
@@ -4496,10 +4493,6 @@ export class GroupService {
 
     // Update response data
     result.map((expense) => {
-      // Move groupFund.unit out of groupFund
-      expense['unit'] = expense.groupFund.unit;
-      delete expense.groupFund;
-
       // Parse categories to JSON
       expense.categories = JSON.parse(expense.categories).categories;
     });
@@ -4511,21 +4504,7 @@ export class GroupService {
     };
   }
 
-  convertBalance(amount: number, target_unit: UnitCurrency) {
-    if (target_unit === UnitCurrency.USD) {
-      // VND -> USD
-      return (amount * 1) / VND_EXCHANGE_RATE;
-    }
-
-    // USD -> VND
-    return amount * VND_EXCHANGE_RATE;
-  }
-
-  async fetchGroupFundBalance(
-    groupId: number,
-    userId: string,
-    dto: FetchGroupFundBalanceDto,
-  ) {
+  async fetchGroupFundBalance(groupId: number, userId: string) {
     // Check and get group's info
     const group = await this.checkValidGroup(groupId);
 
@@ -4545,56 +4524,67 @@ export class GroupService {
       select: {
         amount: true,
         type: true,
-        groupFund: {
-          select: {
-            unit: true,
-          },
-        },
       },
     });
 
     // Calculate balance
-    // Filter expenses by UnitCurrency
-    let reqUnitExpenseBalance = 0;
-    let otherUnitExpenseBalance = 0;
-    const reqUnitExpense = [];
-    const otherUnitExpense = [];
+    let fundBalance = 0;
 
-    for (const expense of groupExpenses) {
-      if (expense.groupFund.unit === dto.unit) {
-        reqUnitExpense.push(expense);
+    // Calculate balance = sum(income) - sum(expense)
+    groupExpenses.forEach((expense) => {
+      if (expense.type === ExpenseType.income) {
+        fundBalance += expense.amount;
       } else {
-        otherUnitExpense.push(expense);
+        fundBalance -= expense.amount;
       }
+    });
+
+    // Get latest group fund (Fund payment)
+    const latest_group_fund = await this.prismaService.group_funds.findFirst({
+      where: {
+        groupId: groupId,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+
+    if (!latest_group_fund) {
+      return {
+        balance: fundBalance,
+        currentFund: null,
+      };
     }
 
-    // Calculate balance of reqUnitExpense
-    reqUnitExpense.forEach((expense) => {
-      if (expense.type === ExpenseType.income) {
-        reqUnitExpenseBalance += expense.amount;
-      } else {
-        reqUnitExpenseBalance -= expense.amount;
-      }
+    // Get current amount of the latest group fund
+    const numOfMemberCompletedFundReq =
+      await this.prismaService.user_group_funds.count({
+        where: {
+          groupFundId: latest_group_fund.id,
+          status: GroupFundStatus.accepted,
+        },
+      });
+
+    const currentAmount =
+      numOfMemberCompletedFundReq * latest_group_fund.amount;
+
+    // Get target amount of the latest group fund
+    const numOfMemberFundReq = await this.prismaService.user_group_funds.count({
+      where: {
+        groupFundId: latest_group_fund.id,
+      },
     });
 
-    // Calculate balance of otherUnitExpense
-    otherUnitExpense.forEach((expense) => {
-      if (expense.type === ExpenseType.income) {
-        otherUnitExpenseBalance += expense.amount;
-      } else {
-        otherUnitExpenseBalance -= expense.amount;
-      }
-    });
-
-    // Convert otherUnitExpenseBalance to request unit (dto.unit)
-    otherUnitExpenseBalance = this.convertBalance(
-      otherUnitExpenseBalance,
-      dto.unit,
-    );
+    const targetAmount = numOfMemberFundReq * latest_group_fund.amount;
 
     return {
-      balance: reqUnitExpenseBalance + otherUnitExpenseBalance,
-      unit: dto.unit,
+      balance: fundBalance,
+      currentFund: {
+        id: latest_group_fund.id,
+        title: latest_group_fund.title,
+        currentAmount: currentAmount,
+        targetAmount: targetAmount,
+      },
     };
   }
 }
