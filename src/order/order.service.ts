@@ -80,6 +80,12 @@ export class OrderService {
           data: null,
         });
       }
+      if (purchasedPackage.userId != userId) {
+        throw new BadRequestException({
+          message: 'Access Denied',
+          data: null,
+        });
+      }
       const updatedOrder = await this.prismaService.orders.findFirst({
         where: {
           id: purchasedPackage.orderId,
