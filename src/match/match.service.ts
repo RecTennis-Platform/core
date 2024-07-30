@@ -577,26 +577,50 @@ export class MatchService {
     console.log('activeScore.team1Score', typeof activeScore.team1Score);
     console.log('activeScore.team2Score', typeof activeScore.team2Score);
 
-    // Get current score
+    // Init scores
     let teamWinScore = 0;
     let teamLoseScore = 0;
-    if (dto.teamWin === 1) {
-      if (activeGame.isTieBreak) {
-        // Tie break game score
-        teamWinScore = parseInt(activeScore.team1Score) + 1;
-        teamLoseScore = parseInt(activeScore.team2Score);
+
+    if (dto.type === ScoreType.fault) {
+      // Don't update score but continue the flow
+      if (dto.teamWin === 1) {
+        if (activeGame.isTieBreak) {
+          // Tie break game score
+          teamWinScore = parseInt(activeScore.team1Score);
+          teamLoseScore = parseInt(activeScore.team2Score);
+        } else {
+          // Normal game score
+          teamWinScore = reverseScoreMap[activeScore.team1Score];
+          teamLoseScore = reverseScoreMap[activeScore.team2Score];
+        }
       } else {
-        // Normal game score
-        teamWinScore = reverseScoreMap[activeScore.team1Score] + 1;
-        teamLoseScore = reverseScoreMap[activeScore.team2Score];
+        if (activeGame.isTieBreak) {
+          teamWinScore = parseInt(activeScore.team2Score);
+          teamLoseScore = parseInt(activeScore.team1Score);
+        } else {
+          teamWinScore = reverseScoreMap[activeScore.team2Score];
+          teamLoseScore = reverseScoreMap[activeScore.team1Score];
+        }
       }
     } else {
-      if (activeGame.isTieBreak) {
-        teamWinScore = parseInt(activeScore.team2Score) + 1;
-        teamLoseScore = parseInt(activeScore.team1Score);
+      if (dto.teamWin === 1) {
+        if (activeGame.isTieBreak) {
+          // Tie break game score
+          teamWinScore = parseInt(activeScore.team1Score) + 1;
+          teamLoseScore = parseInt(activeScore.team2Score);
+        } else {
+          // Normal game score
+          teamWinScore = reverseScoreMap[activeScore.team1Score] + 1;
+          teamLoseScore = reverseScoreMap[activeScore.team2Score];
+        }
       } else {
-        teamWinScore = reverseScoreMap[activeScore.team2Score] + 1;
-        teamLoseScore = reverseScoreMap[activeScore.team1Score];
+        if (activeGame.isTieBreak) {
+          teamWinScore = parseInt(activeScore.team2Score) + 1;
+          teamLoseScore = parseInt(activeScore.team1Score);
+        } else {
+          teamWinScore = reverseScoreMap[activeScore.team2Score] + 1;
+          teamLoseScore = reverseScoreMap[activeScore.team1Score];
+        }
       }
     }
 

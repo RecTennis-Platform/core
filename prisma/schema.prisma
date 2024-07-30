@@ -695,6 +695,7 @@ enum ScoreType {
   f_error
   unf_error
   init
+  double_fault
 }
 
 enum SetStatus {
