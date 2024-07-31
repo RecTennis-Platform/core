@@ -51,6 +51,7 @@ export class PurchasedPackageService {
           startDate: value.startDate,
           endDate: value.endDate,
           name: value.package.name,
+          packageId: value.package.id,
           services: await Promise.all(
             value.package.services.map(async (service) => {
               const { config, ...serviceInfo } = service;

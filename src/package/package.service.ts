@@ -125,4 +125,23 @@ export class PackageService {
     }
     return packageDetail;
   }
+
+  async getAllParents(childId: number): Promise<any[]> {
+    const getParentsRecursive = async (id: number): Promise<any[]> => {
+      const packages = await this.prismaService.packages.findUnique({
+        where: { id },
+        include: { parentPackage: true },
+      });
+
+      if (!packages || !packages.parentPackage) {
+        return [];
+      }
+
+      const parent = packages.parentPackage;
+      const parents = await getParentsRecursive(parent.id);
+      return [parent, ...parents];
+    };
+
+    return getParentsRecursive(childId);
+  }
 }

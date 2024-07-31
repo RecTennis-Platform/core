@@ -9545,6 +9545,93 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get list upgrade packages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTczMjE4MSwiZXhwIjoxNzIwMzcyMTgxfQ.flATxD4ag9SwIdaO3RXzonyrWcKT3KfEzEQHGt5CpXU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/packages/upgrade/3",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"packages",
+								"upgrade",
+								"3"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get list upgrade package",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/packages/upgrade/3",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"packages",
+										"upgrade",
+										"3"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "835"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"343-uo+QkxmVWnC4tJwFXlgSU4MTPNg\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 31 Jul 2024 15:41:10 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 4,\n        \"name\": \"Affiliate Advanced\",\n        \"price\": 900000,\n        \"duration\": 4,\n        \"images\": [],\n        \"createdAt\": \"2024-05-07T14:26:23.464Z\",\n        \"updatedAt\": \"2024-05-07T14:26:23.464Z\",\n        \"description\": \"This package is tailored for affiliate marketers and advertisers, providing powerful tools to create, manage, and optimize your advertising campaigns\",\n        \"features\": [\n            \"Advertisements for all users\",\n            \"Create up to 50 advertisements\"\n        ],\n        \"parentId\": 5\n    },\n    {\n        \"id\": 5,\n        \"name\": \"Affiliate Advanced Advanced\",\n        \"price\": 900000,\n        \"duration\": 4,\n        \"images\": [],\n        \"createdAt\": \"2024-05-07T14:26:23.464Z\",\n        \"updatedAt\": \"2024-05-07T14:26:23.464Z\",\n        \"description\": \"This package is tailored for affiliate marketers and advertisers, providing powerful tools to create, manage, and optimize your advertising campaigns\",\n        \"features\": [\n            \"Advertisements for all users\",\n            \"Create up to 50 advertisements\"\n        ],\n        \"parentId\": null\n    }\n]"
+						}
+					]
 				}
 			]
 		},
