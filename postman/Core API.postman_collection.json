@@ -9017,7 +9017,7 @@
 					]
 				},
 				{
-					"name": "upgrade or renew order",
+					"name": "upgrade order",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -9039,7 +9039,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\",\r\n    \"partner\": \"VNPAY\",\r\n    \"type\": \"upgrade\"\r\n}",
+							"raw": "{\r\n    \"purchasedPackageId\": \"66aa4995f898a75694b161a1\",\r\n    \"partner\": \"VNPAY\",\r\n    \"packageId\": 4\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -9047,19 +9047,20 @@
 							}
 						},
 						"url": {
-							"raw": "{{CORE_URL}}/orders/purchased-packages",
+							"raw": "{{CORE_URL}}/orders/purchased-packages/upgrade",
 							"host": [
 								"{{CORE_URL}}"
 							],
 							"path": [
 								"orders",
-								"purchased-packages"
+								"purchased-packages",
+								"upgrade"
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "upgrade or renew order",
+							"name": "upgrade order",
 							"originalRequest": {
 								"method": "POST",
 								"header": [
@@ -9071,7 +9072,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"purchasedPackageId\": \"668a53df0f7e1006ac5cb330\",\r\n    \"partner\": \"VNPAY\",\r\n    \"type\": \"upgrade\"\r\n}",
+									"raw": "{\r\n    \"purchasedPackageId\": \"66aa4995f898a75694b161a1\",\r\n    \"partner\": \"VNPAY\",\r\n    \"packageId\": 4\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -9079,13 +9080,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{CORE_URL}}/orders/purchased-packages",
+									"raw": "{{CORE_URL}}/orders/purchased-packages/upgrade",
 									"host": [
 										"{{CORE_URL}}"
 									],
 									"path": [
 										"orders",
-										"purchased-packages"
+										"purchased-packages",
+										"upgrade"
 									]
 								}
 							},
@@ -9111,11 +9113,11 @@
 								},
 								{
 									"key": "ETag",
-									"value": "W/\"379-79ZQo8uo+vE3lAOWwvQ4z02umiY\""
+									"value": "W/\"379-TG3crqgtEDZl0YXz4jYBxCYNA9Q\""
 								},
 								{
 									"key": "Date",
-									"value": "Mon, 29 Jul 2024 08:31:30 GMT"
+									"value": "Wed, 31 Jul 2024 14:38:18 GMT"
 								},
 								{
 									"key": "Connection",
@@ -9127,7 +9129,124 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"order\": {\n        \"id\": \"28718110-8ea1-4054-ae37-429dc44a23e2\",\n        \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n        \"packageId\": 3,\n        \"price\": 500000,\n        \"status\": \"new\",\n        \"createdAt\": \"2024-07-29T08:31:30.396Z\",\n        \"updatedAt\": \"2024-07-29T08:31:30.396Z\",\n        \"partner\": \"VNPAY\",\n        \"type\": \"upgrade\",\n        \"referenceId\": \"3bef63b9-91a7-42b8-8477-ad95501332da\"\n    },\n    \"payment\": {\n        \"url\": \"https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=50000000&vnp_Command=pay&vnp_CreateDate=20240729153130&vnp_CurrCode=VND&vnp_IpAddr=%3A%3A1&vnp_Locale=vi&vnp_OrderInfo=Thanh+toan+cho+don+hang+28718110-8ea1-4054-ae37-429dc44a23e2&vnp_OrderType=other&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A8001%2Fpayment%2Fstatus&vnp_SecureHash=e1fead544411c860080e655f95b0eafce7413ef51112d1fffcbd46d57bca01a52f435c1e96def8e02b89d3305189d0671b9544fc5fb2c7c8eebcb3205df4c76e&vnp_TmnCode=WE9EYUI9&vnp_TxnRef=28718110-8ea1-4054-ae37-429dc44a23e2&vnp_Version=2.1.0\"\n    }\n}"
+							"body": "{\n    \"order\": {\n        \"id\": \"b8ff6e9c-a6c1-447f-82c7-a62dd32347f5\",\n        \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n        \"packageId\": 4,\n        \"price\": 900000,\n        \"status\": \"new\",\n        \"createdAt\": \"2024-07-31T14:38:16.659Z\",\n        \"updatedAt\": \"2024-07-31T14:38:16.659Z\",\n        \"partner\": \"VNPAY\",\n        \"type\": \"upgrade\",\n        \"referenceId\": \"2b1fbb2f-c9e0-4e76-947e-bcb08fc12c3e\"\n    },\n    \"payment\": {\n        \"url\": \"https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=90000000&vnp_Command=pay&vnp_CreateDate=20240731213819&vnp_CurrCode=VND&vnp_IpAddr=%3A%3A1&vnp_Locale=vi&vnp_OrderInfo=Thanh+toan+cho+don+hang+b8ff6e9c-a6c1-447f-82c7-a62dd32347f5&vnp_OrderType=other&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A8001%2Fpayment%2Fstatus&vnp_SecureHash=151eca8798ebe3b80dcde348f46afa435f7c5938f353348e092e63f9b0bea25dbf9d864e4a02e8962660266911885c6fcb5c02f3d827699e274de42f636ebf3e&vnp_TmnCode=WE9EYUI9&vnp_TxnRef=b8ff6e9c-a6c1-447f-82c7-a62dd32347f5&vnp_Version=2.1.0\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "renew order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIyMDkzMzMwLCJleHAiOjE3MjMzODkzMzB9.sVd0d7Jdy2n7JukmRJYd7PQqQleJMNWXSrqyITHZZJs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "IsMobile",
+								"value": "true",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"purchasedPackageId\": \"66aa4995f898a75694b161a1\",\r\n    \"partner\": \"VNPAY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/orders/purchased-packages/renew",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"orders",
+								"purchased-packages",
+								"renew"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "renew order",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "IsMobile",
+										"value": "true",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"purchasedPackageId\": \"66aa4995f898a75694b161a1\",\r\n    \"partner\": \"VNPAY\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/orders/purchased-packages/renew",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"orders",
+										"purchased-packages",
+										"renew"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "889"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"379-TG3crqgtEDZl0YXz4jYBxCYNA9Q\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 31 Jul 2024 14:38:18 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"order\": {\n        \"id\": \"b8ff6e9c-a6c1-447f-82c7-a62dd32347f5\",\n        \"userId\": \"4fc83843-0e9a-4c07-a324-35d805c101db\",\n        \"packageId\": 4,\n        \"price\": 900000,\n        \"status\": \"new\",\n        \"createdAt\": \"2024-07-31T14:38:16.659Z\",\n        \"updatedAt\": \"2024-07-31T14:38:16.659Z\",\n        \"partner\": \"VNPAY\",\n        \"type\": \"upgrade\",\n        \"referenceId\": \"2b1fbb2f-c9e0-4e76-947e-bcb08fc12c3e\"\n    },\n    \"payment\": {\n        \"url\": \"https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=90000000&vnp_Command=pay&vnp_CreateDate=20240731213819&vnp_CurrCode=VND&vnp_IpAddr=%3A%3A1&vnp_Locale=vi&vnp_OrderInfo=Thanh+toan+cho+don+hang+b8ff6e9c-a6c1-447f-82c7-a62dd32347f5&vnp_OrderType=other&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A8001%2Fpayment%2Fstatus&vnp_SecureHash=151eca8798ebe3b80dcde348f46afa435f7c5938f353348e092e63f9b0bea25dbf9d864e4a02e8962660266911885c6fcb5c02f3d827699e274de42f636ebf3e&vnp_TmnCode=WE9EYUI9&vnp_TxnRef=b8ff6e9c-a6c1-447f-82c7-a62dd32347f5&vnp_Version=2.1.0\"\n    }\n}"
 						}
 					]
 				},

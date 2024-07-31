@@ -4,6 +4,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsOptional,
+  IsNumber,
 } from 'class-validator';
 
 export enum PartnerPayment {
@@ -37,8 +38,26 @@ export class UpgradeOrderDto {
   @IsNotEmpty()
   purchasedPackageId: string;
 
-  @IsEnum(CreateOrderEnum)
+  @IsNumber()
   @IsNotEmpty()
+  packageId: number;
+
+  @IsEnum(CreateOrderEnum)
+  @IsOptional()
+  type: CreateOrderEnum;
+
+  @IsEnum(PartnerPayment)
+  @IsNotEmpty()
+  partner?: PartnerPayment;
+}
+
+export class RenewOrderDto {
+  @IsString()
+  @IsNotEmpty()
+  purchasedPackageId: string;
+
+  @IsEnum(CreateOrderEnum)
+  @IsOptional()
   type: CreateOrderEnum;
 
   @IsEnum(PartnerPayment)

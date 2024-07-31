@@ -5,7 +5,11 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateOrderDto, UpgradeOrderDto } from './dto/create-order.dto';
+import {
+  CreateOrderDto,
+  RenewOrderDto,
+  UpgradeOrderDto,
+} from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaymentService } from 'src/services/payment/payment.service';
@@ -104,21 +108,120 @@ export class OrderService {
           data: null,
         });
       }
+      const childrenPackages = await this.getAllChildren(dto.packageId);
+      const childrenPackagesIds = childrenPackages.map(
+        (cpackage) => cpackage.id,
+      );
 
-      if (!updatedOrder.package.parentId && dto.type === 'upgrade') {
+      if (!childrenPackagesIds.includes(updatedOrder.package.id)) {
         throw new BadRequestException({
-          message: 'This package cannot upgrade',
+          message: 'Cannot upgrade to this package',
           data: null,
         });
       }
-      const price =
-        dto.type === 'upgrade'
-          ? updatedOrder.package.parentPackage.price
-          : updatedOrder.package.price;
-      const packageId =
-        dto.type === 'upgrade'
-          ? updatedOrder.package.parentPackage.id
-          : updatedOrder.package.id;
+      const parentPackage = await this.prismaService.packages.findFirst({
+        where: {
+          id: dto.packageId,
+        },
+      });
+      const price = parentPackage.price;
+      const packageId = parentPackage.id;
+      const order = await this.prismaService.orders.create({
+        data: {
+          userId: userId,
+          packageId,
+          price,
+          partner: dto.partner,
+          type: dto.type,
+          referenceId: updatedOrder.id,
+        },
+      });
+      const returnUrl = headers?.ismobile
+        ? process.env.RETURN_URL_PAYMENT_FOR_MOBILE
+        : process.env.RETURN_URL_PAYMENT_FOR_WEB;
+      const paymentDto: CreatePaymentUrlRequest = {
+        amount: order.price,
+        locale: 'vi',
+        orderId: order.id,
+        partner: dto.partner,
+        clientIp: ip,
+        returnUrl: returnUrl,
+      };
+      const payment = await this.paymentService.createPayment(paymentDto);
+      return { order, payment: payment?.data };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllChildren(parentId: number): Promise<any[]> {
+    const result: any[] = [];
+    const queue: number[] = [parentId];
+
+    while (queue.length > 0) {
+      const currentId = queue.shift();
+      if (currentId === undefined) continue;
+
+      // Lấy tất cả các gói con của gói hiện tại
+      const children = await this.prismaService.packages.findMany({
+        where: { parentId: currentId },
+      });
+
+      // Thêm các gói con vào kết quả và vào hàng đợi
+      result.push(...children);
+      queue.push(...children.map((child) => child.id));
+    }
+
+    return result;
+  }
+
+  async renew(dto: RenewOrderDto, ip: string, headers: any, userId: string) {
+    try {
+      const purchasedPackage =
+        await this.mongodbPrismaService.purchasedPackage.findUnique({
+          where: {
+            id: dto.purchasedPackageId,
+          },
+        });
+      if (!purchasedPackage) {
+        throw new NotFoundException({
+          message: 'Purchased Package not found',
+          data: null,
+        });
+      }
+      if (purchasedPackage.userId != userId) {
+        throw new BadRequestException({
+          message: 'Access Denied',
+          data: null,
+        });
+      }
+      const updatedOrder = await this.prismaService.orders.findFirst({
+        where: {
+          id: purchasedPackage.orderId,
+        },
+        include: {
+          package: {
+            include: {
+              parentPackage: true,
+            },
+          },
+        },
+      });
+      if (!updatedOrder) {
+        throw new NotFoundException({
+          message: 'Order not found',
+          data: null,
+        });
+      }
+
+      // if (!updatedOrder.package.parentId && dto.type === 'upgrade') {
+      //   throw new BadRequestException({
+      //     message: 'This package cannot upgrade',
+      //     data: null,
+      //   });
+      // }
+      const price = updatedOrder.package.price;
+      const packageId = updatedOrder.package.id;
       const order = await this.prismaService.orders.create({
         data: {
           userId: userId,

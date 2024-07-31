@@ -13,7 +13,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto, UpgradeOrderDto } from './dto/create-order.dto';
+import {
+  CreateOrderDto,
+  CreateOrderEnum,
+  RenewOrderDto,
+  UpgradeOrderDto,
+} from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Ip } from '@nestjs/common';
 import { JwtGuard } from 'src/auth_utils/guards';
@@ -47,7 +52,7 @@ export class OrderController {
   }
 
   @UseGuards(JwtGuard)
-  @Post('purchased-packages')
+  @Post('purchased-packages/upgrade')
   async upgrade(
     @GetUser('sub') userId: string,
     @Body() dto: UpgradeOrderDto,
@@ -55,7 +60,30 @@ export class OrderController {
     @Headers() headers,
   ) {
     try {
+      dto.type = CreateOrderEnum.upgrade;
       return this.orderService.upgrade(dto, ip, headers, userId);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('purchased-packages/renew')
+  async renew(
+    @GetUser('sub') userId: string,
+    @Body() dto: RenewOrderDto,
+    @Ip() ip,
+    @Headers() headers,
+  ) {
+    try {
+      dto.type = CreateOrderEnum.renew;
+      return this.orderService.renew(dto, ip, headers, userId);
     } catch (error) {
       throw new HttpException(
         {
