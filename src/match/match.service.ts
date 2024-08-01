@@ -5,7 +5,13 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { MatchStatus, ScoreType, SetStatus } from '@prisma/client';
+import {
+  ChangeLogOperation,
+  MatchStatus,
+  ScoreType,
+  SetStatus,
+} from '@prisma/client';
+import { v4, validate as isUuid } from 'uuid';
 import { Order } from 'constants/order';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateScoreDto } from './dto';
@@ -221,6 +227,9 @@ export class MatchService {
   }
 
   async startMatch(matchId: string, refereeId: string, teamServeId: string) {
+    const transactionGroupId = v4(); // Generate transaction group id
+    const changeLogs = [];
+
     // Validate if referee is assigned to this match
     const assignedMatch = await this.prismaService.matches.findUnique({
       where: {
@@ -266,6 +275,27 @@ export class MatchService {
       throw new BadRequestException(`MatchStartDate must be today`);
     }
 
+    // Helper function to log changes
+    const logChange = (
+      operation: ChangeLogOperation,
+      tableName: string,
+      recordId: string | number,
+      oldData: any,
+      newData: any,
+    ) => {
+      if (typeof recordId === 'number') {
+        recordId = recordId.toString();
+      }
+
+      changeLogs.push({
+        operation,
+        tableName: tableName,
+        recordId: recordId,
+        oldData: oldData,
+        newData: newData,
+      });
+    };
+
     try {
       // Create new set
       const newSet = await this.prismaService.sets.create({
@@ -274,6 +304,7 @@ export class MatchService {
           status: SetStatus.on_going,
         },
       });
+      logChange(ChangeLogOperation.CREATE, 'sets', newSet.id, null, newSet);
 
       // Create new game
       const newGame = await this.prismaService.games.create({
@@ -281,17 +312,30 @@ export class MatchService {
           setId: newSet.id,
         },
       });
+      logChange(ChangeLogOperation.CREATE, 'games', newGame.id, null, newGame);
 
       // Creat init score (0 - 0)
-      await this.prismaService.scores.create({
+      const newScore = await this.prismaService.scores.create({
         data: {
           gameId: newGame.id,
           teamServeId: teamServeId,
         },
       });
+      logChange(
+        ChangeLogOperation.CREATE,
+        'scores',
+        newScore.id,
+        null,
+        newScore,
+      );
 
       // Update match status (scheduled -> walk_over)
-      await this.prismaService.matches.update({
+      const oldMatch = await this.prismaService.matches.findUnique({
+        where: {
+          id: matchId,
+        },
+      });
+      const updatedMatch = await this.prismaService.matches.update({
         where: {
           id: matchId,
         },
@@ -300,6 +344,13 @@ export class MatchService {
           refereeMatchStartDate: new Date(),
         },
       });
+      logChange(
+        ChangeLogOperation.UPDATE,
+        'matches',
+        updatedMatch.id,
+        oldMatch,
+        updatedMatch,
+      );
 
       const userIds = [];
       let otherParams, type;
@@ -386,6 +437,15 @@ export class MatchService {
       };
       await this.notificationProducer.add(notificationData);
 
+      // At the end of the transaction, create all the change logs
+      await this.prismaService.match_change_log.createMany({
+        data: changeLogs.map((log) => ({
+          ...log,
+          matchId: matchId,
+          transactionGroupId: transactionGroupId,
+        })),
+      });
+
       return await this.getMatchDetails(matchId, refereeId);
     } catch (err) {
       throw new InternalServerErrorException({
@@ -395,6 +455,9 @@ export class MatchService {
   }
 
   async startSet(matchId: string, refereeId: string) {
+    const transactionGroupId = v4(); // Generate transaction group id
+    const changeLogs = [];
+
     // Validate if referee is assigned to this match
     const assignedMatch = await this.prismaService.matches.findUnique({
       where: {
@@ -426,9 +489,35 @@ export class MatchService {
       throw new BadRequestException('Set not found');
     }
 
+    // Helper function to log changes
+    const logChange = (
+      operation: ChangeLogOperation,
+      tableName: string,
+      recordId: string | number,
+      oldData: any,
+      newData: any,
+    ) => {
+      if (typeof recordId === 'number') {
+        recordId = recordId.toString();
+      }
+
+      changeLogs.push({
+        operation,
+        tableName: tableName,
+        recordId: recordId,
+        oldData: oldData,
+        newData: newData,
+      });
+    };
+
     try {
       // Update set status (not_started -> on_going)
-      await this.prismaService.sets.update({
+      const oldSet = await this.prismaService.sets.findUnique({
+        where: {
+          id: currentSet.id,
+        },
+      });
+      const updatedSet = await this.prismaService.sets.update({
         where: {
           id: currentSet.id,
         },
@@ -437,6 +526,13 @@ export class MatchService {
           setStartTime: new Date(),
         },
       });
+      logChange(
+        ChangeLogOperation.UPDATE,
+        'sets',
+        updatedSet.id,
+        oldSet,
+        updatedSet,
+      );
 
       // Create new game
       const newGame = await this.prismaService.games.create({
@@ -444,12 +540,29 @@ export class MatchService {
           setId: currentSet.id,
         },
       });
+      logChange(ChangeLogOperation.CREATE, 'games', newGame.id, null, newGame);
 
       // Creat init score (0 - 0)
-      await this.prismaService.scores.create({
+      const newScore = await this.prismaService.scores.create({
         data: {
           gameId: newGame.id,
         },
+      });
+      logChange(
+        ChangeLogOperation.CREATE,
+        'scores',
+        newScore.id,
+        null,
+        newScore,
+      );
+
+      // At the end of the transaction, create all the change logs
+      await this.prismaService.match_change_log.createMany({
+        data: changeLogs.map((log) => ({
+          ...log,
+          matchId: matchId,
+          transactionGroupId: transactionGroupId,
+        })),
       });
 
       return await this.getMatchDetails(matchId, refereeId);
@@ -461,6 +574,10 @@ export class MatchService {
   }
 
   async updateScore(matchId: string, refereeId: string, dto: UpdateScoreDto) {
+    const transactionGroupId = v4(); // Generate transaction group id
+    const changeLogs = [];
+
+    // Validation
     // Validate if referee is assigned to this match
     const assignedMatch = await this.prismaService.matches.findUnique({
       where: {
@@ -552,14 +669,26 @@ export class MatchService {
       );
     }
 
-    // // Check valid teamServeId -> teamId1 or teamId2
-    // if (
-    //   ![assignedMatch.teamId1, assignedMatch.teamId2].includes(dto.teamServeId)
-    // ) {
-    //   throw new BadRequestException(
-    //     `Invalid teamServeId value: '${dto.teamServeId}'. Must be teamId1 or teamId2`,
-    //   );
-    // }
+    // Helper function to log changes
+    const logChange = (
+      operation: ChangeLogOperation,
+      tableName: string,
+      recordId: string | number,
+      oldData: any,
+      newData: any,
+    ) => {
+      if (typeof recordId === 'number') {
+        recordId = recordId.toString();
+      }
+
+      changeLogs.push({
+        operation,
+        tableName: tableName,
+        recordId: recordId,
+        oldData: oldData,
+        newData: newData,
+      });
+    };
 
     let isGameEnd = false;
 
@@ -569,13 +698,13 @@ export class MatchService {
       new Date(),
     );
 
-    console.log('scoreTime:', scoreTime);
+    // console.log('scoreTime:', scoreTime);
 
-    console.log('activeScore.team1Score', activeScore.team1Score);
-    console.log('activeScore.team2Score', activeScore.team2Score);
+    // console.log('activeScore.team1Score', activeScore.team1Score);
+    // console.log('activeScore.team2Score', activeScore.team2Score);
 
-    console.log('activeScore.team1Score', typeof activeScore.team1Score);
-    console.log('activeScore.team2Score', typeof activeScore.team2Score);
+    // console.log('activeScore.team1Score', typeof activeScore.team1Score);
+    // console.log('activeScore.team2Score', typeof activeScore.team2Score);
 
     // Init scores
     let teamWinScore = 0;
@@ -624,8 +753,8 @@ export class MatchService {
       }
     }
 
-    console.log('teamWinScore:', teamWinScore);
-    console.log('teamLoseScore:', teamLoseScore);
+    // console.log('teamWinScore:', teamWinScore);
+    // console.log('teamLoseScore:', teamLoseScore);
 
     // I. Update score
     let scoreData = {};
@@ -716,7 +845,7 @@ export class MatchService {
 
     try {
       // Add score record
-      await this.prismaService.scores.create({
+      const newScore = await this.prismaService.scores.create({
         data: {
           gameId: activeGame.id,
           type: dto.type,
@@ -725,12 +854,22 @@ export class MatchService {
           ...scoreData,
         },
       });
+      logChange(
+        ChangeLogOperation.CREATE,
+        'scores',
+        newScore.id,
+        null,
+        newScore,
+      );
 
-      console.log('isGameEnd:', isGameEnd);
+      // console.log('isGameEnd:', isGameEnd);
       if (isGameEnd) {
         // Update current game:
         // - teamWinId
-        await this.prismaService.games.update({
+        const oldGame = await this.prismaService.games.findUnique({
+          where: { id: activeGame.id },
+        });
+        const updatedGame = await this.prismaService.games.update({
           where: {
             id: activeGame.id,
           },
@@ -738,6 +877,13 @@ export class MatchService {
             teamWinId: scoreData['teamWinId'],
           },
         });
+        logChange(
+          ChangeLogOperation.UPDATE,
+          'games',
+          updatedGame.id,
+          oldGame,
+          updatedGame,
+        );
 
         // II. Update set
         let isSetEnd = false;
@@ -754,12 +900,12 @@ export class MatchService {
           teamLoseSetScore = activeSet.team1SetScore;
         }
 
-        console.log('teamWinSetScore:', teamWinSetScore);
-        console.log('teamLoseSetScore:', teamLoseSetScore);
-        console.log(
-          'teamWinSetScore >= 6 && teamWinSetScore === teamLoseSetScore',
-          teamWinSetScore >= 6 && teamWinSetScore === teamLoseSetScore,
-        );
+        // console.log('teamWinSetScore:', teamWinSetScore);
+        // console.log('teamLoseSetScore:', teamLoseSetScore);
+        // console.log(
+        //   'teamWinSetScore >= 6 && teamWinSetScore === teamLoseSetScore',
+        //   teamWinSetScore >= 6 && teamWinSetScore === teamLoseSetScore,
+        // );
 
         // Check set score (amount of win games) by rules
         let updateSetData = {};
@@ -805,7 +951,7 @@ export class MatchService {
           teamWinSetScore >= 6 &&
           teamWinSetScore === teamLoseSetScore
         ) {
-          console.log('tie break');
+          // console.log('tie break');
           initedTieBreakGame = true;
 
           // Tie break
@@ -817,7 +963,10 @@ export class MatchService {
 
           // Tie break logic
           // Update set (isTieBreak = true)
-          await this.prismaService.sets.update({
+          const oldSet = await this.prismaService.sets.findUnique({
+            where: { id: activeSet.id },
+          });
+          const updatedSet = await this.prismaService.sets.update({
             where: {
               id: activeSet.id,
             },
@@ -825,6 +974,13 @@ export class MatchService {
               isTieBreak: true,
             },
           });
+          logChange(
+            ChangeLogOperation.UPDATE,
+            'sets',
+            updatedSet.id,
+            oldSet,
+            updatedSet,
+          );
 
           // Create new tie break game
           const newTieBreak = await this.prismaService.games.create({
@@ -833,14 +989,28 @@ export class MatchService {
               isTieBreak: true,
             },
           });
+          logChange(
+            ChangeLogOperation.CREATE,
+            'games',
+            newTieBreak.id,
+            null,
+            newTieBreak,
+          );
 
           // Create init tie break score (0 - 0)
-          await this.prismaService.scores.create({
+          const newTieBreakScore = await this.prismaService.scores.create({
             data: {
               gameId: newTieBreak.id,
               teamServeId: dto.teamServeId,
             },
           });
+          logChange(
+            ChangeLogOperation.CREATE,
+            'scores',
+            newTieBreakScore.id,
+            null,
+            newTieBreakScore,
+          );
         } else {
           // Normal set score
           if (dto.teamWin === 1) {
@@ -857,19 +1027,36 @@ export class MatchService {
         }
 
         // Update set
-        await this.prismaService.sets.update({
+        const oldSet = await this.prismaService.sets.findUnique({
+          where: {
+            id: activeSet.id,
+          },
+        });
+        const updatedSet = await this.prismaService.sets.update({
           where: {
             id: activeSet.id,
           },
           data: updateSetData,
         });
+        logChange(
+          ChangeLogOperation.UPDATE,
+          'sets',
+          updatedSet.id,
+          oldSet,
+          updatedSet,
+        );
 
-        console.log('isSetEnd:', isSetEnd);
+        // console.log('isSetEnd:', isSetEnd);
         if (isSetEnd) {
           // Update current set:
           // - teamWinId
           // - status
-          await this.prismaService.sets.update({
+          const oldSet = await this.prismaService.sets.findUnique({
+            where: {
+              id: activeSet.id,
+            },
+          });
+          const updatedSet = await this.prismaService.sets.update({
             where: {
               id: activeSet.id,
             },
@@ -878,6 +1065,13 @@ export class MatchService {
               status: SetStatus.ended,
             },
           });
+          logChange(
+            ChangeLogOperation.UPDATE,
+            'sets',
+            updatedSet.id,
+            oldSet,
+            updatedSet,
+          );
 
           // III. Update match
           let isMatchEnd = false;
@@ -898,7 +1092,7 @@ export class MatchService {
           let updateNextMatchData = {};
           let [winnerElo, loserElo] = [0, 0];
           if (teamWinMatchScore >= 2) {
-            console.log('win match, 2 sets lead');
+            // console.log('win match, 2 sets lead');
             // Win based on a two-set lead
             isMatchEnd = true;
             if (dto.teamWin === 1) {
@@ -980,7 +1174,7 @@ export class MatchService {
                   assignedMatch.team2.totalElo,
                   tournament.level,
                 );
-                console.log(winnerElo, loserElo);
+                // console.log(winnerElo, loserElo);
                 const user1WinnerElo = assignedMatch.team1.user1.elo || 200;
                 let sumElo = this.sumElo(user1WinnerElo, winnerElo);
 
@@ -1034,7 +1228,7 @@ export class MatchService {
                   assignedMatch.team1.totalElo,
                   tournament.level,
                 );
-                console.log(winnerElo, loserElo);
+                // console.log(winnerElo, loserElo);
                 const user1WinnerElo = assignedMatch.team2.user1.elo || 200;
                 let sumElo = this.sumElo(user1WinnerElo, winnerElo);
                 await this.prismaService.users.update({
@@ -1181,24 +1375,43 @@ export class MatchService {
           }
 
           // Update match
-          await this.prismaService.matches.update({
+          const oldMatch = await this.prismaService.matches.findUnique({
+            where: {
+              id: matchId,
+            },
+          });
+          const updatedMatch = await this.prismaService.matches.update({
             where: {
               id: matchId,
             },
             data: updateMatchData,
           });
+          logChange(
+            ChangeLogOperation.UPDATE,
+            'matches',
+            updatedMatch.id,
+            oldMatch,
+            updatedMatch,
+          );
 
-          console.log('isMatchEnd:', isMatchEnd);
-          console.log('matchId:', matchId);
+          // console.log('isMatchEnd:', isMatchEnd);
+          // console.log('matchId:', matchId);
           if (!isMatchEnd) {
-            console.log('match not end, create new set');
+            // console.log('match not end, create new set');
             // Create new set
-            await this.prismaService.sets.create({
+            const newSet = await this.prismaService.sets.create({
               data: {
                 matchId: matchId,
                 // status: SetStatus.not_started, // default status
               },
             });
+            logChange(
+              ChangeLogOperation.CREATE,
+              'sets',
+              newSet.id,
+              null,
+              newSet,
+            );
           }
 
           const userIds = [];
@@ -1285,7 +1498,7 @@ export class MatchService {
           await this.notificationProducer.add(notificationData);
         } else {
           if (!initedTieBreakGame) {
-            console.log('create new game, set not end');
+            // console.log('create new game, set not end');
             // Set not end -> New game
             // Create new game
             const newGame = await this.prismaService.games.create({
@@ -1293,17 +1506,39 @@ export class MatchService {
                 setId: activeSet.id,
               },
             });
+            logChange(
+              ChangeLogOperation.CREATE,
+              'games',
+              newGame.id,
+              null,
+              newGame,
+            );
 
             // Creat init score (0 - 0)
-            await this.prismaService.scores.create({
+            const newScore = await this.prismaService.scores.create({
               data: {
                 gameId: newGame.id,
                 teamServeId: dto.teamServeId,
               },
             });
+            logChange(
+              ChangeLogOperation.CREATE,
+              'scores',
+              newScore.id,
+              null,
+              newScore,
+            );
           }
         }
       }
+
+      await this.prismaService.match_change_log.createMany({
+        data: changeLogs.map((log) => ({
+          ...log,
+          matchId: matchId,
+          transactionGroupId: transactionGroupId,
+        })),
+      });
 
       return await this.getMatchDetails(matchId, refereeId);
     } catch (err) {
@@ -1348,64 +1583,70 @@ export class MatchService {
       );
     }
 
-    // Get current active set
-    const activeSet = await this.prismaService.sets.findFirst({
+    // If no transactionGroupId is provided, undo the last update
+    const lastChange = await this.prismaService.match_change_log.findFirst({
       where: {
-        matchId: matchId,
-        status: SetStatus.on_going,
-        teamWinId: null,
+        matchId,
       },
       orderBy: {
-        id: Order.DESC,
+        createdAt: Order.DESC,
       },
     });
 
-    // No active set (set.status != 'on_going')
-    if (!activeSet) {
-      throw new BadRequestException(`No active set for match ${matchId}`);
+    if (!lastChange) {
+      throw new BadRequestException('No changes to undo');
     }
 
-    // Get current active game
-    const activeGame = await this.prismaService.games.findFirst({
+    const changesToUndo = await this.prismaService.match_change_log.findMany({
       where: {
-        setId: activeSet.id,
-        teamWinId: null,
+        matchId,
+        transactionGroupId: lastChange.transactionGroupId,
       },
       orderBy: {
-        id: Order.DESC,
+        createdAt: Order.DESC,
       },
     });
 
-    if (!activeGame) {
-      throw new BadRequestException(`No active game for set ${activeSet.id}`);
+    if (changesToUndo.length === 0) {
+      throw new BadRequestException('No changes to undo');
     }
 
-    // Get current active score
-    const activeScore = await this.prismaService.scores.findFirst({
+    for (const change of changesToUndo.reverse()) {
+      let recordId: string | number;
+      if (!isUuid(change.recordId)) {
+        // Convert to int
+        recordId = parseInt(change.recordId);
+      } else {
+        recordId = change.recordId;
+      }
+
+      switch (change.operation) {
+        case ChangeLogOperation.CREATE:
+          await this.prismaService[change.tableName].delete({
+            where: { id: recordId },
+          });
+          break;
+        case ChangeLogOperation.UPDATE:
+          await this.prismaService[change.tableName].update({
+            where: { id: recordId },
+            data: change.oldData,
+          });
+          break;
+        case ChangeLogOperation.DELETE:
+          await this.prismaService[change.tableName].create({
+            data: change.oldData,
+          });
+          break;
+      }
+    }
+
+    // Delete the undone change logs
+    await this.prismaService.match_change_log.deleteMany({
       where: {
-        gameId: activeGame.id,
-      },
-      orderBy: {
-        id: Order.DESC,
+        id: { in: changesToUndo.map((change) => change.id) },
       },
     });
 
-    if (!activeScore) {
-      throw new BadRequestException(`No score for game ${activeGame.id}`);
-    }
-
-    try {
-      // Delete current score
-      await this.prismaService.scores.delete({
-        where: {
-          id: activeScore.id,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
-
-    // Get match details
     return await this.getMatchDetails(matchId, refereeId);
   }
 

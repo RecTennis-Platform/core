@@ -73,7 +73,7 @@ export class MatchController {
   }
 
   @UseGuards(JwtGuard)
-  @Delete(':id/update-score')
+  @Patch(':id/update-score/undo')
   async undoUpdateScore(
     @Param('id') matchId: string,
     @GetUser('sub') refereeId: string,

@@ -372,6 +372,19 @@ model teams {
   tournaments       tournaments?       @relation(fields: [tournamentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
+model match_change_log {
+  id                 String             @id @default(uuid())
+  matchId            String             @map("match_id")
+  operation          ChangeLogOperation
+  tableName          String             @map("table_name")
+  recordId           String             @map("record_id")
+  oldData            Json?              @map("old_data")
+  newData            Json?              @map("new_data")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  transactionGroupId String             @map("transaction_group_id")
+  match              matches            @relation(fields: [matchId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_change_log_matches")
+}
+
 model matches {
   id                    String                 @id @default(uuid())
   roundId               String                 @map("round_id")
@@ -396,6 +409,7 @@ model matches {
   team1MatchScore       Int                    @default(0) @map("team_1_match_score")
   team2MatchScore       Int                    @default(0) @map("team_2_match_score")
   refereeMatchStartDate DateTime?              @map("referee_match_start_date")
+  matchChangeLogs       match_change_log[]
   groupFixture1         group_fixtures?        @relation("groupFixture1", fields: [groupFixtureTeamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match1")
   groupFixture2         group_fixtures?        @relation("groupFixture2", fields: [groupFixtureTeamId2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fixture_groups_match2")
   team1                 teams?                 @relation("team1", fields: [teamId1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_team1")
@@ -548,6 +562,12 @@ model group_expenses {
   updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at")
   deletedAt   DateTime?   @map("deleted_at")
   group       groups      @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_group_expenses_groups")
+}
+
+enum ChangeLogOperation {
+  CREATE
+  UPDATE
+  DELETE
 }
 
 enum ExpenseType {

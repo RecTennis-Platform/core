@@ -4443,10 +4443,17 @@ export class GroupService {
     // Check and get group's info
     const group = await this.checkValidGroup(groupId);
 
-    // Check if req user is the group admin
-    if (group.purchasedPackage.userId !== userId) {
+    // Check if req user is the member of the group
+    const member = await this.prismaService.member_ships.findFirst({
+      where: {
+        groupId: group.id,
+        userId: userId,
+      },
+    });
+
+    if (!member) {
       throw new UnauthorizedException({
-        message: 'Only the group admin can perform this action',
+        message: 'Only member of the group can perform this action',
         data: null,
       });
     }
@@ -4508,10 +4515,17 @@ export class GroupService {
     // Check and get group's info
     const group = await this.checkValidGroup(groupId);
 
-    // Check if req user is the group admin
-    if (group.purchasedPackage.userId !== userId) {
+    // Check if req user is the member of the group
+    const member = await this.prismaService.member_ships.findFirst({
+      where: {
+        groupId: group.id,
+        userId: userId,
+      },
+    });
+
+    if (!member) {
       throw new UnauthorizedException({
-        message: 'Only the group admin can perform this action',
+        message: 'Only member of the group can perform this action',
         data: null,
       });
     }
