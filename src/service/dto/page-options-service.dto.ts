@@ -1,20 +1,20 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
 import { Order } from '../../../constants/order';
-import { OrderStatus } from '@prisma/client';
+import { ServiceLevel, ServiceType } from './create-service.dto';
 
-export class PageOptionsOrderDto {
+export class PageOptionsServiceDto {
   @IsEnum(Order)
   @IsOptional()
   order?: Order = Order.DESC;
 
-  @IsEnum(OrderStatus)
+  @IsEnum(ServiceType)
   @IsOptional()
-  status?: OrderStatus;
+  type?: ServiceType;
 
-  @IsString()
+  @IsEnum(ServiceLevel)
   @IsOptional()
-  userId?: string;
+  level?: ServiceLevel;
 
   @Type(() => Number)
   @IsInt()

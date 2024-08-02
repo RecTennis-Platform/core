@@ -6609,6 +6609,357 @@
 			]
 		},
 		{
+			"name": "Services",
+			"item": [
+				{
+					"name": "Create service",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test Service\",\n    \"config\": \"This is the content\",\n    \"level\": \"basic\",\n    \"type\": \"tournament\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/services",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"services"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Test Service\",\n    \"config\": \"This is the content\",\n    \"level\": \"basic\",\n    \"type\": \"tournament\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/service",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"service"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "175"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"af-xBfS+3bFIA5FquYG6oQfQW80Qak\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 02 Aug 2024 14:39:55 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"name\": \"Test Service\",\n    \"createdAt\": \"2024-08-02T14:39:55.428Z\",\n    \"updatedAt\": \"2024-08-02T14:39:55.428Z\",\n    \"config\": \"This is the content\",\n    \"type\": \"tournament\",\n    \"level\": \"basic\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/services/7",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"services",
+								"7"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/services/7",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"services",
+										"7"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "175"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"af-xBfS+3bFIA5FquYG6oQfQW80Qak\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 02 Aug 2024 14:41:19 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"name\": \"Test Service\",\n    \"createdAt\": \"2024-08-02T14:39:55.428Z\",\n    \"updatedAt\": \"2024-08-02T14:39:55.428Z\",\n    \"config\": \"This is the content\",\n    \"type\": \"tournament\",\n    \"level\": \"basic\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY2hpaGllbjIwMDIyQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxMDEyNjMzMCwiZXhwIjoxNzEwMTI4MTMwfQ.KAQjh_H5fZZ2hWz3_1eHoD1VENKxOUN0EgS8WexknPI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/services",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"services"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Updated content\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/posts/1",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"config\": \"Updated content\",\n    \"level\": \"advanced\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/services/7",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"services",
+										"7"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "174"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"ae-KpMeDZi0RqnzAXDpSUqwBm4qEoA\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 02 Aug 2024 14:42:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"name\": \"Test Service\",\n    \"createdAt\": \"2024-08-02T14:39:55.428Z\",\n    \"updatedAt\": \"2024-08-02T14:42:58.519Z\",\n    \"config\": \"Updated content\",\n    \"type\": \"tournament\",\n    \"level\": \"advanced\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzE5NzQwMzMzLCJleHAiOjE3MjEwMzYzMzN9.EPbwhK6um8pMKX3UX3StK3YiB1nwBo2J6dL5Hsr7d3A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/services/7",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"services",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Advertisement",
 			"item": [
 				{
@@ -9422,6 +9773,139 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"data\": [\n        {\n            \"id\": \"3\",\n            \"userId\": 4,\n            \"packageId\": 1,\n            \"price\": 100,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-03-30T08:52:05.305Z\",\n            \"updatedAt\": \"2024-03-30T08:52:05.305Z\",\n            \"package\": {\n                \"id\": 1,\n                \"name\": \"Essential\",\n                \"price\": 100,\n                \"duration\": 60,\n                \"slots\": 20,\n                \"images\": [],\n                \"createdAt\": \"2024-03-29T08:52:05.305Z\",\n                \"updatedAt\": \"2024-03-29T08:52:05.305Z\",\n                \"level\": 1\n            }\n        },\n        {\n            \"id\": \"4\",\n            \"userId\": 4,\n            \"packageId\": 1,\n            \"price\": 100,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-03-30T08:52:05.305Z\",\n            \"updatedAt\": \"2024-03-30T08:52:05.305Z\",\n            \"package\": {\n                \"id\": 1,\n                \"name\": \"Essential\",\n                \"price\": 100,\n                \"duration\": 60,\n                \"slots\": 20,\n                \"images\": [],\n                \"createdAt\": \"2024-03-29T08:52:05.305Z\",\n                \"updatedAt\": \"2024-03-29T08:52:05.305Z\",\n                \"level\": 1\n            }\n        },\n        {\n            \"id\": \"5\",\n            \"userId\": 4,\n            \"packageId\": 1,\n            \"price\": 100,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-03-30T08:52:05.305Z\",\n            \"updatedAt\": \"2024-03-30T08:52:05.305Z\",\n            \"package\": {\n                \"id\": 1,\n                \"name\": \"Essential\",\n                \"price\": 100,\n                \"duration\": 60,\n                \"slots\": 20,\n                \"images\": [],\n                \"createdAt\": \"2024-03-29T08:52:05.305Z\",\n                \"updatedAt\": \"2024-03-29T08:52:05.305Z\",\n                \"level\": 1\n            }\n        },\n        {\n            \"id\": \"6\",\n            \"userId\": 4,\n            \"packageId\": 1,\n            \"price\": 100,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-03-30T08:52:05.305Z\",\n            \"updatedAt\": \"2024-03-30T08:52:05.305Z\",\n            \"package\": {\n                \"id\": 1,\n                \"name\": \"Essential\",\n                \"price\": 100,\n                \"duration\": 60,\n                \"slots\": 20,\n                \"images\": [],\n                \"createdAt\": \"2024-03-29T08:52:05.305Z\",\n                \"updatedAt\": \"2024-03-29T08:52:05.305Z\",\n                \"level\": 1\n            }\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 4\n}"
+						}
+					]
+				},
+				{
+					"name": "Get list by admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsImVtYWlsIjoidHJpMkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcxMTczMjE4MSwiZXhwIjoxNzIwMzcyMTgxfQ.flATxD4ag9SwIdaO3RXzonyrWcKT3KfEzEQHGt5CpXU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CORE_URL}}/orders/all/details?order=desc&page=1&take=10&userId=2628a142-386b-4ee6-8198-d282d9f41059&status=completed",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"orders",
+								"all",
+								"details"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "desc",
+									"description": "asc, desc"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "take",
+									"value": "10"
+								},
+								{
+									"key": "userId",
+									"value": "2628a142-386b-4ee6-8198-d282d9f41059"
+								},
+								{
+									"key": "status",
+									"value": "completed"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get list by admin",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CORE_URL}}/orders/all/details?order=desc&page=1&take=10&userId=2628a142-386b-4ee6-8198-d282d9f41059&status=completed",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"orders",
+										"all",
+										"details"
+									],
+									"query": [
+										{
+											"key": "order",
+											"value": "desc",
+											"description": "asc, desc"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "take",
+											"value": "10"
+										},
+										{
+											"key": "userId",
+											"value": "2628a142-386b-4ee6-8198-d282d9f41059"
+										},
+										{
+											"key": "status",
+											"value": "completed"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3134"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"c3e-yZZTb1vERDugQ5gOUnB00EbmViM\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 02 Aug 2024 14:55:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"id\": \"f726b87a-87e4-43a5-8119-5f4aa935fc6c\",\n            \"userId\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n            \"packageId\": 2,\n            \"price\": 900000,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-08-01T12:52:35.770Z\",\n            \"updatedAt\": \"2024-08-01T12:53:45.216Z\",\n            \"partner\": \"VNPAY\",\n            \"type\": \"renew\",\n            \"referenceId\": \"2c39cab2-66e1-4983-bb7a-7df0309652b9\",\n            \"package\": {\n                \"id\": 2,\n                \"name\": \"Tournament Advanced\",\n                \"price\": 900000,\n                \"duration\": 4,\n                \"images\": [],\n                \"createdAt\": \"2024-05-07T14:26:23.464Z\",\n                \"updatedAt\": \"2024-05-07T14:26:23.464Z\",\n                \"description\": \"This package is designed for tournament creators, offering essential tools and features to easily set up and manage your tournament. Perfect for organizing and running events efficiently.\",\n                \"features\": [\n                    \"Tournament for all users\",\n                    \"Use Round Robin, Knockout, Group Playoff format to compete\",\n                    \"Live score\",\n                    \"Elo rating system\"\n                ],\n                \"parentId\": null\n            }\n        },\n        {\n            \"id\": \"64542e22-7a43-42ec-aac6-dc10ccfc5a4b\",\n            \"userId\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n            \"packageId\": 1,\n            \"price\": 800000,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-07-31T00:12:48.733Z\",\n            \"updatedAt\": \"2024-07-31T00:13:12.926Z\",\n            \"partner\": \"VNPAY\",\n            \"type\": \"create\",\n            \"referenceId\": null,\n            \"package\": {\n                \"id\": 1,\n                \"name\": \"Basic\",\n                \"price\": 800000,\n                \"duration\": 4,\n                \"images\": [],\n                \"createdAt\": \"2024-05-07T14:26:23.464Z\",\n                \"updatedAt\": \"2024-05-08T16:45:55.856Z\",\n                \"description\": \"Our most popular package for beginner tennis groups with basic needs\",\n                \"features\": [\n                    \"Tournament for your own group\",\n                    \"Use Round Robin or Knockout format to compete\",\n                    \"Expense Management Feature\",\n                    \"Post Management Feature\"\n                ],\n                \"parentId\": null\n            }\n        },\n        {\n            \"id\": \"2c39cab2-66e1-4983-bb7a-7df0309652b9\",\n            \"userId\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n            \"packageId\": 2,\n            \"price\": 900000,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-07-31T00:10:45.030Z\",\n            \"updatedAt\": \"2024-07-31T00:11:19.002Z\",\n            \"partner\": \"VNPAY\",\n            \"type\": \"create\",\n            \"referenceId\": null,\n            \"package\": {\n                \"id\": 2,\n                \"name\": \"Tournament Advanced\",\n                \"price\": 900000,\n                \"duration\": 4,\n                \"images\": [],\n                \"createdAt\": \"2024-05-07T14:26:23.464Z\",\n                \"updatedAt\": \"2024-05-07T14:26:23.464Z\",\n                \"description\": \"This package is designed for tournament creators, offering essential tools and features to easily set up and manage your tournament. Perfect for organizing and running events efficiently.\",\n                \"features\": [\n                    \"Tournament for all users\",\n                    \"Use Round Robin, Knockout, Group Playoff format to compete\",\n                    \"Live score\",\n                    \"Elo rating system\"\n                ],\n                \"parentId\": null\n            }\n        },\n        {\n            \"id\": \"4c138003-f161-4914-9c89-5be50b3398ac\",\n            \"userId\": \"2628a142-386b-4ee6-8198-d282d9f41059\",\n            \"packageId\": 2,\n            \"price\": 900000,\n            \"status\": \"completed\",\n            \"createdAt\": \"2024-06-08T07:32:28.509Z\",\n            \"updatedAt\": \"2024-06-08T07:34:31.348Z\",\n            \"partner\": \"VNPAY\",\n            \"type\": \"create\",\n            \"referenceId\": null,\n            \"package\": {\n                \"id\": 2,\n                \"name\": \"Tournament Advanced\",\n                \"price\": 900000,\n                \"duration\": 4,\n                \"images\": [],\n                \"createdAt\": \"2024-05-07T14:26:23.464Z\",\n                \"updatedAt\": \"2024-05-07T14:26:23.464Z\",\n                \"description\": \"This package is designed for tournament creators, offering essential tools and features to easily set up and manage your tournament. Perfect for organizing and running events efficiently.\",\n                \"features\": [\n                    \"Tournament for all users\",\n                    \"Use Round Robin, Knockout, Group Playoff format to compete\",\n                    \"Live score\",\n                    \"Elo rating system\"\n                ],\n                \"parentId\": null\n            }\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalCount\": 4\n}"
 						}
 					]
 				}

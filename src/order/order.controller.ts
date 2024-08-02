@@ -21,9 +21,11 @@ import {
 } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Ip } from '@nestjs/common';
-import { JwtGuard } from 'src/auth_utils/guards';
+import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
 import { PageOptionsOrderDto } from './dto';
-import { GetUser } from 'src/auth_utils/decorators';
+import { GetUser, Roles } from 'src/auth_utils/decorators';
+
+import { UserRole } from '@prisma/client';
 
 @Controller('orders')
 export class OrderController {
@@ -103,6 +105,23 @@ export class OrderController {
   ) {
     try {
       return this.orderService.findAll(userId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.admin)
+  @Get('all/details')
+  async findAllByAdmin(@Query() dto: PageOptionsOrderDto) {
+    try {
+      return this.orderService.findAllByAdmin(dto);
     } catch (error) {
       throw new HttpException(
         {

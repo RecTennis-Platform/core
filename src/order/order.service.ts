@@ -312,6 +312,58 @@ export class OrderService {
     };
   }
 
+  async findAllByAdmin(dto: PageOptionsOrderDto) {
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: dto.order,
+        },
+      ],
+      where: {
+        status: dto?.status,
+      },
+    };
+
+    const pageOption =
+      dto.page && dto.take
+        ? {
+            skip: dto.skip,
+            take: dto.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.orders.findMany({
+        include: {
+          package: true,
+        },
+        //...conditions,
+        orderBy: [
+          {
+            createdAt: dto.order,
+          },
+        ],
+        where: {
+          status: dto?.status,
+          userId: dto?.userId,
+        },
+        ...pageOption,
+      }),
+      this.prismaService.orders.count({
+        where: {
+          status: dto?.status,
+          userId: dto?.userId,
+        },
+      }),
+    ]);
+
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / dto.take),
+      totalCount,
+    };
+  }
+
   async findOne(id: string) {
     const order = await this.prismaService.orders.findFirst({
       where: {

@@ -1,26 +1,120 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { PageOptionsServiceDto } from './dto/page-options-service.dto';
 
 @Injectable()
 export class ServiceService {
-  create(createServiceDto: CreateServiceDto) {
-    return 'This action adds a new service';
+  constructor(private prismaService: PrismaService) {}
+  async create(createServiceDto: CreateServiceDto) {
+    return await this.prismaService.services.create({
+      data: createServiceDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all service`;
+  async findAll(dto: PageOptionsServiceDto) {
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: dto.order,
+        },
+      ],
+      where: {
+        type: dto?.type,
+        level: dto?.level,
+      },
+    };
+
+    const pageOption =
+      dto.page && dto.take
+        ? {
+            skip: dto.skip,
+            take: dto.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.services.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.services.count({
+        ...conditions,
+      }),
+    ]);
+
+    return {
+      data: result,
+      totalPages: Math.ceil(totalCount / dto.take),
+      totalCount,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} service`;
+  async findOne(id: number) {
+    const foundService = await this.prismaService.services.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!foundService) {
+      throw new NotFoundException({
+        message: 'Service not found',
+        data: null,
+      });
+    }
+    return foundService;
   }
 
-  update(id: number, updateServiceDto: UpdateServiceDto) {
-    return `This action updates a #${id} service`;
+  async update(id: number, updateServiceDto: UpdateServiceDto) {
+    const foundService = await this.prismaService.services.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!foundService) {
+      throw new NotFoundException({
+        message: 'Service not found',
+        data: null,
+      });
+    }
+    return await this.prismaService.services.update({
+      where: {
+        id,
+      },
+      data: updateServiceDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} service`;
+  async remove(id: number) {
+    const foundService = await this.prismaService.services.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        packageServices: true,
+      },
+    });
+    if (!foundService) {
+      throw new NotFoundException({
+        message: 'Service not found',
+        data: null,
+      });
+    }
+    if (foundService.packageServices.length > 0) {
+      throw new BadRequestException({
+        message: 'Service is already used in packages',
+        data: null,
+      });
+    }
+    return await this.prismaService.services.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
