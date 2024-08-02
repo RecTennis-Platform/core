@@ -64,6 +64,69 @@ export class PackageService {
     });
   }
 
+  async findAllAdmin(pageOptions: PageOptionsPackageDto) {
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      include: {
+        packageServices: {
+          include: {
+            service: true,
+          },
+        },
+      },
+      where: {
+        packageServices: {
+          some: {
+            service: {
+              type: pageOptions.type,
+            },
+          },
+        },
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get referee's matches
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.packages.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.packages.count({
+        where: conditions.where,
+      }),
+    ]);
+
+    return {
+      data: result.map((p) => {
+        const { packageServices, ...packageData } = p;
+        const services = packageServices.map((value) => {
+          const { config, ...serviceInfo } = value.service;
+          const configValue = JSON.parse(config);
+          return {
+            ...serviceInfo,
+            config: configValue,
+          };
+        });
+        return { ...packageData, services };
+      }),
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+    };
+  }
+
   async findOne(id: number) {
     const packageDetail = await this.prismaService.packages.findFirst({
       where: {

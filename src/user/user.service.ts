@@ -11,6 +11,7 @@ import {
   PageOptionsRefereeMatchesDto,
   PageOptionsUserFollowedMatchesDto,
   PageOptionsUserParticipatedTournamentsDto,
+  PageOptionsUsersListDto,
   UpdateUserAccountDto,
 } from './dto';
 import {
@@ -26,7 +27,6 @@ import { FcmNotificationService } from 'src/services/notification/fcm-notificati
 import { MatchService } from 'src/match/match.service';
 import { Order } from 'constants/order';
 import { PageOptionsNotificationDto, UpdateNotitDto } from './dto/noti.dto';
-import { dot } from 'node:test/reporters';
 
 @Injectable()
 export class UserService {
@@ -106,11 +106,15 @@ export class UserService {
     }
   }
 
-  async getAllUsers(): Promise<{
-    message: string;
-    data: any;
-  }> {
-    const users = await this.prismaService.users.findMany({
+  async getAllUsers(pageOptions: PageOptionsUsersListDto) {
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {},
       select: {
         id: true,
         email: true,
@@ -119,18 +123,31 @@ export class UserService {
         role: true,
         isReferee: true,
       },
-    });
+    };
 
-    if (users.length === 0) {
-      throw new NotFoundException({
-        message: 'No users found',
-        data: [],
-      });
-    }
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get referee's matches
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.users.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.users.count({
+        where: conditions.where,
+      }),
+    ]);
 
     return {
-      message: 'success',
-      data: users,
+      data: result,
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
     };
   }
 
@@ -854,6 +871,8 @@ export class UserService {
               select: {
                 fixture: {
                   select: {
+                    groupTournamentId: true,
+                    tournamentId: true,
                     ...(pageOptions.groupId
                       ? {
                           groupTournament: true,
@@ -957,8 +976,27 @@ export class UserService {
           teamWinnerId: match.teamWinnerId,
         };
 
-        // @ts-ignore
-        const tournament = pageOptions.groupId ? match.round.fixture.fixture.groupTournament : match.round.fixture.fixture.tournament;
+        let tournament = null;
+        if (pageOptions.groupId) {
+          // Get groupTournament
+          tournament = await this.prismaService.group_tournaments.findUnique({
+            where: {
+              id: match.round.fixture.fixture.groupTournamentId,
+            },
+          });
+        } else {
+          // Get tournament
+          tournament = await this.prismaService.tournaments.findUnique({
+            where: {
+              id: match.round.fixture.fixture.tournamentId,
+            },
+          });
+        }
+
+        // // @ts-ignore
+        // const tournament = pageOptions.groupId
+        //   ? match.round.fixture.fixture.groupTournament
+        //   : match.round.fixture.fixture.tournament;
 
         delete match.round;
 
@@ -971,7 +1009,7 @@ export class UserService {
         return {
           ...match,
           matchFinalScore,
-          tournament
+          tournament,
         };
       }),
     );

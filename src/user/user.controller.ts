@@ -19,6 +19,7 @@ import {
   PageOptionsRefereeMatchesDto,
   PageOptionsUserFollowedMatchesDto,
   PageOptionsUserParticipatedTournamentsDto,
+  PageOptionsUsersListDto,
   UpdateUserAccountDto,
 } from './dto';
 import { UserService } from './user.service';
@@ -31,8 +32,8 @@ export class UserController {
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.admin)
   @Get('admin/all')
-  async adminGetAllUsers() {
-    return await this.userService.getAllUsers();
+  async adminGetAllUsers(@Query() pageOptions: PageOptionsUsersListDto) {
+    return await this.userService.getAllUsers(pageOptions);
   }
 
   @UseGuards(JwtGuard, RolesGuard)

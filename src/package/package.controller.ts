@@ -49,6 +49,21 @@ export class PackageController {
     }
   }
 
+  @Get('admin')
+  async findAllAdmin(@Query() pageOptions: PageOptionsPackageDto) {
+    try {
+      return await this.packageService.findAllAdmin(pageOptions);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
