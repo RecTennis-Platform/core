@@ -1,5 +1,17 @@
 import { Optional } from '@nestjs/common';
-import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
+
+export enum PackageType {
+  TOURNAMENT = 'tournament',
+  GROUP = 'group',
+  AFFILIATE = 'affiliate',
+}
 
 export class CreatePackageDto {
   @IsNotEmpty()
@@ -28,4 +40,8 @@ export class CreatePackageDto {
   @IsNotEmpty()
   @IsNumber({}, { each: true })
   readonly services: number[];
+
+  @IsEnum(PackageType)
+  @IsNotEmpty()
+  type?: PackageType;
 }

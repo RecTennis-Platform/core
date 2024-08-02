@@ -82,7 +82,7 @@ export class PackageController {
   @Get('upgrade/:id')
   async findUpgradePackages(@Param('id') id: number) {
     try {
-      return await this.packageService.getAllParents(+id);
+      return await this.packageService.getAllParentsAndChildren(+id);
     } catch (error) {
       throw new HttpException(
         {

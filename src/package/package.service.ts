@@ -3,6 +3,7 @@ import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PageOptionsPackageDto } from './dto/page-options-package.dto';
+import { every } from 'rxjs';
 
 @Injectable()
 export class PackageService {
@@ -17,6 +18,7 @@ export class PackageService {
           description: createPackageDto.description,
           features: createPackageDto.features,
           images: createPackageDto.images,
+          type: createPackageDto.type,
         },
       });
 
@@ -41,13 +43,14 @@ export class PackageService {
         },
       },
       where: {
-        packageServices: {
-          some: {
-            service: {
-              type: dto.type,
-            },
-          },
-        },
+        // packageServices: {
+        //   some: {
+        //     service: {
+        //       type: dto.type,
+        //     },
+        //   },
+        // },
+        type: dto.type,
       },
     });
     return packageList.map((p) => {
@@ -80,13 +83,7 @@ export class PackageService {
         },
       },
       where: {
-        packageServices: {
-          some: {
-            service: {
-              type: pageOptions.type,
-            },
-          },
-        },
+        type: pageOptions.type,
       },
     };
 
@@ -189,22 +186,14 @@ export class PackageService {
     return packageDetail;
   }
 
-  async getAllParents(childId: number): Promise<any[]> {
-    const getParentsRecursive = async (id: number): Promise<any[]> => {
-      const packages = await this.prismaService.packages.findUnique({
-        where: { id },
-        include: { parentPackage: true },
-      });
-
-      if (!packages || !packages.parentPackage) {
-        return [];
-      }
-
-      const parent = packages.parentPackage;
-      const parents = await getParentsRecursive(parent.id);
-      return [parent, ...parents];
-    };
-
-    return getParentsRecursive(childId);
+  async getAllParentsAndChildren(id: number) {
+    const foundPackage = await this.prismaService.packages.findFirst({
+      where: { id },
+    });
+    return await this.prismaService.packages.findMany({
+      where: {
+        type: foundPackage.type,
+      },
+    });
   }
 }

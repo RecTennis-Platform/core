@@ -98,10 +98,8 @@ model packages {
   updatedAt       DateTime            @updatedAt @map("updated_at")
   description     String?
   features        String[]
-  parentId        Int?                @map("parent_id")
+  type            String              @default("group")
   orders          orders[]
-  parentPackage   packages?           @relation("parentPackage", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_packages_parent_packages")
-  parentPackages  packages[]          @relation("parentPackage")
   packageServices packages_services[]
 }
 

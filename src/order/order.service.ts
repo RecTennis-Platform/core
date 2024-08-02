@@ -18,12 +18,14 @@ import { PageOptionsOrderDto } from './dto';
 import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
 import { OrderStatus } from '@prisma/client';
 import { addMonths } from 'date-fns';
+import { PackageService } from 'src/package/package.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     private prismaService: PrismaService,
     private readonly paymentService: PaymentService,
+    private readonly packageService: PackageService,
     private readonly mongodbPrismaService: MongoDBPrismaService,
   ) {}
   async create(createOrderDto: CreateOrderDto, ip: string, headers: any) {
@@ -95,11 +97,7 @@ export class OrderService {
           id: purchasedPackage.orderId,
         },
         include: {
-          package: {
-            include: {
-              parentPackage: true,
-            },
-          },
+          package: true,
         },
       });
       if (!updatedOrder) {
@@ -108,7 +106,8 @@ export class OrderService {
           data: null,
         });
       }
-      const childrenPackages = await this.getAllChildren(dto.packageId);
+      const childrenPackages =
+        await this.packageService.getAllParentsAndChildren(dto.packageId);
       const childrenPackagesIds = childrenPackages.map(
         (cpackage) => cpackage.id,
       );
@@ -154,27 +153,6 @@ export class OrderService {
     }
   }
 
-  async getAllChildren(parentId: number): Promise<any[]> {
-    const result: any[] = [];
-    const queue: number[] = [parentId];
-
-    while (queue.length > 0) {
-      const currentId = queue.shift();
-      if (currentId === undefined) continue;
-
-      // Lấy tất cả các gói con của gói hiện tại
-      const children = await this.prismaService.packages.findMany({
-        where: { parentId: currentId },
-      });
-
-      // Thêm các gói con vào kết quả và vào hàng đợi
-      result.push(...children);
-      queue.push(...children.map((child) => child.id));
-    }
-
-    return result;
-  }
-
   async renew(dto: RenewOrderDto, ip: string, headers: any, userId: string) {
     try {
       const purchasedPackage =
@@ -200,11 +178,7 @@ export class OrderService {
           id: purchasedPackage.orderId,
         },
         include: {
-          package: {
-            include: {
-              parentPackage: true,
-            },
-          },
+          package: true,
         },
       });
       if (!updatedOrder) {
@@ -527,15 +501,6 @@ export class OrderService {
             packageServices: {
               include: {
                 service: true,
-              },
-            },
-            parentPackage: {
-              include: {
-                packageServices: {
-                  include: {
-                    service: true,
-                  },
-                },
               },
             },
           },
