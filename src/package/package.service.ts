@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -21,6 +25,42 @@ export class PackageService {
           type: createPackageDto.type,
         },
       });
+
+      const services = await this.prismaService.services.findMany({
+        where: {
+          id: {
+            in: createPackageDto.services,
+          },
+        },
+      });
+
+      if (services.length !== createPackageDto.services.length) {
+        throw new NotFoundException({
+          message: 'Some services are not exists',
+          data: null,
+        });
+      }
+
+      const typeCountMap = new Map<string, number>();
+
+      for (const service of services) {
+        if (typeCountMap.has(service.type)) {
+          typeCountMap.set(service.type, typeCountMap.get(service.type)! + 1);
+        } else {
+          typeCountMap.set(service.type, 1);
+        }
+      }
+
+      const hasDuplicateType = [...typeCountMap.values()].some(
+        (count) => count > 1,
+      );
+
+      if (hasDuplicateType) {
+        throw new BadRequestException({
+          message: 'Some services have the same type',
+          data: null,
+        });
+      }
 
       const packageServicesData = createPackageDto.services.map((service) => {
         return { serviceId: service, packageId: packaged.id };

@@ -288,17 +288,6 @@ export class OrderService {
   }
 
   async findAllByAdmin(dto: PageOptionsOrderDto) {
-    const conditions = {
-      orderBy: [
-        {
-          createdAt: dto.order,
-        },
-      ],
-      where: {
-        status: dto?.status,
-      },
-    };
-
     const pageOption =
       dto.page && dto.take
         ? {
@@ -311,6 +300,7 @@ export class OrderService {
       this.prismaService.orders.findMany({
         include: {
           package: true,
+          user: true,
         },
         //...conditions,
         orderBy: [
