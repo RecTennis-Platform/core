@@ -47,9 +47,17 @@ export class ServiceService {
         ...conditions,
       }),
     ]);
+    const services = result.map((service) => {
+      const config = JSON.parse(service.config);
+      delete service.config;
+      return {
+        ...service,
+        config,
+      };
+    });
 
     return {
-      data: result,
+      data: services,
       totalPages: Math.ceil(totalCount / dto.take),
       totalCount,
     };
@@ -67,7 +75,12 @@ export class ServiceService {
         data: null,
       });
     }
-    return foundService;
+    const config = JSON.parse(foundService.config);
+    delete foundService.config;
+    return {
+      ...foundService,
+      config,
+    };
   }
 
   async update(id: number, updateServiceDto: UpdateServiceDto) {
