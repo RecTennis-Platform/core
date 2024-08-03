@@ -1,6 +1,7 @@
 import {
   BadGatewayException,
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -16,7 +17,7 @@ import { PaymentService } from 'src/services/payment/payment.service';
 import { CreatePaymentUrlRequest } from 'src/proto/payment_service.pb';
 import { PageOptionsOrderDto } from './dto';
 import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus, UserRole } from '@prisma/client';
 import { addMonths } from 'date-fns';
 import { PackageService } from 'src/package/package.service';
 
@@ -338,7 +339,7 @@ export class OrderService {
     };
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, userId: string) {
     const order = await this.prismaService.orders.findFirst({
       where: {
         id: id,
@@ -360,6 +361,17 @@ export class OrderService {
     if (!order) {
       throw new NotFoundException({
         message: 'Order not found',
+        data: null,
+      });
+    }
+    const user = await this.prismaService.users.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+    if (order.userId != userId && user.role != UserRole.admin) {
+      throw new ForbiddenException({
+        message: 'Permission denied',
         data: null,
       });
     }

@@ -9,16 +9,22 @@ import {
   HttpException,
   HttpStatus,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PackageService } from './package.service';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 import { PageOptionsPackageDto } from './dto/page-options-package.dto';
+import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
+import { GetUser, Roles } from 'src/auth_utils/decorators';
+import { UserRole } from '@prisma/client';
 
 @Controller('packages')
 export class PackageController {
   constructor(private readonly packageService: PackageService) {}
 
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.admin)
   @Post()
   async create(@Body() createPackageDto: CreatePackageDto) {
     try {
@@ -49,6 +55,8 @@ export class PackageController {
     }
   }
 
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.admin)
   @Get('admin')
   async findAllAdmin(@Query() pageOptions: PageOptionsPackageDto) {
     try {

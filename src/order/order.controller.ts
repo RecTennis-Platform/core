@@ -118,7 +118,7 @@ export class OrderController {
 
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.admin)
-  @Get('all/details')
+  @Get('admin')
   async findAllByAdmin(@Query() dto: PageOptionsOrderDto) {
     try {
       return this.orderService.findAllByAdmin(dto);
@@ -133,10 +133,11 @@ export class OrderController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @GetUser('sub') userId: string) {
     try {
-      return this.orderService.findOne(id);
+      return this.orderService.findOne(id, userId);
     } catch (error) {
       throw new HttpException(
         {
@@ -148,6 +149,8 @@ export class OrderController {
     }
   }
 
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.admin)
   @Patch(':id')
   async update(
     @Param('id') id: string,
