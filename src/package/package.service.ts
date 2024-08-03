@@ -232,6 +232,9 @@ export class PackageService {
     });
     return await this.prismaService.packages.findMany({
       where: {
+        NOT: {
+          id: id,
+        },
         type: foundPackage.type,
       },
     });
