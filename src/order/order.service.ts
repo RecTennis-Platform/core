@@ -15,7 +15,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaymentService } from 'src/services/payment/payment.service';
 import { CreatePaymentUrlRequest } from 'src/proto/payment_service.pb';
-import { PageOptionsOrderDto } from './dto';
+import { PageOptionsOrderDto, StatisticOrderDto } from './dto';
 import { MongoDBPrismaService } from 'src/prisma/prisma.mongo.service';
 import { OrderStatus, UserRole } from '@prisma/client';
 import { addMonths } from 'date-fns';
@@ -412,7 +412,7 @@ export class OrderService {
         });
       }
       if (
-        order.type === 'renew' &&
+        order.package.type === 'renew' &&
         updateOrderDto.status == OrderStatus.completed
       ) {
         const purchasedPackage =
@@ -570,5 +570,230 @@ export class OrderService {
         data: null,
       });
     }
+  }
+
+  async getStatistic(dto: StatisticOrderDto) {
+    // Calculate the start and end of the year
+    const year = dto.year;
+    const startDate = year ? new Date(`${year}-01-01T00:00:00Z`) : undefined;
+    const endDate = year ? new Date(`${year + 1}-01-01T00:00:00Z`) : undefined;
+    const orders = await this.prismaService.orders.findMany({
+      include: {
+        package: true,
+      },
+      where: {
+        createdAt: {
+          ...(startDate && { gte: startDate }),
+          ...(endDate && { lt: endDate }),
+        },
+      },
+    });
+    if (dto.time === 'month' && dto.year) {
+      return await this.getMonthlyOrderData(orders);
+    } else if (dto.time === 'quarter' && dto.year) {
+      return await this.getQuarterlyOrderData(orders);
+    } else if (dto.time === 'year' && !dto.year) {
+      return await this.getYearlyOrderData(orders);
+    }
+  }
+
+  async getMonthlyOrderData(orders: any) {
+    const monthlySums = {
+      Tournament: Array(12).fill(0),
+      Affiliate: Array(12).fill(0),
+      Group: Array(12).fill(0),
+    };
+
+    // Helper function to get the month index (0-based)
+    const getMonthIndex = (date) => date.getMonth(); // 0 for Jan, 1 for Feb, etc.
+
+    // Calculate monthly sums
+    orders.forEach((order) => {
+      const monthIndex = getMonthIndex(order.createdAt);
+      switch (order.package.type) {
+        case 'tournament':
+          monthlySums.Tournament[monthIndex] += order.price;
+          break;
+        case 'affiliate':
+          monthlySums.Affiliate[monthIndex] += order.price;
+          break;
+        case 'group':
+          monthlySums.Group[monthIndex] += order.price;
+          break;
+      }
+    });
+
+    const totalOrderSum = await this.prismaService.orders.aggregate({
+      _sum: {
+        price: true,
+      },
+    });
+    const orderSumByYear = orders.reduce((sum, order) => sum + order.price, 0);
+
+    // Prepare the data format
+    const transformedData = {
+      orderSum: totalOrderSum._sum.price,
+      orderSumByYear: orderSumByYear,
+      categories: [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ],
+      series: [
+        {
+          name: 'Tournament',
+          data: monthlySums.Tournament,
+        },
+        {
+          name: 'Group',
+          data: monthlySums.Group,
+        },
+        {
+          name: 'Affiliate',
+          data: monthlySums.Affiliate,
+        },
+      ],
+    };
+
+    return transformedData;
+  }
+
+  async getQuarterlyOrderData(orders: any) {
+    // Initialize arrays to hold sums for each type
+    const quarterlySums = {
+      Tournament: Array(4).fill(0),
+      Affiliate: Array(4).fill(0),
+      Group: Array(4).fill(0),
+    };
+
+    // Helper function to get the quarter index (0-based)
+    const getQuarterIndex = (date) => {
+      const month = date.getMonth();
+      return Math.floor(month / 3); // 0 for Q1 (Jan-Mar), 1 for Q2 (Apr-Jun), etc.
+    };
+
+    // Calculate quarterly sums
+    orders.forEach((order) => {
+      const quarterIndex = getQuarterIndex(order.createdAt);
+      switch (order.package.type) {
+        case 'tournament':
+          quarterlySums.Tournament[quarterIndex] += order.price;
+          break;
+        case 'affiliate':
+          quarterlySums.Affiliate[quarterIndex] += order.price;
+          break;
+        case 'group':
+          quarterlySums.Group[quarterIndex] += order.price;
+          break;
+      }
+    });
+
+    const totalOrderSum = await this.prismaService.orders.aggregate({
+      _sum: {
+        price: true,
+      },
+    });
+    const orderSumByYear = orders.reduce((sum, order) => sum + order.price, 0);
+
+    // Prepare the data format
+    const transformedData = {
+      orderSum: totalOrderSum._sum.price,
+      orderSumByYear: orderSumByYear,
+      categories: ['Q1', 'Q2', 'Q3', 'Q4'], // Categories for quarters
+      series: [
+        {
+          name: 'Tournament',
+          data: quarterlySums.Tournament,
+        },
+        {
+          name: 'Group',
+          data: quarterlySums.Group,
+        },
+        {
+          name: 'Affiliate',
+          data: quarterlySums.Affiliate,
+        },
+      ],
+    };
+
+    return transformedData;
+  }
+
+  async getYearlyOrderData(orders: any) {
+    const yearlyData: {
+      [year: number]: { tournament: number; affiliate: number; group: number };
+    } = {};
+
+    // Process each order to group by year
+    orders.forEach((order) => {
+      const year = order.createdAt.getFullYear();
+      const type = order.package.type as 'tournament' | 'affiliate' | 'group'; // Explicitly cast type
+
+      // Initialize data structures if not already present
+      if (!yearlyData[year]) {
+        yearlyData[year] = {
+          tournament: 0,
+          affiliate: 0,
+          group: 0,
+        };
+      }
+
+      // Update yearly sums
+      yearlyData[year][type] += order.price;
+    });
+
+    // Compute total order sum and sum by year
+    const totalOrderSum = Object.values(yearlyData).reduce(
+      (sum, yearly) =>
+        sum + Object.values(yearly).reduce((acc, price) => acc + price, 0),
+      0,
+    );
+
+    // const orderSumByYear = Object.keys(yearlyData).map((year) => ({
+    //   year: parseInt(year, 10),
+    //   total: Object.values(yearlyData[parseInt(year, 10)]).reduce(
+    //     (sum, price) => sum + price,
+    //     0,
+    //   ),
+    // }));
+    const orderSumByYear = totalOrderSum;
+
+    // Prepare the data format
+    const transformedData = {
+      orderSum: totalOrderSum,
+      orderSumByYear,
+      categories: Object.keys(yearlyData).sort(), // Sorted years as categories
+      series: [
+        {
+          name: 'Tournament',
+          data: Object.keys(yearlyData).map(
+            (year) => yearlyData[parseInt(year, 10)].tournament,
+          ),
+        },
+        {
+          name: 'Group',
+          data: Object.keys(yearlyData).map(
+            (year) => yearlyData[parseInt(year, 10)].group,
+          ),
+        },
+        {
+          name: 'Affiliate',
+          data: Object.keys(yearlyData).map(
+            (year) => yearlyData[parseInt(year, 10)].affiliate,
+          ),
+        },
+      ],
+    };
+
+    return transformedData;
   }
 }

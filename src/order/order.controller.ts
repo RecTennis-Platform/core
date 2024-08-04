@@ -22,7 +22,7 @@ import {
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Ip } from '@nestjs/common';
 import { JwtGuard, RolesGuard } from 'src/auth_utils/guards';
-import { PageOptionsOrderDto } from './dto';
+import { PageOptionsOrderDto, StatisticOrderDto } from './dto';
 import { GetUser, Roles } from 'src/auth_utils/decorators';
 
 import { UserRole } from '@prisma/client';
@@ -105,6 +105,21 @@ export class OrderController {
   ) {
     try {
       return this.orderService.findAll(userId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('statistic')
+  async getStatistic(@Query() dto: StatisticOrderDto) {
+    try {
+      return this.orderService.getStatistic(dto);
     } catch (error) {
       throw new HttpException(
         {
