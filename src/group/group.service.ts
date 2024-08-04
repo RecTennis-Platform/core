@@ -338,16 +338,27 @@ export class GroupService {
     ]);
 
     // Modify the structure of the returned data
-    const result = groups.map((group) => {
-      const memberCount = group.group._count.member_ships;
-      delete group.group._count;
+    const result = await Promise.all(
+      groups.map(async (group) => {
+        const memberCount = group.group._count.member_ships;
+        const purchasedPackage =
+          await this.mongodbPrismaService.purchasedPackage.findFirst({
+            where: {
+              id: group.group.purchasedPackageId,
+            },
+          });
+        if (new Date(purchasedPackage.endDate) < new Date()) {
+          group.group.status = 'expired';
+        }
+        delete group.group._count;
 
-      return {
-        ...group.group,
-        memberCount,
-        isCreator: group.role === MemberRole.group_admin,
-      };
-    });
+        return {
+          ...group.group,
+          memberCount,
+          isCreator: group.role === MemberRole.group_admin,
+        };
+      }),
+    );
 
     return {
       data: result,
@@ -515,6 +526,7 @@ export class GroupService {
 
   // Invite User
   async inviteUser(userId: string, dto: InviteUser2GroupDto) {
+    await this.checkValidGroup(dto.groupId);
     const userGroup = await this.prismaService.member_ships.findFirst({
       where: {
         userId: userId,
@@ -545,8 +557,15 @@ export class GroupService {
         groupId: dto.groupId,
         sub: null,
       });
+      const user = await this.prismaService.users.findFirst({
+        where: {
+          email: dto.email,
+        },
+      });
 
-      const link = `${process.env.INVITE_USER_TO_GROUP_LINK}?token=${token.token}`;
+      const link = user
+        ? `${process.env.INVITE_USER_TO_GROUP_LINK}?token=${token.token}`
+        : `${process.env.INVITE_UNREGISTERED_USER_TO_GROUP_LINK}?token=${token.token}`;
       const templateData = {
         host: `${dto.hostName}`,
         joinLink: link,
