@@ -80,6 +80,7 @@ import {
 import { CreatePostDto, UpdatePostDto } from './dto/create-post-dto';
 import { Order } from 'constants/order';
 import { VND_EXCHANGE_RATE } from 'constants/currency-prices';
+import { NotificationProducer } from 'src/services/notification/notification-producer';
 
 @Injectable()
 export class GroupService {
@@ -92,6 +93,7 @@ export class GroupService {
     private readonly formatTournamentService: FormatTournamentService,
     private readonly fixtureService: FixtureService,
     private readonly refereesTournamentsService: RefereesTournamentsService,
+    private readonly notificationProducer: NotificationProducer,
     @InjectQueue('send-mail') private sendMailQueue: Queue,
   ) {}
 
@@ -526,7 +528,7 @@ export class GroupService {
 
   // Invite User
   async inviteUser(userId: string, dto: InviteUser2GroupDto) {
-    await this.checkValidGroup(dto.groupId);
+    const group = await this.checkValidGroup(dto.groupId);
     const userGroup = await this.prismaService.member_ships.findFirst({
       where: {
         userId: userId,
@@ -578,6 +580,27 @@ export class GroupService {
         templateData: JSON.stringify(templateData),
       };
       await this.sendMailQueue.add(data);
+      if (user) {
+        const notification = {
+          title: 'Group Invitation',
+          body: `You have been invited to join the group ${group.name}. Please check your email to accept the invitation and get started.`,
+        };
+        const notiData = {
+          //mobileType: 'MATCH_UPDATE',
+          type: 'group_member',
+          params: {
+            groupId: group.id,
+          },
+          notification,
+          web: true,
+          mobile: true,
+        };
+        const notificationData = {
+          userIds: [user.id],
+          notiData,
+        };
+        await this.notificationProducer.add(notificationData);
+      }
     } catch (error) {
       console.log('Error:', error.message);
       throw new BadRequestException({

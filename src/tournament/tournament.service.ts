@@ -5224,6 +5224,9 @@ export class TournamentService {
         where: {
           id: dto.id,
         },
+        include: {
+          groupTournament: true,
+        },
       });
       if (fixture.tournamentId) {
         const participants = await this.prismaService.teams.findMany({
@@ -5261,6 +5264,7 @@ export class TournamentService {
         });
         otherParams = {
           groupTournamentId: fixture.groupTournamentId,
+          groupId: fixture.groupTournament.groupId,
         };
         type = 'group_tournament_schedule';
       }

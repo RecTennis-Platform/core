@@ -10,6 +10,7 @@ import { SendMailConsumer } from 'src/services/mail/send-mail-consumers';
 import { FormatTournamentService } from 'src/services/format_tournament/format_tournament.service';
 import { FixtureService } from 'src/fixture/fixture.service';
 import { RefereesTournamentsService } from 'src/referees_tournaments/referees_tournaments.service';
+import { NotificationModule } from 'src/services/notification/notification.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { RefereesTournamentsService } from 'src/referees_tournaments/referees_to
       name: 'send-mail',
       redis: process.env.REDIS_URL,
     }),
+    NotificationModule,
   ],
   controllers: [GroupController],
   providers: [

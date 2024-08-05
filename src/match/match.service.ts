@@ -396,6 +396,7 @@ export class MatchService {
         otherParams = {
           groupTournamentId:
             assignedMatch.round.fixture.fixture.groupTournamentId,
+          groupId: assignedMatch.round.fixture.fixture.groupTournament.groupId,
         };
         if (assignedMatch.teamId1 && assignedMatch.teamId2) {
           type = 'group_tournament_matches_on_going';
@@ -589,6 +590,7 @@ export class MatchService {
           include: {
             user1: true,
             user2: true,
+            groupTournament: true,
           },
         },
         team2: {
@@ -1318,6 +1320,7 @@ export class MatchService {
               });
               otherParams = {
                 groupTournamentId: assignedMatch.team1.groupTournamentId,
+                groupId: assignedMatch.team1.groupTournament.groupId,
               };
               if (assignedMatch.teamId1 && assignedMatch.teamId2) {
                 type = 'group_tournament_matches_on_going';
@@ -1456,6 +1459,7 @@ export class MatchService {
             });
             otherParams = {
               groupTournamentId: assignedMatch.team1.groupTournamentId,
+              groupId: assignedMatch.team1.groupTournament.groupId,
             };
             if (assignedMatch.teamId1 && assignedMatch.teamId2) {
               type = 'group_tournament_matches_on_going';
@@ -1788,6 +1792,7 @@ export class MatchService {
         });
         otherParams = {
           groupTournamentId: match.round.fixture.fixture.groupTournamentId,
+          groupId: match.round.fixture.fixture.groupTournament.groupId,
         };
         if (match.teamId1 && match.teamId2) {
           type = 'group_tournament_matches_on_going';
