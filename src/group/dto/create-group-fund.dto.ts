@@ -1,4 +1,6 @@
 import {
+  IsArray,
+  IsBoolean,
   IsDateString,
   IsNotEmpty,
   IsNumber,
@@ -30,4 +32,12 @@ export class CreateGroupFundDto {
   @IsString()
   @IsOptional()
   qrImage?: string;
+
+  @IsNotEmpty()
+  @IsArray()
+  memberListId: string[];
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isFullMember: boolean;
 }

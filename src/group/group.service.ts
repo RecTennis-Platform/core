@@ -36,6 +36,7 @@ import {
   CreateGroupDto,
   CreateGroupExpenseDto,
   CreateGroupFundDto,
+  CreateUserFundRequestDto,
   PageOptionsGroupExpenseDto,
   PageOptionsGroupFundDto,
   PageOptionsPostDto,
@@ -3926,11 +3927,21 @@ export class GroupService {
         },
       });
 
-      // Create all member group fund requests - Only members
+      let member_ships_conditions = {};
+      if (!dto.isFullMember) {
+        // Create group fund requests in memberListId
+        member_ships_conditions = {
+          userId: {
+            in: dto.memberListId,
+          },
+        };
+      }
+
       const members = await this.prismaService.member_ships.findMany({
         where: {
           groupId: groupId,
           role: MemberRole.member,
+          ...member_ships_conditions,
         },
       });
 
@@ -3939,6 +3950,7 @@ export class GroupService {
           data: {
             groupFundId: groupFund.id,
             userId: member.userId,
+            amount: groupFund.amount,
           },
         });
       }
@@ -4069,15 +4081,15 @@ export class GroupService {
         id: true,
         groupFundId: true,
         status: true,
+        amount: true,
+        createdAt: true,
         groupFund: {
           select: {
             title: true,
             description: true,
             dueDate: true,
-            amount: true,
             paymentInfo: true,
             qrImage: true,
-            createdAt: true,
           },
         },
       },
@@ -4109,10 +4121,8 @@ export class GroupService {
       userFundReq['title'] = userFundReq.groupFund.title;
       userFundReq['description'] = userFundReq.groupFund.description;
       userFundReq['dueDate'] = userFundReq.groupFund.dueDate;
-      userFundReq['amount'] = userFundReq.groupFund.amount;
       userFundReq['paymentInfo'] = userFundReq.groupFund.paymentInfo;
       userFundReq['qrImage'] = userFundReq.groupFund.qrImage;
-      userFundReq['createdAt'] = userFundReq.groupFund.createdAt;
       delete userFundReq.groupFund;
     });
 
@@ -4175,6 +4185,7 @@ export class GroupService {
         },
         description: true,
         status: true,
+        amount: true,
       },
     };
 
@@ -4210,6 +4221,175 @@ export class GroupService {
       totalCount,
       data: result,
     };
+  }
+
+  async fetchGroupNonFundingUsersOfAFund(
+    groupId: number,
+    fundId: number,
+    userId: string,
+    pageOptions: PageOptionsGroupFundDto,
+  ) {
+    // Check and get group's info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if req user is the group admin
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Only the group admin can perform this action',
+        data: null,
+      });
+    }
+
+    // Get group_fund's info
+    const groupFund = await this.prismaService.group_funds.findUnique({
+      where: {
+        id: fundId,
+      },
+    });
+
+    if (!groupFund) {
+      throw new BadRequestException({
+        message: 'Group fund not found',
+        data: null,
+      });
+    }
+
+    // Get group fund's users
+    const groupFundUsers = await this.prismaService.user_group_funds.findMany({
+      where: {
+        groupFundId: fundId,
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    // Put userIds into a list of strings
+    const groupFundUserIds = groupFundUsers.map((userFund) => userFund.userId);
+
+    // Get group fund's non funding users
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        groupId: groupId,
+        userId: {
+          notIn: groupFundUserIds,
+        },
+      },
+      select: {
+        userId: true,
+        user: {
+          select: {
+            email: true,
+            name: true,
+            image: true,
+            gender: true,
+          },
+        },
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.member_ships.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.member_ships.count({
+        where: {
+          ...conditions.where,
+        },
+      }),
+    ]);
+
+    // Update response data
+    result.map((nonFundingUser) => {
+      nonFundingUser['email'] = nonFundingUser.user.email;
+      nonFundingUser['name'] = nonFundingUser.user.name;
+      nonFundingUser['image'] = nonFundingUser.user.image;
+      nonFundingUser['gender'] = nonFundingUser.user.gender;
+      delete nonFundingUser.user;
+    });
+
+    return {
+      totalPages: Math.ceil(totalCount / pageOptions.take),
+      totalCount,
+      data: result,
+    };
+  }
+
+  async createUserFundRequest(
+    groupId: number,
+    fundId: number,
+    userId: string,
+    dto: CreateUserFundRequestDto,
+  ) {
+    // Check and get group's info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if req user is the group admin
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException({
+        message: 'Only the group admin can perform this action',
+        data: null,
+      });
+    }
+
+    // Get group_fund's info
+    const groupFund = await this.prismaService.group_funds.findUnique({
+      where: {
+        id: fundId,
+      },
+    });
+
+    if (!groupFund) {
+      throw new BadRequestException({
+        message: 'Group fund not found',
+        data: null,
+      });
+    }
+
+    // Create user's fund request
+    try {
+      const fundRequest = await this.prismaService.user_group_funds.create({
+        data: {
+          groupFundId: fundId,
+          userId: dto.userId,
+          amount: dto.amount,
+        },
+        select: {
+          id: true,
+          groupFundId: true,
+          amount: true,
+          status: true,
+          createdAt: true,
+          groupFund: {
+            select: {
+              title: true,
+              description: true,
+              dueDate: true,
+              paymentInfo: true,
+              qrImage: true,
+            },
+          },
+        },
+      });
+
+      return fundRequest;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async userConfirmFundRequest(
@@ -4282,17 +4462,16 @@ export class GroupService {
         },
         select: {
           id: true,
-          // groupFundId: true,
           status: true,
+          amount: true,
+          createdAt: true,
           groupFund: {
             select: {
               title: true,
               description: true,
               dueDate: true,
-              amount: true,
               paymentInfo: true,
               qrImage: true,
-              createdAt: true,
             },
           },
         },
@@ -4303,10 +4482,8 @@ export class GroupService {
       userFundReq['title'] = userFundReq.groupFund.title;
       userFundReq['description'] = userFundReq.groupFund.description;
       userFundReq['dueDate'] = userFundReq.groupFund.dueDate;
-      userFundReq['amount'] = userFundReq.groupFund.amount;
       userFundReq['paymentInfo'] = userFundReq.groupFund.paymentInfo;
       userFundReq['qrImage'] = userFundReq.groupFund.qrImage;
-      userFundReq['createdAt'] = userFundReq.groupFund.createdAt;
       delete userFundReq.groupFund;
 
       return userFundReq;
@@ -4381,16 +4558,17 @@ export class GroupService {
         },
         select: {
           id: true,
+          userId: true,
           status: true,
+          amount: true,
+          createdAt: true,
           groupFund: {
             select: {
               title: true,
               description: true,
               dueDate: true,
-              amount: true,
               paymentInfo: true,
               qrImage: true,
-              createdAt: true,
             },
           },
         },
@@ -4411,10 +4589,8 @@ export class GroupService {
       userFundReq['title'] = userFundReq.groupFund.title;
       userFundReq['description'] = userFundReq.groupFund.description;
       userFundReq['dueDate'] = userFundReq.groupFund.dueDate;
-      userFundReq['amount'] = userFundReq.groupFund.amount;
       userFundReq['paymentInfo'] = userFundReq.groupFund.paymentInfo;
       userFundReq['qrImage'] = userFundReq.groupFund.qrImage;
-      userFundReq['createdAt'] = userFundReq.groupFund.createdAt;
       delete userFundReq.groupFund;
 
       return userFundReq;
@@ -4509,6 +4685,7 @@ export class GroupService {
       ],
       where: {
         groupId: groupId,
+        type: ExpenseType.expense,
       },
       select: {
         id: true,
