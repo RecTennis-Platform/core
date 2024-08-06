@@ -4364,7 +4364,7 @@ export class GroupService {
     try {
       const fundRequest = await this.prismaService.user_group_funds.create({
         data: {
-          groupFundId: fundId,
+          groupFundId: groupFund.id,
           userId: dto.userId,
           amount: dto.amount,
         },
