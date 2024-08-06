@@ -1672,7 +1672,9 @@ export class TournamentService {
 
     // Check status of tournament
     if (tournament.status === TournamentStatus.completed) {
-      throw new BadRequestException('The tournament has already ended');
+      throw new BadRequestException(
+        `The tournament '${tournament.id}' has already ended`,
+      );
     }
 
     // Check if all matches ended
@@ -1704,7 +1706,10 @@ export class TournamentService {
     fixture.groupFixtures.forEach((groupFixture) => {
       groupFixture.rounds.forEach((round) => {
         round.matches.forEach((match) => {
-          if (match.status !== MatchStatus.score_done) {
+          if (
+            match.status !== MatchStatus.score_done &&
+            match.status !== MatchStatus.skipped
+          ) {
             // Set allMatchesEnded to false
             allMatchesEnded = false;
 
