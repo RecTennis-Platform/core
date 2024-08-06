@@ -1671,7 +1671,9 @@ export class TournamentService {
 
     // Check status of tournament
     if (tournament.status === TournamentStatus.completed) {
-      throw new BadRequestException('The tournament has already ended');
+      throw new BadRequestException(
+        `The tournament '${tournament.id}' has already ended`,
+      );
     }
 
     // Check if all matches ended

@@ -2225,10 +2225,66 @@ export class GroupService {
     }
 
     // TODO: Check all matches of group tournament ended
+    // Check status of tournament
+    if (tournament.status === GroupTournamentStatus.completed) {
+      throw new BadRequestException(
+        `The group tournament '${tournament.id}' has already ended`,
+      );
+    }
 
-    // Update group tournament status and phase
+    // Check if all matches ended
+    // Get fixture
+    const fixture = await this.prismaService.fixtures.findFirst({
+      where: {
+        groupTournamentId: tournamentId,
+      },
+      include: {
+        groupFixtures: {
+          include: {
+            rounds: {
+              include: {
+                matches: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!fixture) {
+      throw new BadRequestException('Fixture not found');
+    }
+
+    let allMatchesEnded = true;
+    const unfinishedMatches = [];
+
+    fixture.groupFixtures.forEach((groupFixture) => {
+      groupFixture.rounds.forEach((round) => {
+        round.matches.forEach((match) => {
+          if (
+            match.status !== MatchStatus.score_done &&
+            match.status !== MatchStatus.skipped
+          ) {
+            // Set allMatchesEnded to false
+            allMatchesEnded = false;
+
+            // Add unfinished match id to the array
+            unfinishedMatches.push(match.id);
+          }
+        });
+      });
+    });
+
+    if (!allMatchesEnded) {
+      throw new BadRequestException({
+        message: "All matches haven't ended yet",
+        unfinishedMatches,
+      });
+    }
+
+    // Update group tournament info
     try {
-      const endedGroupTournament =
+      const updatedGroupTournament =
         await this.prismaService.group_tournaments.update({
           where: {
             id: tournamentId,
@@ -2239,7 +2295,7 @@ export class GroupService {
           },
         });
 
-      return endedGroupTournament;
+      return updatedGroupTournament;
     } catch (error) {
       throw error;
     }
