@@ -27,6 +27,7 @@ import { FcmNotificationService } from 'src/services/notification/fcm-notificati
 import { MatchService } from 'src/match/match.service';
 import { Order } from 'constants/order';
 import { PageOptionsNotificationDto, UpdateNotitDto } from './dto/noti.dto';
+import { log } from 'node:console';
 
 @Injectable()
 export class UserService {
@@ -871,13 +872,8 @@ export class UserService {
               select: {
                 fixture: {
                   select: {
-                    groupTournamentId: true,
-                    tournamentId: true,
-                    ...(pageOptions.groupId
-                      ? {
-                          groupTournament: true,
-                        }
-                      : { tournament: true }),
+                    groupTournament: true,
+                    tournament: true,
                   },
                 },
               },
@@ -979,18 +975,10 @@ export class UserService {
         let tournament = null;
         if (pageOptions.groupId) {
           // Get groupTournament
-          tournament = await this.prismaService.group_tournaments.findUnique({
-            where: {
-              id: match.round.fixture.fixture.groupTournamentId,
-            },
-          });
+          tournament = match.round.fixture.fixture.groupTournament;
         } else {
           // Get tournament
-          tournament = await this.prismaService.tournaments.findUnique({
-            where: {
-              id: match.round.fixture.fixture.tournamentId,
-            },
-          });
+          tournament = match.round.fixture.fixture.tournament;
         }
 
         // // @ts-ignore
