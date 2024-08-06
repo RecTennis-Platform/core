@@ -1156,6 +1156,34 @@ export class GroupService {
     const group = await this.checkValidGroup(groupId);
 
     await this.checkMember(userId, groupId, true);
+    const tournamentService = group.purchasedPackage.package.services.find(
+      (service) => service.name.toLowerCase().includes('tournament') === true,
+    );
+
+    if (!tournamentService) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.PACKAGE_DOES_NOT_HAVE_CREATE_TOURNAMENT_SERVICE,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PACKAGE_DOES_NOT_HAVE_CREATE_TOURNAMENT_SERVICE,
+        ),
+        data: null,
+      });
+    }
+    const count = await this.prismaService.group_tournaments.count({
+      where: {
+        groupId: group.id,
+        NOT: [{ phase: 'completed' }],
+      },
+    });
+    if (count >= JSON.parse(tournamentService.config).maxTournaments) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.PACKAGE_EXCEEDED_CREATE_TOURNAMENT_LIMIT,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.PACKAGE_EXCEEDED_CREATE_TOURNAMENT_LIMIT,
+        ),
+        data: null,
+      });
+    }
 
     try {
       const data = await this.prismaService.group_tournaments.create({

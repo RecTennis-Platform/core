@@ -1390,6 +1390,7 @@ export class TournamentService {
     const count = await this.prismaService.tournaments.count({
       where: {
         purchasedPackageId: dto.purchasedPackageId,
+        NOT: [{ phase: 'completed' }],
       },
     });
     if (count >= JSON.parse(tournamentService.config).maxTournaments) {
