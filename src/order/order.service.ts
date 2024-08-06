@@ -612,28 +612,32 @@ export class OrderService {
       const monthIndex = getMonthIndex(order.createdAt);
       switch (order.package.type) {
         case 'tournament':
-          monthlySums.Tournament[monthIndex] += order.price;
+          monthlySums.Tournament[monthIndex] += 1;
           break;
         case 'affiliate':
-          monthlySums.Affiliate[monthIndex] += order.price;
+          monthlySums.Affiliate[monthIndex] += 1;
           break;
         case 'group':
-          monthlySums.Group[monthIndex] += order.price;
+          monthlySums.Group[monthIndex] += 1;
           break;
       }
     });
 
-    const totalOrderSum = await this.prismaService.orders.aggregate({
+    const totalOrderSum = await this.prismaService.orders.count({});
+    const orderSumByYear = orders.reduce((sum, order) => sum + 1, 0);
+    const totalRevenue = await this.prismaService.orders.aggregate({
       _sum: {
         price: true,
       },
     });
-    const orderSumByYear = orders.reduce((sum, order) => sum + order.price, 0);
+    const totalUsers = await this.prismaService.users.count({});
 
     // Prepare the data format
     const transformedData = {
-      orderSum: totalOrderSum._sum.price,
+      totalRevenue: totalRevenue._sum.price,
       orderSumByYear: orderSumByYear,
+      totalOrderSum: totalOrderSum,
+      totalUsers: totalUsers,
       categories: [
         'Jan',
         'Feb',
@@ -686,28 +690,32 @@ export class OrderService {
       const quarterIndex = getQuarterIndex(order.createdAt);
       switch (order.package.type) {
         case 'tournament':
-          quarterlySums.Tournament[quarterIndex] += order.price;
+          quarterlySums.Tournament[quarterIndex] += 1;
           break;
         case 'affiliate':
-          quarterlySums.Affiliate[quarterIndex] += order.price;
+          quarterlySums.Affiliate[quarterIndex] += 1;
           break;
         case 'group':
-          quarterlySums.Group[quarterIndex] += order.price;
+          quarterlySums.Group[quarterIndex] += 1;
           break;
       }
     });
 
-    const totalOrderSum = await this.prismaService.orders.aggregate({
+    const totalOrderSum = await this.prismaService.orders.count({});
+    const orderSumByYear = orders.reduce((sum, order) => sum + 1, 0);
+    const totalRevenue = await this.prismaService.orders.aggregate({
       _sum: {
         price: true,
       },
     });
-    const orderSumByYear = orders.reduce((sum, order) => sum + order.price, 0);
+    const totalUsers = await this.prismaService.users.count({});
 
     // Prepare the data format
     const transformedData = {
-      orderSum: totalOrderSum._sum.price,
+      totalRevenue: totalRevenue._sum.price,
       orderSumByYear: orderSumByYear,
+      totalOrderSum: totalOrderSum,
+      totalUsers: totalUsers,
       categories: ['Q1', 'Q2', 'Q3', 'Q4'], // Categories for quarters
       series: [
         {
@@ -748,15 +756,15 @@ export class OrderService {
       }
 
       // Update yearly sums
-      yearlyData[year][type] += order.price;
+      yearlyData[year][type] += 1;
     });
 
     // Compute total order sum and sum by year
-    const totalOrderSum = Object.values(yearlyData).reduce(
-      (sum, yearly) =>
-        sum + Object.values(yearly).reduce((acc, price) => acc + price, 0),
-      0,
-    );
+    // const totalOrderSum = Object.values(yearlyData).reduce(
+    //   (sum, yearly) =>
+    //     sum + Object.values(yearly).reduce((acc, price) => acc + price, 0),
+    //   0,
+    // );
 
     // const orderSumByYear = Object.keys(yearlyData).map((year) => ({
     //   year: parseInt(year, 10),
@@ -765,12 +773,21 @@ export class OrderService {
     //     0,
     //   ),
     // }));
+    const totalOrderSum = await this.prismaService.orders.count({});
     const orderSumByYear = totalOrderSum;
+    const totalRevenue = await this.prismaService.orders.aggregate({
+      _sum: {
+        price: true,
+      },
+    });
+    const totalUsers = await this.prismaService.users.count({});
 
     // Prepare the data format
     const transformedData = {
-      orderSum: totalOrderSum,
-      orderSumByYear,
+      totalRevenue: totalRevenue._sum.price,
+      orderSumByYear: orderSumByYear,
+      totalOrderSum: totalOrderSum,
+      totalUsers: totalUsers,
       categories: Object.keys(yearlyData).sort(), // Sorted years as categories
       series: [
         {
