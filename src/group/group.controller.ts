@@ -396,6 +396,30 @@ export class GroupController {
   }
 
   @UseGuards(JwtGuard)
+  @Put(':groupId/tournaments/:tournamentId/end')
+  async endGroupTournament(
+    @GetUser('sub') userId: string,
+    @Param('groupId') groupId: number,
+    @Param('tournamentId') tournamentId: number,
+  ) {
+    try {
+      return this.groupService.endGroupTournament(
+        userId,
+        groupId,
+        tournamentId,
+      );
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
   @Put(':groupId/tournaments/:tournamentId')
   // Update tournament info
   async updateTournamentInfo(

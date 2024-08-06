@@ -2192,6 +2192,59 @@ export class GroupService {
     }
   }
 
+  async endGroupTournament(
+    userId: string,
+    groupId: number,
+    tournamentId: number,
+  ) {
+    // Get tournament info
+    const tournament = await this.prismaService.group_tournaments.findUnique({
+      where: {
+        id: tournamentId,
+      },
+    });
+
+    if (!tournament) {
+      throw new BadRequestException({
+        code: CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        message: CustomResponseMessages.getMessage(
+          CustomResponseStatusCodes.TOURNAMENT_NOT_FOUND,
+        ),
+        data: null,
+      });
+    }
+
+    // Get purchased package info
+    const group = await this.checkValidGroup(groupId);
+
+    // Check if the user is the creator of the tournament
+    if (group.purchasedPackage.userId !== userId) {
+      throw new UnauthorizedException(
+        'Unauthorized to end this group tournament',
+      );
+    }
+
+    // TODO: Check all matches of group tournament ended
+
+    // Update group tournament status and phase
+    try {
+      const endedGroupTournament =
+        await this.prismaService.group_tournaments.update({
+          where: {
+            id: tournamentId,
+          },
+          data: {
+            status: GroupTournamentStatus.completed,
+            phase: GroupTournamentPhase.completed,
+          },
+        });
+
+      return endedGroupTournament;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async generateFixture(id: number, dto: GenerateFixtureDto) {
     const tournament = await this.prismaService.group_tournaments.findFirst({
       where: {
