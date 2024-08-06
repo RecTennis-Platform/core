@@ -3741,12 +3741,12 @@ export class GroupService {
       });
     }
 
-    if (tournament.phase != GroupTournamentPhase.finalized_applicants) {
-      throw new BadRequestException({
-        code: 400,
-        message: 'Tournament phase must be finalized_applicants',
-      });
-    }
+    // if (tournament.phase != GroupTournamentPhase.finalized_applicants) {
+    //   throw new BadRequestException({
+    //     code: 400,
+    //     message: 'Tournament phase must be finalized_applicants',
+    //   });
+    // }
 
     const group = await this.checkValidGroup(groupId);
 
