@@ -4587,15 +4587,17 @@ export class GroupService {
         },
       });
 
-      // Create group expense - type: income
-      await this.prismaService.group_expenses.create({
-        data: {
-          groupId: groupId,
-          type: ExpenseType.income,
-          description: `Income from group fund - id: ${groupFund.id}, title: ${groupFund.title}, member: ${userId}`,
-          amount: groupFund.amount,
-        },
-      });
+      if (dto.status === GroupFundStatus.accepted) {
+        // Create group expense - type: income
+        await this.prismaService.group_expenses.create({
+          data: {
+            groupId: groupId,
+            type: ExpenseType.income,
+            description: `Income from group fund - id: ${groupFund.id}, title: ${groupFund.title}, member: ${userId}`,
+            amount: groupFund.amount,
+          },
+        });
+      }
 
       // Update response data
       // Move data out of groupFund
