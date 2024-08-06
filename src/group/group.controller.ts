@@ -621,6 +621,26 @@ export class GroupController {
   }
 
   @UseGuards(JwtGuard)
+  @Post(':groupId/funds/users/new')
+  async createUserFundRequest(
+    @Param('groupId') groupId: number,
+    @GetUser('sub') userId: string,
+    @Body() dto: CreateUserFundRequestDto,
+  ) {
+    try {
+      return this.groupService.createUserFundRequest(groupId, userId, dto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal Server Error',
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
   @Get(':groupId/funds/:fundId/users')
   async fetchGroupFundUserRequests(
     @Param('groupId') groupId: number,
@@ -660,32 +680,6 @@ export class GroupController {
         fundId,
         userId,
         pageOptions,
-      );
-    } catch (error) {
-      throw new HttpException(
-        {
-          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-          message: error.message || 'Internal Server Error',
-        },
-        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  @UseGuards(JwtGuard)
-  @Post(':groupId/funds/:fundId/users/new')
-  async createUserFundRequest(
-    @Param('groupId') groupId: number,
-    @Param('fundId') fundId: number,
-    @GetUser('sub') userId: string,
-    @Body() dto: CreateUserFundRequestDto,
-  ) {
-    try {
-      return this.groupService.createUserFundRequest(
-        groupId,
-        fundId,
-        userId,
-        dto,
       );
     } catch (error) {
       throw new HttpException(

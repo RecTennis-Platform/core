@@ -17,7 +17,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxNDc0MjY4LCJleHAiOjE3MjI3NzAyNjh9.Y41rbTpL6oHOjrl0Idwsdng-2tRpWyUHD3i-bidZNuU",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxNDc0MjY4LCJleHAiOjE4MjI3NzAyNjh9.CX5oO6F2qBX7KwoxNYvpUdafgQBKBQIDhrM0YYvFCjU",
 									"type": "string"
 								}
 							]
@@ -26,7 +26,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"title\": \"Quỹ tháng 8\",\n  \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n  \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n  \"amount\": 100000,\n  \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n  \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\"\n}",
+							"raw": "{\n    \"title\": \"Quỹ tháng 1\",\n    \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n    \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n    \"amount\": 100000,\n    \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n    \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n    \"memberListId\": [],\n    \"isFullMember\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -53,7 +53,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"title\": \"Quỹ tháng 7\",\n  \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n  \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n  \"amount\": 100000,\n  \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n  \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\"\n}",
+									"raw": "{\n    \"title\": \"Quỹ tháng 12\",\n    \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n    \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n    \"amount\": 100000,\n    \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n    \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n    \"memberListId\": [\n        \"d762a454-53de-4c32-a6cd-b60e703f8f93\",\n        \"d3dce5c7-6418-4697-8802-459e4a38d480\",\n        \"b5d9303c-cc64-48f1-b14f-cc10f5514b50\"\n    ],\n    \"isFullMember\": false\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -90,15 +90,15 @@
 								},
 								{
 									"key": "Content-Length",
-									"value": "358"
+									"value": "360"
 								},
 								{
 									"key": "ETag",
-									"value": "W/\"166-FH0uSpihUbECC5OubQDLA9MPtSw\""
+									"value": "W/\"168-YMwEo0mr3HOnbWEVGMzVlW7VBHI\""
 								},
 								{
 									"key": "Date",
-									"value": "Mon, 29 Jul 2024 03:32:25 GMT"
+									"value": "Tue, 06 Aug 2024 07:35:43 GMT"
 								},
 								{
 									"key": "Connection",
@@ -110,7 +110,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"id\": 1,\n    \"title\": \"Quỹ tháng 7\",\n    \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n    \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n    \"amount\": 100000,\n    \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n    \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n    \"createdAt\": \"2024-07-29T03:32:23.773Z\"\n}"
+							"body": "{\n    \"id\": 13,\n    \"title\": \"Quỹ tháng 12\",\n    \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n    \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n    \"amount\": 100000,\n    \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n    \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n    \"createdAt\": \"2024-08-06T07:35:42.813Z\"\n}"
 						},
 						{
 							"name": "Create group fund",
@@ -119,7 +119,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"title\": \"Quỹ tháng 7\",\n  \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n  \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n  \"amount\": 100000,\n  \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n  \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\"\n}",
+									"raw": "{\n    \"title\": \"Quỹ tháng 1\",\n    \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n    \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n    \"amount\": 100000,\n    \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n    \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n    \"memberListId\": [],\n    \"isFullMember\": false\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -127,19 +127,19 @@
 									}
 								},
 								"url": {
-									"raw": "{{CORE_URL}}/groups/1/funds",
+									"raw": "{{CORE_URL}}/groups/39/funds",
 									"host": [
 										"{{CORE_URL}}"
 									],
 									"path": [
 										"groups",
-										"1",
+										"39",
 										"funds"
 									]
 								}
 							},
-							"status": "Not Found",
-							"code": 404,
+							"status": "Created",
+							"code": 201,
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
@@ -156,15 +156,15 @@
 								},
 								{
 									"key": "Content-Length",
-									"value": "41"
+									"value": "359"
 								},
 								{
 									"key": "ETag",
-									"value": "W/\"29-x+D+l1lIa6ReXT2kz8xOQNmNVZg\""
+									"value": "W/\"167-9J3rLSYisjZZxATyhcZlegGUVzk\""
 								},
 								{
 									"key": "Date",
-									"value": "Mon, 29 Jul 2024 03:33:55 GMT"
+									"value": "Tue, 06 Aug 2024 07:37:37 GMT"
 								},
 								{
 									"key": "Connection",
@@ -176,7 +176,116 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"message\": \"Group not found\",\n    \"data\": null\n}"
+							"body": "{\n    \"id\": 15,\n    \"title\": \"Quỹ tháng 1\",\n    \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n    \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n    \"amount\": 100000,\n    \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n    \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\",\n    \"createdAt\": \"2024-08-06T07:37:36.295Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create user fund request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZmM4Mzg0My0wZTlhLTRjMDctYTMyNC0zNWQ4MDVjMTAxZGIiLCJlbWFpbCI6Imhxa2hhaTE2MzZAZ21haWwuY29tIiwiaWF0IjoxNzIxNDc0MjY4LCJleHAiOjE4MjI3NzAyNjh9.CX5oO6F2qBX7KwoxNYvpUdafgQBKBQIDhrM0YYvFCjU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fundId\": 13,\n    \"userId\": \"836e63a3-3867-475a-b7fa-6ccf568c6459\",\n    \"amount\": 150000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CORE_URL}}/groups/39/funds/users/new",
+							"host": [
+								"{{CORE_URL}}"
+							],
+							"path": [
+								"groups",
+								"39",
+								"funds",
+								"users",
+								"new"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create user fund request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fundId\": 13,\n    \"userId\": \"836e63a3-3867-475a-b7fa-6ccf568c6459\",\n    \"amount\": 150000\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CORE_URL}}/groups/39/funds/users/new",
+									"host": [
+										"{{CORE_URL}}"
+									],
+									"path": [
+										"groups",
+										"39",
+										"funds",
+										"users",
+										"new"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "396"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"18c-DVk0E0plDWv39RdquM0cbTgD5uM\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 Aug 2024 07:46:45 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 50,\n    \"groupFundId\": 13,\n    \"amount\": 150000,\n    \"status\": \"waiting\",\n    \"createdAt\": \"2024-08-06T07:46:45.072Z\",\n    \"title\": \"Quỹ tháng 12\",\n    \"description\": \"Tháng này có những chi tiêu cho việc đặt sân, mua thêm bóng mới\",\n    \"dueDate\": \"2024-08-23T16:59:59.999Z\",\n    \"paymentInfo\": \"1901213 - ACB Bank - Nguyen Quoc Huy\",\n    \"qrImage\": \"https://upload.wikimedia.org/wikipedia/commons/4/41/QR_Code_Example.svg\"\n}"
 						}
 					]
 				},

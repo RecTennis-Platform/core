@@ -3908,6 +3908,12 @@ export class GroupService {
       });
     }
 
+    // Remove fields in dto
+    const isFullMember = dto.isFullMember;
+    const memberListId = dto.memberListId;
+    delete dto.isFullMember;
+    delete dto.memberListId;
+
     // Create group fund
     try {
       const groupFund = await this.prismaService.group_funds.create({
@@ -3927,12 +3933,12 @@ export class GroupService {
         },
       });
 
-      let member_ships_conditions = {};
-      if (!dto.isFullMember) {
+      let conditions = {};
+      if (!isFullMember) {
         // Create group fund requests in memberListId
-        member_ships_conditions = {
+        conditions = {
           userId: {
-            in: dto.memberListId,
+            in: memberListId,
           },
         };
       }
@@ -3941,7 +3947,7 @@ export class GroupService {
         where: {
           groupId: groupId,
           role: MemberRole.member,
-          ...member_ships_conditions,
+          ...conditions,
         },
       });
 
@@ -4331,7 +4337,6 @@ export class GroupService {
 
   async createUserFundRequest(
     groupId: number,
-    fundId: number,
     userId: string,
     dto: CreateUserFundRequestDto,
   ) {
@@ -4349,7 +4354,7 @@ export class GroupService {
     // Get group_fund's info
     const groupFund = await this.prismaService.group_funds.findUnique({
       where: {
-        id: fundId,
+        id: dto.fundId,
       },
     });
 
@@ -4385,6 +4390,14 @@ export class GroupService {
           },
         },
       });
+
+      // Update response data
+      fundRequest['title'] = fundRequest.groupFund.title;
+      fundRequest['description'] = fundRequest.groupFund.description;
+      fundRequest['dueDate'] = fundRequest.groupFund.dueDate;
+      fundRequest['paymentInfo'] = fundRequest.groupFund.paymentInfo;
+      fundRequest['qrImage'] = fundRequest.groupFund.qrImage;
+      delete fundRequest.groupFund;
 
       return fundRequest;
     } catch (error) {
