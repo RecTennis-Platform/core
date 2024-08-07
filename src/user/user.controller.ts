@@ -92,7 +92,6 @@ export class UserController {
     @Req() req: IRequestWithUser,
     @Body() dto: UpdateUserAccountDto,
   ) {
-    console.log('User update user');
     const userId = req.user['sub'];
     return await this.userService.updateUserDetails(userId, dto);
   }
