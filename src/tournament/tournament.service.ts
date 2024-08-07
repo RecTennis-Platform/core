@@ -3986,7 +3986,7 @@ export class TournamentService {
                 user2: teams[tables.table2[i][j] - 1].user2,
                 id: teams[tables.table2[i][j] - 1].id,
               };
-              const today = new Date();
+              const today = new Date(new Date().setHours(15, 0, 0, 0));
               const match = {
                 id: randomUUID(),
                 nextMatchId: null,
@@ -4074,7 +4074,7 @@ export class TournamentService {
               if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
                 status = MatchStatus.no_show.toString();
               }
-              const today = new Date();
+              const today = new Date(new Date().setHours(15, 0, 0, 0));
               const match = {
                 id: id,
                 nextMatchId: nextMatchId,
@@ -4179,7 +4179,7 @@ export class TournamentService {
                 user2: teams[tables.table2[i][j] - 1].user2,
                 id: teams[tables.table2[i][j] - 1].id,
               };
-              const today = new Date();
+              const today = new Date(new Date().setHours(15, 0, 0, 0));
               const match = {
                 id: randomUUID(),
                 nextMatchId: null,
@@ -4281,7 +4281,7 @@ export class TournamentService {
         //     if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
         //       status = MatchStatus.no_show.toString();
         //     }
-        //     const today = new Date();
+        //     const today = new Date(new Date().setHours(8,0,0,0))
         //     const match = {
         //       id: id,
         //       nextMatchId: nextMatchId,
@@ -4320,7 +4320,7 @@ export class TournamentService {
           tables.table2.length === 1 &&
           tables.table2[0].length === 1
         ) {
-          const today = new Date();
+          const today = new Date(new Date().setHours(15, 0, 0, 0));
           const team1 = null,
             team2 = null;
           const match = {
@@ -4381,7 +4381,7 @@ export class TournamentService {
               if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
                 status = MatchStatus.no_show.toString();
               }
-              const today = new Date();
+              const today = new Date(new Date().setHours(15, 0, 0, 0));
               const match = {
                 id: id,
                 nextMatchId: nextMatchId,
@@ -4481,7 +4481,7 @@ export class TournamentService {
           if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
             status = MatchStatus.no_show.toString();
           }
-          const today = new Date();
+          const today = new Date(new Date().setHours(15, 0, 0, 0));
           const match = {
             id: id,
             nextMatchId: nextMatchId,

@@ -2419,7 +2419,7 @@ export class GroupService {
                 user2: teams[tables.table2[i][j] - 1].user2,
                 id: teams[tables.table2[i][j] - 1].id,
               };
-              const today = new Date();
+              const today = new Date(new Date().setHours(15, 0, 0, 0));
 
               const match = {
                 id: randomUUID(),
@@ -2508,7 +2508,7 @@ export class GroupService {
               if (tables.table1[i][j] === -1 || tables.table2[i][j] === -1) {
                 status = MatchStatus.no_show.toString();
               }
-              const today = new Date();
+              const today = new Date(new Date().setHours(15, 0, 0, 0));
               const match = {
                 id: id,
                 nextMatchId: nextMatchId,
