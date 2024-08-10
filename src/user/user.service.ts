@@ -747,6 +747,162 @@ export class UserService {
     }
   }
 
+  async getAllUserTournamentHistory(
+    userId: string,
+    pageOptions: PageOptionsUsersListDto,
+  ) {
+    // Build pagination options
+    const conditions = {
+      orderBy: [
+        {
+          createdAt: pageOptions.order,
+        },
+      ],
+      where: {
+        OR: [
+          {
+            userId1: userId,
+          },
+          {
+            userId2: userId,
+          },
+        ],
+        NOT: {
+          tournamentId: null,
+        },
+        tournaments: {
+          status: TournamentStatus.completed,
+        },
+      },
+      include: {
+        tournaments: {
+          include: {
+            tournament_registrations: {
+              select: {
+                appliedDate: true,
+              },
+              where: {
+                OR: [
+                  {
+                    userId1: userId,
+                  },
+                  {
+                    userId2: userId,
+                  },
+                ],
+                status: RegistrationStatus.approved,
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const pageOption =
+      pageOptions.page && pageOptions.take
+        ? {
+            skip: pageOptions.skip,
+            take: pageOptions.take,
+          }
+        : undefined;
+
+    // Get referee's matches
+    const [result, totalCount] = await Promise.all([
+      this.prismaService.teams.findMany({
+        ...conditions,
+        ...pageOption,
+      }),
+      this.prismaService.teams.count({
+        where: conditions.where,
+      }),
+    ]);
+
+    const tournaments = result.map((r) => {
+      const appliedDate = r.tournaments.tournament_registrations[0].appliedDate;
+      delete r.tournaments.tournament_registrations;
+      return {
+        ...r.tournaments,
+        appliedDate,
+      };
+    });
+    const teamIds = (
+      await this.prismaService.teams.findMany({
+        ...conditions,
+      })
+    ).map((r) => r.id);
+    const totalMatches = await this.prismaService.matches.count({
+      where: {
+        OR: [
+          {
+            teamId1: {
+              in: teamIds,
+            },
+          },
+          {
+            teamId2: {
+              in: teamIds,
+            },
+          },
+        ],
+        status: MatchStatus.score_done,
+        AND: [
+          {
+            team1: {
+              NOT: {
+                tournamentId: null,
+              },
+            },
+          },
+          {
+            team2: {
+              NOT: {
+                tournamentId: null,
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    const winMatches = await this.prismaService.matches.count({
+      where: {
+        teamWinnerId: {
+          in: teamIds,
+        },
+        status: MatchStatus.score_done,
+        AND: [
+          {
+            team1: {
+              NOT: {
+                tournamentId: null,
+              },
+            },
+          },
+          {
+            team2: {
+              NOT: {
+                tournamentId: null,
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    return {
+      tournaments: {
+        data: tournaments,
+        totalPages: Math.ceil(totalCount / pageOptions.take),
+        totalCount,
+      },
+      statistic: {
+        total: totalMatches,
+        win: winMatches,
+        lose: totalMatches - winMatches,
+      },
+    };
+  }
+
   // Referee
   async getRefereeMatches(
     userId: string,

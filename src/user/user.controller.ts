@@ -178,6 +178,17 @@ export class UserController {
     return await this.userService.testNotification(userId);
   }
 
+  @Get(':userId/tournament-history')
+  async getAllTournamentHistory(
+    @Param('userId') userId: string,
+    @Query() pageOptions: PageOptionsUsersListDto,
+  ) {
+    return await this.userService.getAllUserTournamentHistory(
+      userId,
+      pageOptions,
+    );
+  }
+
   @Get(':userId')
   async getUserDetailsById(@Param('userId') userId: string) {
     return await this.userService.getUserDetails(userId);
