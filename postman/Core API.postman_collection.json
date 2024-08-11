@@ -8682,7 +8682,77 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "Get user history",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{CORE_URL}}/users/4fc83843-0e9a-4c07-a324-35d805c101db/tournament-history",
+											"host": [
+												"{{CORE_URL}}"
+											],
+											"path": [
+												"users",
+												"4fc83843-0e9a-4c07-a324-35d805c101db",
+												"tournament-history"
+											],
+											"query": [
+												{
+													"key": "take",
+													"value": "1",
+													"disabled": true
+												},
+												{
+													"key": "page",
+													"value": "2",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "1770"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"6ea-aylOj/hi/++5eSlEMrfC7l/cuDo\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 10 Aug 2024 14:58:08 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"tournaments\": {\n        \"data\": [\n            {\n                \"id\": 45,\n                \"purchasedPackageId\": \"66b248791047f140c23411e7\",\n                \"name\": \"Giải đấu mèo con\",\n                \"maxParticipants\": 16,\n                \"gender\": \"male\",\n                \"format\": \"group_playoff\",\n                \"participantType\": \"single\",\n                \"description\": \"Giải đấu gây quỹ nuôi mèo\",\n                \"playersBornAfterDate\": \"1989-12-31T17:00:00.000Z\",\n                \"registrationDueDate\": \"2024-08-12T16:59:59.000Z\",\n                \"startDate\": \"2024-08-12T17:00:00.000Z\",\n                \"endDate\": \"2024-09-05T16:59:59.000Z\",\n                \"status\": \"completed\",\n                \"address\": \"Nhà thi đấu Nguyễn Du\",\n                \"contactPersonName\": \"Tri Do\",\n                \"contactNumber\": \"0123123123\",\n                \"contactEmail\": \"trido@gmail.com\",\n                \"createdAt\": \"2024-08-06T16:02:44.056Z\",\n                \"updatedAt\": \"2024-08-06T17:07:08.614Z\",\n                \"phase\": \"completed\",\n                \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1722960158811-1000034533.jpg?alt=media\",\n                \"level\": 1,\n                \"appliedDate\": \"2024-08-06T16:03:50.277Z\"\n            },\n            {\n                \"id\": 37,\n                \"purchasedPackageId\": \"6674534a7d13ffeef2171314\",\n                \"name\": \"Knockout 14/7\",\n                \"maxParticipants\": 16,\n                \"gender\": \"male\",\n                \"format\": \"knockout\",\n                \"participantType\": \"single\",\n                \"description\": \"About your tournament About your tournament\",\n                \"playersBornAfterDate\": \"1989-12-31T17:00:00.000Z\",\n                \"registrationDueDate\": \"2024-07-21T16:59:59.999Z\",\n                \"startDate\": \"2024-07-21T17:00:00.000Z\",\n                \"endDate\": \"2024-08-22T16:59:59.999Z\",\n                \"status\": \"completed\",\n                \"address\": \"Sân vân động Phú Thọ\",\n                \"contactPersonName\": \"Huy Nguyen\",\n                \"contactNumber\": \"0987654321\",\n                \"contactEmail\": \"huy@gmail.com\",\n                \"createdAt\": \"2024-07-14T04:08:05.151Z\",\n                \"updatedAt\": \"2024-07-28T16:03:36.985Z\",\n                \"phase\": \"completed\",\n                \"image\": \"https://firebasestorage.googleapis.com/v0/b/tennis-7aa7c.appspot.com/o/storage%2F1720930067083-course-image.png?alt=media\",\n                \"level\": 0,\n                \"appliedDate\": \"2024-07-14T04:09:51.863Z\"\n            }\n        ],\n        \"totalPages\": 1,\n        \"totalCount\": 2\n    },\n    \"statistic\": {\n        \"total\": 6,\n        \"win\": 5,\n        \"lose\": 1\n    }\n}"
+								}
+							]
 						},
 						{
 							"name": "Get user details",
