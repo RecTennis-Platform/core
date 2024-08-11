@@ -208,6 +208,15 @@ export class GroupController {
     return await this.groupService.removeMember(adminId, groupId, userId);
   }
 
+  @UseGuards(JwtGuard)
+  @Post(':id/leave')
+  async leaveGroup(
+    @GetUser('sub') userId: string,
+    @Param('id', ParseIntPipe) groupId: number,
+  ) {
+    return await this.groupService.leaveGroup(groupId, userId);
+  }
+
   // Group Tournament
   @UseGuards(JwtGuard)
   @Post(':groupId/tournaments')

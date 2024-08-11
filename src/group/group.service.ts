@@ -1146,6 +1146,47 @@ export class GroupService {
     }
   }
 
+  async leaveGroup(groupId: number, userId: string) {
+    await this.checkValidGroup(groupId);
+
+    // Check if the user is a member of the group
+    const userIsMember = await this.prismaService.member_ships.findFirst({
+      where: {
+        userId: userId,
+        groupId,
+      },
+    });
+
+    if (!userIsMember) {
+      throw new NotFoundException({
+        message: 'This user is not a member of this group',
+        data: null,
+      });
+    }
+
+    try {
+      await this.prismaService.member_ships.delete({
+        where: {
+          userId_groupId: {
+            groupId,
+            userId,
+          },
+        },
+      });
+
+      return {
+        message: 'Leave group successfully',
+        data: null,
+      };
+    } catch (error) {
+      console.log('Error:', error.message);
+      throw new InternalServerErrorException({
+        message: 'Failed to leave group',
+        data: null,
+      });
+    }
+  }
+
   // Group Tournament
   // Note: Need to limit the number of current tournaments (ongoing and upcoming)?
   async createGroupTournament(
