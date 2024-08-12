@@ -6,7 +6,7 @@ import { ServiceLevel, ServiceType } from './create-service.dto';
 export class PageOptionsServiceDto {
   @IsEnum(Order)
   @IsOptional()
-  order?: Order = Order.DESC;
+  order?: Order = Order.ASC;
 
   @IsEnum(ServiceType)
   @IsOptional()

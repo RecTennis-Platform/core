@@ -6,7 +6,7 @@ import { PackageType } from './create-package.dto';
 export class PageOptionsPackageDto {
   @IsEnum(Order)
   @IsOptional()
-  order?: Order = Order.DESC;
+  order?: Order = Order.ASC;
 
   @IsEnum(PackageType)
   @IsOptional()

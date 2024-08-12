@@ -112,7 +112,7 @@ export class PackageService {
     const conditions = {
       orderBy: [
         {
-          createdAt: pageOptions.order,
+          id: pageOptions.order,
         },
       ],
       include: {

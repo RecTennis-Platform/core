@@ -21,7 +21,7 @@ export class ServiceService {
     const conditions = {
       orderBy: [
         {
-          createdAt: dto.order,
+          id: dto.order,
         },
       ],
       where: {
