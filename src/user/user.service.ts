@@ -770,9 +770,9 @@ export class UserService {
         NOT: {
           tournamentId: null,
         },
-        tournaments: {
-          status: TournamentStatus.completed,
-        },
+        // tournaments: {
+        //   status: TournamentStatus.completed,
+        // },
       },
       include: {
         tournaments: {
