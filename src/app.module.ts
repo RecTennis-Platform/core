@@ -20,6 +20,8 @@ import { MatchModule } from './match/match.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NewsCrawlerService } from './services/jobs/news-crawler';
 import { AdvertisementsModule } from './advertisements/advertisements.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from './logging/logging.interceptor';
 
 @Module({
   imports: [
@@ -44,6 +46,12 @@ import { AdvertisementsModule } from './advertisements/advertisements.module';
     ScheduleModule.forRoot(),
     AdvertisementsModule,
   ],
-  providers: [NewsCrawlerService],
+  providers: [
+    NewsCrawlerService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
 })
 export class AppModule {}
